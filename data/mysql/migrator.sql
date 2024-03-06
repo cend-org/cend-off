@@ -1,3 +1,5 @@
+create database duval;
+
 create table user (
     id int primary key auto_increment not null,
     created_at DATETIME default CURRENT_TIMESTAMP not null ,
