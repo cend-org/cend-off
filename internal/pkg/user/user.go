@@ -316,6 +316,13 @@ func NewPassword(ctx *gin.Context) {
 		return
 	}
 
+	if len(password.Psw)*4 > 72 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: "maximum value of password is 18",
+		})
+		return
+	}
+
 	password.Psw, err = utils.HashPassword(password.Psw)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
