@@ -72,7 +72,7 @@ func NewUser(ctx *gin.Context) {
 	err = ctx.ShouldBindJSON(&user)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
+			Message: "Bad format of user",
 		})
 		return
 	}
@@ -80,7 +80,7 @@ func NewUser(ctx *gin.Context) {
 	_, err = mail.ParseAddress(user.Email)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
+			Message: "orror parsing address",
 		})
 		return
 	}
@@ -103,7 +103,7 @@ func NewUser(ctx *gin.Context) {
 	user.Id, err = database.InsertOne(user)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
+			Message: "failed to insert user into database",
 		})
 		return
 	}
@@ -214,7 +214,7 @@ func MyProfile(ctx *gin.Context) {
 	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
+			Message: "authentiaction failed",
 		})
 		return
 	}
@@ -312,6 +312,12 @@ func NewPassword(ctx *gin.Context) {
 	if strings.TrimSpace(password.Psw) == state.EMPTY {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: "new password value cannot be empty",
+		})
+		return
+	}
+	if len(password.Psw)*4 > 72 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: "maximum value of password is 18",
 		})
 		return
 	}
