@@ -7,12 +7,13 @@ import (
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"net/mail"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 type User struct {
