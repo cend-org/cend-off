@@ -3,15 +3,31 @@ package utils
 import "golang.org/x/crypto/bcrypt"
 
 func HashPassword(password string) (hash string, err error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	labelHashedPwd := LabelHash(password)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(labelHashedPwd), 14)
 	if err != nil {
 		return hash, err
 	}
-
 	return string(bytes), err
 }
 
 func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	labelHashedPwd := LabelHash(password)
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(labelHashedPwd))
 	return err == nil
+}
+
+func LabelHash(label string) string {
+	hashed := make([]byte, len(label))
+	for i, char := range label {
+		switch {
+		case 'a' <= char && char <= 'z':
+			hashed[i] = byte((char-'a'+13)%26 + 'a')
+		case 'A' <= char && char <= 'Z':
+			hashed[i] = byte((char-'A'+13)%26 + 'A')
+		default:
+			hashed[i] = byte(char)
+		}
+	}
+	return string(hashed)
 }
