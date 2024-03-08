@@ -2,7 +2,6 @@ package api
 
 import (
 	"duval/internal/pkg/media"
-	"duval/internal/pkg/message"
 	"duval/internal/pkg/user"
 	"github.com/gin-gonic/gin"
 )
@@ -32,7 +31,7 @@ func userRoutes(g *gin.RouterGroup) {
 }
 
 func chatRoutes(g *gin.RouterGroup) {
-	g.GET("/chat", message.GetUserDiscussion)
+	//g.GET("/chat", message.GetUserDiscussion)
 	return
 }
 

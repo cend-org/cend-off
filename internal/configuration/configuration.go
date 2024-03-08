@@ -8,6 +8,7 @@ type Config struct {
 	Host        string `toml:"host"`
 	TokenSecret string `toml:"token_secret"`
 	Database    string `toml:"database"`
+	DevName     string `toml:"dev_name"`
 }
 
 var App Config

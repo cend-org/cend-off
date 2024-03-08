@@ -26,3 +26,5 @@ public
 .idea
 
 .vscode
+
+./config.toml
