@@ -1,5 +1,7 @@
 create database duval;
 
+use duval;
+
 create table user (
     id int primary key auto_increment not null,
     created_at DATETIME default CURRENT_TIMESTAMP not null ,
@@ -131,3 +133,8 @@ alter table user add column lang int default 0 after is_professor;
 
 alter table media add column content_type int default 0 after user_id;
 
+-- remove is_parent is_student is_tutor is_professor
+alter table user drop column is_parent;
+alter table user drop column is_student;
+alter table user drop column is_tutor ;
+alter table user drop column is_professor ;

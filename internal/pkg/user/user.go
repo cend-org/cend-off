@@ -17,23 +17,19 @@ import (
 )
 
 type User struct {
-	Id          uint       `json:"id"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
-	DeletedAt   *time.Time `json:"deleted_at"`
-	FirstName   string     `json:"first_name"`
-	MiddleName  string     `json:"middle_name"`
-	LastName    string     `json:"last_name"`
-	NickName    string     `json:"nick_name"`
-	Email       string     `json:"email"`
-	Age         uint       `json:"age"`
-	BirthDate   time.Time  `json:"birth_date"`
-	Sex         int        `json:"sex"`
-	IsParent    bool       `json:"is_parent"`
-	IsStudent   bool       `json:"is_student"`
-	IsTutor     bool       `json:"is_tutor"`
-	IsProfessor bool       `json:"is_professor"`
-	Lang        int        `json:"language"`
+	Id         uint       `json:"id"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at"`
+	FirstName  string     `json:"first_name"`
+	MiddleName string     `json:"middle_name"`
+	LastName   string     `json:"last_name"`
+	NickName   string     `json:"nick_name"`
+	Email      string     `json:"email"`
+	Age        uint       `json:"age"`
+	BirthDate  time.Time  `json:"birth_date"`
+	Sex        int        `json:"sex"`
+	Lang       int        `json:"language"`
 }
 
 type Password struct {
@@ -80,7 +76,7 @@ func NewUser(ctx *gin.Context) {
 	_, err = mail.ParseAddress(user.Email)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "orror parsing address",
+			Message: "error parsing address",
 		})
 		return
 	}
@@ -398,4 +394,102 @@ func GetUserWithId(id uint) (user User, err error) {
 	}
 
 	return user, err
+}
+
+/*
+
+	User Level
+
+*/
+
+func SetUserAuthorization(ctx *gin.Context) {
+	var auth Authorization
+	var err error
+
+	err = ctx.ShouldBindJSON(&auth)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: "unknown format",
+		})
+		return
+	}
+
+	_, err = database.Insert(auth)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: "Failed to insert authorization into database ",
+		})
+		return
+	}
+
+	ctx.AbortWithStatus(http.StatusOK)
+	return
+}
+
+func GetUserAuthorization(ctx *gin.Context) {
+
+	var (
+		auth Authorization
+		err  error
+		id   int
+	)
+
+	id, err = strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: err,
+		})
+	}
+
+	err = database.Client.Get(&auth, `SELECT * FROM authorization WHERE user_id = ?`, id)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: "Failed to fetch authorization  user_id unknown",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, auth)
+	return
+}
+
+func RemoveUserAuthorization(ctx *gin.Context) {
+	var (
+		id   int
+		auth Authorization
+		err  error
+	)
+	currentTime := time.Now()
+
+	id, err = strconv.Atoi(ctx.Param("id"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: err,
+		})
+	}
+
+	err = database.Client.Get(&auth, `SELECT * FROM authorization WHERE user_id = ?`, id)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: "Failed to fetch authorization  user_id unknown",
+		})
+		return
+	}
+
+	if auth.DeletedAt != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: "Authorization already deleted",
+		})
+	}
+
+	new_auth, err := database.Client.Exec(`UPDATE authorization SET deleted_at = ? WHERE user_id = ?`, currentTime, id)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: "Failed to delete authorization",
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, new_auth)
+	return
 }
