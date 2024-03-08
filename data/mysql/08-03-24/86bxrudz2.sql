@@ -7,3 +7,9 @@ create table translator (
                             number int default 0,
                             language int  default 0
 );
+
+alter table translator
+    add constraint translator_pk
+        unique (number, language);
+
+alter table translator add column menu_parent_number int default 0 after language;
