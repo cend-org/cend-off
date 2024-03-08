@@ -100,6 +100,8 @@ create table message (
     status int default 0
 );
 
+
+
 alter table discussion_actor
     add constraint disc_act_fk
         foreign key (discussion_id) references discussion_actor(id)
@@ -128,3 +130,4 @@ alter table user add column is_professor bool default false after is_tutor;
 alter table user add column lang int default 0 after is_professor;
 
 alter table media add column content_type int default 0 after user_id;
+
