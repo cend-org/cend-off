@@ -21,10 +21,13 @@
 go.work
 
 #public file
-public
+public/*.jpg
+public/*.png
+public/*.pdf
+public/*.word
 
 .idea
 
 .vscode
 
-./config.toml
+*.toml
