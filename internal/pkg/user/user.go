@@ -37,12 +37,13 @@ type User struct {
 }
 
 type Password struct {
-	Id        uint       `json:"id"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at"`
-	UserId    uint       `json:"user_id"`
-	Psw       string     `json:"psw"`
+	Id          uint       `json:"id"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
+	DeletedAt   *time.Time `json:"deleted_at"`
+	UserId      uint       `json:"user_id"`
+	Psw         string     `json:"psw"`
+	ContentHash string     `json:"hash"`
 }
 
 type Authorization struct {
@@ -325,6 +326,14 @@ func NewPassword(ctx *gin.Context) {
 	if len(password.Psw)*4 > 72 {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: "maximum value of password is 18",
+		})
+		return
+	}
+
+	password.ContentHash, err = utils.CreateContentHash(password.Psw)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: "password should be bound to user",
 		})
 		return
 	}

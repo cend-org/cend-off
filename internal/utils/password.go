@@ -2,7 +2,7 @@ package utils
 
 import "golang.org/x/crypto/bcrypt"
 
-func HashPassword(password string) (hash string, err error) {
+func CreateContentHash(password string) (hash string, err error) {
 	labelHashedPwd := LabelHash(password)
 	bytes, err := bcrypt.GenerateFromPassword([]byte(labelHashedPwd), 14)
 	if err != nil {
@@ -11,7 +11,7 @@ func HashPassword(password string) (hash string, err error) {
 	return string(bytes), err
 }
 
-func CheckPasswordHash(password, hash string) bool {
+func RevertContentHash(password, hash string) bool {
 	labelHashedPwd := LabelHash(password)
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(labelHashedPwd))
 	return err == nil
@@ -30,4 +30,18 @@ func LabelHash(label string) string {
 		}
 	}
 	return string(hashed)
+}
+
+func HashPassword(password string) (hash string, err error) {
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	if err != nil {
+		return hash, err
+	}
+
+	return string(bytes), err
+}
+
+func CheckPasswordHash(password, hash string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	return err == nil
 }
