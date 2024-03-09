@@ -1,5 +1,0 @@
-version = "v0.0.1"
-host = ""
-port = "8087"
-token_secret = "437b059d-bd8b-40d5-920a-341bb8a3f15f"
-database = "root:@tcp(localhost:3306)/duval?parseTime=true"
