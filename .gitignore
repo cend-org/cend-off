@@ -31,3 +31,4 @@ public/*.word
 .vscode
 
 *.toml
+config.toml

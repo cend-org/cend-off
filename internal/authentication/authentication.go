@@ -3,9 +3,10 @@ package authentication
 import (
 	"duval/internal/configuration"
 	"errors"
+	"strings"
+
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"strings"
 )
 
 type Auth struct {
@@ -14,7 +15,8 @@ type Auth struct {
 }
 
 type Token struct {
-	UserId uint `json:"user_id"`
+	UserId    uint `json:"user_id"`
+	UserLevel uint `json:"user_level"`
 	jwt.RegisteredClaims
 }
 
