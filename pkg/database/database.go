@@ -21,7 +21,7 @@ var Client *sqlx.DB
 
 func init() {
 	var err error
-	Client, err = sqlx.Connect(defaultDriver, configuration.App.Database)
+	Client, err = sqlx.Connect(defaultDriver, configuration.App.DatabaseConnexionString)
 	if err != nil {
 		panic(err)
 	}
