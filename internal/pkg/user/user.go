@@ -74,10 +74,9 @@ func NewUser(ctx *gin.Context) {
 		return
 	}
 
-	_, err = mail.ParseAddress(user.Email)
-	if err != nil {
+	if !utils.IsValidEmail(user.Email) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "error parsing address",
+			Message: "error parsing email address",
 		})
 		return
 	}
