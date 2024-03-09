@@ -2,6 +2,7 @@ package api
 
 import (
 	"duval/internal/pkg/media"
+	"duval/internal/pkg/phone"
 	"duval/internal/pkg/user"
 
 	"github.com/gin-gonic/gin"
@@ -13,6 +14,7 @@ var routes = []func(g *gin.RouterGroup){
 	authRoutes,
 	fileRoutes,
 	chatRoutes,
+	phoneNumberRoutes,
 }
 
 func authRoutes(g *gin.RouterGroup) {
@@ -42,5 +44,12 @@ func chatRoutes(g *gin.RouterGroup) {
 func fileRoutes(g *gin.RouterGroup) {
 	g.POST("/upload", media.Upload)
 	g.Static("/public", "public")
+	return
+}
+
+func phoneNumberRoutes(g *gin.RouterGroup) {
+	g.POST("/phone/:id", phone.NewPhoneNumber)
+	g.PUT("/phone/:id", phone.UpdateUserPhoneNumber)
+	g.GET("/phone/:id", phone.GetUserPhoneNumber)
 	return
 }
