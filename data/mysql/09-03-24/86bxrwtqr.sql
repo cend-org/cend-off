@@ -1,0 +1,1 @@
+alter table user add column status int default 0 after lang;

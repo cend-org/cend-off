@@ -30,6 +30,7 @@ type User struct {
 	BirthDate  time.Time  `json:"birth_date"`
 	Sex        int        `json:"sex"`
 	Lang       int        `json:"language"`
+	Status     int        `json:"status"`
 }
 
 type Password struct {
