@@ -48,8 +48,8 @@ func fileRoutes(g *gin.RouterGroup) {
 }
 
 func phoneNumberRoutes(g *gin.RouterGroup) {
-	g.POST("/phone/:id", phone.NewPhoneNumber)
-	g.PUT("/phone/:id", phone.UpdateUserPhoneNumber)
-	g.GET("/phone/:id", phone.GetUserPhoneNumber)
+	g.POST("/phone/:user_id", phone.NewPhoneNumber)
+	g.PUT("/phone/", phone.UpdateUserPhoneNumber)
+	g.GET("/phone/:user_id", phone.GetUserPhoneNumber)
 	return
 }
