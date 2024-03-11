@@ -53,6 +53,7 @@ func NewPhoneNumber(ctx *gin.Context) {
 		})
 		return
 	}
+
 	if !utils.PhoneValidator(phone.MobilePhoneNumber) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: "Invalid format of phone number",
