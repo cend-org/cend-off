@@ -29,6 +29,8 @@ type Config struct {
 var App Config
 
 func init() {
+	cmd := go_console.NewScript().Build()
+
 	_, err := toml.DecodeFile("config.toml", &App)
 	if err != nil {
 		App = Config{
@@ -45,13 +47,22 @@ func init() {
 			DatabaseConnexionString: "",
 		}
 		fmt.Println("message: \"Your are using production configuration. If its not what you want, please configure your config.toml file.\"")
-		cmd := go_console.NewScript().Build()
 		cmd.PrintWarnings([]string{
 			"Your are using production configuration. If its not what you want, please configure your config.toml file.",
 		})
 
 		err = nil
 	}
+
+	cmd.PrintNotes([]string{
+		fmt.Sprintf("version : %s", App.Version),
+		fmt.Sprintf("port : %s", App.Port),
+		fmt.Sprintf("host : %s", App.Host),
+		fmt.Sprintf("token secret : %s", App.TokenSecret),
+		fmt.Sprintf("running mode : %d", App.RunningMode),
+		fmt.Sprintf("database host : %s", App.DatabaseHost),
+		fmt.Sprintf("database DatabasePort : %s", App.DatabasePort),
+	})
 
 	App.DatabaseConnexionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", App.DatabaseUserName,
 		App.DatabaseUserPassword, App.DatabaseHost, App.DatabasePort,
