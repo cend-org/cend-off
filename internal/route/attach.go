@@ -2,7 +2,7 @@ package route
 
 import (
 	"duval/internal/route/api"
-	"duval/internal/route/translation"
+	trans "duval/internal/route/translation"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )

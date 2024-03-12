@@ -7,14 +7,14 @@ import (
 )
 
 const (
-	RunnigModeTest  = 0
+	RunningModeTest = 0
 	RunningModeDev  = 1
 	RunningModeProd = 2
 )
 
 type Config struct {
 	Version                 string `toml:"version"`
-	RunningMode             int    `toml:"version"`
+	RunningMode             int    `toml:"running_mode"`
 	Port                    string `toml:"port"`
 	Host                    string `toml:"host"`
 	TokenSecret             string `toml:"token_secret"`
@@ -78,5 +78,5 @@ func (c *Config) IsProd() bool {
 }
 
 func (c *Config) IsTest() bool {
-	return c.RunningMode == RunnigModeTest
+	return c.RunningMode == RunningModeTest
 }
