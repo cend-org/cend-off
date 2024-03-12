@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "Updating code from Git..."
-cd /workspace/duval && sudo git reset --hard origin/master && sudo git fetch origin
+cd /workspace/duval && sudo git fetch origin && sudo git reset --hard origin/master
 
 echo "Building the application ... "
 cd /workspace/duval/cmd/app && go build -buildvcs=false
