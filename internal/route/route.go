@@ -8,6 +8,10 @@ import (
 var engine *gin.Engine
 
 func init() {
+	if configuration.App.IsProd() {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	engine = gin.Default()
 
 	// Global middleware
@@ -17,6 +21,7 @@ func init() {
 
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	engine.Use(gin.Recovery())
+
 }
 
 func Serve() (err error) {
