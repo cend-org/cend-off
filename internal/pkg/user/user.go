@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"duval/internal/authentication"
+	"duval/internal/pkg/user/password"
 	"duval/internal/utils"
 	"duval/internal/utils/errx"
 	"duval/internal/utils/state"
@@ -33,16 +34,6 @@ type User struct {
 	Sex        int        `json:"sex"`
 	Lang       int        `json:"language"`
 	Status     int        `json:"status"`
-}
-
-type Password struct {
-	Id          uint       `json:"id"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
-	DeletedAt   *time.Time `json:"deleted_at"`
-	UserId      uint       `json:"user_id"`
-	Psw         string     `json:"psw"`
-	ContentHash string     `json:"hash"`
 }
 
 type Authorization struct {
@@ -92,17 +83,18 @@ func NewUser(ctx *gin.Context) {
 		return
 	}
 
-	if user.Id > 0 {
+	if user.Id > state.ZERO {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse{
 			Message: errx.DuplicateUserError,
 		})
 		return
 	}
+
 	user.Matricule, _ = utils.GenerateMatricule()
 	user.Id, err = database.InsertOne(user)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "failed to insert user into database",
+			Message: errx.DbInsertError,
 		})
 		return
 	}
@@ -234,11 +226,11 @@ Login takes auth.email and auth.password as parameters.
 */
 func Login(ctx *gin.Context) {
 	var (
-		err      error
-		usr      User
-		tok      authentication.Token
-		auth     authentication.Auth
-		password Password
+		err  error
+		usr  User
+		tok  authentication.Token
+		auth authentication.Auth
+		pass password.Password
 	)
 
 	err = ctx.ShouldBindJSON(&auth)
@@ -257,7 +249,7 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	err = database.Get(&password, `SELECT * FROM password WHERE user_id = ? ORDER BY created_at desc  LIMIT 1`, usr.Id)
+	err = database.Get(&pass, `SELECT * FROM password WHERE user_id = ? ORDER BY created_at desc  LIMIT 1`, usr.Id)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: err,
@@ -265,7 +257,7 @@ func Login(ctx *gin.Context) {
 		return
 	}
 
-	if !utils.CheckPasswordHash(auth.Password, password.Psw) {
+	if !utils.CheckPasswordHash(auth.Password, pass.Psw) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: "password error",
 		})
@@ -285,14 +277,15 @@ func Login(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, gin.H{
 		"token": tokStr,
 	})
+
 	return
 }
 
 func NewPassword(ctx *gin.Context) {
-	var password Password
+	var pass password.Password
 	var err error
 
-	err = ctx.ShouldBindJSON(&password)
+	err = ctx.ShouldBindJSON(&pass)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: err,
@@ -300,28 +293,28 @@ func NewPassword(ctx *gin.Context) {
 		return
 	}
 
-	if password.UserId == state.ZERO {
+	if pass.UserId == state.ZERO {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: "password should be bound to user",
 		})
 		return
 	}
 
-	if strings.TrimSpace(password.Psw) == state.EMPTY {
+	if strings.TrimSpace(pass.Psw) == state.EMPTY {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: "new password value cannot be empty",
 		})
 		return
 	}
 
-	if utils.PasswordHasValidLength(password.Psw) {
+	if utils.PasswordHasValidLength(pass.Psw) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: "maximum value of password is 18",
 		})
 		return
 	}
 
-	password.ContentHash, err = utils.CreateContentHash(password.Psw)
+	pass.ContentHash, err = utils.CreateContentHash(pass.Psw)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: "password should be bound to user",
@@ -329,7 +322,7 @@ func NewPassword(ctx *gin.Context) {
 		return
 	}
 
-	password.Psw, err = utils.HashPassword(password.Psw)
+	pass.Psw, err = utils.HashPassword(pass.Psw)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: "password should be bound to user",
@@ -337,7 +330,7 @@ func NewPassword(ctx *gin.Context) {
 		return
 	}
 
-	_, err = database.Insert(password)
+	_, err = database.Insert(pass)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: err,
@@ -351,7 +344,7 @@ func NewPassword(ctx *gin.Context) {
 
 func GetUserPasswordHistory(ctx *gin.Context) {
 	var (
-		passwords []Password
+		passwords []password.Password
 		err       error
 		tok       *authentication.Token
 	)

@@ -13,9 +13,8 @@ func attach(g *gin.Engine) (err error) {
 	})
 
 	apiGroup := g.Group("/api")
-	err = api.ExportAttach(apiGroup)
-	if err != nil {
-		panic(err)
+	for _, route := range api.Routes {
+		route(apiGroup)
 	}
 
 	translationGroup := g.Group("/translation")

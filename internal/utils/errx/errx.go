@@ -14,3 +14,8 @@ var (
 	InvalidEmailError  = errors.New(note.InvalidEmailError)
 	DuplicateUserError = errors.New(note.DuplicateUserError)
 )
+
+var (
+	DbInsertError = errors.New(note.DatabaseInsertOperationError)
+	DbDeleteError = errors.New(note.DatabaseDeleteOperationError)
+)
