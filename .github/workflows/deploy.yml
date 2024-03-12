@@ -1,0 +1,24 @@
+name: deploy
+
+on: []
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2 
+    - name: Build & Deploy
+      env:
+            PRIVATE_KEY: ${{ secrets.SSH_EC2_PRIVATE_KEY}}
+            HOSTNAME: ${{secrets.SSH_EC2_HOST}}
+            USER_NAME: ${{secrets.SSH_EC2_USER_NAME}}
+
+      run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+
+              # Now we have got the access of EC2 and we will start the deploy .
+              sudo chmod +x /workspace/duval/deploy.sh &&
+              sudo /workspace/duval/deploy.sh
+              '
