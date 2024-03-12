@@ -26,6 +26,7 @@ type User struct {
 	LastName   string     `json:"last_name"`
 	NickName   string     `json:"nick_name"`
 	Email      string     `json:"email"`
+	Matricule  string     `json:"matricule"`
 	Age        uint       `json:"age"`
 	BirthDate  time.Time  `json:"birth_date"`
 	Sex        int        `json:"sex"`
@@ -96,7 +97,7 @@ func NewUser(ctx *gin.Context) {
 		})
 		return
 	}
-
+	user.Matricule , _ = utils.GenerateMatricule()
 	user.Id, err = database.InsertOne(user)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -130,7 +131,7 @@ func UpdateUser(ctx *gin.Context) {
 	_, err = mail.ParseAddress(user.Email)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
+			Message: "Invalid mail format",
 		})
 		return
 	}
@@ -156,7 +157,6 @@ func UpdateUser(ctx *gin.Context) {
 		})
 		return
 	}
-
 	err = database.Update(user)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{

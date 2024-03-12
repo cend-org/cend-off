@@ -2,11 +2,13 @@ package utils
 
 import "regexp"
 
-
 /*
- CHECK IF MOBILE PHONE NUMBER IS NUMERIC AND A LENGHT OF TEN 
+ CHECK IF MOBILE PHONE NUMBER IS NUMERIC AND A LENGHT OF THIRTEEN
 */
-func PhoneValidator(phone string) bool {
-	re := regexp.MustCompile(`^\d{10}$`)
+func IsValidPhone(phone string) bool {
+	pattern := `^[+]+\d{12}$`
+
+	re := regexp.MustCompile(pattern)
+
 	return re.MatchString(phone)
 }
