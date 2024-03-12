@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"duval/internal/authentication"
 	"duval/internal/utils"
+	"duval/internal/utils/errx"
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
@@ -71,14 +72,14 @@ func NewUser(ctx *gin.Context) {
 	err = ctx.ShouldBindJSON(&user)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Bad format of user",
+			Message: errx.ParseError,
 		})
 		return
 	}
 
 	if !utils.IsValidEmail(user.Email) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "error parsing email address",
+			Message: errx.InvalidEmailError,
 		})
 		return
 	}
@@ -86,18 +87,18 @@ func NewUser(ctx *gin.Context) {
 	_, err = GetUserByEmail(user.Email)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
+			Message: errx.Lambda(err),
 		})
 		return
 	}
 
 	if user.Id > 0 {
 		ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse{
-			Message: "user already exists, abort !",
+			Message: errx.DuplicateUserError,
 		})
 		return
 	}
-	user.Matricule , _ = utils.GenerateMatricule()
+	user.Matricule, _ = utils.GenerateMatricule()
 	user.Id, err = database.InsertOne(user)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{

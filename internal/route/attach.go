@@ -9,9 +9,7 @@ import (
 
 func attach(g *gin.Engine) (err error) {
 	g.GET("/", func(context *gin.Context) {
-		context.JSON(http.StatusOK, gin.H{
-			"message": "ok",
-		})
+		context.String(http.StatusOK, "Connected")
 	})
 
 	apiGroup := g.Group("/api")
