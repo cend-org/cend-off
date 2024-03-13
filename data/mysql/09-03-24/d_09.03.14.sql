@@ -1,1 +1,0 @@
-alter table password add column content_hash varchar(500) default '' after psw;

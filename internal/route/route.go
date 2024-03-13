@@ -2,7 +2,9 @@ package route
 
 import (
 	"duval/internal/configuration"
+	"duval/internal/route/docs"
 	"github.com/gin-gonic/gin"
+	"net/http"
 )
 
 var engine *gin.Engine
@@ -30,9 +32,27 @@ func Serve() (err error) {
 		panic(err)
 	}
 
+	engine.Routes()
+
 	err = engine.Run(configuration.App.Host + ":" + configuration.App.Port)
 	if err != nil {
 		panic(err)
+	}
+
+	return err
+}
+
+func attach(g *gin.Engine) (err error) {
+	g.GET("/", func(context *gin.Context) {
+		context.JSON(http.StatusOK, docs.ParseDocumentation(RootRoutesGroup))
+	})
+
+	for i := 0; i < len(RootRoutesGroup); i++ {
+		group := g.Group(RootRoutesGroup[i].Group)
+		err = docs.GenerateDocumentation(group, RootRoutesGroup[i].Paths)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 	return err

@@ -1,15 +1,32 @@
 package api
 
 import (
-	"duval/internal/route/api/collection"
-	"github.com/gin-gonic/gin"
+	"duval/internal/pkg/media"
+	"duval/internal/pkg/user"
+	"duval/internal/route/docs"
+	"net/http"
 )
 
-// Routes defines a list of gin function that append the /api group.
-var Routes = []func(g *gin.RouterGroup){
-	collection.UserRoutes,
-	collection.AuthRoutes,
-	collection.FileRoutes,
-	collection.ChatRoutes,
-	collection.PhoneNumberRoutes,
+var Routes = []docs.RouteDocumentation{
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/upload",
+		Description:  "",
+		IsPublic:     true,
+		Handler:      media.Upload,
+	},
+	{
+		HttpMethod:   http.MethodHead,
+		RelativePath: "/public",
+		Description:  "",
+		IsPublic:     true,
+		DocRoot:      "public",
+	},
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/register/:as",
+		Handler:      user.Register,
+		IsPublic:     true,
+		Description:  "",
+	},
 }

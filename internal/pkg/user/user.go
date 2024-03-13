@@ -3,6 +3,7 @@ package user
 import (
 	"database/sql"
 	"duval/internal/authentication"
+	"duval/internal/pkg/user/authorization"
 	"duval/internal/pkg/user/password"
 	"duval/internal/utils"
 	"duval/internal/utils/errx"
@@ -23,9 +24,8 @@ type User struct {
 	CreatedAt  time.Time  `json:"created_at"`
 	UpdatedAt  time.Time  `json:"updated_at"`
 	DeletedAt  *time.Time `json:"deleted_at"`
-	FirstName  string     `json:"first_name"`
-	MiddleName string     `json:"middle_name"`
-	LastName   string     `json:"last_name"`
+	Name       string     `json:"name"`
+	FamilyName string     `json:"family_name"`
 	NickName   string     `json:"nick_name"`
 	Email      string     `json:"email"`
 	Matricule  string     `json:"matricule"`
@@ -36,20 +36,91 @@ type User struct {
 	Status     int        `json:"status"`
 }
 
-type Authorization struct {
-	Id        uint       `json:"id"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at"`
-	UserId    uint       `json:"user_id"`
-	Level     uint       `json:"level"`
-}
-
 /*
 
 	ROUTES
 
 */
+
+func Register(ctx *gin.Context) {
+	var (
+		err                error
+		user               User
+		authorizationLevel int
+	)
+
+	err = ctx.ShouldBindJSON(&user)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	authorizationLevel, err = strconv.Atoi(ctx.Param("as"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	if !utils.IsValidEmail(user.Email) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.InvalidEmailError,
+		})
+		return
+	}
+
+	_, err = GetUserByEmail(user.Email)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	if user.Id > state.ZERO {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse{
+			Message: errx.DuplicateUserError,
+		})
+		return
+	}
+
+	user.Matricule, err = utils.GenerateMatricule()
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	if user.Name == state.EMPTY {
+		user.Name = user.Matricule
+	}
+
+	if user.NickName == state.EMPTY {
+		user.NickName = user.Matricule
+	}
+
+	user.Id, err = database.InsertOne(user)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbInsertError,
+		})
+		return
+	}
+
+	err = authorization.NewUserAuthorization(user.Id, uint(authorizationLevel))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, user)
+}
 
 /*
 NewUser creates a new record of user in the system
@@ -90,7 +161,14 @@ func NewUser(ctx *gin.Context) {
 		return
 	}
 
-	user.Matricule, _ = utils.GenerateMatricule()
+	user.Matricule, err = utils.GenerateMatricule()
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
 	user.Id, err = database.InsertOne(user)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -369,6 +447,88 @@ func GetUserPasswordHistory(ctx *gin.Context) {
 	return
 }
 
+func GetUserAuthorization(ctx *gin.Context) {
+	var (
+		auth []authorization.Authorization
+		err  error
+		tok  *authentication.Token
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+	}
+
+	auth, err = authorization.GetUserAuthorizations(tok.UserId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, auth)
+	return
+}
+
+func RemoveUserAuthorization(ctx *gin.Context) {
+	var (
+		authorizationLevel int
+		err                error
+		tok                *authentication.Token
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+	}
+
+	authorizationLevel, err = strconv.Atoi(ctx.Param("as"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.ParseError,
+		})
+	}
+
+	err = authorization.DeleteUserAuthorization(tok.UserId, uint(authorizationLevel))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+	}
+
+	ctx.Status(http.StatusOK)
+	return
+}
+
+func RemoveAllUserAuthorization(context *gin.Context) {
+	var (
+		err error
+		tok *authentication.Token
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(context)
+	if err != nil {
+		context.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+	}
+
+	err = authorization.DeleteUserAuthorizations(tok.UserId)
+	if err != nil {
+		context.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+	}
+
+	context.Status(http.StatusOK)
+	return
+}
+
 /*
 
 	UTILITIES
@@ -391,102 +551,4 @@ func GetUserWithId(id uint) (user User, err error) {
 	}
 
 	return user, err
-}
-
-/*
-
-	User Level
-
-*/
-
-func SetUserAuthorization(ctx *gin.Context) {
-	var auth Authorization
-	var err error
-
-	err = ctx.ShouldBindJSON(&auth)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "unknown format",
-		})
-		return
-	}
-
-	_, err = database.Insert(auth)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Failed to insert authorization into database ",
-		})
-		return
-	}
-
-	ctx.AbortWithStatus(http.StatusOK)
-	return
-}
-
-func GetUserAuthorization(ctx *gin.Context) {
-
-	var (
-		auth Authorization
-		err  error
-		id   int
-	)
-
-	id, err = strconv.Atoi(ctx.Param("id"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
-		})
-	}
-
-	err = database.Client.Get(&auth, `SELECT * FROM authorization WHERE user_id = ?`, id)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Failed to fetch authorization  user_id unknown",
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, auth)
-	return
-}
-
-func RemoveUserAuthorization(ctx *gin.Context) {
-	var (
-		id   int
-		auth Authorization
-		err  error
-	)
-	currentTime := time.Now()
-
-	id, err = strconv.Atoi(ctx.Param("id"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
-		})
-	}
-
-	err = database.Client.Get(&auth, `SELECT * FROM authorization WHERE user_id = ?`, id)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Failed to fetch authorization  user_id unknown",
-		})
-		return
-	}
-
-	if auth.DeletedAt != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Authorization already deleted",
-		})
-	}
-
-	new_auth, err := database.Client.Exec(`UPDATE authorization SET deleted_at = ? WHERE user_id = ?`, currentTime, id)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Failed to delete authorization",
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, new_auth)
-	return
 }
