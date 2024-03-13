@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"duval/internal/configuration"
+	"duval/pkg/database"
 	"errors"
 	"strings"
 
@@ -15,9 +16,25 @@ type Auth struct {
 }
 
 type Token struct {
-	UserId    uint `json:"user_id"`
-	UserLevel uint `json:"user_level"`
+	UserId     uint `json:"user_id"`
+	UserLevel  uint `json:"user_level"`
+	UserStatus uint `json:"user_status"`
 	jwt.RegisteredClaims
+}
+
+func GetTokenString(userId uint) (str string, err error) {
+	var tok Token
+	err = database.Get(&tok, `SELECT u.id as 'user_id', u.status as 'user_status' FROM user u WHERE u.id = ?`, userId)
+	if err != nil {
+		return str, err
+	}
+
+	str, err = NewAccessToken(tok)
+	if err != nil {
+		return str, err
+	}
+
+	return str, err
 }
 
 func GetTokenDataFromContext(ctx *gin.Context) (tok *Token, err error) {

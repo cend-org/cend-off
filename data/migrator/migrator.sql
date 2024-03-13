@@ -81,3 +81,15 @@ create index password_user_id_index
     on password (user_id);
 
 -- upgrade end  on 13/03/24
+create table code
+(
+    id           int auto_increment
+        primary key,
+    created_at   datetime      default CURRENT_TIMESTAMP     not null,
+    updated_at   datetime      default CURRENT_TIMESTAMP     not null,
+    deleted_at   datetime      default '0000-00-00 00:00:00' null,
+    user_id      int           default 0                     null,
+    verification_code          int default 0                    null
+);
+create index code_user_val on code(user_id,verification_code);
+-- *
