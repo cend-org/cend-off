@@ -16,6 +16,7 @@ type RouteDocumentation struct {
 	HttpMethod   string          `json:"http_method"`
 	RelativePath string          `json:"relative_path"`
 	Description  string          `json:"description"`
+	NeedToken    bool            `json:"need_token"`
 	IsPublic     bool            `json:"-"`
 	Handler      gin.HandlerFunc `json:"-"`
 	DocRoot      string          `json:"-"`
