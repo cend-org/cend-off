@@ -1,1 +1,0 @@
-alter table user add column matricule varchar(32) default '' after email;

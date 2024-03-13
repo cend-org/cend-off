@@ -90,6 +90,14 @@ func Delete(T any) (err error) {
 	return err
 }
 
+func Exec(Q string, A ...any) (err error) {
+	_, err = Client.Exec(Q, A...)
+	if err != nil {
+		return err
+	}
+	return err
+}
+
 func InsertMany(T []any) (err error) {
 	for i := 0; i < len(T); i++ {
 		_, err = InsertOne(T[i])
