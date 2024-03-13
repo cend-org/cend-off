@@ -32,8 +32,6 @@ func Serve() (err error) {
 		panic(err)
 	}
 
-	engine.Routes()
-
 	err = engine.Run(configuration.App.Host + ":" + configuration.App.Port)
 	if err != nil {
 		panic(err)
