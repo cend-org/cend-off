@@ -11,15 +11,17 @@ func Lambda(err error) error {
 	return err
 }
 
-var UnAuthorizedError = errors.New(note.UnAuthorizedError)
+var UnAuthorizedError = note.UnAuthorizedError
 
 var (
-	ParseError         = errors.New(note.ParseError)
-	InvalidEmailError  = errors.New(note.InvalidEmailError)
-	DuplicateUserError = errors.New(note.DuplicateUserError)
+	ParseError         = note.ParseError
+	InvalidEmailError  = note.InvalidEmailError
+	DuplicateUserError = note.DuplicateUserError
 )
 
 var (
-	DbInsertError = errors.New(note.DatabaseInsertOperationError)
-	DbDeleteError = errors.New(note.DatabaseDeleteOperationError)
+	DbInsertError = note.DatabaseInsertOperationError
+	DbGEtError    = note.DatabaseGetOperationError
+	DbDeleteError = note.DatabaseDeleteOperationError
+	DbUpdateError = note.DatabaseUpdateOperationError
 )

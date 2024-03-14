@@ -1,6 +1,7 @@
 package api
 
 import (
+	"duval/internal/pkg/address"
 	"duval/internal/pkg/media"
 	"duval/internal/pkg/user"
 	"duval/internal/route/docs"
@@ -11,7 +12,7 @@ var Routes = []docs.RouteDocumentation{
 	{
 		HttpMethod:   http.MethodPost,
 		RelativePath: "/upload",
-		Description:  "",
+		Description:  "Uploads a media file to the server",
 		IsPublic:     true,
 		Handler:      media.Upload,
 		NeedToken:    true,
@@ -29,7 +30,7 @@ var Routes = []docs.RouteDocumentation{
 		RelativePath: "/register/:as",
 		Handler:      user.Register,
 		IsPublic:     true,
-		Description:  "",
+		Description:  "Registers a new user with the specified user type (student , parent, tutor and professor)",
 		NeedToken:    false,
 	},
 	{
@@ -37,7 +38,7 @@ var Routes = []docs.RouteDocumentation{
 		RelativePath: "/code/send",
 		Handler:      user.SendUserEmailValidationCode,
 		IsPublic:     true,
-		Description:  "",
+		Description:  "Sends a user email validation code for account validation",
 		NeedToken:    true,
 	},
 	{
@@ -45,7 +46,7 @@ var Routes = []docs.RouteDocumentation{
 		RelativePath: "/code/verification/:code",
 		Handler:      user.VerifyUserEmailValidationCode,
 		IsPublic:     true,
-		Description:  "",
+		Description:  "Verifies a user email using the provided validation code",
 		NeedToken:    true,
 	},
 	{
@@ -53,7 +54,7 @@ var Routes = []docs.RouteDocumentation{
 		RelativePath: "/login",
 		Handler:      user.Login,
 		IsPublic:     true,
-		Description:  "",
+		Description:  "Logs in a user with email and return token if success",
 		NeedToken:    false,
 	},
 	{
@@ -61,7 +62,7 @@ var Routes = []docs.RouteDocumentation{
 		RelativePath: "/password",
 		Handler:      user.NewPassword,
 		IsPublic:     true,
-		Description:  "",
+		Description:  "Allows user to create password",
 		NeedToken:    true,
 	},
 	{
@@ -69,7 +70,7 @@ var Routes = []docs.RouteDocumentation{
 		RelativePath: "/profile",
 		Handler:      user.MyProfile,
 		IsPublic:     true,
-		Description:  "",
+		Description:  "Retrieves information about the currently logged-in user's profile",
 		NeedToken:    true,
 	},
 	{
@@ -77,7 +78,40 @@ var Routes = []docs.RouteDocumentation{
 		RelativePath: "/profile",
 		Handler:      user.UpdMyProfile,
 		IsPublic:     true,
-		Description:  "",
+		Description:  "Updates the currently logged-in user's profile information",
+		NeedToken:    true,
+	},
+	// Address route
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/address/:user_id",
+		Handler:      address.NewAddress,
+		IsPublic:     true,
+		Description:  "Set the currently logged-in user's address",
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodPut,
+		RelativePath: "/address",
+		Handler:      address.UpdateUserAddress,
+		IsPublic:     true,
+		Description:  "Edit the currently logged-in user's address",
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/address/:user_id",
+		Handler:      address.GetUserAddress,
+		IsPublic:     true,
+		Description:  "Get the currently logged-in user's address",
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodDelete,
+		RelativePath: "/address/:user_id",
+		Handler:      address.RemoveUserAddress,
+		IsPublic:     true,
+		Description:  "Remove the currently logged-in user's address",
 		NeedToken:    true,
 	},
 }
