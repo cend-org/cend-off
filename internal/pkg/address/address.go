@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joinverse/xid"
 )
 
 type Address struct {
@@ -20,7 +21,7 @@ type Address struct {
 	Longitude   float64    `json:"longitude"`
 	Street      string     `json:"street"`
 	FullAddress string     `json:"full_address"`
-	XID         string     `json:"xid"`
+	Xid         string     `json:"xid"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 	DeletedAt   *time.Time `json:"deleted_at"`
@@ -66,6 +67,8 @@ func NewAddress(ctx *gin.Context) {
 		})
 		return
 	}
+	address.Xid = xid.New().String()
+
 	address.Id, err = database.InsertOne(address)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
