@@ -12,11 +12,14 @@ func Lambda(err error) error {
 }
 
 var UnAuthorizedError = note.UnAuthorizedError
+var ParamsError = note.ParamsError
 
 var (
-	ParseError         = note.ParseError
-	InvalidEmailError  = note.InvalidEmailError
-	DuplicateUserError = note.DuplicateUserError
+	ParseError            = note.ParseError
+	InvalidEmailError     = note.InvalidEmailError
+	DuplicateUserError    = note.DuplicateUserError
+	LinkUserError    = note.LinkUserError
+	DuplicateAddressError = note.DuplicateAddressError
 )
 
 var (

@@ -3,6 +3,7 @@ package address
 import (
 	"duval/internal/utils"
 	"duval/internal/utils/errx"
+	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"net/http"
 	"strconv"
@@ -46,7 +47,7 @@ func NewAddress(ctx *gin.Context) {
 	userId, err = strconv.Atoi(ctx.Param("user_id"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Failed to retrieve params",
+			Message: errx.ParamsError,
 		})
 	}
 
@@ -57,7 +58,14 @@ func NewAddress(ctx *gin.Context) {
 		})
 		return
 	}
-	
+	// get user address
+	isUser, err := GetUserAddressWithId(uint(userId))
+	if isUser.AddressId > state.ZERO {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DuplicateAddressError,
+		})
+		return
+	}
 	address.Id, err = database.InsertOne(address)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -72,7 +80,7 @@ func NewAddress(ctx *gin.Context) {
 	_, err = database.InsertOne(userAddress)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Failed to link user to address database",
+			Message: errx.LinkUserError,
 		})
 		return
 	}
@@ -153,10 +161,10 @@ REMOVE USER ADDRESS  BASED ON user_id PROVIDED IN PARAMS
 
 func RemoveUserAddress(ctx *gin.Context) {
 	var (
-		userId  int
-		address Address
+		userId      int
+		address     Address
 		userAddress UserAddress
-		err     error
+		err         error
 	)
 
 	userId, err = strconv.Atoi(ctx.Param("user_id"))
@@ -177,7 +185,7 @@ func RemoveUserAddress(ctx *gin.Context) {
 		return
 	}
 
-	err = database.Delete(address )
+	err = database.Delete(address)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: errx.DbDeleteError,
@@ -201,4 +209,16 @@ func RemoveUserAddress(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, "Address removed successfuly!")
+}
+
+/*
+GET USER_ADDRESS WITH USER_ID
+*/
+
+func GetUserAddressWithId(userId uint) (userAddress UserAddress, err error) {
+	err = database.Get(&userAddress, "SELECT * FROM user_address Where user_id = ?", userId)
+	if err != nil {
+		return userAddress, err
+	}
+	return userAddress, err
 }

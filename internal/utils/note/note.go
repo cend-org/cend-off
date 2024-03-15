@@ -2,12 +2,15 @@ package note
 
 const (
 	UnAuthorizedError = "UnAuthorized"
+	ParamsError       = "failed to parse params"
 )
 
 const (
-	ParseError         = "cannot parse the corresponding object"
-	InvalidEmailError  = "the email you enter is invalid"
-	DuplicateUserError = "user already exists"
+	ParseError            = "cannot parse the corresponding object"
+	InvalidEmailError     = "the email you enter is invalid"
+	DuplicateUserError    = "user already exists"
+	LinkUserError         = "failed to link to  user"
+	DuplicateAddressError = "user address already exists"
 )
 
 const (
