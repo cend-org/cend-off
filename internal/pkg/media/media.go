@@ -3,13 +3,16 @@ package media
 import (
 	"duval/internal/authentication"
 	"duval/internal/configuration"
+	"duval/internal/pkg/media/thumb"
 	"duval/internal/utils"
+	"duval/internal/utils/errx"
 	"duval/pkg/database"
-	"github.com/gin-gonic/gin"
-	"github.com/joinverse/xid"
 	"net/http"
 	"path/filepath"
 	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/joinverse/xid"
 )
 
 type Media struct {
@@ -34,7 +37,7 @@ func Upload(ctx *gin.Context) {
 	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
+			Message: errx.UnAuthorizedError,
 		})
 		return
 	}
@@ -60,11 +63,30 @@ func Upload(ctx *gin.Context) {
 		return
 	}
 
-	_, err = database.InsertOne(media)
+	openedFile, err := file.Open()
 	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: err,
+		})
 		return
 	}
 
+	defer openedFile.Close()
+	err = thumb.CreateThumb(media.Xid, media.Extension, openedFile)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: err,
+		})
+		return
+	}
+
+	_, err = database.InsertOne(media)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbInsertError,
+		})
+		return
+	}
 	ctx.AbortWithStatus(http.StatusOK)
 }
 

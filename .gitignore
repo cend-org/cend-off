@@ -26,6 +26,11 @@ public/*.png
 public/*.pdf
 public/*.word
 
+public/thumb/*.jpg
+public/thumb/*.png
+public/thumb/*.pdf
+public/thumb/*.word
+
 .idea
 
 .vscode
