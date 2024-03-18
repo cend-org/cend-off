@@ -31,7 +31,7 @@ type UserPhoneNumber struct {
 */
 
 /*
-ADD NEW PHONE NUMBER TO A USER BY PORVIDING user.id in params AND RETRUN PHONE NUMBER
+ADD NEW PHONE NUMBER TO A USER BY PORVIDING user.id IN THE BODY
 */
 func NewPhoneNumber(ctx *gin.Context) {
 	var (
@@ -142,7 +142,7 @@ func GetUserPhoneNumber(ctx *gin.Context) {
 		})
 	}
 
-	err = database.Client.Get(&phone, `SELECT phone_number.mobile_phone_number
+	err = database.Get(&phone, `SELECT phone_number.mobile_phone_number
 	FROM phone_number JOIN user_phone_number 
 	ON phone_number.id = user_phone_number.id 
 	WHERE user_phone_number.user_id = ?`, userId)

@@ -92,7 +92,81 @@ create table code
     verification_code          int default 0                    null
 );
 create index code_user_val on code(user_id,verification_code);
+
+
+create table message
+(
+    id           int auto_increment
+        primary key,
+    created_at   datetime      default CURRENT_TIMESTAMP     not null,
+    updated_at   datetime      default CURRENT_TIMESTAMP     not null,
+    deleted_at   datetime      default '0000-00-00 00:00:00' null,
+    identifier varchar(100) default '' null,
+    number int default 0 null,
+    xid varchar(500) default '' null,
+    label varchar(5000) default '' null
+);
+
+alter table message add column  language int default 0 after label;
+
+create unique index id_lang on message(identifier,number, language);
+
+create table menu
+(
+    id           int auto_increment
+        primary key,
+    created_at   datetime      default CURRENT_TIMESTAMP     not null,
+    updated_at   datetime      default CURRENT_TIMESTAMP     not null,
+    deleted_at   datetime      default '0000-00-00 00:00:00' null,
+    identifier varchar(100) default '' null,
+    number int default 0 null,
+    message_number int default 0 null
+);
+
+create table menu_item
+(
+    id           int auto_increment
+        primary key,
+    created_at   datetime      default CURRENT_TIMESTAMP     not null,
+    updated_at   datetime      default CURRENT_TIMESTAMP     not null,
+    deleted_at   datetime      default '0000-00-00 00:00:00' null,
+    identifier varchar(100) default '' null,
+    number int default 0 null,
+    menu_title_message_number int,
+    message_number int default 0 null
+);
+
 -- *
+
+-- update 13/03/24
+create table address
+(
+    id           int auto_increment      primary key not null,
+    created_at   datetime      default CURRENT_TIMESTAMP    ,
+    updated_at   datetime      default CURRENT_TIMESTAMP    ,
+    deleted_at   datetime      default '0000-00-00 00:00:00' ,
+    country varchar(100) default '' ,
+    city varchar(100) default '',
+    latitude float default 0,
+    longitude float default 0,
+    street varchar(100) ,
+    full_address varchar(600),
+    xid          varchar(500) default ''
+);
+
+create table user_address
+(
+    id           int auto_increment      primary key not null,
+    created_at   datetime      default CURRENT_TIMESTAMP    ,
+    updated_at   datetime      default CURRENT_TIMESTAMP    ,
+    deleted_at   datetime      default '0000-00-00 00:00:00' ,
+    user_id int unique,
+    address_id int unique,
+    address_type varchar(100) default '',
+    foreign key (user_id) references user(id),
+    foreign key (address_id) references address(id)
+);
+
 -- update 16/03/24
 create table thumb
 (
