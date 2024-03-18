@@ -138,4 +138,31 @@ create table menu_item
 
 -- *
 
+-- update 13/03/24
+create table address
+(
+    id           int auto_increment      primary key not null,
+    created_at   datetime      default CURRENT_TIMESTAMP    ,
+    updated_at   datetime      default CURRENT_TIMESTAMP    ,
+    deleted_at   datetime      default '0000-00-00 00:00:00' ,
+    country varchar(100) default '' ,
+    city varchar(100) default '',
+    latitude float default 0,
+    longitude float default 0,
+    street varchar(100) ,
+    full_address varchar(600),
+    xid          varchar(500) default ''
+);
 
+create table user_address
+(
+    id           int auto_increment      primary key not null,
+    created_at   datetime      default CURRENT_TIMESTAMP    ,
+    updated_at   datetime      default CURRENT_TIMESTAMP    ,
+    deleted_at   datetime      default '0000-00-00 00:00:00' ,
+    user_id int unique,
+    address_id int unique,
+    address_type varchar(100) default '',
+    foreign key (user_id) references user(id),
+    foreign key (address_id) references address(id)
+);
