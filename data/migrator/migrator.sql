@@ -136,7 +136,7 @@ create table menu_item
     message_number int default 0 null
 );
 
--- *
+
 
 -- update 13/03/24
 create table address
@@ -178,7 +178,7 @@ create table thumb
     file_name    varchar(500) default ''                    null,
     extension    varchar(10)  default ''                    null,
     media_xid          varchar(500) default ''                    null,
-    content_type int          default 0                     null,
-    foreign key (media_xid) references media (xid)
-
+    content_type int          default 0                     null
 );
+
+-- *
