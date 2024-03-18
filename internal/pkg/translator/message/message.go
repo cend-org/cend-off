@@ -85,7 +85,7 @@ func GetMessageInLanguage(identifier string, language int) (message Message, err
 				WHERE m.identifier = ? AND m.language = 0
 			`
 
-	err = database.Select(&message, query, language, identifier)
+	err = database.Get(&message, query, language, identifier)
 	if err != nil {
 		return message, err
 	}
@@ -159,7 +159,12 @@ func NewMessage(message Message) (msg Message, err error) {
 		}
 	}
 
-	msg.Id, err = database.InsertOne(message)
+	message.Id, err = database.InsertOne(message)
+	if err != nil {
+		return message, err
+	}
+
+	msg, err = GetMessageInLanguage(message.Identifier, message.Language)
 	if err != nil {
 		return message, err
 	}
