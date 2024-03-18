@@ -12,4 +12,10 @@ var RootRoutesGroup = []docs.RootDocumentation{
 		Paths:       api.Routes,
 		IsPublic:    true,
 	},
+	{
+		Group:       "/translation",
+		Description: "",
+		Paths:       api.TranslationRoutes,
+		IsPublic:    true,
+	},
 }
