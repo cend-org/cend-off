@@ -136,6 +136,8 @@ create table menu_item
     message_number int default 0 null
 );
 
+-- *
+
 -- update 13/03/24
 create table address
 (
@@ -164,4 +166,3 @@ create table user_address
     foreign key (user_id) references user(id),
     foreign key (address_id) references address(id)
 );
--- *
