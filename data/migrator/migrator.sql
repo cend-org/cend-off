@@ -166,3 +166,19 @@ create table user_address
     foreign key (user_id) references user(id),
     foreign key (address_id) references address(id)
 );
+
+-- update 16/03/24
+create table thumb
+(
+    id           int auto_increment
+        primary key,
+    created_at   datetime     default CURRENT_TIMESTAMP     not null,
+    updated_at   datetime     default CURRENT_TIMESTAMP     not null,
+    deleted_at   datetime     default '0000-00-00 00:00:00' null,
+    file_name    varchar(500) default ''                    null,
+    extension    varchar(10)  default ''                    null,
+    media_xid          varchar(500) default ''                    null,
+    content_type int          default 0                     null,
+    foreign key (media_xid) references media (xid)
+
+);
