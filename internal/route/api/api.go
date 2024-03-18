@@ -84,7 +84,7 @@ var Routes = []docs.RouteDocumentation{
 	// Address route
 	{
 		HttpMethod:   http.MethodPost,
-		RelativePath: "/address/:user_id",
+		RelativePath: "/address",
 		Handler:      address.NewAddress,
 		IsPublic:     true,
 		Description:  "Set the currently logged-in user's address",
@@ -100,7 +100,7 @@ var Routes = []docs.RouteDocumentation{
 	},
 	{
 		HttpMethod:   http.MethodGet,
-		RelativePath: "/address/:user_id",
+		RelativePath: "/address",
 		Handler:      address.GetUserAddress,
 		IsPublic:     true,
 		Description:  "Get the currently logged-in user's address",
@@ -108,7 +108,7 @@ var Routes = []docs.RouteDocumentation{
 	},
 	{
 		HttpMethod:   http.MethodDelete,
-		RelativePath: "/address/:user_id",
+		RelativePath: "/address",
 		Handler:      address.RemoveUserAddress,
 		IsPublic:     true,
 		Description:  "Remove the currently logged-in user's address",

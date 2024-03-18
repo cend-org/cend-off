@@ -1,12 +1,12 @@
 package address
 
 import (
+	"duval/internal/authentication"
 	"duval/internal/utils"
 	"duval/internal/utils/errx"
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -40,18 +40,20 @@ type UserAddress struct {
 func NewAddress(ctx *gin.Context) {
 
 	var (
-		userId      int
+		tok         *authentication.Token
+		userId      uint
 		address     Address
 		userAddress UserAddress
 		err         error
 	)
-	userId, err = strconv.Atoi(ctx.Param("user_id"))
+	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParamsError,
+			Message: errx.UnAuthorizedError,
 		})
+		return
 	}
-
+	userId = uint(tok.UserId)
 	err = ctx.ShouldBindJSON(&address)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -60,7 +62,7 @@ func NewAddress(ctx *gin.Context) {
 		return
 	}
 	// get user address
-	isUser, err := GetUserAddressWithId(uint(userId))
+	isUser, err := GetUserAddressWithId(userId)
 	if isUser.AddressId > state.ZERO {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: errx.DuplicateAddressError,
@@ -78,7 +80,7 @@ func NewAddress(ctx *gin.Context) {
 	}
 
 	// Link new address to the current user
-	userAddress.UserId = uint(userId)
+	userAddress.UserId = userId
 	userAddress.AddressId = address.Id
 	_, err = database.InsertOne(userAddress)
 	if err != nil {
@@ -132,17 +134,22 @@ GET USER ADDRESS  BASED ON user_id PROVIDED IN PARAMS
 */
 func GetUserAddress(ctx *gin.Context) {
 	var (
-		userId  int
+		tok *authentication.Token
+
+		userId  uint
 		address Address
 		err     error
 	)
 
-	userId, err = strconv.Atoi(ctx.Param("user_id"))
+	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
+			Message: errx.UnAuthorizedError,
 		})
+		return
 	}
+
+	userId = uint(tok.UserId)
 
 	err = database.Get(&address, `SELECT address.*
     FROM address JOIN user_address 
@@ -164,18 +171,22 @@ REMOVE USER ADDRESS  BASED ON user_id PROVIDED IN PARAMS
 
 func RemoveUserAddress(ctx *gin.Context) {
 	var (
-		userId      int
+		tok *authentication.Token
+
+		userId      uint
 		address     Address
 		userAddress UserAddress
 		err         error
 	)
 
-	userId, err = strconv.Atoi(ctx.Param("user_id"))
+	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
+			Message: errx.UnAuthorizedError,
 		})
+		return
 	}
+	userId = uint(tok.UserId)
 
 	err = database.Get(&address, `SELECT address.*
     FROM address JOIN user_address 
