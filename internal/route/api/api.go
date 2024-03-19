@@ -3,6 +3,7 @@ package api
 import (
 	"duval/internal/pkg/address"
 	"duval/internal/pkg/media"
+	"duval/internal/pkg/profile"
 	"duval/internal/pkg/user"
 	"duval/internal/route/docs"
 	"net/http"
@@ -112,6 +113,47 @@ var Routes = []docs.RouteDocumentation{
 		Handler:      address.RemoveUserAddress,
 		IsPublic:     true,
 		Description:  "Remove the currently logged-in user's address",
+		NeedToken:    true,
+	},
+	//Profile image routes
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/profile/image",
+		Handler:      profile.Upload,
+		IsPublic:     true,
+		Description:  "Set the currently logged-in user's profile image",
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodPut,
+		RelativePath: "/profile/image",
+		Handler:      profile.UpdateProfileImage,
+		IsPublic:     true,
+		Description:  "Edit the currently logged-in user's profile image",
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/profile/image",
+		Handler:      profile.GetProfileImage,
+		IsPublic:     true,
+		Description:  "Get the currently logged-in user's profile image",
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/profile/thumb",
+		Handler:      profile.GetProfileThumb,
+		IsPublic:     true,
+		Description:  "Get the currently logged-in user's profile thumb",
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodDelete,
+		RelativePath: "/profile/image",
+		Handler:      profile.RemoveProfileImage,
+		IsPublic:     true,
+		Description:  "Remove the currently logged-in user's profile Image",
 		NeedToken:    true,
 	},
 }
