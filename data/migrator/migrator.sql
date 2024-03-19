@@ -185,3 +185,11 @@ create table thumb
 -- update 18/03/24
 alter table user add profile_image_xid varchar(500) default '' after status ;
 -- *
+
+-- update 19/03/24
+alter table thumb
+    rename media_thumb,
+    add column xid varchar(500) default '',
+    drop column content_type ,
+    drop column file_name ;
+-- *

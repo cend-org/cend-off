@@ -9,19 +9,17 @@ import (
 	"time"
 
 	"github.com/disintegration/imaging"
-	"github.com/gabriel-vasile/mimetype"
 	"github.com/joinverse/xid"
 )
 
-type Thumb struct {
-	Id          uint       `json:"id"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
-	DeletedAt   *time.Time `json:"deleted_at"`
-	FileName    string     `json:"file_name"`
-	Extension   string     `json:"extension"`
-	MediaXid    string     `json:"media_xid"`
-	ContentType string     `json:"content_type"`
+type MediaThumb struct {
+	Id        uint       `json:"id"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	DeletedAt *time.Time `json:"deleted_at"`
+	Extension string     `json:"extension"`
+	MediaXid  string     `json:"media_xid"`
+	Xid       string     `json:"xid"`
 }
 
 /*
@@ -29,15 +27,9 @@ CREATE THUMBNAIL FOR UPLOADED IMAGE
 */
 func CreateThumb(mediaXid string, extension string, file multipart.File) (err error) {
 	var (
-		thumb     Thumb
-		thumbnail image.Image
+		mediaThumb MediaThumb
+		thumbnail  image.Image
 	)
-
-	filePath := utils.FILE_UPLOAD_DIR + mediaXid + extension
-	mtype, err := mimetype.DetectFile(filePath)
-	if err != nil {
-		return err
-	}
 
 	img, err := imaging.Decode(file)
 	if err != nil {
@@ -53,12 +45,11 @@ func CreateThumb(mediaXid string, extension string, file multipart.File) (err er
 		return
 	}
 
-	thumb.ContentType = mtype.String()
-	thumb.Extension = extension
-	thumb.MediaXid = mediaXid
-	thumb.FileName = xid.New().String() + extension
+	mediaThumb.Extension = extension
+	mediaThumb.MediaXid = mediaXid
+	mediaThumb.Xid = xid.New().String()
 
-	_, err = database.InsertOne(thumb)
+	_, err = database.InsertOne(mediaThumb)
 	if err != nil {
 		return err
 	}

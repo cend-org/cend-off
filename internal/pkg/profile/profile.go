@@ -5,7 +5,7 @@ import (
 	"duval/internal/configuration"
 	"duval/internal/pkg/media"
 	"duval/internal/pkg/media/thumb"
-	profile "duval/internal/pkg/profile/thumb"
+	profile "duval/internal/pkg/media/thumb"
 	"duval/internal/pkg/user"
 	"duval/internal/utils"
 	"duval/internal/utils/errx"
@@ -143,7 +143,7 @@ func GetProfileImage(ctx *gin.Context) {
 func GetProfileThumb(ctx *gin.Context) {
 	var (
 		err   error
-		media profile.Thumb
+		media profile.MediaThumb
 		tok   *authentication.Token
 	)
 
