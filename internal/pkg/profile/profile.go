@@ -108,7 +108,7 @@ func Upload(ctx *gin.Context) {
 		})
 		return
 	}
-	ctx.AbortWithStatus(http.StatusOK)
+	ctx.AbortWithStatusJSON(http.StatusOK, media)
 }
 
 func GetProfileImage(ctx *gin.Context) {
