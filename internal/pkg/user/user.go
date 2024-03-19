@@ -25,20 +25,21 @@ const (
 )
 
 type User struct {
-	Id         uint       `json:"id"`
-	CreatedAt  time.Time  `json:"created_at"`
-	UpdatedAt  time.Time  `json:"updated_at"`
-	DeletedAt  *time.Time `json:"deleted_at"`
-	Name       string     `json:"name"`
-	FamilyName string     `json:"family_name"`
-	NickName   string     `json:"nick_name"`
-	Email      string     `json:"email"`
-	Matricule  string     `json:"matricule"`
-	Age        uint       `json:"age"`
-	BirthDate  time.Time  `json:"birth_date"`
-	Sex        int        `json:"sex"`
-	Lang       int        `json:"language"`
-	Status     int        `json:"status"`
+	Id              uint       `json:"id"`
+	CreatedAt       time.Time  `json:"created_at"`
+	UpdatedAt       time.Time  `json:"updated_at"`
+	DeletedAt       *time.Time `json:"deleted_at"`
+	Name            string     `json:"name"`
+	FamilyName      string     `json:"family_name"`
+	NickName        string     `json:"nick_name"`
+	Email           string     `json:"email"`
+	Matricule       string     `json:"matricule"`
+	Age             uint       `json:"age"`
+	BirthDate       time.Time  `json:"birth_date"`
+	Sex             int        `json:"sex"`
+	Lang            int        `json:"language"`
+	Status          int        `json:"status"`
+	ProfileImageXid string     `json:"profile_image_xid"`
 }
 
 /*
