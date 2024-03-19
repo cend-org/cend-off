@@ -181,4 +181,7 @@ create table thumb
     content_type int          default 0                     null
 );
 
+
+-- update 18/03/24
+alter table user add profile_image_xid varchar(500) default '' after status ;
 -- *
