@@ -155,7 +155,7 @@ func GetProfileThumb(ctx *gin.Context) {
 		return
 	}
 
-	err = database.Get(&media, `SELECT thumb.* FROM thumb JOIN media ON  media.xid = thumb.media_xid  WHERE media.user_id = ?`, tok.UserId)
+	err = database.Get(&media, `SELECT media_thumb.* FROM media_thumb JOIN media ON  media.xid = media_thumb.media_xid  WHERE media.user_id = ?`, tok.UserId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: errx.DbGEtError,
