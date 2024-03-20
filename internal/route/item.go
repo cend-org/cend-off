@@ -7,15 +7,11 @@ import (
 
 var RootRoutesGroup = []docs.RootDocumentation{
 	{
-		Group:       "/api",
-		Description: "",
-		Paths:       api.Routes,
-		IsPublic:    true,
+		Group: "/api",
+		Paths: api.Routes,
 	},
 	{
-		Group:       "/translation",
-		Description: "",
-		Paths:       api.TranslationRoutes,
-		IsPublic:    true,
+		Group: "/translation",
+		Paths: api.TranslationRoutes,
 	},
 }

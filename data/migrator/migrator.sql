@@ -192,4 +192,25 @@ alter table thumb
     add column xid varchar(500) default '',
     drop column content_type ,
     drop column file_name ;
--- *
+
+-- ***** --
+drop table menu;
+drop table menu_item;
+drop table message;
+
+create table message
+                   (
+                       id           int auto_increment
+                           primary key,
+                       created_at   datetime     default CURRENT_TIMESTAMP     not null,
+                       updated_at   datetime     default CURRENT_TIMESTAMP     not null,
+                       deleted_at   datetime     default '0000-00-00 00:00:00' null,
+                       resource_type int default 0,
+                       resource_number int default 0,
+                       resource_value int default 0,
+                       resource_label varchar(5000) default ''
+                   );
+
+alter table message add column  resource_language int default 0 after resource_label;
+create unique index msg_type_nb_val_lang
+    on message (resource_type, resource_number, resource_value, resource_language);

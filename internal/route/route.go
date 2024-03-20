@@ -41,8 +41,10 @@ func Serve() (err error) {
 }
 
 func attach(g *gin.Engine) (err error) {
-	g.GET("/", func(context *gin.Context) {
-		context.JSON(http.StatusOK, docs.ParseDocumentation(RootRoutesGroup))
+	g.GET("/test", func(context *gin.Context) {
+		context.JSON(http.StatusOK, gin.H{
+			"status": "ok",
+		})
 	})
 
 	for i := 0; i < len(RootRoutesGroup); i++ {

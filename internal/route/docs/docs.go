@@ -6,18 +6,14 @@ import (
 )
 
 type RootDocumentation struct {
-	Group       string               `json:"group"`
-	Description string               `json:"description"`
-	Paths       []RouteDocumentation `json:"paths"`
-	IsPublic    bool                 `json:"-"` // IsPublic set this root documentation to public documentation
+	Group string               `json:"group"`
+	Paths []RouteDocumentation `json:"paths"`
 }
 
 type RouteDocumentation struct {
 	HttpMethod   string          `json:"http_method"`
 	RelativePath string          `json:"relative_path"`
-	Description  string          `json:"description"`
 	NeedToken    bool            `json:"need_token"`
-	IsPublic     bool            `json:"-"`
 	Handler      gin.HandlerFunc `json:"-"`
 	DocRoot      string          `json:"-"`
 }
@@ -26,16 +22,12 @@ func ParseDocumentation(documents []RootDocumentation) []RootDocumentation {
 	var newDocuments []RootDocumentation
 
 	for i := 0; i < len(documents); i++ {
-		if documents[i].IsPublic {
-			var newRoot RootDocumentation
-			for j := 0; j < len(documents[i].Paths); j++ {
-				if documents[i].Paths[j].IsPublic {
-					newRoot.Paths = append(newRoot.Paths, documents[i].Paths[j])
-				}
-			}
-			newRoot.Group = documents[i].Group
-			newDocuments = append(newDocuments, newRoot)
+		var newRoot RootDocumentation
+		for j := 0; j < len(documents[i].Paths); j++ {
+			newRoot.Paths = append(newRoot.Paths, documents[i].Paths[j])
 		}
+		newRoot.Group = documents[i].Group
+		newDocuments = append(newDocuments, newRoot)
 	}
 
 	return newDocuments
