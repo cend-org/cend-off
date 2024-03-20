@@ -47,7 +47,7 @@ func CreateThumb(mediaXid string, extension string, file multipart.File) (err er
 
 	mediaThumb.Extension = extension
 	mediaThumb.MediaXid = mediaXid
-	mediaThumb.Xid = xid.New().String()
+	mediaThumb.Xid = "T_" + xid.New().String()
 
 	_, err = database.InsertOne(mediaThumb)
 	if err != nil {
