@@ -214,3 +214,24 @@ create table message
 alter table message add column  resource_language int default 0 after resource_label;
 create unique index msg_type_nb_val_lang
     on message (resource_type, resource_number, resource_value, resource_language);
+
+create table user_authorization_link
+(
+    id         int auto_increment
+        primary key,
+    created_at datetime default CURRENT_TIMESTAMP,
+    updated_at datetime default CURRENT_TIMESTAMP,
+    deleted_at datetime default '0000-00-00 00:00:00',
+    link_type  int
+);                                                                                  )
+
+create table user_authorization_link_actor
+(
+    id           int auto_increment
+        primary key,
+    created_at   datetime     default CURRENT_TIMESTAMP    ,
+    updated_at   datetime     default CURRENT_TIMESTAMP    ,
+    deleted_at   datetime     default '0000-00-00 00:00:00',
+    user_authorization_link_id int,
+    authorization_id int
+);
