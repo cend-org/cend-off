@@ -233,5 +233,7 @@ create table user_authorization_link_actor
     updated_at   datetime     default CURRENT_TIMESTAMP    ,
     deleted_at   datetime     default '0000-00-00 00:00:00',
     user_authorization_link_id int,
-    authorization_id int
+    authorization_id int,
+    foreign key (user_authorization_link_id) references user_authorization_link(id),
+    foreign key (authorization_id) references authorization(id)
 );
