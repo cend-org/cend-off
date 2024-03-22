@@ -214,3 +214,20 @@ create table message
 alter table message add column  resource_language int default 0 after resource_label;
 create unique index msg_type_nb_val_lang
     on message (resource_type, resource_number, resource_value, resource_language);
+
+-- update 21/03/2024
+create table user_media_detail
+(
+   id     int auto_increment       primary key,
+   created_at   datetime     default CURRENT_TIMESTAMP ,
+   updated_at   datetime     default CURRENT_TIMESTAMP ,
+   deleted_at   datetime     default '0000-00-00 00:00:00',
+   owner_id int ,
+   document_type int,
+   document_xid varchar(100) unique,
+   foreign key (owner_id) references user(id),
+   foreign key (document_xid) references media(id)
+);
+
+alter table media drop column user_id;
+-- *

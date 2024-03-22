@@ -15,6 +15,7 @@ var ParamsError = note.ParamsError
 
 var (
 	ParseError            = note.ParseError
+	TypeError             = note.TypeError
 	InvalidEmailError     = note.InvalidEmailError
 	DuplicateUserError    = note.DuplicateUserError
 	LinkUserError         = note.LinkUserError
@@ -23,7 +24,7 @@ var (
 
 var (
 	DbInsertError = note.DatabaseInsertOperationError
-	DbGEtError    = note.DatabaseGetOperationError
+	DbGetError    = note.DatabaseGetOperationError
 	DbDeleteError = note.DatabaseDeleteOperationError
 	DbUpdateError = note.DatabaseUpdateOperationError
 )

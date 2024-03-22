@@ -2,17 +2,24 @@ package media
 
 import (
 	"duval/internal/authentication"
-	"duval/internal/configuration"
-	"duval/internal/pkg/media/thumb"
 	"duval/internal/utils"
 	"duval/internal/utils/errx"
+	"duval/internal/utils/state"
 	"duval/pkg/database"
+	"github.com/gabriel-vasile/mimetype"
 	"net/http"
 	"path/filepath"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joinverse/xid"
+)
+
+const (
+	CV                = 0
+	CoverLetter       = 1
+	PresentationVideo = 2
+	UserProfileImage  = 3
 )
 
 type Media struct {
@@ -23,15 +30,24 @@ type Media struct {
 	FileName    string     `json:"file_name"`
 	Extension   string     `json:"extension"`
 	Xid         string     `json:"xid"`
-	UserId      uint       `json:"user_id"`
 	ContentType uint       `json:"content_type"`
+}
+
+type UserMediaDetail struct {
+	Id           uint       `json:"id"`
+	CreatedAt    time.Time  `json:"created_at"`
+	UpdatedAt    time.Time  `json:"updated_at"`
+	DeletedAt    *time.Time `json:"deleted_at"`
+	OwnerId      uint       `json:"owner_id"`
+	DocumentType uint       `json:"document_type"`
 }
 
 func Upload(ctx *gin.Context) {
 	var (
-		media Media
-		tok   *authentication.Token
-		err   error
+		media        Media
+		documentType uint
+		tok          *authentication.Token
+		err          error
 	)
 
 	tok, err = authentication.GetTokenDataFromContext(ctx)
@@ -42,10 +58,30 @@ func Upload(ctx *gin.Context) {
 		return
 	}
 
+	if tok.UserId == state.ZERO {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+
 	file, err := ctx.FormFile("file")
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
+			Message: errx.ParseError,
+		})
+		return
+	}
+	mType, err := mimetype.DetectFile(file.Filename)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.TypeError,
+		})
+		return
+	}
+	if !utils.IsValidFile(mType.String()) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.TypeError,
 		})
 		return
 	}
@@ -53,7 +89,6 @@ func Upload(ctx *gin.Context) {
 	media.FileName = file.Filename
 	media.Extension = filepath.Ext(file.Filename)
 	media.Xid = xid.New().String()
-	media.UserId = tok.UserId
 
 	err = ctx.SaveUploadedFile(file, utils.FILE_UPLOAD_DIR+media.Xid+media.Extension)
 	if err != nil {
@@ -72,7 +107,7 @@ func Upload(ctx *gin.Context) {
 	}
 
 	defer openedFile.Close()
-	err = thumb.CreateThumb(media.Xid, media.Extension, openedFile)
+	err = utils.CreateThumb(media.Xid, media.Extension, openedFile)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: err,
@@ -87,34 +122,35 @@ func Upload(ctx *gin.Context) {
 		})
 		return
 	}
+	if utils.IsValidImage(mType.String()) {
+		documentType = 0
+	}
+	if utils.IsValidDocument(mType.String()) {
+		documentType = 1
+	}
+	if utils.IsValidVideo(mType.String()) {
+
+	}
+	err = SetUserMediaDetail(documentType, tok.UserId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbInsertError,
+		})
+		return
+	}
 	ctx.AbortWithStatusJSON(http.StatusOK, media)
 }
 
-func ProfileImage(ctx *gin.Context) {
+func SetUserMediaDetail(documentType uint, userId uint) (err error) {
 	var (
-		err   error
-		media Media
-		tok   *authentication.Token
+		userMediaDetail UserMediaDetail
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	userMediaDetail.OwnerId = userId
+	userMediaDetail.DocumentType = documentType
+	_, err = database.InsertOne(userMediaDetail)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
-		})
-		return
+		return err
 	}
-
-	err = database.Get(&media, `SELECT * FROM media WHERE user_id = ? AND content_type = 0`, tok.UserId)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
-		})
-		return
-	}
-
-	networkLink := "http://" + configuration.App.Host + ":" + configuration.App.Port + "/api/public/" + media.Xid + media.Extension
-
-	ctx.JSON(http.StatusOK, networkLink)
 	return
 }

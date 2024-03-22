@@ -3,7 +3,9 @@ package api
 import (
 	"duval/internal/pkg/address"
 	"duval/internal/pkg/media"
-	"duval/internal/pkg/profile"
+	"duval/internal/pkg/media/cover"
+	cvtype "duval/internal/pkg/media/cv"
+	"duval/internal/pkg/media/profile"
 	"duval/internal/pkg/user"
 	"duval/internal/route/docs"
 	"net/http"
@@ -118,6 +120,69 @@ var Routes = []docs.RouteDocumentation{
 		HttpMethod:   http.MethodDelete,
 		RelativePath: "/profile/image",
 		Handler:      profile.RemoveProfileImage,
+		NeedToken:    true,
+	},
+
+	//Cover Letter routes
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/profile/letter",
+		Handler:      cover.UploadCoverLetter,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodPut,
+		RelativePath: "/profile/letter",
+		Handler:      cover.UpdateProfileLetter,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/profile/letter",
+		Handler:      cover.GetProfileLetter,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/profile/letter/thumb",
+		Handler:      cover.GetProfileLetterThumb,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodDelete,
+		RelativePath: "/profile/letter",
+		Handler:      cover.RemoveProfileLetter,
+		NeedToken:    true,
+	},
+	//cv_type  routes
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/profile/cv",
+		Handler:      cvtype.UploadCv,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodPut,
+		RelativePath: "/profile/cv",
+		Handler:      cvtype.UpdateProfileCv,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/profile/cv",
+		Handler:      cvtype.GetProfileCv,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/profile/cv/thumb",
+		Handler:      cvtype.GetProfileCvThumb,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodDelete,
+		RelativePath: "/profile/cv",
+		Handler:      cvtype.RemoveProfileCv,
 		NeedToken:    true,
 	},
 }

@@ -7,6 +7,7 @@ const (
 
 const (
 	ParseError            = "cannot parse the corresponding object"
+	TypeError             = "invalid type of file"
 	InvalidEmailError     = "the email you enter is invalid"
 	DuplicateUserError    = "user already exists"
 	LinkUserError         = "failed to link to  user"

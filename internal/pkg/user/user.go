@@ -380,7 +380,7 @@ func NewPassword(ctx *gin.Context) {
 */
 
 func GetUserByEmail(email string) (user User, err error) {
-	err = database.Client.Get(&user, `SELECT * FROM user WHERE email = ?`, email)
+	err = database.Get(&user, `SELECT * FROM user WHERE email = ?`, email)
 	if err != nil {
 		return user, err
 	}
@@ -389,7 +389,7 @@ func GetUserByEmail(email string) (user User, err error) {
 }
 
 func GetUserWithId(id uint) (user User, err error) {
-	err = database.Client.Get(&user, `SELECT * FROM USER WHERE id = ?`, id)
+	err = database.Get(&user, `SELECT * FROM user WHERE id = ?`, id)
 	if err != nil {
 		return user, err
 	}
