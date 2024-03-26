@@ -6,6 +6,7 @@ import (
 	"duval/internal/pkg/media/cover"
 	cvtype "duval/internal/pkg/media/cv"
 	"duval/internal/pkg/media/profile"
+	video "duval/internal/pkg/media/video"
 	"duval/internal/pkg/user"
 	"duval/internal/route/docs"
 	"net/http"
@@ -123,7 +124,7 @@ var Routes = []docs.RouteDocumentation{
 		NeedToken:    true,
 	},
 
-	//Cover Letter routes
+	//Cover Presentation routes
 	{
 		HttpMethod:   http.MethodPost,
 		RelativePath: "/profile/letter",
@@ -183,6 +184,31 @@ var Routes = []docs.RouteDocumentation{
 		HttpMethod:   http.MethodDelete,
 		RelativePath: "/profile/cv",
 		Handler:      cvtype.RemoveProfileCv,
+		NeedToken:    true,
+	},
+	//videos  routes
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/profile/video",
+		Handler:      video.UploadVideo,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodPut,
+		RelativePath: "/profile/video",
+		Handler:      video.UpdateProfileVideo,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/profile/video",
+		Handler:      video.GetProfileVideo,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodDelete,
+		RelativePath: "/profile/video",
+		Handler:      video.RemoveProfileVideo,
 		NeedToken:    true,
 	},
 }

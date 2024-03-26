@@ -2,15 +2,14 @@ package utils
 
 import (
 	"duval/pkg/database"
+	"github.com/disintegration/imaging"
+	"github.com/joinverse/xid"
 	"github.com/unidoc/unipdf/v3/model"
 	"github.com/unidoc/unipdf/v3/render"
 	"image"
 	"image/color"
 	"mime/multipart"
 	"time"
-
-	"github.com/disintegration/imaging"
-	"github.com/joinverse/xid"
 )
 
 const (
@@ -127,3 +126,7 @@ func CreateDocumentThumb(mediaXid string, extension string, file *multipart.File
 	}
 	return
 }
+
+/*
+CREATE THUMBNAIL FOR UPLOADED Video
+*/
