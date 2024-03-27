@@ -23,7 +23,7 @@ var (
 
 var (
 	DbInsertError = note.DatabaseInsertOperationError
-	DbGEtError    = note.DatabaseGetOperationError
+	DbGetError    = note.DatabaseGetOperationError
 	DbDeleteError = note.DatabaseDeleteOperationError
 	DbUpdateError = note.DatabaseUpdateOperationError
 )

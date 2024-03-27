@@ -157,7 +157,7 @@ func GetUserAddress(ctx *gin.Context) {
     WHERE user_address.user_id = ?`, userId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGEtError,
+			Message: errx.DbGetError,
 		})
 		return
 	}
@@ -194,7 +194,7 @@ func RemoveUserAddress(ctx *gin.Context) {
     WHERE user_address.user_id = ?`, userId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGEtError,
+			Message: errx.DbGetError,
 		})
 		return
 	}
@@ -211,7 +211,7 @@ func RemoveUserAddress(ctx *gin.Context) {
 	err = database.Get(&userAddress, `SELECT * FROM user_address where user_id = ?`, userId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGEtError,
+			Message: errx.DbGetError,
 		})
 		return
 	}
