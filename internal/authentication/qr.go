@@ -81,3 +81,66 @@ func GenerateQrCode(ctx *gin.Context) {
 
 	ctx.AbortWithStatusJSON(http.StatusOK, qrImageLink)
 }
+
+func LoginWithQr(ctx *gin.Context) {
+	time.Sleep(100)
+	var (
+		tok            string
+		err            error
+		qrCodeRegistry QrCodeRegistry
+	)
+
+	xId := ctx.Param("xid")
+
+	//Retrieve QR Code Registry: Retrieves the qr_code_registry record that corresponds to a given xid (likely a unique identifier for the QR code).
+	qrCodeRegistry, err = GetQrCodeRegistry(xId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: err,
+		})
+		return
+	}
+
+	//Update is_used Flag: Sets the is_used field of the retrieved qr_code_registry to true, indicating the QR code has been used for login.
+	err = UpdateQrCodeRegistryFlag(qrCodeRegistry)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbUpdateError,
+		})
+		return
+	}
+
+	//	Generate Access Token: Creates an access token using the user_id from the qr_code_registry to authenticate the user's session
+	tok, err = GetTokenString(qrCodeRegistry.UserId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: err,
+		})
+		return
+	}
+
+	ctx.AbortWithStatusJSON(http.StatusOK, gin.H{
+		"token": tok,
+	})
+}
+
+/*
+	UTILS
+*/
+
+func GetQrCodeRegistry(xId string) (qrCodeRegistry QrCodeRegistry, err error) {
+	err = database.Get(&qrCodeRegistry, `SELECT * FROM qr_code_registry WHERE qr_code_registry.xid = ?`, xId)
+	if err != nil {
+		return qrCodeRegistry, err
+	}
+	return qrCodeRegistry, nil
+}
+
+func UpdateQrCodeRegistryFlag(qrCodeRegistry QrCodeRegistry) (err error) {
+	qrCodeRegistry.IsUsed = true
+	err = database.Update(qrCodeRegistry)
+	if err != nil {
+		return err
+	}
+	return
+}

@@ -219,4 +219,10 @@ var Routes = []docs.RouteDocumentation{
 		Handler:      authentication.GenerateQrCode,
 		NeedToken:    true,
 	},
+	{
+		HttpMethod:   http.MethodPut,
+		RelativePath: "/login/with-qr/:xid",
+		Handler:      authentication.LoginWithQr,
+		NeedToken:    false,
+	},
 }
