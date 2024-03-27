@@ -6,6 +6,7 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"time"
 )
 
 var engine *gin.Engine
@@ -25,10 +26,16 @@ func init() {
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 
 	//CORS middleware
-	config := cors.DefaultConfig()
+	config := cors.Config{
+		AllowAllOrigins:  true,
+		AllowMethods:     []string{"PUT", "GET", "POST", "DELETE"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		MaxAge:           12 * time.Hour,
+	}
 	//For later use
 	//config.AllowOrigins = []string{""}
-	config.AllowAllOrigins = true
 	engine.Use(cors.New(config))
 	engine.Use(gin.Recovery())
 
