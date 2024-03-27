@@ -34,8 +34,7 @@ func init() {
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}
-	//For later use
-	//config.AllowOrigins = []string{""}
+
 	engine.Use(cors.New(config))
 	engine.Use(gin.Recovery())
 
