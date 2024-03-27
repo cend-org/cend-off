@@ -3,6 +3,7 @@ package route
 import (
 	"duval/internal/configuration"
 	"duval/internal/route/docs"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -22,6 +23,13 @@ func init() {
 	//engine.Use(gin.Logger())
 
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
+
+	//CORS middleware
+	config := cors.DefaultConfig()
+	//For later use
+	//config.AllowOrigins = []string{""}
+	config.AllowAllOrigins = true
+	engine.Use(cors.New(config))
 	engine.Use(gin.Recovery())
 
 }
