@@ -231,3 +231,14 @@ create table user_media_detail
 
 alter table media drop column user_id;
 -- *
+-- update 26/03/2024
+create table qr_code_registry (
+    id int primary key auto_increment ,
+    created_at   datetime     default CURRENT_TIMESTAMP ,
+    deleted_at   datetime     default '0000-00-00 00:00:00',
+    user_id int unique  ,
+    xid varchar(100) unique default '',
+    is_used  boolean ,
+    foreign key (user_id) references user(id)
+)
+-- *
