@@ -1,30 +1,6 @@
 drop database if exists duval;
 create database duval;
 use duval;
-create table discussion
-(
-    id                     int auto_increment
-        primary key,
-    created_at             datetime     default CURRENT_TIMESTAMP     not null,
-    updated_at             datetime     default CURRENT_TIMESTAMP     not null,
-    deleted_at             datetime     default '0000-00-00 00:00:00' null,
-    name                   varchar(500) default ''                    null,
-    last_message_sent_date datetime     default '0000-00-00 00:00:00' null
-);
-
-create table media
-(
-    id           int auto_increment
-        primary key,
-    created_at   datetime     default CURRENT_TIMESTAMP     not null,
-    updated_at   datetime     default CURRENT_TIMESTAMP     not null,
-    deleted_at   datetime     default '0000-00-00 00:00:00' null,
-    file_name    varchar(500) default ''                    null,
-    extension    varchar(10)  default ''                    null,
-    xid          varchar(500) default ''                    null,
-    user_id      int          default 0                     null,
-    content_type int          default 0                     null
-);
 
 create table user
 (
@@ -80,7 +56,20 @@ create table password
 create index password_user_id_index
     on password (user_id);
 
--- upgrade end  on 13/03/24
+create table media
+(
+    id           int auto_increment
+        primary key,
+    created_at   datetime     default CURRENT_TIMESTAMP     not null,
+    updated_at   datetime     default CURRENT_TIMESTAMP     not null,
+    deleted_at   datetime     default '0000-00-00 00:00:00' null,
+    file_name    varchar(500) default ''                    null,
+    extension    varchar(10)  default ''                    null,
+    xid          varchar(500) default ''                    null,
+    user_id      int          default 0                     null,
+    content_type int          default 0                     null
+);
+
 create table code
 (
     id           int auto_increment
@@ -91,8 +80,9 @@ create table code
     user_id      int           default 0                     null,
     verification_code          int default 0                    null
 );
-create index code_user_val on code(user_id,verification_code);
 
+create index code_user_val
+    on code(user_id,verification_code);
 
 create table message
 (
@@ -136,9 +126,6 @@ create table menu_item
     message_number int default 0 null
 );
 
-
-
--- update 13/03/24
 create table address
 (
     id           int auto_increment      primary key not null,
@@ -167,7 +154,6 @@ create table user_address
     foreign key (address_id) references address(id)
 );
 
--- update 16/03/24
 create table thumb
 (
     id           int auto_increment
@@ -181,19 +167,14 @@ create table thumb
     content_type int          default 0                     null
 );
 
-
--- update 18/03/24
 alter table user add profile_image_xid varchar(500) default '' after status ;
--- *
 
--- update 19/03/24
 alter table thumb
     rename media_thumb,
     add column xid varchar(500) default '',
     drop column content_type ,
     drop column file_name ;
 
--- ***** --
 drop table menu;
 drop table menu_item;
 drop table message;
@@ -215,22 +196,18 @@ alter table message add column  resource_language int default 0 after resource_l
 create unique index msg_type_nb_val_lang
     on message (resource_type, resource_number, resource_value, resource_language);
 
--- update 21/03/2024
 create table user_media_detail
 (
    id     int auto_increment       primary key,
    created_at   datetime     default CURRENT_TIMESTAMP ,
    updated_at   datetime     default CURRENT_TIMESTAMP ,
    deleted_at   datetime     default '0000-00-00 00:00:00',
-   owner_id int ,
-   document_type int,
-   document_xid varchar(100) unique,
-   foreign key (owner_id) references user(id),
-   foreign key (document_xid) references media(id)
+   owner_id int default 0,
+   document_type int  default 0,
+   document_xid varchar(100) default ''
 );
 
 alter table media drop column user_id;
--- *
 
 create table user_authorization_link
 (
@@ -240,7 +217,7 @@ create table user_authorization_link
     updated_at datetime default CURRENT_TIMESTAMP,
     deleted_at datetime default '0000-00-00 00:00:00',
     link_type  int
-);                                                                                  )
+);
 
 create table user_authorization_link_actor
 (
@@ -249,10 +226,8 @@ create table user_authorization_link_actor
     created_at   datetime     default CURRENT_TIMESTAMP    ,
     updated_at   datetime     default CURRENT_TIMESTAMP    ,
     deleted_at   datetime     default '0000-00-00 00:00:00',
-    user_authorization_link_id int,
-    authorization_id int,
-    foreign key (user_authorization_link_id) references user_authorization_link(id),
-    foreign key (authorization_id) references authorization(id)
+    user_authorization_link_id int default 0,
+    authorization_id int default 0
 );
 
 -- update 26/03/2024
@@ -260,23 +235,20 @@ create table qr_code_registry (
     id int primary key auto_increment ,
     created_at   datetime     default CURRENT_TIMESTAMP ,
     deleted_at   datetime     default '0000-00-00 00:00:00',
-    user_id int unique  ,
-    xid varchar(100) unique default '',
-    is_used  boolean ,
-    foreign key (user_id) references user(id)
+    user_id int default 0,
+    xid varchar(100)  default '',
+    is_used  boolean default false
 );
--- *
 
--- update 27/03/2024
  create table    calendar_planning (
      id int primary key auto_increment,
      created_at   datetime     default CURRENT_TIMESTAMP ,
      updated_at   datetime     default CURRENT_TIMESTAMP ,
      deleted_at   datetime     default '0000-00-00 00:00:00',
-     authorization_id int ,
+     authorization_id int  default 0,
      start_date_time datetime default CURRENT_TIMESTAMP,
      end_date_time datetime default CURRENT_TIMESTAMP,
-     description varchar(100)
+     description varchar(100) default ''
  );
 
 create table calendar_planning_actor (
@@ -284,9 +256,6 @@ create table calendar_planning_actor (
     created_at   datetime     default CURRENT_TIMESTAMP ,
     updated_at   datetime     default CURRENT_TIMESTAMP ,
     deleted_at   datetime     default '0000-00-00 00:00:00',
-    authorization_id int,
-    calendar_planning_id int ,
-    foreign key (authorization_id) references authorization(id),
-    foreign key (calendar_planning_id) references calendar_planning(id)
+    authorization_id int default 0,
+    calendar_planning_id int default 0
 );
--- *
