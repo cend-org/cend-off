@@ -1,6 +1,7 @@
 package api
 
 import (
+	"duval/internal/authentication"
 	"duval/internal/pkg/address"
 	"duval/internal/pkg/media"
 	"duval/internal/pkg/media/cover"
@@ -230,5 +231,18 @@ var Routes = []docs.RouteDocumentation{
 		RelativePath: "/profile/video",
 		Handler:      video.RemoveProfileVideo,
 		NeedToken:    true,
+	},
+	//Qr code authentication
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/generate-qr",
+		Handler:      authentication.GenerateQrCode,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodPut,
+		RelativePath: "/login/with-qr/:xid",
+		Handler:      authentication.LoginWithQr,
+		NeedToken:    false,
 	},
 }
