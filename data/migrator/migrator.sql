@@ -231,3 +231,26 @@ create table user_media_detail
 
 alter table media drop column user_id;
 -- *
+
+create table user_authorization_link
+(
+    id         int auto_increment
+        primary key,
+    created_at datetime default CURRENT_TIMESTAMP,
+    updated_at datetime default CURRENT_TIMESTAMP,
+    deleted_at datetime default '0000-00-00 00:00:00',
+    link_type  int
+);                                                                                  )
+
+create table user_authorization_link_actor
+(
+    id           int auto_increment
+        primary key,
+    created_at   datetime     default CURRENT_TIMESTAMP    ,
+    updated_at   datetime     default CURRENT_TIMESTAMP    ,
+    deleted_at   datetime     default '0000-00-00 00:00:00',
+    user_authorization_link_id int,
+    authorization_id int,
+    foreign key (user_authorization_link_id) references user_authorization_link(id),
+    foreign key (authorization_id) references authorization(id)
+);

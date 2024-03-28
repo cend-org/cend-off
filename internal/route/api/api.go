@@ -8,6 +8,7 @@ import (
 	"duval/internal/pkg/media/profile"
 	video "duval/internal/pkg/media/video"
 	"duval/internal/pkg/user"
+	"duval/internal/pkg/user/link"
 	"duval/internal/route/docs"
 	"net/http"
 )
@@ -121,6 +122,25 @@ var Routes = []docs.RouteDocumentation{
 		HttpMethod:   http.MethodDelete,
 		RelativePath: "/profile/image",
 		Handler:      profile.RemoveProfileImage,
+		NeedToken:    true,
+	},
+	//	link between user routes
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/user/parent",
+		Handler:      link.GetUserParent,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/user/tutor",
+		Handler:      link.GetUserTutor,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/user/professor",
+		Handler:      link.GetUserProfessor,
 		NeedToken:    true,
 	},
 
