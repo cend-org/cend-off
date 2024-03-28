@@ -15,6 +15,7 @@ var ParamsError = note.ParamsError
 
 var (
 	ParseError            = note.ParseError
+	TypeError             = note.TypeError
 	InvalidEmailError     = note.InvalidEmailError
 	DuplicateUserError    = note.DuplicateUserError
 	LinkUserError         = note.LinkUserError
