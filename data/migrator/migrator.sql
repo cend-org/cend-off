@@ -264,5 +264,29 @@ create table qr_code_registry (
     xid varchar(100) unique default '',
     is_used  boolean ,
     foreign key (user_id) references user(id)
-)
+);
+-- *
+
+-- update 27/03/2024
+ create table    calendar_planning (
+     id int primary key auto_increment,
+     created_at   datetime     default CURRENT_TIMESTAMP ,
+     updated_at   datetime     default CURRENT_TIMESTAMP ,
+     deleted_at   datetime     default '0000-00-00 00:00:00',
+     authorization_id int ,
+     start_date_time datetime default CURRENT_TIMESTAMP,
+     end_date_time datetime default CURRENT_TIMESTAMP,
+     description varchar(100)
+ );
+
+create table calendar_planning_actor (
+    id int primary key auto_increment,
+    created_at   datetime     default CURRENT_TIMESTAMP ,
+    updated_at   datetime     default CURRENT_TIMESTAMP ,
+    deleted_at   datetime     default '0000-00-00 00:00:00',
+    authorization_id int,
+    calendar_planning_id int ,
+    foreign key (authorization_id) references authorization(id),
+    foreign key (calendar_planning_id) references calendar_planning(id)
+);
 -- *

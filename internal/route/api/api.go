@@ -8,6 +8,7 @@ import (
 	cvtype "duval/internal/pkg/media/cv"
 	"duval/internal/pkg/media/profile"
 	video "duval/internal/pkg/media/video"
+	"duval/internal/pkg/planning"
 	"duval/internal/pkg/user"
 	"duval/internal/pkg/user/link"
 	"duval/internal/route/docs"
@@ -244,5 +245,43 @@ var Routes = []docs.RouteDocumentation{
 		RelativePath: "/login/with-qr/:xid",
 		Handler:      authentication.LoginWithQr,
 		NeedToken:    false,
+	},
+	//Calendar planning routes
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/calendar",
+		Handler:      planning.CreateUserPlannings,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/calendar",
+		Handler:      planning.GetUserPlannings,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodDelete,
+		RelativePath: "/calendar",
+		Handler:      planning.RemoveUserPlannings,
+		NeedToken:    true,
+	},
+	//Calendar user planning routes
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/calendar/:calendar_id/actor",
+		Handler:      planning.AddUserIntoPlanning,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/calendar/:calendar_id/actor",
+		Handler:      planning.GetPlanningActor,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodDelete,
+		RelativePath: "/calendar/:calendar_id/actor",
+		Handler:      planning.RemoveUserFromPlanning,
+		NeedToken:    true,
 	},
 }
