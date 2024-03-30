@@ -107,3 +107,11 @@ func InsertMany(T []any) (err error) {
 	}
 	return err
 }
+
+func GetMany(R interface{}, Q string, A ...interface{}) (err error) {
+	err = Client.Select(R, Q, A...)
+	if err != nil {
+		return err
+	}
+	return err
+}
