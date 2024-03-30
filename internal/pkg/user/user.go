@@ -380,7 +380,6 @@ func GetPasswordHistory(ctx *gin.Context) {
 		err       error
 	)
 
-	time.Sleep(100)
 	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
