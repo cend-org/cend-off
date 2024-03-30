@@ -373,6 +373,36 @@ func NewPassword(ctx *gin.Context) {
 	return
 }
 
+func GetPasswordHistory(ctx *gin.Context) {
+	var (
+		passwords []password.Password
+		tok       *authentication.Token
+		err       error
+	)
+
+	time.Sleep(100)
+	tok, err = authentication.GetTokenDataFromContext(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+	err = database.GetMany(&passwords,
+		`SELECT password.*
+			FROM password
+			WHERE password.user_id = ?
+			ORDER BY password.created_at DESC`, tok.UserId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbGetError,
+		})
+		return
+	}
+
+	ctx.AbortWithStatusJSON(http.StatusOK, passwords)
+}
+
 /*
 
 	UTILITIES

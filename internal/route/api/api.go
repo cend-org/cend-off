@@ -60,6 +60,12 @@ var Routes = []docs.RouteDocumentation{
 	},
 	{
 		HttpMethod:   http.MethodGet,
+		RelativePath: "/password/history",
+		Handler:      user.GetPasswordHistory,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
 		RelativePath: "/profile",
 		Handler:      user.MyProfile,
 		NeedToken:    true,
