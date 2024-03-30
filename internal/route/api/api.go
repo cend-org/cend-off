@@ -248,14 +248,14 @@ var Routes = []docs.RouteDocumentation{
 	//Calendar user planning routes
 	{
 		HttpMethod:   http.MethodPost,
-		RelativePath: "/calendar/:calendar_id/actor",
+		RelativePath: "/calendar/:calendar_id/:actor",
 		Handler:      planning.AddUserIntoPlanning,
 		NeedToken:    true,
 	},
 	{
 		HttpMethod:   http.MethodGet,
 		RelativePath: "/calendar/:calendar_id/actor",
-		Handler:      planning.GetPlanningActor,
+		Handler:      planning.GetPlanningActors,
 		NeedToken:    true,
 	},
 	{

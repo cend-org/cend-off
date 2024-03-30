@@ -222,9 +222,9 @@ create table user_media_detail
    created_at   datetime     default CURRENT_TIMESTAMP ,
    updated_at   datetime     default CURRENT_TIMESTAMP ,
    deleted_at   datetime     default '0000-00-00 00:00:00',
-   owner_id int ,
-   document_type int,
-   document_xid varchar(100) unique,
+   owner_id int default 0,
+   document_type int default 0,
+   document_xid varchar(100) unique default '',
    foreign key (owner_id) references user(id),
    foreign key (document_xid) references media(id)
 );
@@ -236,7 +236,7 @@ create table qr_code_registry (
     id int primary key auto_increment ,
     created_at   datetime     default CURRENT_TIMESTAMP ,
     deleted_at   datetime     default '0000-00-00 00:00:00',
-    user_id int unique  ,
+    user_id int unique default 0,
     xid varchar(100) unique default '',
     is_used  boolean ,
     foreign key (user_id) references user(id)
@@ -249,10 +249,11 @@ create table qr_code_registry (
      created_at   datetime     default CURRENT_TIMESTAMP ,
      updated_at   datetime     default CURRENT_TIMESTAMP ,
      deleted_at   datetime     default '0000-00-00 00:00:00',
-     authorization_id int ,
+     authorization_id int default 0,
      start_date_time datetime default CURRENT_TIMESTAMP,
      end_date_time datetime default CURRENT_TIMESTAMP,
-     description varchar(100)
+     description varchar(100) default '',
+     foreign key (authorization_id) references authorization (id)
  );
 
 create table calendar_planning_actor (
@@ -260,8 +261,8 @@ create table calendar_planning_actor (
     created_at   datetime     default CURRENT_TIMESTAMP ,
     updated_at   datetime     default CURRENT_TIMESTAMP ,
     deleted_at   datetime     default '0000-00-00 00:00:00',
-    authorization_id int,
-    calendar_planning_id int ,
+    authorization_id int default 0,
+    calendar_planning_id int default 0,
     foreign key (authorization_id) references authorization(id),
     foreign key (calendar_planning_id) references calendar_planning(id)
 );

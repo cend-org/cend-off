@@ -2,12 +2,15 @@ package planning
 
 import (
 	"duval/internal/authentication"
+	"duval/internal/pkg/user"
 	"duval/internal/pkg/user/authorization"
 	"duval/internal/utils"
 	"duval/internal/utils/errx"
+	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -30,8 +33,6 @@ type CalendarPlanningActor struct {
 	AuthorizationId    uint       `json:"authorization_id"`
 	CalendarPlanningId uint       `json:"calendar_planning_id"`
 }
-
-//Manage User Plannings
 
 func CreateUserPlannings(ctx *gin.Context) {
 	var (
@@ -57,7 +58,6 @@ func CreateUserPlannings(ctx *gin.Context) {
 		return
 	}
 
-	//set authorisation_id
 	calendarPlanning.AuthorizationId, err = GetUserAuthorizationId(tok.UserId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -73,11 +73,11 @@ func CreateUserPlannings(ctx *gin.Context) {
 		})
 		return
 	}
-	//Insert current user to the Calendar Planning actor
 
 	calendarPlanningActor.AuthorizationId = calendarPlanning.AuthorizationId
 	calendarPlanningActor.CalendarPlanningId = calendarId
-	_, err = database.InsertOne(calendarPlanningActor)
+
+	err = AddCalendarPlanningActor(calendarPlanningActor)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: errx.DbInsertError,
@@ -103,6 +103,7 @@ func GetUserPlannings(ctx *gin.Context) {
 		})
 		return
 	}
+
 	authorizationId, err = GetUserAuthorizationId(tok.UserId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -110,6 +111,7 @@ func GetUserPlannings(ctx *gin.Context) {
 		})
 		return
 	}
+
 	calendarPlanning, err = GetPlanningById(authorizationId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -136,6 +138,7 @@ func RemoveUserPlannings(ctx *gin.Context) {
 		})
 		return
 	}
+
 	authorizationId, err = GetUserAuthorizationId(tok.UserId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -143,6 +146,7 @@ func RemoveUserPlannings(ctx *gin.Context) {
 		})
 		return
 	}
+
 	calendarPlanning, err = GetPlanningById(authorizationId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -162,19 +166,146 @@ func RemoveUserPlannings(ctx *gin.Context) {
 	ctx.AbortWithStatus(http.StatusOK)
 }
 
-//Manage User Plannings
+func AddUserIntoPlanning(ctx *gin.Context) {
+	var (
+		tok                   *authentication.Token
+		calendarPlanningActor CalendarPlanningActor
+		selectedUser          user.User
+		err                   error
+	)
 
-func GetPlanningActor(ctx *gin.Context) {
+	calendarId, err := strconv.Atoi(ctx.Param("calendar_id"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.ParseError,
+		})
+		return
+	}
 
-	return
+	err = ctx.ShouldBindJSON(&selectedUser)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.ParseError,
+		})
+		return
+	}
+
+	tok, err = authentication.GetTokenDataFromContext(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+
+	if tok.UserId == state.ZERO {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+
+	authorizationId, err := GetUserAuthorizationId(selectedUser.Id)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	calendarPlanningActor.AuthorizationId = authorizationId
+	calendarPlanningActor.CalendarPlanningId = uint(calendarId)
+
+	err = AddCalendarPlanningActor(calendarPlanningActor)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbInsertError,
+		})
+		return
+	}
+	ctx.AbortWithStatusJSON(http.StatusOK, calendarPlanningActor)
 }
 
-func AddUserIntoPlanning(ctx *gin.Context) {
-	return
+func GetPlanningActors(ctx *gin.Context) {
+	var (
+		err                    error
+		calendarPlanningActors []user.User
+	)
+
+	calendarId, err := strconv.Atoi(ctx.Param("calendar_id"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.ParseError,
+		})
+		return
+	}
+
+	calendarPlanningActors, err = GetPlanningActorByCalendarId(uint(calendarId))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbGetError,
+		})
+		return
+	}
+
+	ctx.AbortWithStatusJSON(http.StatusOK, calendarPlanningActors)
 }
 
 func RemoveUserFromPlanning(ctx *gin.Context) {
-	return
+	var (
+		selectedCalendarPlanningActor CalendarPlanningActor
+		selectedUser                  user.User
+		tok                           *authentication.Token
+		err                           error
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.ParseError,
+		})
+		return
+	}
+
+	if tok.UserId == state.ZERO {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+
+	calendarPlanningId, err := strconv.Atoi(ctx.Param("calendar_id"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.ParamsError,
+		})
+		return
+	}
+
+	err = ctx.ShouldBindJSON(&selectedUser)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.ParseError,
+		})
+		return
+	}
+
+	selectedCalendarPlanningActor, err = GetSelectedPlanningActor(selectedUser.Id, uint(calendarPlanningId))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbGetError,
+		})
+		return
+	}
+
+	err = RemoveSelectedPlanningActor(selectedCalendarPlanningActor)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbDeleteError,
+		})
+		return
+	}
+	ctx.AbortWithStatus(http.StatusOK)
 }
 
 /*
@@ -196,4 +327,46 @@ func GetPlanningById(authorizationId uint) (calendarPlanning CalendarPlanning, e
 		return calendarPlanning, err
 	}
 	return calendarPlanning, err
+}
+
+func AddCalendarPlanningActor(calendarPlanningActor CalendarPlanningActor) (err error) {
+	_, err = database.InsertOne(calendarPlanningActor)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func GetPlanningActorByCalendarId(calendarId uint) (calendarPlanningActors []user.User, err error) {
+	err = database.GetMany(&calendarPlanningActors,
+		`SELECT user.* FROM user
+              JOIN authorization ON user.id = authorization.user_id
+              JOIN calendar_planning_actor ON authorization.id = calendar_planning_actor.authorization_id
+              JOIN calendar_planning ON calendar_planning_actor.calendar_planning_id = calendar_planning.id
+     WHERE calendar_planning.id = ?`, calendarId)
+	if err != nil {
+		return calendarPlanningActors, err
+	}
+	return calendarPlanningActors, err
+}
+
+func GetSelectedPlanningActor(userId uint, calendarPlanningId uint) (calendarPlanningActor CalendarPlanningActor, err error) {
+	err = database.Get(&calendarPlanningActor,
+		`SELECT calendar_planning_actor.*  FROM calendar_planning_actor
+                                  JOIN authorization ON calendar_planning_actor.authorization_id = authorization.id
+                                  JOIN calendar_planning ON calendar_planning_actor.calendar_planning_id = calendar_planning.id
+                                  JOIN user ON authorization.user_id = user.id
+                                  WHERE user.id= ? AND calendar_planning.id = ?`, userId, calendarPlanningId)
+	if err != nil {
+		return calendarPlanningActor, err
+	}
+	return calendarPlanningActor, nil
+}
+
+func RemoveSelectedPlanningActor(calendarPlanningActor CalendarPlanningActor) (err error) {
+	err = database.Delete(calendarPlanningActor)
+	if err != nil {
+		return err
+	}
+	return nil
 }
