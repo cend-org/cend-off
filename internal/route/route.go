@@ -28,9 +28,9 @@ func init() {
 	//CORS middleware
 	config := cors.Config{
 		AllowAllOrigins:  true,
-		AllowMethods:     []string{"PUT", "GET", "POST", "DELETE"},
-		AllowHeaders:     []string{"Origin"},
-		ExposeHeaders:    []string{"Content-Length"},
+		AllowMethods:     []string{"*"},
+		AllowHeaders:     []string{"*"},
+		ExposeHeaders:    []string{"*"},
 		AllowCredentials: true,
 		MaxAge:           12 * time.Hour,
 	}

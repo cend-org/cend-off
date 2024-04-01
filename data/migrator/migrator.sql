@@ -204,10 +204,13 @@ create table user_media_detail
    deleted_at   datetime     default '0000-00-00 00:00:00',
    owner_id int default 0,
    document_type int default 0,
-   document_xid varchar(100) unique default '',
-   foreign key (owner_id) references user(id),
-   foreign key (document_xid) references media(id)
+   document_xid varchar(100) unique default ''
 );
+
+alter table user_media_detail
+    add constraint user_media_detail_user_id_fk
+        foreign key (owner_id) references user (id);
+
 
 alter table media drop column user_id;
 
