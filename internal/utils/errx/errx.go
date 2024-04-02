@@ -28,3 +28,7 @@ var (
 	DbDeleteError = note.DatabaseDeleteOperationError
 	DbUpdateError = note.DatabaseUpdateOperationError
 )
+
+const (
+	NeedPasswordError = note.StatusNeedPasswordError
+)

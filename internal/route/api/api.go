@@ -79,6 +79,12 @@ var Routes = []docs.RouteDocumentation{
 	},
 	{
 		HttpMethod:   http.MethodPut,
+		RelativePath: "/profile/active",
+		Handler:      user.ActivateUser,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodPut,
 		RelativePath: "/profile",
 		Handler:      user.UpdMyProfile,
 		NeedToken:    true,

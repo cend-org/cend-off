@@ -20,3 +20,5 @@ const (
 	DatabaseGetOperationError    = "error while trying to get data from database"
 	DatabaseUpdateOperationError = "error while trying to update data to database"
 )
+
+const StatusNeedPasswordError = "user need at least a password and an email for login"

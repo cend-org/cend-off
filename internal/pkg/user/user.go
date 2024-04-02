@@ -18,10 +18,24 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// user status is used as follows:
+// a- first user create an account with an email required. ( at this point user is called new ) .
+// b- One created, a user received a verification code to validate his email ( user pass to status unverified )
+//
+//	Once validated, user need password ( status 2 ).
+//
+// c- Now, the user got an email and password which can we used for authentication. But He must be enrolled on an onboarding
+// process ( status 3 )
+// d- Once onboarding done, user can be active and redirected to dashboard page.
 const (
 	StatusNew        = 0
 	StatusUnverified = 1
-	StatusActive     = 2
+
+	StatusNeedPassword = 2
+
+	StatusOnboardingInProgress = 3
+
+	StatusActive = 4
 )
 
 type User struct {
@@ -206,7 +220,17 @@ func VerifyUserEmailValidationCode(ctx *gin.Context) {
 		return
 	}
 
-	user.Status = StatusActive
+	user, err = GetUserWithId(tok.UserId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	if user.Status < StatusNeedPassword {
+		user.Status = StatusNeedPassword
+	}
 
 	err = database.Update(user)
 	if err != nil {
@@ -378,6 +402,7 @@ func NewPassword(ctx *gin.Context) {
 		pass password.Password
 		err  error
 		tok  *authentication.Token
+		usr  User
 	)
 
 	tok, err = authentication.GetTokenDataFromContext(ctx)
@@ -402,6 +427,25 @@ func NewPassword(ctx *gin.Context) {
 			Message: err,
 		})
 		return
+	}
+
+	usr, err = GetUserWithId(tok.UserId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	if usr.Status < StatusOnboardingInProgress {
+		usr.Status = StatusOnboardingInProgress
+		err = database.Update(usr)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.Lambda(err),
+			})
+			return
+		}
 	}
 
 	ctx.AbortWithStatus(http.StatusOK)
@@ -435,6 +479,42 @@ func GetPasswordHistory(ctx *gin.Context) {
 	}
 
 	ctx.AbortWithStatusJSON(http.StatusOK, passwords)
+}
+
+func ActivateUser(ctx *gin.Context) {
+	var (
+		tok *authentication.Token
+		err error
+		usr User
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	usr, err = GetUserWithId(tok.UserId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	if usr.Status <= StatusNeedPassword {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.NeedPasswordError,
+		})
+		return
+	}
+
+	usr.Status = StatusActive
+
+	ctx.JSON(http.StatusOK, usr)
+	return
 }
 
 /*
