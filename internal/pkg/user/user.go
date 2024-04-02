@@ -133,9 +133,44 @@ func Register(ctx *gin.Context) {
 		return
 	}
 
+	err = code.NewUserVerificationCode(user.Id)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
 	ctx.JSON(http.StatusOK, gin.H{
 		"token": tokenStr,
 	})
+	return
+}
+
+func GetCode(ctx *gin.Context) {
+	var (
+		err            error
+		tok            *authentication.Token
+		validationCode code.Code
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+
+	err = database.Get(&validationCode, `SELECT * FROM code WHERE user_id = ? ORDER BY created_at desc LIMIT 1`, tok.UserId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, validationCode)
 	return
 }
 
