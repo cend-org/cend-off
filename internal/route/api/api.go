@@ -134,6 +134,12 @@ var Routes = []docs.RouteDocumentation{
 	},
 	//	link between user routes
 	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/user/parent",
+		Handler:      link.AddParentToUser,
+		NeedToken:    true,
+	},
+	{
 		HttpMethod:   http.MethodGet,
 		RelativePath: "/user/parent",
 		Handler:      link.GetUserParent,
