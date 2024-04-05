@@ -74,6 +74,7 @@ func Register(ctx *gin.Context) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: errx.Lambda(err),
 		})
+		//
 		return
 	}
 
