@@ -197,6 +197,7 @@ func RemoveUserParent(ctx *gin.Context) {
 		tok    *authentication.Token
 		err    error
 	)
+
 	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -204,6 +205,7 @@ func RemoveUserParent(ctx *gin.Context) {
 		})
 		return
 	}
+
 	//Check if user is authorized to delete a parent
 	if tok.UserId == state.ZERO {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -211,6 +213,7 @@ func RemoveUserParent(ctx *gin.Context) {
 		})
 		return
 	}
+
 	//Select parent from body
 	err = ctx.ShouldBindJSON(&parent)
 	if err != nil {
@@ -228,6 +231,7 @@ func RemoveUserParent(ctx *gin.Context) {
 		})
 		return
 	}
+
 	//Delete selected parent form user_authorization_link_actor
 	err = DeleteUserLinkActor(actor)
 	if err != nil {
@@ -247,6 +251,7 @@ func AddTutorToUser(ctx *gin.Context) {
 		userAuthorizationLinkId uint
 		err                     error
 	)
+
 	// Select User
 	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
@@ -388,6 +393,7 @@ func RemoveUserTutor(ctx *gin.Context) {
 		tok   *authentication.Token
 		err   error
 	)
+
 	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -395,6 +401,7 @@ func RemoveUserTutor(ctx *gin.Context) {
 		})
 		return
 	}
+
 	//Check if user is authorized to delete a tutor
 	if tok.UserId == state.ZERO {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -402,6 +409,7 @@ func RemoveUserTutor(ctx *gin.Context) {
 		})
 		return
 	}
+
 	//Select tutor from body
 	err = ctx.ShouldBindJSON(&tutor)
 	if err != nil {
@@ -419,6 +427,7 @@ func RemoveUserTutor(ctx *gin.Context) {
 		})
 		return
 	}
+
 	//Delete selected tutor form user_authorization_link_actor
 	err = DeleteUserLinkActor(actor)
 	if err != nil {
@@ -579,6 +588,7 @@ func RemoveUserProfessor(ctx *gin.Context) {
 		tok       *authentication.Token
 		err       error
 	)
+
 	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -586,6 +596,7 @@ func RemoveUserProfessor(ctx *gin.Context) {
 		})
 		return
 	}
+
 	//Check if user is authorized to delete a professor
 	if tok.UserId == state.ZERO {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -593,6 +604,7 @@ func RemoveUserProfessor(ctx *gin.Context) {
 		})
 		return
 	}
+
 	//Select professor from body
 	err = ctx.ShouldBindJSON(&professor)
 	if err != nil {
@@ -610,6 +622,7 @@ func RemoveUserProfessor(ctx *gin.Context) {
 		})
 		return
 	}
+
 	//Delete selected professor form user_authorization_link_actor
 	err = DeleteUserLinkActor(actor)
 	if err != nil {
@@ -635,10 +648,12 @@ func SetUserAuthorizationLink(linkType uint, userId uint, userLevel uint) (userA
 	if err != nil {
 		return userAuthorizationLinkId, err
 	}
+
 	err = SetUserAuthorizationLinkActor(userAuthorizationLinkId, userId, userLevel)
 	if err != nil {
 		return userAuthorizationLinkId, err
 	}
+
 	return userAuthorizationLinkId, nil
 }
 
@@ -649,12 +664,10 @@ func SetUserAuthorizationLinkActor(linkId uint, userId uint, level uint) (err er
 	if err != nil {
 		return err
 	}
+
 	userAuthorizationLinkActor.AuthorizationId = auth.Id
 	userAuthorizationLinkActor.UserAuthorizationLinkId = linkId
 
-	if err != nil {
-		return err
-	}
 	_, err = database.InsertOne(userAuthorizationLinkActor)
 	if err != nil {
 		return err
@@ -664,7 +677,18 @@ func SetUserAuthorizationLinkActor(linkId uint, userId uint, level uint) (err er
 }
 
 func CreateNewUser(user user.User, authLevel uint) (currentUser user.User, err error) {
-	user.Email = "parent+1@cend.intern"
+	if authLevel == ParentAuthorizationLevel {
+		user.Email = "parent+1@cend.intern"
+	}
+
+	if authLevel == TutorAuthorizationLevel {
+		user.Email = "tutor+1@cend.intern"
+	}
+
+	if authLevel == ProfessorAuthorizationLevel {
+		user.Email = "professor+1@cend.intern"
+	}
+
 	user.Matricule, err = utils.GenerateMatricule()
 	if err != nil {
 		return user, err
@@ -692,6 +716,7 @@ func CreateNewUser(user user.User, authLevel uint) (currentUser user.User, err e
 	if err != nil {
 		return user, err
 	}
+
 	currentUser = user
 	return currentUser, nil
 }
@@ -720,11 +745,13 @@ func GetUserByUserName(currentUser user.User) (user user.User, err error) {
 	if err != nil {
 		return user, err
 	}
+
 	return user, nil
 }
 
 func GetUserLink(linkType uint, authorizationId uint) (linkId uint, err error) {
 	var userLink UserAuthorizationLink
+
 	err = database.Get(&userLink,
 		`SELECT user_authorization_link.* FROM user_authorization_link
                                   JOIN user_authorization_link_actor ON user_authorization_link.id = user_authorization_link_actor.user_authorization_link_id
@@ -732,6 +759,7 @@ func GetUserLink(linkType uint, authorizationId uint) (linkId uint, err error) {
 	if err != nil {
 		return 0, err
 	}
+
 	return userLink.Id, nil
 }
 
@@ -746,6 +774,7 @@ WHERE user.family_name = ? AND  user.name = ? AND user_authorization_link.link_t
 	if err != nil {
 		return actor, err
 	}
+
 	return actor, nil
 }
 
@@ -754,5 +783,6 @@ func DeleteUserLinkActor(userAuthorizationLinkActor UserAuthorizationLinkActor) 
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
