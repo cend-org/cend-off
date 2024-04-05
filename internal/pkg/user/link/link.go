@@ -98,7 +98,6 @@ func AddParentToUser(ctx *gin.Context) {
 		userAuthorizationLinkId uint
 		err                     error
 	)
-	time.Sleep(100)
 	// Select User
 
 	tok, err = authentication.GetTokenDataFromContext(ctx)
