@@ -412,6 +412,102 @@ func RemoveUserTutor(ctx *gin.Context) {
 }
 
 // Professor Handler
+func AddProfessorToUser(ctx *gin.Context) {
+	var (
+		tok                     *authentication.Token
+		professor               user.User
+		userAuthorizationLinkId uint
+		err                     error
+	)
+
+	// Select User
+
+	tok, err = authentication.GetTokenDataFromContext(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+
+	//check if user is a student
+	if !authorization.IsUserStudent(tok.UserId) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: "User is not a student ",
+		})
+		return
+	}
+
+	// Select Parent from body
+	err = ctx.ShouldBindJSON(&professor)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.ParseError,
+		})
+		return
+	}
+
+	// Check if professor  doesn't exist in the database based on name and family name then  create a user named professor if not
+	currentProfessor, err := GetUserByUserName(professor)
+	if currentProfessor.Id == state.ZERO {
+		//	Create professor with email professor+1@cend.intra
+		currentProfessor, err = CreateNewUser(professor)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.DbInsertError,
+			})
+			return
+		}
+
+	}
+
+	//Check if link already exist if not then create new link and add creator into link actor by default
+	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbGetError,
+		})
+		return
+	}
+
+	//Check if professor is already added to the user
+	currentProfessorAuth, err := authorization.GetUserAuthorization(currentProfessor.Id, ProfessorAuthorizationLevel)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbGetError,
+		})
+		return
+	}
+
+	_, err = GetLink(currentProfessorAuth.Id, ProfessorAuthorizationLevel, StudentProfessor)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DuplicateUserError,
+		})
+		return
+	}
+
+	userAuthorizationLinkId, err = GetUserLink(StudentProfessor, auth.Id)
+	if userAuthorizationLinkId == state.ZERO {
+		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentProfessor, tok.UserId, tok.UserLevel)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.DbInsertError,
+			})
+			return
+		}
+	}
+
+	err = SetUserAuthorizationLinkActor(userAuthorizationLinkId, currentProfessor.Id, ProfessorAuthorizationLevel)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbInsertError,
+		})
+		return
+	}
+
+	ctx.AbortWithStatusJSON(http.StatusOK, currentProfessor)
+}
 
 func GetUserProfessor(ctx *gin.Context) {
 	var (

@@ -170,6 +170,12 @@ var Routes = []docs.RouteDocumentation{
 		NeedToken:    true,
 	},
 	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/user/professor",
+		Handler:      link.AddProfessorToUser,
+		NeedToken:    true,
+	},
+	{
 		HttpMethod:   http.MethodGet,
 		RelativePath: "/user/professor",
 		Handler:      link.GetUserProfessor,
