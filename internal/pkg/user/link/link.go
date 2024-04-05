@@ -324,7 +324,7 @@ func AddTutorToUser(ctx *gin.Context) {
 
 	userAuthorizationLinkId, err = GetUserLink(StudentTutor, auth.Id)
 	if userAuthorizationLinkId == state.ZERO {
-		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentParent, tok.UserId, tok.UserLevel)
+		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentTutor, tok.UserId, tok.UserLevel)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 				Message: errx.DbInsertError,
@@ -335,7 +335,7 @@ func AddTutorToUser(ctx *gin.Context) {
 
 	currentTutor, err := GetUserByUserName(tutor)
 
-	//Check if parent is already added to the user
+	//Check if tutor is already added to the user
 	currentTutorAuth, err := authorization.GetUserAuthorization(currentTutor.Id, TutorAuthorizationLevel)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -345,7 +345,7 @@ func AddTutorToUser(ctx *gin.Context) {
 	}
 
 	_, err = GetLink(currentTutorAuth.Id, TutorAuthorizationLevel, StudentTutor)
-	if err == nil {
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: errx.DuplicateUserError,
 		})
