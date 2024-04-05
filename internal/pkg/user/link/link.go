@@ -550,7 +550,7 @@ func SetUserAuthorizationLinkActor(linkId uint, userId uint, level uint) (err er
 	return nil
 }
 
-func CreateNewUser(user user.User) (user user.User, err error) {
+func CreateNewUser(user user.User) (currentUser user.User, err error) {
 
 	user.Email = "parent+1@cend.intern"
 	user.Matricule, err = utils.GenerateMatricule()
@@ -580,7 +580,8 @@ func CreateNewUser(user user.User) (user user.User, err error) {
 	if err != nil {
 		return user, err
 	}
-	return user, nil
+	currentUser = user
+	return currentUser, nil
 }
 
 func GetLink(authId uint, authorizationLevel uint, linkType uint) (link []user.User, err error) {
