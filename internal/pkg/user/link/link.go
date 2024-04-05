@@ -291,7 +291,6 @@ func AddTutorToUser(ctx *gin.Context) {
 		tutor                   user.User
 	)
 
-	time.Sleep(100)
 	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
