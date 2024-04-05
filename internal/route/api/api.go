@@ -187,6 +187,24 @@ var Routes = []docs.RouteDocumentation{
 		Handler:      link.RemoveUserProfessor,
 		NeedToken:    true,
 	},
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/user/student",
+		Handler:      link.AddStudentToLink,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/user/student",
+		Handler:      link.GetStudent,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodDelete,
+		RelativePath: "/user/student",
+		Handler:      link.RemoveStudent,
+		NeedToken:    true,
+	},
 
 	//Cover Presentation routes
 	{

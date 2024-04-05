@@ -29,6 +29,11 @@ func GetTokenString(userId uint) (str string, err error) {
 		return str, err
 	}
 
+	err = database.Get(&tok, `SELECT auth.level as 'user_level' FROM authorization auth WHERE auth.user_id = ?`, userId)
+	if err != nil {
+		return str, err
+	}
+
 	str, err = NewAccessToken(tok)
 	if err != nil {
 		return str, err
