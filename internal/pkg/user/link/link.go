@@ -170,7 +170,7 @@ func AddParentToUser(ctx *gin.Context) {
 	}
 
 	_, err = GetLink(currentParentAuth.Id, ParentAuthorizationLevel, StudentParent)
-	if err == nil {
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: errx.DuplicateUserError,
 		})
@@ -551,7 +551,6 @@ func SetUserAuthorizationLinkActor(linkId uint, userId uint, level uint) (err er
 }
 
 func CreateNewUser(user user.User) (currentUser user.User, err error) {
-
 	user.Email = "parent+1@cend.intern"
 	user.Matricule, err = utils.GenerateMatricule()
 	if err != nil {
@@ -571,7 +570,7 @@ func CreateNewUser(user user.User) (currentUser user.User, err error) {
 		return user, err
 	}
 
-	err = authorization.NewUserAuthorization(user.Id, uint(ParentAuthorizationLevel))
+	err = authorization.NewUserAuthorization(user.Id, ParentAuthorizationLevel)
 	if err != nil {
 		return user, err
 	}
