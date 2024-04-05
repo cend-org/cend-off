@@ -146,15 +146,39 @@ var Routes = []docs.RouteDocumentation{
 		NeedToken:    true,
 	},
 	{
+		HttpMethod:   http.MethodDelete,
+		RelativePath: "/user/parent",
+		Handler:      link.RemoveUserParent,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/user/tutor",
+		Handler:      link.AddTutorToUser,
+		NeedToken:    true,
+	},
+	{
 		HttpMethod:   http.MethodGet,
 		RelativePath: "/user/tutor",
 		Handler:      link.GetUserTutor,
 		NeedToken:    true,
 	},
 	{
+		HttpMethod:   http.MethodDelete,
+		RelativePath: "/user/tutor",
+		Handler:      link.RemoveUserTutor,
+		NeedToken:    true,
+	},
+	{
 		HttpMethod:   http.MethodGet,
 		RelativePath: "/user/professor",
 		Handler:      link.GetUserProfessor,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodDelete,
+		RelativePath: "/user/professor",
+		Handler:      link.RemoveUserProfessor,
 		NeedToken:    true,
 	},
 

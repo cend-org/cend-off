@@ -126,7 +126,7 @@ func AddParentToUser(ctx *gin.Context) {
 		return
 	}
 
-	// Check if parent  doesn't exist in the database based on name and family name then  create a user named parent if nog
+	// Check if parent  doesn't exist in the database based on name and family name then  create a user named parent if not
 	currentParent, err := GetUserByUserName(parent)
 	if currentParent.Id == state.ZERO {
 		//	Create parent with email parent+1@cend.intra
@@ -188,6 +188,54 @@ func AddParentToUser(ctx *gin.Context) {
 	ctx.AbortWithStatusJSON(http.StatusOK, currentParent)
 }
 
+func RemoveUserParent(ctx *gin.Context) {
+	var (
+		parent user.User
+		actor  UserAuthorizationLinkActor
+		tok    *authentication.Token
+		err    error
+	)
+	tok, err = authentication.GetTokenDataFromContext(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+	//Check if user is authorized to delete a parent
+	if tok.UserId == state.ZERO {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+	//Select parent from body
+	err = ctx.ShouldBindJSON(&parent)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.ParseError,
+		})
+		return
+	}
+
+	//Get selected parent user_authorization_link_actor
+	actor, err = GetSelectedUserLinkActor(parent, StudentParent)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbGetError,
+		})
+		return
+	}
+	//Delete selected parent form user_authorization_link_actor
+	err = DeleteUserLinkActor(actor)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbDeleteError,
+		})
+		return
+	}
+}
+
 // Tutor Handler
 
 func GetUserTutor(ctx *gin.Context) {
@@ -235,6 +283,136 @@ func GetUserTutor(ctx *gin.Context) {
 	ctx.AbortWithStatusJSON(http.StatusOK, tutor)
 }
 
+func AddTutorToUser(ctx *gin.Context) {
+	var (
+		err                     error
+		tok                     *authentication.Token
+		userAuthorizationLinkId uint
+		tutor                   user.User
+	)
+
+	time.Sleep(100)
+	tok, err = authentication.GetTokenDataFromContext(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+
+	//check if user is a student
+	if !authorization.IsUserStudent(tok.UserId) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: "User is not a student ",
+		})
+		return
+	}
+
+	err = ctx.ShouldBindJSON(&tutor)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.ParseError,
+		})
+		return
+	}
+
+	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbGetError,
+		})
+		return
+	}
+
+	userAuthorizationLinkId, err = GetUserLink(StudentTutor, auth.Id)
+	if userAuthorizationLinkId == state.ZERO {
+		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentParent, tok.UserId, tok.UserLevel)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.DbInsertError,
+			})
+			return
+		}
+	}
+
+	currentTutor, err := GetUserByUserName(tutor)
+
+	//Check if parent is already added to the user
+	currentTutorAuth, err := authorization.GetUserAuthorization(currentTutor.Id, TutorAuthorizationLevel)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbGetError,
+		})
+		return
+	}
+
+	_, err = GetLink(currentTutorAuth.Id, TutorAuthorizationLevel, StudentTutor)
+	if err == nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DuplicateUserError,
+		})
+		return
+	}
+
+	err = SetUserAuthorizationLinkActor(userAuthorizationLinkId, currentTutor.Id, TutorAuthorizationLevel)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbInsertError,
+		})
+		return
+	}
+
+	ctx.AbortWithStatusJSON(http.StatusOK, currentTutor)
+}
+
+func RemoveUserTutor(ctx *gin.Context) {
+	var (
+		tutor user.User
+		actor UserAuthorizationLinkActor
+		tok   *authentication.Token
+		err   error
+	)
+	tok, err = authentication.GetTokenDataFromContext(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+	//Check if user is authorized to delete a tutor
+	if tok.UserId == state.ZERO {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+	//Select tutor from body
+	err = ctx.ShouldBindJSON(&tutor)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.ParseError,
+		})
+		return
+	}
+
+	//Get selected tutor user_authorization_link_actor
+	actor, err = GetSelectedUserLinkActor(tutor, StudentTutor)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbGetError,
+		})
+		return
+	}
+	//Delete selected tutor form user_authorization_link_actor
+	err = DeleteUserLinkActor(actor)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbDeleteError,
+		})
+		return
+	}
+}
+
 // Professor Handler
 
 func GetUserProfessor(ctx *gin.Context) {
@@ -280,6 +458,54 @@ func GetUserProfessor(ctx *gin.Context) {
 	}
 
 	ctx.AbortWithStatusJSON(http.StatusOK, professor)
+}
+
+func RemoveUserProfessor(ctx *gin.Context) {
+	var (
+		professor user.User
+		actor     UserAuthorizationLinkActor
+		tok       *authentication.Token
+		err       error
+	)
+	tok, err = authentication.GetTokenDataFromContext(ctx)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+	//Check if user is authorized to delete a professor
+	if tok.UserId == state.ZERO {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
+	}
+	//Select professor from body
+	err = ctx.ShouldBindJSON(&professor)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.ParseError,
+		})
+		return
+	}
+
+	//Get selected professor user_authorization_link_actor
+	actor, err = GetSelectedUserLinkActor(professor, StudentProfessor)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbGetError,
+		})
+		return
+	}
+	//Delete selected professor form user_authorization_link_actor
+	err = DeleteUserLinkActor(actor)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbDeleteError,
+		})
+		return
+	}
 }
 
 /*
@@ -371,4 +597,26 @@ func GetUserLink(linkType uint, authorizationId uint) (linkId uint, err error) {
 		return 0, err
 	}
 	return userLink.Id, nil
+}
+
+func GetSelectedUserLinkActor(user user.User, linkType uint) (actor UserAuthorizationLinkActor, err error) {
+	err = database.Get(&actor,
+		`SELECT user_authorization_link_actor.*
+FROM user_authorization_link_actor
+JOIN user_authorization_link ON user_authorization_link_actor.user_authorization_link_id = user_authorization_link.id
+JOIN authorization ON user_authorization_link_actor.authorization_id = authorization.id
+JOIN user ON authorization.user_id = user.id
+WHERE user.family_name = ? AND  user.name = ? AND user_authorization_link.link_type = ?`, user.FamilyName, user.Name, linkType)
+	if err != nil {
+		return actor, err
+	}
+	return actor, nil
+}
+
+func DeleteUserLinkActor(userAuthorizationLinkActor UserAuthorizationLinkActor) (err error) {
+	err = database.Delete(userAuthorizationLinkActor)
+	if err != nil {
+		return err
+	}
+	return nil
 }
