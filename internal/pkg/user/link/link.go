@@ -98,7 +98,7 @@ func AddParentToUser(ctx *gin.Context) {
 		userAuthorizationLinkId uint
 		err                     error
 	)
-
+	time.Sleep(100)
 	// Select User
 
 	tok, err = authentication.GetTokenDataFromContext(ctx)
@@ -130,7 +130,7 @@ func AddParentToUser(ctx *gin.Context) {
 	currentParent, err := GetUserByUserName(parent)
 	if currentParent.Id == state.ZERO {
 		//	Create parent with email parent+1@cend.intra
-		err = CreateNewUser(parent)
+		currentParent, err = CreateNewUser(parent)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 				Message: errx.DbInsertError,
@@ -550,13 +550,37 @@ func SetUserAuthorizationLinkActor(linkId uint, userId uint, level uint) (err er
 	return nil
 }
 
-func CreateNewUser(user user.User) (err error) {
+func CreateNewUser(user user.User) (user user.User, err error) {
+
 	user.Email = "parent+1@cend.intern"
-	_, err = database.InsertOne(user)
+	user.Matricule, err = utils.GenerateMatricule()
 	if err != nil {
-		return err
+		return user, err
 	}
-	return nil
+
+	if user.Name == state.EMPTY {
+		user.Name = user.Matricule
+	}
+
+	if user.NickName == state.EMPTY {
+		user.NickName = user.Matricule
+	}
+
+	user.Id, err = database.InsertOne(user)
+	if err != nil {
+		return user, err
+	}
+
+	err = authorization.NewUserAuthorization(user.Id, uint(ParentAuthorizationLevel))
+	if err != nil {
+		return user, err
+	}
+
+	_, err = authentication.GetTokenString(user.Id)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
 }
 
 func GetLink(authId uint, authorizationLevel uint, linkType uint) (link []user.User, err error) {
