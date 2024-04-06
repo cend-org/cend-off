@@ -314,4 +314,124 @@ values      ('primaire 1'),
             ('secondaire 5'),
             ('Cégep'),
             ('Universités');
+
+--
+--
+--  NEW UPDATES RIGHT HERE
+--
+--
+-- Primaire 1
+insert into subject(education_level_id , name)
+values ((select education.id from education where name = 'primaire 1') , 'Mathématiques'),
+       ((select education.id from education where name = 'primaire 1') , 'Français'),
+       ((select education.id from education where name = 'primaire 1') , 'Anglais'),
+       ((select education.id from education where name = 'primaire 1') , 'Science et technologie'),
+       ((select education.id from education where name = 'primaire 1') , 'Histoire / Géographie'),
+       ((select education.id from education where name = 'primaire 1') , 'Éthique  et culture religieuse'),
+       ((select education.id from education where name = 'primaire 1') , 'Culture et citoyenneté québécoise (CCQ)');
+
+-- Primaire 2
+insert into subject(education_level_id , name)
+values ((select education.id from education where name = 'primaire 2') , 'Mathématiques'),
+       ((select education.id from education where name = 'primaire 2') , 'Français'),
+       ((select education.id from education where name = 'primaire 2') , 'Anglais'),
+       ((select education.id from education where name = 'primaire 2') , 'Science et technologie'),
+       ((select education.id from education where name = 'primaire 2') , 'Histoire / Géographie'),
+       ((select education.id from education where name = 'primaire 2') , 'Éthique  et culture religieuse'),
+       ((select education.id from education where name = 'primaire 2') , 'Culture et citoyenneté québécoise (CCQ)');
+
+-- Primaire 3
+insert into subject(education_level_id , name)
+values ((select education.id from education where name = 'primaire 3') , 'Mathématiques'),
+       ((select education.id from education where name = 'primaire 3') , 'Français'),
+       ((select education.id from education where name = 'primaire 3') , 'Anglais'),
+       ((select education.id from education where name = 'primaire 3') , 'Science et technologie'),
+       ((select education.id from education where name = 'primaire 3') , 'Histoire / Géographie'),
+       ((select education.id from education where name = 'primaire 3') , 'Éthique  et culture religieuse'),
+       ((select education.id from education where name = 'primaire 3') , 'Culture et citoyenneté québécoise (CCQ)');
+
+-- Primaire 4
+insert into subject(education_level_id , name)
+values ((select education.id from education where name = 'primaire 4') , 'Mathématiques'),
+       ((select education.id from education where name = 'primaire 4') , 'Français'),
+       ((select education.id from education where name = 'primaire 4') , 'Anglais'),
+       ((select education.id from education where name = 'primaire 4') , 'Science et technologie'),
+       ((select education.id from education where name = 'primaire 4') , 'Histoire / Géographie'),
+       ((select education.id from education where name = 'primaire 4') , 'Éthique  et culture religieuse'),
+       ((select education.id from education where name = 'primaire 4') , 'Culture et citoyenneté québécoise (CCQ)');
+
+-- Primaire 5
+insert into subject(education_level_id , name)
+values ((select education.id from education where name = 'primaire 5') , 'Mathématiques'),
+       ((select education.id from education where name = 'primaire 5') , 'Français'),
+       ((select education.id from education where name = 'primaire 5') , 'Anglais'),
+       ((select education.id from education where name = 'primaire 5') , 'Science et technologie'),
+       ((select education.id from education where name = 'primaire 5') , 'Histoire / Géographie'),
+       ((select education.id from education where name = 'primaire 5') , 'Éthique  et culture religieuse'),
+       ((select education.id from education where name = 'primaire 5') , 'Culture et citoyenneté québécoise (CCQ)');
+
+-- Primaire 6
+insert into subject(education_level_id , name)
+values ((select education.id from education where name = 'primaire 6') , 'Mathématiques'),
+       ((select education.id from education where name = 'primaire 6') , 'Français'),
+       ((select education.id from education where name = 'primaire 6') , 'Anglais'),
+       ((select education.id from education where name = 'primaire 6') , 'Science et technologie'),
+       ((select education.id from education where name = 'primaire 6') , 'Histoire / Géographie'),
+       ((select education.id from education where name = 'primaire 6') , 'Éthique  et culture religieuse'),
+       ((select education.id from education where name = 'primaire 6') , 'Culture et citoyenneté québécoise (CCQ)');
+
+-- Secondaire 1
+insert into subject(education_level_id , name)
+values ((select education.id from education where name = 'secondaire 1') , 'Français'),
+       ((select education.id from education where name = 'secondaire 1') , 'Histoire / Géographie'),
+       ((select education.id from education where name = 'secondaire 1') , 'Sciences et technologies'),
+       ((select education.id from education where name = 'secondaire 1') , 'Monde contemporain'),
+       ((select education.id from education where name = 'secondaire 1') , 'Education financière'),
+       ((select education.id from education where name = 'secondaire 1') , 'Éthique et culture religieuse'),
+       ((select education.id from education where name = 'secondaire 1') , 'Mathématiques');
+
+-- Secondaire 2
+insert into subject(education_level_id , name)
+values ((select education.id from education where name = 'secondaire 2') , 'Français'),
+       ((select education.id from education where name = 'secondaire 2') , 'Histoire / Géographie'),
+       ((select education.id from education where name = 'secondaire 2') , 'Sciences et technologies'),
+       ((select education.id from education where name = 'secondaire 2') , 'Monde contemporain'),
+       ((select education.id from education where name = 'secondaire 2') , 'Education financière'),
+       ((select education.id from education where name = 'secondaire 2') , 'Éthique et culture religieuse'),
+       ((select education.id from education where name = 'secondaire 2') , 'Mathématiques');
+
+-- secondaire 3
+insert into subject(education_level_id, name)
+values ((select education.id from education where name = 'secondaire 3'), 'Sciences ST'),
+       ((select education.id from education where name = 'secondaire 3'), 'Sciences ATS');
+
+-- secondaire 4
+insert into subject(education_level_id, name)
+values ((select education.id from education where name = 'secondaire 4'), 'Mathématiques CST'),
+       ((select education.id from education where name = 'secondaire 4'), 'Mathématiques SN'),
+       ((select education.id from education where name = 'secondaire 4'), 'Mathématiques TS'),
+       ((select education.id from education where name = 'secondaire 4'), 'Sciences STE'),
+       ((select education.id from education where name = 'secondaire 4'), 'Sciences SE');
+
+-- secondaire 5
+insert into subject(education_level_id, name)
+values ((select education.id from education where name = 'secondaire 5'), 'Mathématiques CST'),
+       ((select education.id from education where name = 'secondaire 5'), 'Mathématiques SN'),
+       ((select education.id from education where name = 'secondaire 5'), 'Mathématiques TS'),
+       ((select education.id from education where name = 'secondaire 5'), 'Chimie'),
+       ((select education.id from education where name = 'secondaire 5'), 'Physique');
+
+-- Cégep
+insert into subject(education_level_id, name)
+values ((select education.id from education where name = 'cégep'), 'Mathématiques'),
+       ((select education.id from education where name = 'cégep'), 'Chimie'),
+       ((select education.id from education where name = 'cégep'), 'Biologie'),
+       ((select education.id from education where name = 'cégep'), 'Physique');
+
+-- Universite
+insert into subject(education_level_id, name)
+values ((select education.id from education where name = 'Universités'), 'Chimie'),
+       ((select education.id from education where name = 'Universités'), 'Biologie'),
+       ((select education.id from education where name = 'Universités'), 'Physique');
+
 -- *
