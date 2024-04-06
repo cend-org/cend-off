@@ -298,3 +298,20 @@ create table subject (
 alter table subject
     add constraint subject_education_id_fk
         foreign key (education_level_id) references education (id);
+
+-- update 06/04/2024
+insert into education (name)
+values      ('primaire 1'),
+            ('primaire 2'),
+            ('primaire 3'),
+            ('primaire 4'),
+            ('primaire 5'),
+            ('primaire 6'),
+            ('secondaire 1'),
+            ('secondaire 2'),
+            ('secondaire 3'),
+            ('secondaire 4'),
+            ('secondaire 5'),
+            ('Cégep'),
+            ('Universités');
+-- *
