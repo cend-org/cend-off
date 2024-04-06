@@ -5,10 +5,12 @@ import (
 	"duval/internal/pkg/user/authorization"
 	"duval/internal/utils"
 	"duval/internal/utils/errx"
+	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -29,7 +31,6 @@ func RateUser(ctx *gin.Context) {
 		studentMark UserMark
 		err         error
 	)
-
 	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -80,8 +81,43 @@ func RateUser(ctx *gin.Context) {
 }
 
 func GetUserAverageMark(ctx *gin.Context) {
+	var (
+		userMarks []UserMark
+		err       error
+		totalMark uint
+	)
 
-	ctx.AbortWithStatus(http.StatusOK)
+	userId, err := strconv.Atoi(ctx.Param("userId"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.ParseError,
+		})
+		return
+	}
+
+	err = database.GetMany(&userMarks, `SELECT user_mark.* FROM user_mark WHERE user_id = ?`, userId)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbGetError,
+		})
+		return
+	}
+
+	totalAuthor := len(userMarks)
+	if totalAuthor == state.ZERO {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(errors.New("not rated ")),
+		})
+		return
+	}
+
+	for _, userMark := range userMarks {
+		totalMark = totalMark + userMark.AuthorMark
+	}
+	averageMark := totalMark / (uint(totalAuthor))
+	ctx.AbortWithStatusJSON(http.StatusOK, gin.H{
+		"average_mark": averageMark,
+	})
 }
 
 func GetUserMarkComment(ctx *gin.Context) {
@@ -119,6 +155,7 @@ func GetUserMarkComment(ctx *gin.Context) {
 	ctx.AbortWithStatusJSON(http.StatusOK, mark)
 }
 
+//
 /*
 	UTILS
 */
