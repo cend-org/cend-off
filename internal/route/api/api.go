@@ -363,6 +363,7 @@ var Routes = []docs.RouteDocumentation{
 		Handler:      planning.RemoveUserFromPlanning,
 		NeedToken:    true,
 	},
+	//Education Routes
 	{
 		HttpMethod:   http.MethodGet,
 		RelativePath: "/education",
@@ -374,5 +375,30 @@ var Routes = []docs.RouteDocumentation{
 		RelativePath: "/education/:edu",
 		Handler:      education.GetSubjects,
 		NeedToken:    false,
+	},
+	//Education Level Routes'
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/user/education/",
+		Handler:      education.SetUserEducationLevel,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/user/education",
+		Handler:      education.GetUserEducationLevel,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodPut,
+		RelativePath: "/user/education/",
+		Handler:      education.UpdateUserEducationLevel,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/user/subject",
+		Handler:      education.GetUserSubjects,
+		NeedToken:    true,
 	},
 }
