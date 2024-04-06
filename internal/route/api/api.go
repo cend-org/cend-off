@@ -37,6 +37,12 @@ var Routes = []docs.RouteDocumentation{
 	},
 	{
 		HttpMethod:   http.MethodPost,
+		RelativePath: "/register/:as/:email",
+		Handler:      user.RegisterByEmail,
+		NeedToken:    false,
+	},
+	{
+		HttpMethod:   http.MethodPost,
 		RelativePath: "/code/send",
 		Handler:      user.SendUserEmailValidationCode,
 		NeedToken:    true,
