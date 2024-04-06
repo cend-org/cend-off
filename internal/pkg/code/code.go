@@ -17,7 +17,7 @@ type Code struct {
 
 func NewUserVerificationCode(userId uint) (err error) {
 	var code Code
-	code.VerificationCode = rand.Intn(99999)
+	code.VerificationCode = rand.Intn(9999)
 	code.UserId = userId
 
 	_, err = database.InsertOne(code)
