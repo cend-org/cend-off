@@ -4,6 +4,7 @@ import (
 	"duval/internal/authentication"
 	"duval/internal/pkg/address"
 	"duval/internal/pkg/education"
+	"duval/internal/pkg/mark"
 	"duval/internal/pkg/media"
 	"duval/internal/pkg/media/cover"
 	cvtype "duval/internal/pkg/media/cv"
@@ -401,4 +402,25 @@ var Routes = []docs.RouteDocumentation{
 		Handler:      education.GetUserSubjects,
 		NeedToken:    true,
 	},
+
+	//user_mark Routes
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/user_mark",
+		Handler:      mark.RateUser,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/user_mark/:userId",
+		Handler:      mark.GetUserAverageMark,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/user_mark/comment",
+		Handler:      mark.GetUserMarkComment,
+		NeedToken:    true,
+	},
+   
 }

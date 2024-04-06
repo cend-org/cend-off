@@ -474,4 +474,27 @@ alter table user_education_level_subject
     add constraint user_education_level_subject_subject_id_fk
         foreign key (subject_id) references subject (id);
 
+--
+--
+--  ADD TABLE USER_MARK
+--
+--
+create table user_mark (
+                           id int primary key auto_increment,
+                           created_at   datetime     default CURRENT_TIMESTAMP ,
+                           updated_at   datetime     default CURRENT_TIMESTAMP ,
+                           deleted_at   datetime     default '0000-00-00 00:00:00',
+                           user_id int default 0,
+                           author_id int default 0,
+                           author_comment varchar(255) default '',
+                           author_mark int default 0
+);
+
+alter table user_mark
+    add constraint user_mark_user_id_fk
+        foreign key (user_id) references user (id);
+
+alter table user_mark
+    add constraint user_mark_author_id_fk
+        foreign key (author_id) references user (id);
 -- *
