@@ -106,7 +106,7 @@ func GetUserAverageMark(ctx *gin.Context) {
 	totalAuthor := len(userMarks)
 	if totalAuthor == state.ZERO {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(errors.New("not rated yet")),
+			Message: errx.Lambda(errors.New("not rated ")),
 		})
 		return
 	}
