@@ -518,6 +518,96 @@ func ActivateUser(ctx *gin.Context) {
 	return
 }
 
+func RegisterByEmail(ctx *gin.Context) {
+	var (
+		user User
+		err  error
+	)
+
+	authorizationLevel, err := strconv.Atoi(ctx.Param("as"))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+	user.Email = ctx.Param("email")
+	if !utils.IsValidEmail(user.Email) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.InvalidEmailError,
+		})
+		return
+	}
+
+	_, err = GetUserByEmail(user.Email)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	if user.Id > state.ZERO {
+		ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse{
+			Message: errx.DuplicateUserError,
+		})
+		return
+	}
+
+	user.Matricule, err = utils.GenerateMatricule()
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	if user.Name == state.EMPTY {
+		user.Name = user.Matricule
+	}
+
+	if user.NickName == state.EMPTY {
+		user.NickName = user.Matricule
+	}
+
+	user.Id, err = database.InsertOne(user)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.DbInsertError,
+		})
+		return
+	}
+
+	err = authorization.NewUserAuthorization(user.Id, uint(authorizationLevel))
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	tokenStr, err := authentication.GetTokenString(user.Id)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	err = code.NewUserVerificationCode(user.Id)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(err),
+		})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"token": tokenStr,
+	})
+	return
+}
+
 /*
 
 	UTILITIES
