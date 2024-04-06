@@ -485,7 +485,7 @@ create table user_mark (
                            updated_at   datetime     default CURRENT_TIMESTAMP ,
                            deleted_at   datetime     default '0000-00-00 00:00:00',
                            user_id int default 0,
-                           author_id int default 0,
+                           author_id int default 0 unique ,
                            author_comment varchar(255) default '',
                            author_mark int default 0
 );
