@@ -269,13 +269,3 @@ create table calendar_planning_actor (
     foreign key (authorization_id) references authorization(id),
     foreign key (calendar_planning_id) references calendar_planning(id)
 );
-
--- update 26/03/2024
-create table education (
-    id int primary key auto_increment,
-    created_at   datetime     default CURRENT_TIMESTAMP ,
-    updated_at   datetime     default CURRENT_TIMESTAMP ,
-    deleted_at   datetime     default '0000-00-00 00:00:00',
-    level_of_study varchar (12) default ''
-);
--- *
