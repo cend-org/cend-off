@@ -2,7 +2,6 @@ package mark
 
 import (
 	"duval/internal/authentication"
-	"duval/internal/pkg/user"
 	"duval/internal/pkg/user/authorization"
 	"duval/internal/utils"
 	"duval/internal/utils/errx"
@@ -29,7 +28,7 @@ func RateUser(ctx *gin.Context) {
 		studentMark UserMark
 		err         error
 	)
-
+	time.Sleep(1000)
 	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -79,12 +78,9 @@ func GetUserAverageMark(ctx *gin.Context) {
 
 func GetUserMarkComment(ctx *gin.Context) {
 	var (
-		tok         *authentication.Token
-		currentUser user.User
-		err         error
-		mark        UserMark
-		userId      uint
-		authorId    uint
+		tok  *authentication.Token
+		err  error
+		mark []UserMark
 	)
 	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
@@ -93,19 +89,18 @@ func GetUserMarkComment(ctx *gin.Context) {
 		})
 		return
 	}
-	err = ctx.ShouldBindJSON(&currentUser)
 
-	if authorization.IsUserStudent(tok.UserId) {
-		userId = tok.UserId
-		authorId = currentUser.Id
+	if authorization.IsUserStudent(tok.UserId) || authorization.IsUserParent(tok.UserId) {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.UnAuthorizedError,
+		})
+		return
 	}
 
-	if !authorization.IsUserStudent(tok.UserId) {
-		userId = currentUser.Id
-		authorId = tok.UserId
-	}
-
-	err = database.Get(&mark, `SELECT user_mark.author_comment as 'author_comment' FROM user_mark WHERE user_mark.user_id = ? AND user_mark.author_id`, userId, authorId)
+	err = database.GetMany(&mark,
+		`SELECT user_mark.* 
+			FROM user_mark
+			WHERE user_mark.author_id= ?;`, tok.UserId)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: errx.DbGetError,

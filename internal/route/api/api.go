@@ -391,7 +391,7 @@ var Routes = []docs.RouteDocumentation{
 	},
 	{
 		HttpMethod:   http.MethodGet,
-		RelativePath: "/user_mark",
+		RelativePath: "/user_mark/comment",
 		Handler:      mark.GetUserMarkComment,
 		NeedToken:    true,
 	},
