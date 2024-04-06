@@ -364,6 +364,7 @@ var Routes = []docs.RouteDocumentation{
 		Handler:      planning.RemoveUserFromPlanning,
 		NeedToken:    true,
 	},
+	//Education Routes
 	{
 		HttpMethod:   http.MethodGet,
 		RelativePath: "/education",
@@ -376,6 +377,32 @@ var Routes = []docs.RouteDocumentation{
 		Handler:      education.GetSubjects,
 		NeedToken:    false,
 	},
+	//Education Level Routes'
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/user/education/",
+		Handler:      education.SetUserEducationLevel,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/user/education",
+		Handler:      education.GetUserEducationLevel,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodPut,
+		RelativePath: "/user/education/",
+		Handler:      education.UpdateUserEducationLevel,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/user/subject",
+		Handler:      education.GetUserSubjects,
+		NeedToken:    true,
+	},
+
 	//user_mark Routes
 	{
 		HttpMethod:   http.MethodPost,
@@ -385,7 +412,7 @@ var Routes = []docs.RouteDocumentation{
 	},
 	{
 		HttpMethod:   http.MethodGet,
-		RelativePath: "/user_mark",
+		RelativePath: "/user_mark/:userId",
 		Handler:      mark.GetUserAverageMark,
 		NeedToken:    true,
 	},
@@ -395,4 +422,5 @@ var Routes = []docs.RouteDocumentation{
 		Handler:      mark.GetUserMarkComment,
 		NeedToken:    true,
 	},
+   
 }
