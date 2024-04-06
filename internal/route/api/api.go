@@ -3,7 +3,6 @@ package api
 import (
 	"duval/internal/authentication"
 	"duval/internal/pkg/address"
-	"duval/internal/pkg/education"
 	"duval/internal/pkg/media"
 	"duval/internal/pkg/media/cover"
 	cvtype "duval/internal/pkg/media/cv"
