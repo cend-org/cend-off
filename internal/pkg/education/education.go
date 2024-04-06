@@ -7,6 +7,7 @@ import (
 	"duval/internal/utils/errx"
 	"duval/internal/utils/state"
 	"duval/pkg/database"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
@@ -107,11 +108,14 @@ func SetUserEducationLevel(ctx *gin.Context) {
 	}
 
 	if !authorization.IsUserStudent(tok.UserId) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Not a student",
-		})
-		return
+		if !authorization.IsUserProfessor(tok.UserId) {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.Lambda(errors.New("not as student or professor")),
+			})
+			return
+		}
 	}
+
 	err = ctx.ShouldBindJSON(&subject)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -174,6 +178,7 @@ func UpdateUserEducationLevel(ctx *gin.Context) {
 		subject                          Subject
 		err                              error
 	)
+
 	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -255,14 +260,36 @@ func GetUserSubjects(ctx *gin.Context) {
 		return
 	}
 
-	err = database.GetMany(&subjects, `SELECT subject.* FROM subject
-			JOIN user_education_level_subject  ON subject.id = user_education_level_subject.subject_id
-			WHERE user_education_level_subject.user_id = ?`, tok.UserId)
-	if err != nil {
+	if authorization.IsUserParent(tok.UserId) || authorization.IsUserTutor(tok.UserId) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGetError,
+			Message: errx.UnAuthorizedError,
 		})
 		return
+	}
+
+	if authorization.IsUserStudent(tok.UserId) {
+		err = database.GetMany(&subjects, `SELECT subject.* 
+											FROM subject
+											WHERE subject.education_level_id = (SELECT education.id FROM education  JOIN subject ON education.id  =  subject.education_level_id JOIN user_education_level_subject ON subject.id = user_education_level_subject.subject_id
+                                   			WHERE user_education_level_subject.user_id = ?)`, tok.UserId)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.DbGetError,
+			})
+			return
+		}
+	}
+
+	if authorization.IsUserProfessor(tok.UserId) {
+		err = database.GetMany(&subjects, `SELECT subject.* FROM subject
+			JOIN user_education_level_subject  ON subject.id = user_education_level_subject.subject_id
+			WHERE user_education_level_subject.user_id = ?`, tok.UserId)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.DbGetError,
+			})
+			return
+		}
 	}
 
 	ctx.AbortWithStatusJSON(http.StatusOK, subjects)
