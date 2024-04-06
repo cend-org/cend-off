@@ -6,6 +6,7 @@ import (
 	"duval/internal/utils"
 	"duval/internal/utils/errx"
 	"duval/pkg/database"
+	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"time"
@@ -59,6 +60,13 @@ func RateUser(ctx *gin.Context) {
 		return
 	}
 
+	if studentMark.AuthorMark > 5 {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: errx.Lambda(errors.New("value exceed 5 star")),
+		})
+		return
+	}
+
 	studentMark.AuthorId = tok.UserId
 	err = SetUserMark(studentMark)
 	if err != nil {
@@ -68,7 +76,7 @@ func RateUser(ctx *gin.Context) {
 		return
 	}
 
-	ctx.AbortWithStatus(http.StatusOK)
+	ctx.AbortWithStatusJSON(http.StatusOK, studentMark)
 }
 
 func GetUserAverageMark(ctx *gin.Context) {
