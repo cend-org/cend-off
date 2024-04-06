@@ -28,7 +28,7 @@ func RateUser(ctx *gin.Context) {
 		studentMark UserMark
 		err         error
 	)
-	time.Sleep(1000)
+
 	tok, err = authentication.GetTokenDataFromContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
