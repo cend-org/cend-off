@@ -448,4 +448,30 @@ alter table user add (
     additional_description varchar(255) default '' ,
     add_on_title varchar(100) default  ''
     );
+
+--
+--
+--  INDIRECTION TABLE BETWEEN SUBJECT AND USER
+--
+--
+create table user_education_level_subject
+(
+    id int primary key auto_increment,
+    created_at   datetime     default CURRENT_TIMESTAMP ,
+    updated_at   datetime     default CURRENT_TIMESTAMP ,
+    deleted_at   datetime     default '0000-00-00 00:00:00',
+    user_id int default 0 unique,
+    subject_id int default 0 unique
+);
+
+
+alter table user_education_level_subject
+    add constraint user_education_level_subject_user_id_fk
+        foreign key (user_id) references user (id);
+
+
+alter table user_education_level_subject
+    add constraint user_education_level_subject_subject_id_fk
+        foreign key (subject_id) references subject (id);
+
 -- *
