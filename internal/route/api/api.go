@@ -290,11 +290,4 @@ var Routes = []docs.RouteDocumentation{
 		Handler:      planning.RemoveUserFromPlanning,
 		NeedToken:    true,
 	},
-	//Education routes
-	{
-		HttpMethod:   http.MethodPost,
-		RelativePath: "/education",
-		Handler:      education.InsertLevelOfStudy,
-		NeedToken:    false,
-	},
 }
