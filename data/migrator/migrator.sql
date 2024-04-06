@@ -434,4 +434,18 @@ values ((select education.id from education where name = 'Universités'), 'Chimi
        ((select education.id from education where name = 'Universités'), 'Biologie'),
        ((select education.id from education where name = 'Universités'), 'Physique');
 
+--
+--
+--  ADD EXTRA FIELD TO USER
+--
+--
+
+alter table user add (
+    description varchar(500) default '',
+    cover_text varchar(255) default  '',
+    profile varchar(255) default '',
+    experience_detail varchar(500) default '',
+    additional_description varchar(255) default '' ,
+    add_on_title varchar(100) default  ''
+    );
 -- *
