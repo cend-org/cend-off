@@ -3,6 +3,7 @@ package api
 import (
 	"duval/internal/authentication"
 	"duval/internal/pkg/address"
+	"duval/internal/pkg/education"
 	"duval/internal/pkg/media"
 	"duval/internal/pkg/media/cover"
 	cvtype "duval/internal/pkg/media/cv"
@@ -289,5 +290,12 @@ var Routes = []docs.RouteDocumentation{
 		RelativePath: "/calendar/:calendar_id/actor",
 		Handler:      planning.RemoveUserFromPlanning,
 		NeedToken:    true,
+	},
+	//Education routes
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/education",
+		Handler:      education.InsertLevelOfStudy,
+		NeedToken:    false,
 	},
 }
