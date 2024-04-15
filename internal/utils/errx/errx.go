@@ -2,12 +2,13 @@ package errx
 
 import (
 	"duval/internal/utils/note"
+	"errors"
 	"fmt"
 )
 
-func Lambda(err error) string {
-	fmt.Println(err)
-	return "Something went wrong"
+func Lambda(err error) error {
+	err = errors.New(fmt.Sprintf("Something went wrong : %v", err))
+	return err
 }
 
 var UnAuthorizedError = note.UnAuthorizedError
@@ -29,6 +30,6 @@ var (
 	DbUpdateError = note.DatabaseUpdateOperationError
 )
 
-const (
+var (
 	NeedPasswordError = note.StatusNeedPasswordError
 )
