@@ -1,6 +1,7 @@
 package main
 
 import (
+	"duval/internal/authentication"
 	"duval/internal/graph"
 	"duval/pkg/database"
 	"log"
@@ -9,6 +10,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/go-chi/chi"
 	"github.com/jmoiron/sqlx"
 	"github.com/rs/cors"
 )
@@ -16,10 +18,9 @@ import (
 const defaultPort = "8080"
 
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = defaultPort
-	}
+
+	router := chi.NewRouter()
+	router.Use(authentication.AuthMiddleware())
 
 	defer func(Client *sqlx.DB) {
 		err := Client.Close()
@@ -27,6 +28,11 @@ func main() {
 			return
 		}
 	}(database.Client)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = defaultPort
+	}
 
 	c := cors.New(cors.Options{
 		AllowedOrigins:   []string{"*"},
@@ -36,9 +42,9 @@ func main() {
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 
-	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
-	http.Handle("/query", c.Handler(srv))
+	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
+	router.Handle("/query", c.Handler(srv))
 
 	log.Printf("connect to http://localhost:%s/ for GraphQL playground", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Fatal(http.ListenAndServe(":"+port, router))
 }

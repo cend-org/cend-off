@@ -6,6 +6,7 @@ require (
 	github.com/99designs/gqlgen v0.17.45
 	github.com/BurntSushi/toml v1.3.2
 	github.com/fatih/structs v1.1.0
+	github.com/go-chi/chi v1.5.5
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/iancoleman/strcase v0.3.0
