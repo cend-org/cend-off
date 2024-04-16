@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"database/sql"
 	"duval/internal/authentication"
 	"duval/internal/code"
@@ -24,7 +25,7 @@ const (
 	StatusActive = 4
 )
 
-func CreateUser(input *model.NewUserInput, userType *int) (string, error) {
+func Register(input *model.NewUserInput, userType *int) (string, error) {
 	var (
 		user               model.User
 		err                error
@@ -92,12 +93,43 @@ func CreateUser(input *model.NewUserInput, userType *int) (string, error) {
 	return tokenStr, nil
 }
 
+func MyProfile(ctx *context.Context) (*model.User, error) {
+	var (
+		tok  *authentication.Token
+		err  error
+		user model.User
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	if err != nil {
+		return &user, errx.Lambda(err)
+	}
+
+	user, err = GetUserWithId(tok.UserId)
+	if err != nil {
+		return &user, errx.Lambda(err)
+	}
+
+	return &user, nil
+}
+
 /*
-UTILS
+
+	UTILITIES
+
 */
 
 func GetUserByEmail(email string) (user model.User, err error) {
 	err = database.Get(&user, `SELECT * FROM user WHERE email = ?`, email)
+	if err != nil {
+		return user, err
+	}
+
+	return user, err
+}
+
+func GetUserWithId(id uint) (user model.User, err error) {
+	err = database.Get(&user, `SELECT * FROM user WHERE id = ?`, id)
 	if err != nil {
 		return user, err
 	}

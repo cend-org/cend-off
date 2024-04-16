@@ -1,0 +1,111 @@
+# User type
+scalar Time
+
+type User {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    Name: String!
+    FamilyName: String!
+    NickName: String!
+    Email: String!
+    Matricule: String!
+    Age: Int!
+    BirthDate: Time!
+    Sex: Int!
+    Lang: Int!
+    Status: Int!
+    ProfileImageXid: String!
+    Description: String!
+    CoverText: String!
+    Profile: String!
+    ExperienceDetail: String!
+    AdditionalDescription: String!
+    AddOnTitle: String!
+}
+
+# Input
+
+input NewUserInput {
+    name: String!
+    familyName: String!
+    nickName: String
+    email: String!
+    matricule: String
+    age: Int
+    birthDate: Time!
+    sex: Int!
+    lang: Int!
+}
+
+input UserLogin {
+    email: String!
+    password: String!
+}
+
+input UpdateUser {
+    idUser: String!
+    firstName: String
+    lastName: String
+    email: String
+    password: String
+}
+
+# Authorization type
+
+type Authorization {
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    userId: ID!
+    level: Int!
+}
+
+
+type UserAuthorizationLink {
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    linkType: Int!
+    actors: [UserAuthorizationLinkActor]!
+}
+
+type UserAuthorizationLinkActor {
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    userAuthorizationLink: UserAuthorizationLink!
+    authorizationId: Int!
+}
+
+# Password type
+
+type Password {
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    userId: ID!
+    psw: String!
+    contentHash: String!
+}
+
+# ALL QUERIES
+type Query {
+    userAuthorizationLink(id: ID!): UserAuthorizationLink
+    userAuthorizationLinks: [UserAuthorizationLink!]!
+    #    USER QUERIES
+    myProfile: User!
+
+}
+
+# ALL MUTATIONS
+
+type Mutation {
+    #    USER MUTATIONS
+    register(input: NewUserInput! , type: Int!) : String!
+}

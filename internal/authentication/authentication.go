@@ -1,10 +1,12 @@
 package authentication
 
 import (
+	"context"
 	"duval/internal/configuration"
 	"duval/pkg/database"
-
+	"errors"
 	"github.com/golang-jwt/jwt/v5"
+	"strings"
 )
 
 type Auth struct {
@@ -39,20 +41,25 @@ func GetTokenString(userId uint) (str string, err error) {
 	return str, err
 }
 
-//func GetTokenDataFromContext(ctx *context.Context) (tok *Token, err error) {
-//	tokenString := ctx.GetHeader("Authorization")
-//	if len(strings.TrimSpace(tokenString)) == 0 {
-//		return nil, errors.New("bad header value given")
-//	}
-//
-//	bearer := strings.Split(tokenString, " ")
-//	if len(bearer) != 2 {
-//		return nil, errors.New("incorrectly formatted authorization header")
-//	}
-//
-//	return ParseAccessToken(bearer[1]), err
-//}
+func GetTokenDataFromContext(ctx context.Context) (tok *Token, err error) {
+	// Assuming the token string is stored in the context with the key "Authorization"
+	tokenString, ok := ctx.Value("Authorization").(string)
+	if !ok || len(strings.TrimSpace(tokenString)) == 0 {
+		return nil, errors.New("bad header value given")
+	}
 
+	bearer := strings.Split(tokenString, " ")
+	if len(bearer) != 2 || bearer[0] != "Bearer" {
+		return nil, errors.New("incorrectly formatted authorization header")
+	}
+
+	tok, err = ParseAccessToken(bearer[1])
+	if err != nil {
+		return nil, err
+	}
+
+	return tok, nil
+}
 func NewAccessToken(claims Token) (string, error) {
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
@@ -65,14 +72,20 @@ func NewRefreshToken(claims jwt.RegisteredClaims) (string, error) {
 	return refreshToken.SignedString([]byte(configuration.App.TokenSecret))
 }
 
-func ParseAccessToken(accessToken string) *Token {
-	parsedAccessToken, _ := jwt.ParseWithClaims(accessToken, &Token{}, func(token *jwt.Token) (any, error) {
+func ParseAccessToken(accessToken string) (*Token, error) {
+	parsedAccessToken, err := jwt.ParseWithClaims(accessToken, &Token{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte(configuration.App.TokenSecret), nil
 	})
+	if err != nil {
+		return nil, err
+	}
 
-	return parsedAccessToken.Claims.(*Token)
+	if claims, ok := parsedAccessToken.Claims.(*Token); ok && parsedAccessToken.Valid {
+		return claims, nil
+	} else {
+		return nil, errors.New("invalid token")
+	}
 }
-
 func ParseRefreshToken(refreshToken string) *jwt.RegisteredClaims {
 	parsedRefreshToken, _ := jwt.ParseWithClaims(refreshToken, &jwt.RegisteredClaims{}, func(token *jwt.Token) (any, error) {
 		return []byte(configuration.App.TokenSecret), nil

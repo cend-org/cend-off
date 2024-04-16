@@ -2,7 +2,6 @@ package main
 
 import (
 	"duval/internal/graph"
-	"duval/internal/graph/resolver"
 	"duval/pkg/database"
 	"log"
 	"net/http"
@@ -35,7 +34,7 @@ func main() {
 		Debug:            false,
 	})
 
-	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &resolver.Resolver{}}))
+	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", c.Handler(srv))
