@@ -3,7 +3,7 @@
 scalar Time
 
 type Mutation {
-    register(input: NewUserInput!) : String!
+    register(input: NewUserInput! , type: Int!) : String!
 }
 
 # Input

@@ -63,7 +63,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		Register func(childComplexity int, input model.NewUserInput) int
+		Register func(childComplexity int, input model.NewUserInput, typeArg int) int
 	}
 
 	Password struct {
@@ -107,7 +107,7 @@ type AuthorizationResolver interface {
 	Level(ctx context.Context, obj *model.Authorization) (int, error)
 }
 type MutationResolver interface {
-	Register(ctx context.Context, input model.NewUserInput) (string, error)
+	Register(ctx context.Context, input model.NewUserInput, typeArg int) (string, error)
 }
 type PasswordResolver interface {
 	ID(ctx context.Context, obj *model.Password) (int, error)
@@ -206,7 +206,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.Register(childComplexity, args["input"].(model.NewUserInput)), true
+		return e.complexity.Mutation.Register(childComplexity, args["input"].(model.NewUserInput), args["type"].(int)), true
 
 	case "Password.contentHash":
 		if e.complexity.Password.ContentHash == nil {
@@ -501,6 +501,15 @@ func (ec *executionContext) field_Mutation_register_args(ctx context.Context, ra
 		}
 	}
 	args["input"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["type"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("type"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["type"] = arg1
 	return args, nil
 }
 
@@ -847,7 +856,7 @@ func (ec *executionContext) _Mutation_register(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().Register(rctx, fc.Args["input"].(model.NewUserInput))
+		return ec.resolvers.Mutation().Register(rctx, fc.Args["input"].(model.NewUserInput), fc.Args["type"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

@@ -13,8 +13,8 @@ import (
 )
 
 // Register is the resolver for the register field.
-func (r *mutationResolver) Register(ctx context.Context, input model.NewUserInput) (string, error) {
-	return user.CreateUser(&input)
+func (r *mutationResolver) Register(ctx context.Context, input model.NewUserInput, typeArg int) (string, error) {
+	return user.CreateUser(&input, &typeArg)
 }
 
 // Age is the resolver for the age field.
