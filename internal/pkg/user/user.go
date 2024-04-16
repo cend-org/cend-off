@@ -11,6 +11,7 @@ import (
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
+	"time"
 )
 
 const (
@@ -31,6 +32,14 @@ func CreateUser(input *model.NewUserInput) (string, error) {
 		tokenStr           string
 		authorizationLevel int
 	)
+	time.Sleep(100)
+	user.Email = input.Email
+	user.Name = input.Name
+	user.FamilyName = input.FamilyName
+	user.NickName = input.NickName
+	user.BirthDate = input.BirthDate
+	user.Sex = input.Sex
+	user.Lang = input.Lang
 
 	if !utils.IsValidEmail(user.Email) {
 		return "", errx.InvalidEmailError

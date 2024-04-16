@@ -1,0 +1,34 @@
+# User type
+
+scalar Time
+
+type Mutation {
+    register(input: NewUserInput!) : String!
+}
+
+# Input
+
+input NewUserInput {
+    name: String!
+    familyName: String!
+    nickName: String
+    email: String!
+    matricule: String
+    age: Int
+    birthDate: Time!
+    sex: Int!
+    lang: Int!
+}
+
+input UserLogin {
+    email: String!
+    password: String!
+}
+
+input UpdateUser {
+    idUser: String!
+    firstName: String
+    lastName: String
+    email: String
+    password: String
+}
