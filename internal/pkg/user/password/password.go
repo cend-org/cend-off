@@ -1,25 +1,15 @@
 package password
 
 import (
+	"duval/internal/graph/model"
 	"duval/internal/utils"
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
 	"strings"
-	"time"
 )
 
-type Password struct {
-	Id          uint       `json:"id"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
-	DeletedAt   *time.Time `json:"deleted_at"`
-	UserId      uint       `json:"user_id"`
-	Psw         string     `json:"psw"`
-	ContentHash string     `json:"hash"`
-}
-
-func CreatePassword(userId uint, password Password) (err error) {
+func CreatePassword(userId uint, password model.Password) (err error) {
 	if strings.TrimSpace(password.Psw) == state.EMPTY {
 		return errors.New("password should not be empty")
 	}
@@ -56,7 +46,7 @@ func GetUserPasswordHash(userId uint) (hash string, err error) {
 }
 
 func IsPasswordValid(userId uint, passwordNaked string) bool {
-	var password Password
+	var password model.Password
 	var err error
 
 	err = database.Get(&password, `SELECT * FROM password WHERE user_id = ? ORDER BY created_at DESC LIMIT 1`, userId)

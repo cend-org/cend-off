@@ -37,3 +37,16 @@ type NewUserInput struct {
 	Sex        int       `json:"sex"`
 	Lang       int       `json:"language"`
 }
+
+type UpdateUser struct {
+	Name                  string `json:"name,omitempty"`
+	FamilyName            string `json:"family_name,omitempty"`
+	NickName              string `json:"nick_name,omitempty"`
+	Email                 string `json:"email,omitempty"`
+	Description           string `json:"description,omitempty"`
+	CoverText             string `json:"cover_text,omitempty"`
+	Profile               string `json:"profile,omitempty"`
+	ExperienceDetail      string `json:"experience_detail,omitempty"`
+	AdditionalDescription string `json:"additional_description,omitempty"`
+	AddOnTitle            string `json:"add_on_title,omitempty"`
+}

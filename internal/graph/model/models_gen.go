@@ -5,15 +5,11 @@ package model
 type Mutation struct {
 }
 
-type Query struct {
+type NewPassword struct {
+	Psw string `json:"psw"`
 }
 
-type UpdateUser struct {
-	IDUser    string  `json:"idUser"`
-	FirstName *string `json:"firstName,omitempty"`
-	LastName  *string `json:"lastName,omitempty"`
-	Email     *string `json:"email,omitempty"`
-	Password  *string `json:"password,omitempty"`
+type Query struct {
 }
 
 type UserLogin struct {

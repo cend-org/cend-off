@@ -7,11 +7,13 @@ import (
 	"duval/internal/code"
 	"duval/internal/graph/model"
 	"duval/internal/pkg/user/authorization"
+	"duval/internal/pkg/user/password"
 	"duval/internal/utils"
 	"duval/internal/utils/errx"
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
+	"time"
 )
 
 const (
@@ -111,6 +113,312 @@ func MyProfile(ctx *context.Context) (*model.User, error) {
 	}
 
 	return &user, nil
+}
+
+func GetCode(ctx *context.Context) (*model.Code, error) {
+	var (
+		err            error
+		tok            *authentication.Token
+		validationCode model.Code
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	if err != nil {
+		return &validationCode, errx.Lambda(err)
+	}
+
+	err = database.Get(&validationCode, `SELECT * FROM code WHERE user_id = ? ORDER BY created_at desc LIMIT 1`, tok.UserId)
+	if err != nil {
+		return &validationCode, errx.UnAuthorizedError
+	}
+
+	return &validationCode, nil
+}
+
+func VerifyUserEmailValidationCode(ctx *context.Context, validationCode int) (int, error) {
+	var (
+		err  error
+		tok  *authentication.Token
+		user model.User
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	if err != nil {
+		return 0, errx.UnAuthorizedError
+	}
+
+	err = code.IsUserVerificationCodeValid(tok.UserId, validationCode)
+	if err != nil {
+		return 0, errx.Lambda(err)
+	}
+
+	user, err = GetUserWithId(tok.UserId)
+	if err != nil {
+		return 0, errx.Lambda(err)
+	}
+
+	if user.Status < StatusNeedPassword {
+		user.Status = StatusNeedPassword
+	}
+
+	err = database.Update(user)
+	if err != nil {
+		return 0, errx.Lambda(err)
+	}
+
+	return validationCode, nil
+}
+
+func SendUserEmailValidationCode(ctx *context.Context) (*model.User, error) {
+	var (
+		err  error
+		tok  *authentication.Token
+		user model.User
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	if err != nil {
+		return &user, errx.UnAuthorizedError
+	}
+
+	err = code.NewUserVerificationCode(tok.UserId)
+	if err != nil {
+		return &user, errx.Lambda(err)
+
+	}
+
+	user, err = GetUserWithId(tok.UserId)
+	if err != nil {
+		return &user, errx.Lambda(err)
+	}
+
+	user.Status = StatusUnverified
+
+	err = database.Update(user)
+	if err != nil {
+		return &user, errx.Lambda(err)
+	}
+
+	return &user, nil
+}
+
+func UpdMyProfile(ctx *context.Context, input *model.UpdateUser) (*model.User, error) {
+	var (
+		err error
+		tok *authentication.Token
+		usr model.User
+	)
+	time.Sleep(100)
+
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	if err != nil {
+		return &usr, errx.UnAuthorizedError
+	}
+
+	usr.Id = tok.UserId
+
+	usr, err = GetUserWithId(usr.Id)
+	if err != nil {
+		return &usr, errx.DbGetError
+	}
+
+	usr.Name = input.Name
+	usr.FamilyName = input.FamilyName
+	usr.NickName = input.NickName
+	usr.Description = input.Description
+	usr.CoverText = input.CoverText
+	usr.Profile = input.Profile
+	usr.ExperienceDetail = input.ExperienceDetail
+	usr.AdditionalDescription = input.AdditionalDescription
+	usr.AddOnTitle = input.AddOnTitle
+
+	err = database.Update(usr)
+	if err != nil {
+		return &usr, errx.Lambda(err)
+	}
+
+	return &usr, nil
+}
+
+func Login(input *model.UserLogin) (string, error) {
+	var (
+		err      error
+		usr      model.User
+		tokenStr string
+	)
+
+	// GET USER DATA
+	usr, err = GetUserByEmail(input.Email)
+	if err != nil {
+		return tokenStr, errx.Lambda(err)
+	}
+
+	if !password.IsPasswordValid(usr.Id, input.Password) {
+		return tokenStr, errx.Lambda(err)
+	}
+
+	tokenStr, err = authentication.GetTokenString(usr.Id)
+	if err != nil {
+		return tokenStr, errx.Lambda(err)
+
+	}
+
+	return tokenStr, nil
+}
+
+func NewPassword(ctx *context.Context, input *model.NewPassword) (*string, error) {
+	var (
+		err    error
+		tok    *authentication.Token
+		usr    model.User
+		status string
+		pass   model.Password
+	)
+
+	pass.Psw = input.Psw
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	if err != nil {
+		return &status, errx.UnAuthorizedError
+	}
+
+	err = password.CreatePassword(tok.UserId, pass)
+	if err != nil {
+		return &status, errx.Lambda(err)
+	}
+
+	usr, err = GetUserWithId(tok.UserId)
+	if err != nil {
+		return &status, errx.Lambda(err)
+	}
+
+	if usr.Status < StatusOnboardingInProgress {
+		usr.Status = StatusOnboardingInProgress
+		err = database.Update(usr)
+		if err != nil {
+			return &status, errx.Lambda(err)
+		}
+	}
+	status = "success"
+	return &status, nil
+}
+
+func GetPasswordHistory(ctx *context.Context) ([]*model.Password, error) {
+	var (
+		passwords     []*model.Password
+		userPasswords []model.Password
+		tok           *authentication.Token
+		err           error
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	if err != nil {
+		return passwords, errx.UnAuthorizedError
+	}
+	err = database.GetMany(&passwords,
+		`SELECT password.*
+			FROM password
+			WHERE password.user_id = ?
+			ORDER BY password.created_at DESC`, tok.UserId)
+	if err != nil {
+		return passwords, errx.DbGetError
+	}
+
+	for _, userPassword := range userPasswords {
+		passwords = append(passwords, &model.Password{
+			Id:          userPassword.Id,
+			CreatedAt:   userPassword.CreatedAt,
+			UpdatedAt:   userPassword.UpdatedAt,
+			DeletedAt:   userPassword.DeletedAt,
+			UserId:      userPassword.UserId,
+			Psw:         userPassword.Psw,
+			ContentHash: userPassword.ContentHash,
+		})
+	}
+
+	return passwords, nil
+}
+
+func ActivateUser(ctx *context.Context) (*model.User, error) {
+	var (
+		tok *authentication.Token
+		err error
+		usr model.User
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	if err != nil {
+		return &usr, errx.Lambda(err)
+	}
+
+	usr, err = GetUserWithId(tok.UserId)
+	if err != nil {
+		return &usr, errx.Lambda(err)
+	}
+
+	if usr.Status <= StatusNeedPassword {
+		return &usr, errx.Lambda(err)
+	}
+
+	usr.Status = StatusActive
+
+	return &usr, nil
+}
+
+func RegisterByEmail(authorizationLevel *int, email *string) (*string, error) {
+	var (
+		user     model.User
+		err      error
+		tokenStr string
+	)
+
+	user.Email = *email
+	if !utils.IsValidEmail(user.Email) {
+		return &tokenStr, errx.InvalidEmailError
+	}
+
+	_, err = GetUserByEmail(user.Email)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return &tokenStr, errx.Lambda(err)
+	}
+
+	if user.Id > state.ZERO {
+		return &tokenStr, errx.DuplicateUserError
+	}
+
+	user.Matricule, err = utils.GenerateMatricule()
+	if err != nil {
+		return &tokenStr, errx.Lambda(err)
+	}
+
+	if user.Name == state.EMPTY {
+		user.Name = user.Matricule
+	}
+
+	if user.NickName == state.EMPTY {
+		user.NickName = user.Matricule
+	}
+
+	user.Id, err = database.InsertOne(user)
+	if err != nil {
+		return &tokenStr, errx.DbInsertError
+	}
+
+	err = authorization.NewUserAuthorization(user.Id, uint(*authorizationLevel))
+	if err != nil {
+		return &tokenStr, errx.Lambda(err)
+	}
+
+	tokenStr, err = authentication.GetTokenString(user.Id)
+	if err != nil {
+		return &tokenStr, errx.Lambda(err)
+	}
+
+	err = code.NewUserVerificationCode(user.Id)
+	if err != nil {
+		return &tokenStr, errx.Lambda(err)
+	}
+
+	return &tokenStr, nil
 }
 
 /*

@@ -3,7 +3,7 @@ package note
 import "errors"
 
 var (
-	UnAuthorizedError = "UnAuthorized"
+	UnAuthorizedError = errors.New("unauthorized")
 	ParamsError       = errors.New("failed to parse params")
 )
 
