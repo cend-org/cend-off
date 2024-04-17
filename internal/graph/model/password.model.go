@@ -11,3 +11,7 @@ type Password struct {
 	Psw         string     `json:"psw"`
 	ContentHash string     `json:"hash"`
 }
+
+type NewPassword struct {
+	Psw string `json:"psw"`
+}

@@ -50,3 +50,8 @@ type UpdateUser struct {
 	AdditionalDescription string `json:"additional_description,omitempty"`
 	AddOnTitle            string `json:"add_on_title,omitempty"`
 }
+
+type UserLogin struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}

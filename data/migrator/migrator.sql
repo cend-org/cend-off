@@ -552,15 +552,50 @@ alter table contract
 create table contract_timesheet_detail
 (
     id          int primary key auto_increment,
-    created_at  datetime   default CURRENT_TIMESTAMP,
-    updated_at  datetime   default CURRENT_TIMESTAMP,
-    deleted_at  datetime   default '0000-00-00 00:00:00',
-    contract_id int  default 0,
-    date        date       default '0000-00-00',
-    hours       time        default 0
+    created_at  datetime default CURRENT_TIMESTAMP,
+    updated_at  datetime default CURRENT_TIMESTAMP,
+    deleted_at  datetime default '0000-00-00 00:00:00',
+    contract_id int      default 0,
+    date        date     default '0000-00-00',
+    hours       time     default 0
 );
 
 alter table contract_timesheet_detail
     add constraint contract_timesheet_detail_contract_id_fk
         foreign key (contract_id) references contract (id);
 -- *
+
+--  update 17/04/2024
+--
+--
+--  PHONE
+--
+--
+
+create table phone_number
+(
+    id                  int primary key auto_increment,
+    created_at          datetime default CURRENT_TIMESTAMP,
+    updated_at          datetime default CURRENT_TIMESTAMP,
+    deleted_at          datetime default '0000-00-00 00:00:00',
+    mobile_phone_number varchar(25) default '',
+    is_urgency          bool
+);
+
+create table user_phone_number
+(
+    id         int primary key auto_increment,
+    created_at datetime default CURRENT_TIMESTAMP,
+    updated_at datetime default CURRENT_TIMESTAMP,
+    deleted_at datetime default '0000-00-00 00:00:00',
+    user_id int unique default 0,
+    phone_number_id int unique default 0
+);
+
+alter table user_phone_number
+    add constraint user_phone_number_user_id_fk
+        foreign key (user_id) references user (id);
+
+alter table user_phone_number
+    add constraint user_phone_number_phone_number_id_fk
+        foreign key (phone_number_id) references phone_number (id);

@@ -8,6 +8,7 @@ import (
 	"context"
 	"duval/internal/graph/model"
 	"duval/internal/pkg/address"
+	"duval/internal/pkg/phone"
 	"duval/internal/pkg/user"
 	"fmt"
 )
@@ -77,6 +78,16 @@ func (r *mutationResolver) UpdateUserAddress(ctx context.Context, input model.Ne
 	return address.UpdateUserAddress(&ctx, &input)
 }
 
+// NewPhoneNumber is the resolver for the newPhoneNumber field.
+func (r *mutationResolver) NewPhoneNumber(ctx context.Context, input model.NewPhoneNumber) (*model.PhoneNumber, error) {
+	return phone.NewPhoneNumber(&ctx, &input)
+}
+
+// UpdateUserPhoneNumber is the resolver for the updateUserPhoneNumber field.
+func (r *mutationResolver) UpdateUserPhoneNumber(ctx context.Context, input model.NewPhoneNumber) (*model.PhoneNumber, error) {
+	return phone.UpdateUserPhoneNumber(&ctx, &input)
+}
+
 // ID is the resolver for the id field.
 func (r *passwordResolver) ID(ctx context.Context, obj *model.Password) (int, error) {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -85,6 +96,11 @@ func (r *passwordResolver) ID(ctx context.Context, obj *model.Password) (int, er
 // UserID is the resolver for the userId field.
 func (r *passwordResolver) UserID(ctx context.Context, obj *model.Password) (int, error) {
 	panic(fmt.Errorf("not implemented: UserID - userId"))
+}
+
+// ID is the resolver for the id field.
+func (r *phoneNumberResolver) ID(ctx context.Context, obj *model.PhoneNumber) (int, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
 }
 
 // UserAuthorizationLink is the resolver for the userAuthorizationLink field.
@@ -135,6 +151,11 @@ func (r *queryResolver) GetUserAddress(ctx context.Context) (*model.Address, err
 // RemoveUserAddress is the resolver for the removeUserAddress field.
 func (r *queryResolver) RemoveUserAddress(ctx context.Context) (string, error) {
 	return address.RemoveUserAddress(&ctx)
+}
+
+// GetUserPhoneNumber is the resolver for the getUserPhoneNumber field.
+func (r *queryResolver) GetUserPhoneNumber(ctx context.Context) (*model.PhoneNumber, error) {
+	return phone.GetUserPhoneNumber(&ctx)
 }
 
 // ID is the resolver for the Id field.
@@ -192,6 +213,21 @@ func (r *userAuthorizationLinkActorResolver) AuthorizationID(ctx context.Context
 	panic(fmt.Errorf("not implemented: AuthorizationID - authorizationId"))
 }
 
+// ID is the resolver for the id field.
+func (r *userPhoneNumberResolver) ID(ctx context.Context, obj *model.UserPhoneNumber) (int, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// UserID is the resolver for the userId field.
+func (r *userPhoneNumberResolver) UserID(ctx context.Context, obj *model.UserPhoneNumber) (int, error) {
+	panic(fmt.Errorf("not implemented: UserID - userId"))
+}
+
+// PhoneNumberID is the resolver for the phoneNumberId field.
+func (r *userPhoneNumberResolver) PhoneNumberID(ctx context.Context, obj *model.UserPhoneNumber) (int, error) {
+	panic(fmt.Errorf("not implemented: PhoneNumberID - phoneNumberId"))
+}
+
 // Age is the resolver for the age field.
 func (r *newUserInputResolver) Age(ctx context.Context, obj *model.NewUserInput, data *int) error {
 	panic(fmt.Errorf("not implemented: Age - age"))
@@ -212,6 +248,9 @@ func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 // Password returns PasswordResolver implementation.
 func (r *Resolver) Password() PasswordResolver { return &passwordResolver{r} }
 
+// PhoneNumber returns PhoneNumberResolver implementation.
+func (r *Resolver) PhoneNumber() PhoneNumberResolver { return &phoneNumberResolver{r} }
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
@@ -231,6 +270,9 @@ func (r *Resolver) UserAuthorizationLinkActor() UserAuthorizationLinkActorResolv
 	return &userAuthorizationLinkActorResolver{r}
 }
 
+// UserPhoneNumber returns UserPhoneNumberResolver implementation.
+func (r *Resolver) UserPhoneNumber() UserPhoneNumberResolver { return &userPhoneNumberResolver{r} }
+
 // NewUserInput returns NewUserInputResolver implementation.
 func (r *Resolver) NewUserInput() NewUserInputResolver { return &newUserInputResolver{r} }
 
@@ -239,9 +281,11 @@ type authorizationResolver struct{ *Resolver }
 type codeResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type passwordResolver struct{ *Resolver }
+type phoneNumberResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }
 type userAddressResolver struct{ *Resolver }
 type userAuthorizationLinkResolver struct{ *Resolver }
 type userAuthorizationLinkActorResolver struct{ *Resolver }
+type userPhoneNumberResolver struct{ *Resolver }
 type newUserInputResolver struct{ *Resolver }

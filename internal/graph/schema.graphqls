@@ -146,6 +146,32 @@ type UserAddress {
     addressType: String
 }
 
+# Phone Type
+
+type PhoneNumber{
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    mobilePhoneNumber: String!
+    isUrgency: Boolean
+}
+
+input NewPhoneNumber{
+    mobilePhoneNumber: String!
+    isUrgency: Boolean
+}
+
+type UserPhoneNumber{
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    userId: ID!
+    phoneNumberId: ID!
+}
+
+
 # ALL QUERIES
 type Query {
 
@@ -162,6 +188,9 @@ type Query {
     #    Address QUERIES
     getUserAddress: Address!
     removeUserAddress: String!
+
+#    Phone QUERIES
+    getUserPhoneNumber: PhoneNumber!
 }
 
 # ALL MUTATIONS
@@ -174,8 +203,12 @@ type Mutation {
     newPassword(input: NewPassword!): String
     registerByEmail(authorizationLevel: Int!, email: String!): String
 
-#    Address mutations
+    #    Address mutations
     newAddress(input: NewAddress!): Address!
-    UpdateUserAddress(input: NewAddress!): Address!
+    updateUserAddress(input: NewAddress!): Address!
+
+#    PHone mutations
+    newPhoneNumber(input: NewPhoneNumber!) : PhoneNumber!
+    updateUserPhoneNumber(input: NewPhoneNumber!) : PhoneNumber!
 
 }
