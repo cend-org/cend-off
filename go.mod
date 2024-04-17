@@ -11,6 +11,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.2.1
 	github.com/iancoleman/strcase v0.3.0
 	github.com/jmoiron/sqlx v1.3.5
+	github.com/joinverse/xid v0.0.0-20171120095953-afa60c3e0e47
 	github.com/rs/cors v1.10.1
 	github.com/vektah/gqlparser/v2 v2.5.11
 	golang.org/x/crypto v0.22.0

@@ -68,7 +68,6 @@ type Authorization {
     level: Int!
 }
 
-
 type UserAuthorizationLink {
     id: ID!
     createdAt: Time!
@@ -88,11 +87,6 @@ type UserAuthorizationLinkActor {
 }
 
 # Password type
-
-input NewPassword {
-    psw: String!
-}
-
 type Password {
     id: ID!
     createdAt: Time!
@@ -102,8 +96,12 @@ type Password {
     psw: String!
     contentHash: String!
 }
-# Password type
 
+input NewPassword {
+    psw: String!
+}
+
+# Code type
 type Code {
     id: ID!
     createdAt: Time!
@@ -113,6 +111,40 @@ type Code {
     verificationCode: Int!
 }
 
+
+# Address type
+type Address {
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    country: String
+    city: String
+    latitude: Float
+    longitude: Float
+    street: String
+    FullAddress: String
+    xId: String
+}
+
+input NewAddress {
+    country: String!
+    city: String!
+    latitude: Float!
+    longitude: Float!
+    street: String!
+    FullAddress: String
+}
+
+type UserAddress {
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    userId: ID
+    addressId: ID
+    addressType: String
+}
 
 # ALL QUERIES
 type Query {
@@ -127,6 +159,9 @@ type Query {
     getPasswordHistory: [Password]
     activateUser: User!
 
+    #    Address QUERIES
+    getUserAddress: Address!
+    removeUserAddress: String!
 }
 
 # ALL MUTATIONS
@@ -139,5 +174,8 @@ type Mutation {
     newPassword(input: NewPassword!): String
     registerByEmail(authorizationLevel: Int!, email: String!): String
 
+#    Address mutations
+    newAddress(input: NewAddress!): Address!
+    UpdateUserAddress(input: NewAddress!): Address!
 
 }

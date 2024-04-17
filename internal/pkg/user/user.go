@@ -13,7 +13,6 @@ import (
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
-	"time"
 )
 
 const (
@@ -208,7 +207,6 @@ func UpdMyProfile(ctx *context.Context, input *model.UpdateUser) (*model.User, e
 		tok *authentication.Token
 		usr model.User
 	)
-	time.Sleep(100)
 
 	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {

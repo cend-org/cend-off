@@ -7,9 +7,15 @@ package graph
 import (
 	"context"
 	"duval/internal/graph/model"
+	"duval/internal/pkg/address"
 	"duval/internal/pkg/user"
 	"fmt"
 )
+
+// ID is the resolver for the id field.
+func (r *addressResolver) ID(ctx context.Context, obj *model.Address) (int, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
 
 // ID is the resolver for the id field.
 func (r *authorizationResolver) ID(ctx context.Context, obj *model.Authorization) (int, error) {
@@ -59,6 +65,16 @@ func (r *mutationResolver) NewPassword(ctx context.Context, input model.NewPassw
 // RegisterByEmail is the resolver for the registerByEmail field.
 func (r *mutationResolver) RegisterByEmail(ctx context.Context, authorizationLevel int, email string) (*string, error) {
 	return user.RegisterByEmail(&authorizationLevel, &email)
+}
+
+// NewAddress is the resolver for the newAddress field.
+func (r *mutationResolver) NewAddress(ctx context.Context, input model.NewAddress) (*model.Address, error) {
+	return address.NewAddress(&ctx, &input)
+}
+
+// UpdateUserAddress is the resolver for the UpdateUserAddress field.
+func (r *mutationResolver) UpdateUserAddress(ctx context.Context, input model.NewAddress) (*model.Address, error) {
+	return address.UpdateUserAddress(&ctx, &input)
 }
 
 // ID is the resolver for the id field.
@@ -111,6 +127,16 @@ func (r *queryResolver) ActivateUser(ctx context.Context) (*model.User, error) {
 	return user.ActivateUser(&ctx)
 }
 
+// GetUserAddress is the resolver for the getUserAddress field.
+func (r *queryResolver) GetUserAddress(ctx context.Context) (*model.Address, error) {
+	return address.GetUserAddress(&ctx)
+}
+
+// RemoveUserAddress is the resolver for the removeUserAddress field.
+func (r *queryResolver) RemoveUserAddress(ctx context.Context) (string, error) {
+	return address.RemoveUserAddress(&ctx)
+}
+
 // ID is the resolver for the Id field.
 func (r *userResolver) ID(ctx context.Context, obj *model.User) (int, error) {
 	panic(fmt.Errorf("not implemented: ID - Id"))
@@ -119,6 +145,21 @@ func (r *userResolver) ID(ctx context.Context, obj *model.User) (int, error) {
 // Age is the resolver for the Age field.
 func (r *userResolver) Age(ctx context.Context, obj *model.User) (int, error) {
 	panic(fmt.Errorf("not implemented: Age - Age"))
+}
+
+// ID is the resolver for the id field.
+func (r *userAddressResolver) ID(ctx context.Context, obj *model.UserAddress) (int, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// UserID is the resolver for the userId field.
+func (r *userAddressResolver) UserID(ctx context.Context, obj *model.UserAddress) (*int, error) {
+	panic(fmt.Errorf("not implemented: UserID - userId"))
+}
+
+// AddressID is the resolver for the addressId field.
+func (r *userAddressResolver) AddressID(ctx context.Context, obj *model.UserAddress) (*int, error) {
+	panic(fmt.Errorf("not implemented: AddressID - addressId"))
 }
 
 // ID is the resolver for the id field.
@@ -156,6 +197,9 @@ func (r *newUserInputResolver) Age(ctx context.Context, obj *model.NewUserInput,
 	panic(fmt.Errorf("not implemented: Age - age"))
 }
 
+// Address returns AddressResolver implementation.
+func (r *Resolver) Address() AddressResolver { return &addressResolver{r} }
+
 // Authorization returns AuthorizationResolver implementation.
 func (r *Resolver) Authorization() AuthorizationResolver { return &authorizationResolver{r} }
 
@@ -174,6 +218,9 @@ func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 // User returns UserResolver implementation.
 func (r *Resolver) User() UserResolver { return &userResolver{r} }
 
+// UserAddress returns UserAddressResolver implementation.
+func (r *Resolver) UserAddress() UserAddressResolver { return &userAddressResolver{r} }
+
 // UserAuthorizationLink returns UserAuthorizationLinkResolver implementation.
 func (r *Resolver) UserAuthorizationLink() UserAuthorizationLinkResolver {
 	return &userAuthorizationLinkResolver{r}
@@ -187,12 +234,14 @@ func (r *Resolver) UserAuthorizationLinkActor() UserAuthorizationLinkActorResolv
 // NewUserInput returns NewUserInputResolver implementation.
 func (r *Resolver) NewUserInput() NewUserInputResolver { return &newUserInputResolver{r} }
 
+type addressResolver struct{ *Resolver }
 type authorizationResolver struct{ *Resolver }
 type codeResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type passwordResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }
+type userAddressResolver struct{ *Resolver }
 type userAuthorizationLinkResolver struct{ *Resolver }
 type userAuthorizationLinkActorResolver struct{ *Resolver }
 type newUserInputResolver struct{ *Resolver }
