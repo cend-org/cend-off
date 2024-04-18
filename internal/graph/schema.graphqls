@@ -57,6 +57,7 @@ input UpdateUser {
     addOnTitle: String
 }
 
+
 # Authorization type
 
 type Authorization {
@@ -200,6 +201,39 @@ type CalendarPlanningActor {
     calendarPlanningId: ID
 }
 
+# Education Type
+type Education {
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    name: String!
+}
+
+type Subject {
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    educationLevelId: ID!
+    name: String!
+}
+
+type UserEducationLevelSubject {
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    userId: ID!
+    SubjectId :ID!
+}
+
+input SubjectInput {
+    id: ID
+    educationLevelId : ID!
+    Name : String
+}
+
 
 # ALL QUERIES
 type Query {
@@ -218,14 +252,22 @@ type Query {
     getUserAddress: Address!
     removeUserAddress: String!
 
-#    Phone QUERIES
+    #    Phone QUERIES
     getUserPhoneNumber: PhoneNumber!
 
-#    Calendar Planning QUERIES
+    #    Calendar Planning QUERIES
     getUserPlannings: CalendarPlanning!
     removeUserPlannings: String
     getPlanningActors(calendarId: ID!): [User!]
     removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): String
+
+    #    Education QUERIES
+    getUserSubjects: [Subject!]
+    getSubjects(eduId: Int!) : [Subject!]
+    getEducation: [Education!]
+    getUserEducationLevel: Education!
+
+
 
 }
 
@@ -243,12 +285,15 @@ type Mutation {
     newAddress(input: NewAddress!): Address!
     updateUserAddress(input: NewAddress!): Address!
 
-#    PHone mutations
+    #    PHone mutations
     newPhoneNumber(input: NewPhoneNumber!) : PhoneNumber!
     updateUserPhoneNumber(input: NewPhoneNumber!) : PhoneNumber!
 
-#    Planning mutations
+    #    Planning mutations
     createUserPlannings(input: NewCalendarPlanning!): CalendarPlanning!
     addUserIntoPlanning(calendarId: ID!, selectedUserId: ID!):CalendarPlanningActor!
 
+    #   Education mutations
+    setUserEducationLevel(input: SubjectInput!): Education!
+    updateUserEducationLevel(input : SubjectInput!): Education!
 }

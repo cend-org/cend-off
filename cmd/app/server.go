@@ -4,6 +4,7 @@ import (
 	"duval/internal/authentication"
 	"duval/internal/graph"
 	"duval/pkg/database"
+	"github.com/99designs/gqlgen/graphql/handler/transport"
 	"log"
 	"net/http"
 	"os"
@@ -41,6 +42,9 @@ func main() {
 	})
 
 	srv := handler.NewDefaultServer(graph.NewExecutableSchema(graph.Config{Resolvers: &graph.Resolver{}}))
+
+	srv.AddTransport(transport.POST{})
+	srv.AddTransport(transport.MultipartForm{})
 
 	router.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	router.Handle("/query", c.Handler(srv))

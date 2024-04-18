@@ -13,6 +13,7 @@ import (
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
+	"time"
 )
 
 const (
@@ -312,7 +313,7 @@ func GetPasswordHistory(ctx *context.Context) ([]*model.Password, error) {
 	if err != nil {
 		return passwords, errx.UnAuthorizedError
 	}
-	err = database.GetMany(&passwords,
+	err = database.GetMany(&userPasswords,
 		`SELECT password.*
 			FROM password
 			WHERE password.user_id = ?
@@ -320,6 +321,8 @@ func GetPasswordHistory(ctx *context.Context) ([]*model.Password, error) {
 	if err != nil {
 		return passwords, errx.DbGetError
 	}
+
+	time.Sleep(100)
 
 	for _, userPassword := range userPasswords {
 		passwords = append(passwords, &model.Password{

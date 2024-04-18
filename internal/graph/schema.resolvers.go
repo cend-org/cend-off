@@ -8,6 +8,7 @@ import (
 	"context"
 	"duval/internal/graph/model"
 	"duval/internal/pkg/address"
+	"duval/internal/pkg/education"
 	"duval/internal/pkg/phone"
 	"duval/internal/pkg/planning"
 	"duval/internal/pkg/user"
@@ -69,6 +70,11 @@ func (r *codeResolver) UserID(ctx context.Context, obj *model.Code) (int, error)
 	panic(fmt.Errorf("not implemented: UserID - userId"))
 }
 
+// ID is the resolver for the id field.
+func (r *educationResolver) ID(ctx context.Context, obj *model.Education) (int, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
 // Register is the resolver for the register field.
 func (r *mutationResolver) Register(ctx context.Context, input model.NewUserInput, typeArg int) (string, error) {
 	return user.Register(&input, &typeArg)
@@ -122,6 +128,16 @@ func (r *mutationResolver) CreateUserPlannings(ctx context.Context, input model.
 // AddUserIntoPlanning is the resolver for the addUserIntoPlanning field.
 func (r *mutationResolver) AddUserIntoPlanning(ctx context.Context, calendarID int, selectedUserID int) (*model.CalendarPlanningActor, error) {
 	return planning.AddUserIntoPlanning(&ctx, calendarID, selectedUserID)
+}
+
+// SetUserEducationLevel is the resolver for the setUserEducationLevel field.
+func (r *mutationResolver) SetUserEducationLevel(ctx context.Context, input model.SubjectInput) (*model.Education, error) {
+	return education.SetUserEducationLevel(&ctx, &input)
+}
+
+// UpdateUserEducationLevel is the resolver for the updateUserEducationLevel field.
+func (r *mutationResolver) UpdateUserEducationLevel(ctx context.Context, input model.SubjectInput) (*model.Education, error) {
+	return education.UpdateUserEducationLevel(&ctx, &input)
 }
 
 // ID is the resolver for the id field.
@@ -214,6 +230,36 @@ func (r *queryResolver) RemoveUserFromPlanning(ctx context.Context, calendarPlan
 	return planning.RemoveUserFromPlanning(&ctx, calendarPlanningID, selectedUserID)
 }
 
+// GetUserSubjects is the resolver for the getUserSubjects field.
+func (r *queryResolver) GetUserSubjects(ctx context.Context) ([]*model.Subject, error) {
+	return education.GetUserSubjects(&ctx)
+}
+
+// GetSubjects is the resolver for the getSubjects field.
+func (r *queryResolver) GetSubjects(ctx context.Context, eduID int) ([]*model.Subject, error) {
+	return education.GetSubjects(eduID)
+}
+
+// GetEducation is the resolver for the getEducation field.
+func (r *queryResolver) GetEducation(ctx context.Context) ([]*model.Education, error) {
+	return education.GetEducation()
+}
+
+// GetUserEducationLevel is the resolver for the getUserEducationLevel field.
+func (r *queryResolver) GetUserEducationLevel(ctx context.Context) (*model.Education, error) {
+	return education.GetUserEducationLevel(&ctx)
+}
+
+// ID is the resolver for the id field.
+func (r *subjectResolver) ID(ctx context.Context, obj *model.Subject) (int, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// EducationLevelID is the resolver for the educationLevelId field.
+func (r *subjectResolver) EducationLevelID(ctx context.Context, obj *model.Subject) (int, error) {
+	panic(fmt.Errorf("not implemented: EducationLevelID - educationLevelId"))
+}
+
 // ID is the resolver for the Id field.
 func (r *userResolver) ID(ctx context.Context, obj *model.User) (int, error) {
 	panic(fmt.Errorf("not implemented: ID - Id"))
@@ -270,6 +316,21 @@ func (r *userAuthorizationLinkActorResolver) AuthorizationID(ctx context.Context
 }
 
 // ID is the resolver for the id field.
+func (r *userEducationLevelSubjectResolver) ID(ctx context.Context, obj *model.UserEducationLevelSubject) (int, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// UserID is the resolver for the userId field.
+func (r *userEducationLevelSubjectResolver) UserID(ctx context.Context, obj *model.UserEducationLevelSubject) (int, error) {
+	panic(fmt.Errorf("not implemented: UserID - userId"))
+}
+
+// SubjectID is the resolver for the SubjectId field.
+func (r *userEducationLevelSubjectResolver) SubjectID(ctx context.Context, obj *model.UserEducationLevelSubject) (int, error) {
+	panic(fmt.Errorf("not implemented: SubjectID - SubjectId"))
+}
+
+// ID is the resolver for the id field.
 func (r *userPhoneNumberResolver) ID(ctx context.Context, obj *model.UserPhoneNumber) (int, error) {
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
@@ -289,6 +350,16 @@ func (r *newUserInputResolver) Age(ctx context.Context, obj *model.NewUserInput,
 	panic(fmt.Errorf("not implemented: Age - age"))
 }
 
+// ID is the resolver for the id field.
+func (r *subjectInputResolver) ID(ctx context.Context, obj *model.SubjectInput, data *int) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// EducationLevelID is the resolver for the educationLevelId field.
+func (r *subjectInputResolver) EducationLevelID(ctx context.Context, obj *model.SubjectInput, data int) error {
+	panic(fmt.Errorf("not implemented: EducationLevelID - educationLevelId"))
+}
+
 // Address returns AddressResolver implementation.
 func (r *Resolver) Address() AddressResolver { return &addressResolver{r} }
 
@@ -306,6 +377,9 @@ func (r *Resolver) CalendarPlanningActor() CalendarPlanningActorResolver {
 // Code returns CodeResolver implementation.
 func (r *Resolver) Code() CodeResolver { return &codeResolver{r} }
 
+// Education returns EducationResolver implementation.
+func (r *Resolver) Education() EducationResolver { return &educationResolver{r} }
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
@@ -317,6 +391,9 @@ func (r *Resolver) PhoneNumber() PhoneNumberResolver { return &phoneNumberResolv
 
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
+
+// Subject returns SubjectResolver implementation.
+func (r *Resolver) Subject() SubjectResolver { return &subjectResolver{r} }
 
 // User returns UserResolver implementation.
 func (r *Resolver) User() UserResolver { return &userResolver{r} }
@@ -334,24 +411,46 @@ func (r *Resolver) UserAuthorizationLinkActor() UserAuthorizationLinkActorResolv
 	return &userAuthorizationLinkActorResolver{r}
 }
 
+// UserEducationLevelSubject returns UserEducationLevelSubjectResolver implementation.
+func (r *Resolver) UserEducationLevelSubject() UserEducationLevelSubjectResolver {
+	return &userEducationLevelSubjectResolver{r}
+}
+
 // UserPhoneNumber returns UserPhoneNumberResolver implementation.
 func (r *Resolver) UserPhoneNumber() UserPhoneNumberResolver { return &userPhoneNumberResolver{r} }
 
 // NewUserInput returns NewUserInputResolver implementation.
 func (r *Resolver) NewUserInput() NewUserInputResolver { return &newUserInputResolver{r} }
 
+// SubjectInput returns SubjectInputResolver implementation.
+func (r *Resolver) SubjectInput() SubjectInputResolver { return &subjectInputResolver{r} }
+
 type addressResolver struct{ *Resolver }
 type authorizationResolver struct{ *Resolver }
 type calendarPlanningResolver struct{ *Resolver }
 type calendarPlanningActorResolver struct{ *Resolver }
 type codeResolver struct{ *Resolver }
+type educationResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type passwordResolver struct{ *Resolver }
 type phoneNumberResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
+type subjectResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }
 type userAddressResolver struct{ *Resolver }
 type userAuthorizationLinkResolver struct{ *Resolver }
 type userAuthorizationLinkActorResolver struct{ *Resolver }
+type userEducationLevelSubjectResolver struct{ *Resolver }
 type userPhoneNumberResolver struct{ *Resolver }
 type newUserInputResolver struct{ *Resolver }
+type subjectInputResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *queryResolver) GetEducationLevel(ctx context.Context) (*model.Education, error) {
+	panic(fmt.Errorf("not implemented: GetEducationLevel - getEducationLevel"))
+}
