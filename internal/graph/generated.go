@@ -42,6 +42,8 @@ type Config struct {
 type ResolverRoot interface {
 	Address() AddressResolver
 	Authorization() AuthorizationResolver
+	CalendarPlanning() CalendarPlanningResolver
+	CalendarPlanningActor() CalendarPlanningActorResolver
 	Code() CodeResolver
 	Mutation() MutationResolver
 	Password() PasswordResolver
@@ -82,6 +84,26 @@ type ComplexityRoot struct {
 		UserID    func(childComplexity int) int
 	}
 
+	CalendarPlanning struct {
+		AuthorizationID func(childComplexity int) int
+		CreatedAt       func(childComplexity int) int
+		DeletedAt       func(childComplexity int) int
+		Description     func(childComplexity int) int
+		EndDateTime     func(childComplexity int) int
+		ID              func(childComplexity int) int
+		StartDateTime   func(childComplexity int) int
+		UpdatedAt       func(childComplexity int) int
+	}
+
+	CalendarPlanningActor struct {
+		AuthorizationID    func(childComplexity int) int
+		CalendarPlanningID func(childComplexity int) int
+		CreatedAt          func(childComplexity int) int
+		DeletedAt          func(childComplexity int) int
+		ID                 func(childComplexity int) int
+		UpdatedAt          func(childComplexity int) int
+	}
+
 	Code struct {
 		CreatedAt        func(childComplexity int) int
 		DeletedAt        func(childComplexity int) int
@@ -92,6 +114,8 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		AddUserIntoPlanning   func(childComplexity int, calendarID int, selectedUserID int) int
+		CreateUserPlannings   func(childComplexity int, input model.NewCalendarPlanning) int
 		Login                 func(childComplexity int, input model.UserLogin) int
 		NewAddress            func(childComplexity int, input model.NewAddress) int
 		NewPassword           func(childComplexity int, input model.NewPassword) int
@@ -126,10 +150,14 @@ type ComplexityRoot struct {
 		ActivateUser                  func(childComplexity int) int
 		GetCode                       func(childComplexity int) int
 		GetPasswordHistory            func(childComplexity int) int
+		GetPlanningActors             func(childComplexity int, calendarID int) int
 		GetUserAddress                func(childComplexity int) int
 		GetUserPhoneNumber            func(childComplexity int) int
+		GetUserPlannings              func(childComplexity int) int
 		MyProfile                     func(childComplexity int) int
 		RemoveUserAddress             func(childComplexity int) int
+		RemoveUserFromPlanning        func(childComplexity int, calendarPlanningID int, selectedUserID int) int
+		RemoveUserPlannings           func(childComplexity int) int
 		SendUserEmailValidationCode   func(childComplexity int) int
 		UserAuthorizationLink         func(childComplexity int, id int) int
 		UserAuthorizationLinks        func(childComplexity int) int
@@ -207,6 +235,17 @@ type AuthorizationResolver interface {
 	UserID(ctx context.Context, obj *model.Authorization) (int, error)
 	Level(ctx context.Context, obj *model.Authorization) (int, error)
 }
+type CalendarPlanningResolver interface {
+	ID(ctx context.Context, obj *model.CalendarPlanning) (int, error)
+
+	AuthorizationID(ctx context.Context, obj *model.CalendarPlanning) (int, error)
+}
+type CalendarPlanningActorResolver interface {
+	ID(ctx context.Context, obj *model.CalendarPlanningActor) (int, error)
+
+	AuthorizationID(ctx context.Context, obj *model.CalendarPlanningActor) (int, error)
+	CalendarPlanningID(ctx context.Context, obj *model.CalendarPlanningActor) (*int, error)
+}
 type CodeResolver interface {
 	ID(ctx context.Context, obj *model.Code) (int, error)
 
@@ -222,6 +261,8 @@ type MutationResolver interface {
 	UpdateUserAddress(ctx context.Context, input model.NewAddress) (*model.Address, error)
 	NewPhoneNumber(ctx context.Context, input model.NewPhoneNumber) (*model.PhoneNumber, error)
 	UpdateUserPhoneNumber(ctx context.Context, input model.NewPhoneNumber) (*model.PhoneNumber, error)
+	CreateUserPlannings(ctx context.Context, input model.NewCalendarPlanning) (*model.CalendarPlanning, error)
+	AddUserIntoPlanning(ctx context.Context, calendarID int, selectedUserID int) (*model.CalendarPlanningActor, error)
 }
 type PasswordResolver interface {
 	ID(ctx context.Context, obj *model.Password) (int, error)
@@ -243,6 +284,10 @@ type QueryResolver interface {
 	GetUserAddress(ctx context.Context) (*model.Address, error)
 	RemoveUserAddress(ctx context.Context) (string, error)
 	GetUserPhoneNumber(ctx context.Context) (*model.PhoneNumber, error)
+	GetUserPlannings(ctx context.Context) (*model.CalendarPlanning, error)
+	RemoveUserPlannings(ctx context.Context) (*string, error)
+	GetPlanningActors(ctx context.Context, calendarID int) ([]*model.User, error)
+	RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*string, error)
 }
 type UserResolver interface {
 	ID(ctx context.Context, obj *model.User) (int, error)
@@ -416,6 +461,104 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Authorization.UserID(childComplexity), true
 
+	case "CalendarPlanning.authorizationId":
+		if e.complexity.CalendarPlanning.AuthorizationID == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.AuthorizationID(childComplexity), true
+
+	case "CalendarPlanning.createdAt":
+		if e.complexity.CalendarPlanning.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.CreatedAt(childComplexity), true
+
+	case "CalendarPlanning.deletedAt":
+		if e.complexity.CalendarPlanning.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.DeletedAt(childComplexity), true
+
+	case "CalendarPlanning.description":
+		if e.complexity.CalendarPlanning.Description == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.Description(childComplexity), true
+
+	case "CalendarPlanning.endDateTime":
+		if e.complexity.CalendarPlanning.EndDateTime == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.EndDateTime(childComplexity), true
+
+	case "CalendarPlanning.id":
+		if e.complexity.CalendarPlanning.ID == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.ID(childComplexity), true
+
+	case "CalendarPlanning.startDateTime":
+		if e.complexity.CalendarPlanning.StartDateTime == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.StartDateTime(childComplexity), true
+
+	case "CalendarPlanning.updatedAt":
+		if e.complexity.CalendarPlanning.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.UpdatedAt(childComplexity), true
+
+	case "CalendarPlanningActor.authorizationId":
+		if e.complexity.CalendarPlanningActor.AuthorizationID == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanningActor.AuthorizationID(childComplexity), true
+
+	case "CalendarPlanningActor.calendarPlanningId":
+		if e.complexity.CalendarPlanningActor.CalendarPlanningID == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanningActor.CalendarPlanningID(childComplexity), true
+
+	case "CalendarPlanningActor.createdAt":
+		if e.complexity.CalendarPlanningActor.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanningActor.CreatedAt(childComplexity), true
+
+	case "CalendarPlanningActor.deletedAt":
+		if e.complexity.CalendarPlanningActor.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanningActor.DeletedAt(childComplexity), true
+
+	case "CalendarPlanningActor.id":
+		if e.complexity.CalendarPlanningActor.ID == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanningActor.ID(childComplexity), true
+
+	case "CalendarPlanningActor.updatedAt":
+		if e.complexity.CalendarPlanningActor.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanningActor.UpdatedAt(childComplexity), true
+
 	case "Code.createdAt":
 		if e.complexity.Code.CreatedAt == nil {
 			break
@@ -457,6 +600,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Code.VerificationCode(childComplexity), true
+
+	case "Mutation.addUserIntoPlanning":
+		if e.complexity.Mutation.AddUserIntoPlanning == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addUserIntoPlanning_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddUserIntoPlanning(childComplexity, args["calendarId"].(int), args["selectedUserId"].(int)), true
+
+	case "Mutation.createUserPlannings":
+		if e.complexity.Mutation.CreateUserPlannings == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createUserPlannings_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateUserPlannings(childComplexity, args["input"].(model.NewCalendarPlanning)), true
 
 	case "Mutation.login":
 		if e.complexity.Mutation.Login == nil {
@@ -678,6 +845,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetPasswordHistory(childComplexity), true
 
+	case "Query.getPlanningActors":
+		if e.complexity.Query.GetPlanningActors == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getPlanningActors_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetPlanningActors(childComplexity, args["calendarId"].(int)), true
+
 	case "Query.getUserAddress":
 		if e.complexity.Query.GetUserAddress == nil {
 			break
@@ -692,6 +871,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetUserPhoneNumber(childComplexity), true
 
+	case "Query.getUserPlannings":
+		if e.complexity.Query.GetUserPlannings == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserPlannings(childComplexity), true
+
 	case "Query.myProfile":
 		if e.complexity.Query.MyProfile == nil {
 			break
@@ -705,6 +891,25 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.RemoveUserAddress(childComplexity), true
+
+	case "Query.removeUserFromPlanning":
+		if e.complexity.Query.RemoveUserFromPlanning == nil {
+			break
+		}
+
+		args, err := ec.field_Query_removeUserFromPlanning_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.RemoveUserFromPlanning(childComplexity, args["calendarPlanningId"].(int), args["selectedUserId"].(int)), true
+
+	case "Query.removeUserPlannings":
+		if e.complexity.Query.RemoveUserPlannings == nil {
+			break
+		}
+
+		return e.complexity.Query.RemoveUserPlannings(childComplexity), true
 
 	case "Query.sendUserEmailValidationCode":
 		if e.complexity.Query.SendUserEmailValidationCode == nil {
@@ -1075,6 +1280,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputNewAddress,
+		ec.unmarshalInputNewCalendarPlanning,
 		ec.unmarshalInputNewPassword,
 		ec.unmarshalInputNewPhoneNumber,
 		ec.unmarshalInputNewUserInput,
@@ -1195,6 +1401,45 @@ var parsedSchema = gqlparser.MustLoadSchema(sources...)
 // endregion ************************** generated!.gotpl **************************
 
 // region    ***************************** args.gotpl *****************************
+
+func (ec *executionContext) field_Mutation_addUserIntoPlanning_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["calendarId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("calendarId"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["calendarId"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["selectedUserId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("selectedUserId"))
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["selectedUserId"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_createUserPlannings_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.NewCalendarPlanning
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNNewCalendarPlanning2duvalᚋinternalᚋgraphᚋmodelᚐNewCalendarPlanning(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
 
 func (ec *executionContext) field_Mutation_login_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
@@ -1361,6 +1606,45 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 		}
 	}
 	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getPlanningActors_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["calendarId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("calendarId"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["calendarId"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_removeUserFromPlanning_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["calendarPlanningId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("calendarPlanningId"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["calendarPlanningId"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["selectedUserId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("selectedUserId"))
+		arg1, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["selectedUserId"] = arg1
 	return args, nil
 }
 
@@ -2148,6 +2432,610 @@ func (ec *executionContext) fieldContext_Authorization_level(ctx context.Context
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanning_id(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanning) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanning_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.CalendarPlanning().ID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanning_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanning",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanning_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanning) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanning_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanning_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanning",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanning_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanning) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanning_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanning_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanning",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanning_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanning) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanning_deletedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanning_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanning",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanning_authorizationId(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanning) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanning_authorizationId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.CalendarPlanning().AuthorizationID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanning_authorizationId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanning",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanning_startDateTime(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanning) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanning_startDateTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.StartDateTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanning_startDateTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanning",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanning_endDateTime(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanning) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanning_endDateTime(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.EndDateTime, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanning_endDateTime(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanning",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanning_description(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanning) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanning_description(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Description, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanning_description(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanning",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanningActor_id(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanningActor) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanningActor_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.CalendarPlanningActor().ID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanningActor_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanningActor",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanningActor_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanningActor) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanningActor_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanningActor_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanningActor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanningActor_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanningActor) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanningActor_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanningActor_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanningActor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanningActor_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanningActor) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanningActor_deletedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanningActor_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanningActor",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanningActor_authorizationId(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanningActor) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanningActor_authorizationId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.CalendarPlanningActor().AuthorizationID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanningActor_authorizationId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanningActor",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _CalendarPlanningActor_calendarPlanningId(ctx context.Context, field graphql.CollectedField, obj *model.CalendarPlanningActor) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_CalendarPlanningActor_calendarPlanningId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.CalendarPlanningActor().CalendarPlanningID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOID2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_CalendarPlanningActor_calendarPlanningId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "CalendarPlanningActor",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3017,6 +3905,148 @@ func (ec *executionContext) fieldContext_Mutation_updateUserPhoneNumber(ctx cont
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_updateUserPhoneNumber_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_createUserPlannings(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_createUserPlannings(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().CreateUserPlannings(rctx, fc.Args["input"].(model.NewCalendarPlanning))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.CalendarPlanning)
+	fc.Result = res
+	return ec.marshalNCalendarPlanning2ᚖduvalᚋinternalᚋgraphᚋmodelᚐCalendarPlanning(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_createUserPlannings(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_CalendarPlanning_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_CalendarPlanning_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_CalendarPlanning_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_CalendarPlanning_deletedAt(ctx, field)
+			case "authorizationId":
+				return ec.fieldContext_CalendarPlanning_authorizationId(ctx, field)
+			case "startDateTime":
+				return ec.fieldContext_CalendarPlanning_startDateTime(ctx, field)
+			case "endDateTime":
+				return ec.fieldContext_CalendarPlanning_endDateTime(ctx, field)
+			case "description":
+				return ec.fieldContext_CalendarPlanning_description(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CalendarPlanning", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_createUserPlannings_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_addUserIntoPlanning(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_addUserIntoPlanning(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().AddUserIntoPlanning(rctx, fc.Args["calendarId"].(int), fc.Args["selectedUserId"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.CalendarPlanningActor)
+	fc.Result = res
+	return ec.marshalNCalendarPlanningActor2ᚖduvalᚋinternalᚋgraphᚋmodelᚐCalendarPlanningActor(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_addUserIntoPlanning(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_CalendarPlanningActor_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_CalendarPlanningActor_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_CalendarPlanningActor_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_CalendarPlanningActor_deletedAt(ctx, field)
+			case "authorizationId":
+				return ec.fieldContext_CalendarPlanningActor_authorizationId(ctx, field)
+			case "calendarPlanningId":
+				return ec.fieldContext_CalendarPlanningActor_calendarPlanningId(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CalendarPlanningActor", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_addUserIntoPlanning_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -4310,6 +5340,257 @@ func (ec *executionContext) fieldContext_Query_getUserPhoneNumber(ctx context.Co
 			}
 			return nil, fmt.Errorf("no field named %q was found under type PhoneNumber", field.Name)
 		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getUserPlannings(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getUserPlannings(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetUserPlannings(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.CalendarPlanning)
+	fc.Result = res
+	return ec.marshalNCalendarPlanning2ᚖduvalᚋinternalᚋgraphᚋmodelᚐCalendarPlanning(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getUserPlannings(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_CalendarPlanning_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_CalendarPlanning_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_CalendarPlanning_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_CalendarPlanning_deletedAt(ctx, field)
+			case "authorizationId":
+				return ec.fieldContext_CalendarPlanning_authorizationId(ctx, field)
+			case "startDateTime":
+				return ec.fieldContext_CalendarPlanning_startDateTime(ctx, field)
+			case "endDateTime":
+				return ec.fieldContext_CalendarPlanning_endDateTime(ctx, field)
+			case "description":
+				return ec.fieldContext_CalendarPlanning_description(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type CalendarPlanning", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_removeUserPlannings(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_removeUserPlannings(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().RemoveUserPlannings(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_removeUserPlannings(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getPlanningActors(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getPlanningActors(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetPlanningActors(rctx, fc.Args["calendarId"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.User)
+	fc.Result = res
+	return ec.marshalOUser2ᚕᚖduvalᚋinternalᚋgraphᚋmodelᚐUserᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getPlanningActors(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_User_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_User_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_User_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_User_deletedAt(ctx, field)
+			case "name":
+				return ec.fieldContext_User_name(ctx, field)
+			case "familyName":
+				return ec.fieldContext_User_familyName(ctx, field)
+			case "nickName":
+				return ec.fieldContext_User_nickName(ctx, field)
+			case "email":
+				return ec.fieldContext_User_email(ctx, field)
+			case "matricule":
+				return ec.fieldContext_User_matricule(ctx, field)
+			case "age":
+				return ec.fieldContext_User_age(ctx, field)
+			case "birthDate":
+				return ec.fieldContext_User_birthDate(ctx, field)
+			case "sex":
+				return ec.fieldContext_User_sex(ctx, field)
+			case "lang":
+				return ec.fieldContext_User_lang(ctx, field)
+			case "status":
+				return ec.fieldContext_User_status(ctx, field)
+			case "profileImageXid":
+				return ec.fieldContext_User_profileImageXid(ctx, field)
+			case "description":
+				return ec.fieldContext_User_description(ctx, field)
+			case "coverText":
+				return ec.fieldContext_User_coverText(ctx, field)
+			case "profile":
+				return ec.fieldContext_User_profile(ctx, field)
+			case "experienceDetail":
+				return ec.fieldContext_User_experienceDetail(ctx, field)
+			case "additionalDescription":
+				return ec.fieldContext_User_additionalDescription(ctx, field)
+			case "addOnTitle":
+				return ec.fieldContext_User_addOnTitle(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getPlanningActors_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_removeUserFromPlanning(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_removeUserFromPlanning(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().RemoveUserFromPlanning(rctx, fc.Args["calendarPlanningId"].(int), fc.Args["selectedUserId"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_removeUserFromPlanning(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_removeUserFromPlanning_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
 	}
 	return fc, nil
 }
@@ -8306,6 +9587,47 @@ func (ec *executionContext) unmarshalInputNewAddress(ctx context.Context, obj in
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputNewCalendarPlanning(ctx context.Context, obj interface{}) (model.NewCalendarPlanning, error) {
+	var it model.NewCalendarPlanning
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"startDateTime", "endDateTime", "description"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "startDateTime":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("startDateTime"))
+			data, err := ec.unmarshalNTime2timeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.StartDateTime = data
+		case "endDateTime":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("endDateTime"))
+			data, err := ec.unmarshalNTime2timeᚐTime(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EndDateTime = data
+		case "description":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("description"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Description = data
+		}
+	}
+
+	return it, nil
+}
+
 func (ec *executionContext) unmarshalInputNewPassword(ctx context.Context, obj interface{}) (model.NewPassword, error) {
 	var it model.NewPassword
 	asMap := map[string]interface{}{}
@@ -8834,6 +10156,287 @@ func (ec *executionContext) _Authorization(ctx context.Context, sel ast.Selectio
 	return out
 }
 
+var calendarPlanningImplementors = []string{"CalendarPlanning"}
+
+func (ec *executionContext) _CalendarPlanning(ctx context.Context, sel ast.SelectionSet, obj *model.CalendarPlanning) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, calendarPlanningImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("CalendarPlanning")
+		case "id":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._CalendarPlanning_id(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "createdAt":
+			out.Values[i] = ec._CalendarPlanning_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updatedAt":
+			out.Values[i] = ec._CalendarPlanning_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "deletedAt":
+			out.Values[i] = ec._CalendarPlanning_deletedAt(ctx, field, obj)
+		case "authorizationId":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._CalendarPlanning_authorizationId(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "startDateTime":
+			out.Values[i] = ec._CalendarPlanning_startDateTime(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "endDateTime":
+			out.Values[i] = ec._CalendarPlanning_endDateTime(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "description":
+			out.Values[i] = ec._CalendarPlanning_description(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var calendarPlanningActorImplementors = []string{"CalendarPlanningActor"}
+
+func (ec *executionContext) _CalendarPlanningActor(ctx context.Context, sel ast.SelectionSet, obj *model.CalendarPlanningActor) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, calendarPlanningActorImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("CalendarPlanningActor")
+		case "id":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._CalendarPlanningActor_id(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "createdAt":
+			out.Values[i] = ec._CalendarPlanningActor_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updatedAt":
+			out.Values[i] = ec._CalendarPlanningActor_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "deletedAt":
+			out.Values[i] = ec._CalendarPlanningActor_deletedAt(ctx, field, obj)
+		case "authorizationId":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._CalendarPlanningActor_authorizationId(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "calendarPlanningId":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._CalendarPlanningActor_calendarPlanningId(ctx, field, obj)
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var codeImplementors = []string{"Code"}
 
 func (ec *executionContext) _Code(ctx context.Context, sel ast.SelectionSet, obj *model.Code) graphql.Marshaler {
@@ -9029,6 +10632,20 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "updateUserPhoneNumber":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updateUserPhoneNumber(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "createUserPlannings":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_createUserPlannings(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "addUserIntoPlanning":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_addUserIntoPlanning(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
@@ -9519,6 +11136,85 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getUserPlannings":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getUserPlannings(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "removeUserPlannings":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_removeUserPlannings(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getPlanningActors":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getPlanningActors(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "removeUserFromPlanning":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_removeUserFromPlanning(ctx, field)
 				return res
 			}
 
@@ -10724,6 +12420,34 @@ func (ec *executionContext) marshalNBoolean2bool(ctx context.Context, sel ast.Se
 	return res
 }
 
+func (ec *executionContext) marshalNCalendarPlanning2duvalᚋinternalᚋgraphᚋmodelᚐCalendarPlanning(ctx context.Context, sel ast.SelectionSet, v model.CalendarPlanning) graphql.Marshaler {
+	return ec._CalendarPlanning(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNCalendarPlanning2ᚖduvalᚋinternalᚋgraphᚋmodelᚐCalendarPlanning(ctx context.Context, sel ast.SelectionSet, v *model.CalendarPlanning) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._CalendarPlanning(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalNCalendarPlanningActor2duvalᚋinternalᚋgraphᚋmodelᚐCalendarPlanningActor(ctx context.Context, sel ast.SelectionSet, v model.CalendarPlanningActor) graphql.Marshaler {
+	return ec._CalendarPlanningActor(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNCalendarPlanningActor2ᚖduvalᚋinternalᚋgraphᚋmodelᚐCalendarPlanningActor(ctx context.Context, sel ast.SelectionSet, v *model.CalendarPlanningActor) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._CalendarPlanningActor(ctx, sel, v)
+}
+
 func (ec *executionContext) marshalNCode2duvalᚋinternalᚋgraphᚋmodelᚐCode(ctx context.Context, sel ast.SelectionSet, v model.Code) graphql.Marshaler {
 	return ec._Code(ctx, sel, &v)
 }
@@ -10785,6 +12509,11 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 
 func (ec *executionContext) unmarshalNNewAddress2duvalᚋinternalᚋgraphᚋmodelᚐNewAddress(ctx context.Context, v interface{}) (model.NewAddress, error) {
 	res, err := ec.unmarshalInputNewAddress(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) unmarshalNNewCalendarPlanning2duvalᚋinternalᚋgraphᚋmodelᚐNewCalendarPlanning(ctx context.Context, v interface{}) (model.NewCalendarPlanning, error) {
+	res, err := ec.unmarshalInputNewCalendarPlanning(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
@@ -11376,6 +13105,53 @@ func (ec *executionContext) marshalOTime2ᚖtimeᚐTime(ctx context.Context, sel
 	}
 	res := graphql.MarshalTime(*v)
 	return res
+}
+
+func (ec *executionContext) marshalOUser2ᚕᚖduvalᚋinternalᚋgraphᚋmodelᚐUserᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.User) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNUser2ᚖduvalᚋinternalᚋgraphᚋmodelᚐUser(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalOUserAuthorizationLink2ᚖduvalᚋinternalᚋgraphᚋmodelᚐUserAuthorizationLink(ctx context.Context, sel ast.SelectionSet, v *model.UserAuthorizationLink) graphql.Marshaler {

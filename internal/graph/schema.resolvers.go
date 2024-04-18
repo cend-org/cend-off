@@ -9,6 +9,7 @@ import (
 	"duval/internal/graph/model"
 	"duval/internal/pkg/address"
 	"duval/internal/pkg/phone"
+	"duval/internal/pkg/planning"
 	"duval/internal/pkg/user"
 	"fmt"
 )
@@ -31,6 +32,31 @@ func (r *authorizationResolver) UserID(ctx context.Context, obj *model.Authoriza
 // Level is the resolver for the level field.
 func (r *authorizationResolver) Level(ctx context.Context, obj *model.Authorization) (int, error) {
 	panic(fmt.Errorf("not implemented: Level - level"))
+}
+
+// ID is the resolver for the id field.
+func (r *calendarPlanningResolver) ID(ctx context.Context, obj *model.CalendarPlanning) (int, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// AuthorizationID is the resolver for the authorizationId field.
+func (r *calendarPlanningResolver) AuthorizationID(ctx context.Context, obj *model.CalendarPlanning) (int, error) {
+	panic(fmt.Errorf("not implemented: AuthorizationID - authorizationId"))
+}
+
+// ID is the resolver for the id field.
+func (r *calendarPlanningActorResolver) ID(ctx context.Context, obj *model.CalendarPlanningActor) (int, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// AuthorizationID is the resolver for the authorizationId field.
+func (r *calendarPlanningActorResolver) AuthorizationID(ctx context.Context, obj *model.CalendarPlanningActor) (int, error) {
+	panic(fmt.Errorf("not implemented: AuthorizationID - authorizationId"))
+}
+
+// CalendarPlanningID is the resolver for the calendarPlanningId field.
+func (r *calendarPlanningActorResolver) CalendarPlanningID(ctx context.Context, obj *model.CalendarPlanningActor) (*int, error) {
+	panic(fmt.Errorf("not implemented: CalendarPlanningID - calendarPlanningId"))
 }
 
 // ID is the resolver for the id field.
@@ -86,6 +112,16 @@ func (r *mutationResolver) NewPhoneNumber(ctx context.Context, input model.NewPh
 // UpdateUserPhoneNumber is the resolver for the updateUserPhoneNumber field.
 func (r *mutationResolver) UpdateUserPhoneNumber(ctx context.Context, input model.NewPhoneNumber) (*model.PhoneNumber, error) {
 	return phone.UpdateUserPhoneNumber(&ctx, &input)
+}
+
+// CreateUserPlannings is the resolver for the createUserPlannings field.
+func (r *mutationResolver) CreateUserPlannings(ctx context.Context, input model.NewCalendarPlanning) (*model.CalendarPlanning, error) {
+	return planning.CreateUserPlannings(&ctx, &input)
+}
+
+// AddUserIntoPlanning is the resolver for the addUserIntoPlanning field.
+func (r *mutationResolver) AddUserIntoPlanning(ctx context.Context, calendarID int, selectedUserID int) (*model.CalendarPlanningActor, error) {
+	return planning.AddUserIntoPlanning(&ctx, calendarID, selectedUserID)
 }
 
 // ID is the resolver for the id field.
@@ -156,6 +192,26 @@ func (r *queryResolver) RemoveUserAddress(ctx context.Context) (string, error) {
 // GetUserPhoneNumber is the resolver for the getUserPhoneNumber field.
 func (r *queryResolver) GetUserPhoneNumber(ctx context.Context) (*model.PhoneNumber, error) {
 	return phone.GetUserPhoneNumber(&ctx)
+}
+
+// GetUserPlannings is the resolver for the getUserPlannings field.
+func (r *queryResolver) GetUserPlannings(ctx context.Context) (*model.CalendarPlanning, error) {
+	return planning.GetUserPlannings(&ctx)
+}
+
+// RemoveUserPlannings is the resolver for the removeUserPlannings field.
+func (r *queryResolver) RemoveUserPlannings(ctx context.Context) (*string, error) {
+	return planning.RemoveUserPlannings(&ctx)
+}
+
+// GetPlanningActors is the resolver for the getPlanningActors field.
+func (r *queryResolver) GetPlanningActors(ctx context.Context, calendarID int) ([]*model.User, error) {
+	return planning.GetPlanningActors(&ctx, calendarID)
+}
+
+// RemoveUserFromPlanning is the resolver for the removeUserFromPlanning field.
+func (r *queryResolver) RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*string, error) {
+	return planning.RemoveUserFromPlanning(&ctx, calendarPlanningID, selectedUserID)
 }
 
 // ID is the resolver for the Id field.
@@ -239,6 +295,14 @@ func (r *Resolver) Address() AddressResolver { return &addressResolver{r} }
 // Authorization returns AuthorizationResolver implementation.
 func (r *Resolver) Authorization() AuthorizationResolver { return &authorizationResolver{r} }
 
+// CalendarPlanning returns CalendarPlanningResolver implementation.
+func (r *Resolver) CalendarPlanning() CalendarPlanningResolver { return &calendarPlanningResolver{r} }
+
+// CalendarPlanningActor returns CalendarPlanningActorResolver implementation.
+func (r *Resolver) CalendarPlanningActor() CalendarPlanningActorResolver {
+	return &calendarPlanningActorResolver{r}
+}
+
 // Code returns CodeResolver implementation.
 func (r *Resolver) Code() CodeResolver { return &codeResolver{r} }
 
@@ -278,6 +342,8 @@ func (r *Resolver) NewUserInput() NewUserInputResolver { return &newUserInputRes
 
 type addressResolver struct{ *Resolver }
 type authorizationResolver struct{ *Resolver }
+type calendarPlanningResolver struct{ *Resolver }
+type calendarPlanningActorResolver struct{ *Resolver }
 type codeResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type passwordResolver struct{ *Resolver }

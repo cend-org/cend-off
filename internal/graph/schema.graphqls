@@ -171,6 +171,35 @@ type UserPhoneNumber{
     phoneNumberId: ID!
 }
 
+# Calendar Planning Type
+
+type CalendarPlanning {
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    authorizationId : ID!
+    startDateTime: Time!
+    endDateTime: Time!
+    description: String
+}
+
+
+input NewCalendarPlanning {
+    startDateTime: Time!
+    endDateTime: Time!
+    description: String
+}
+
+type CalendarPlanningActor {
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    authorizationId: ID!
+    calendarPlanningId: ID
+}
+
 
 # ALL QUERIES
 type Query {
@@ -191,6 +220,13 @@ type Query {
 
 #    Phone QUERIES
     getUserPhoneNumber: PhoneNumber!
+
+#    Calendar Planning QUERIES
+    getUserPlannings: CalendarPlanning!
+    removeUserPlannings: String
+    getPlanningActors(calendarId: ID!): [User!]
+    removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): String
+
 }
 
 # ALL MUTATIONS
@@ -210,5 +246,9 @@ type Mutation {
 #    PHone mutations
     newPhoneNumber(input: NewPhoneNumber!) : PhoneNumber!
     updateUserPhoneNumber(input: NewPhoneNumber!) : PhoneNumber!
+
+#    Planning mutations
+    createUserPlannings(input: NewCalendarPlanning!): CalendarPlanning!
+    addUserIntoPlanning(calendarId: ID!, selectedUserId: ID!):CalendarPlanningActor!
 
 }
