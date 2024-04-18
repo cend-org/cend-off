@@ -234,6 +234,25 @@ input SubjectInput {
     Name : String
 }
 
+# Mark type
+
+type UserMark {
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    userId : ID!
+    authorId: ID!
+    authorComment: String
+    authorMark: String!
+}
+
+input UserMarkInput {
+    userId : ID!
+    authorId: ID!
+    authorComment: String
+    authorMark: String!
+}
 
 # ALL QUERIES
 type Query {
@@ -267,6 +286,9 @@ type Query {
     getEducation: [Education!]
     getUserEducationLevel: Education!
 
+    #    Mark QUERIES
+    getUserAverageMark(userId: ID!): Int
+    getUserMarkComment: [UserMark!]
 
 
 }
@@ -296,4 +318,8 @@ type Mutation {
     #   Education mutations
     setUserEducationLevel(input: SubjectInput!): Education!
     updateUserEducationLevel(input : SubjectInput!): Education!
+
+    #    Mark mutations
+    rateUser(input: UserMarkInput!): UserMark!
+
 }

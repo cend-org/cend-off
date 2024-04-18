@@ -9,6 +9,7 @@ import (
 	"duval/internal/graph/model"
 	"duval/internal/pkg/address"
 	"duval/internal/pkg/education"
+	"duval/internal/pkg/mark"
 	"duval/internal/pkg/phone"
 	"duval/internal/pkg/planning"
 	"duval/internal/pkg/user"
@@ -140,6 +141,11 @@ func (r *mutationResolver) UpdateUserEducationLevel(ctx context.Context, input m
 	return education.UpdateUserEducationLevel(&ctx, &input)
 }
 
+// RateUser is the resolver for the rateUser field.
+func (r *mutationResolver) RateUser(ctx context.Context, input model.UserMarkInput) (*model.UserMark, error) {
+	return mark.RateUser(&ctx, &input)
+}
+
 // ID is the resolver for the id field.
 func (r *passwordResolver) ID(ctx context.Context, obj *model.Password) (int, error) {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -250,6 +256,16 @@ func (r *queryResolver) GetUserEducationLevel(ctx context.Context) (*model.Educa
 	return education.GetUserEducationLevel(&ctx)
 }
 
+// GetUserAverageMark is the resolver for the getUserAverageMark field.
+func (r *queryResolver) GetUserAverageMark(ctx context.Context, userID int) (*int, error) {
+	return mark.GetUserAverageMark(&ctx, userID)
+}
+
+// GetUserMarkComment is the resolver for the getUserMarkComment field.
+func (r *queryResolver) GetUserMarkComment(ctx context.Context) ([]*model.UserMark, error) {
+	return mark.GetUserMarkComment(&ctx)
+}
+
 // ID is the resolver for the id field.
 func (r *subjectResolver) ID(ctx context.Context, obj *model.Subject) (int, error) {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -331,6 +347,26 @@ func (r *userEducationLevelSubjectResolver) SubjectID(ctx context.Context, obj *
 }
 
 // ID is the resolver for the id field.
+func (r *userMarkResolver) ID(ctx context.Context, obj *model.UserMark) (int, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// UserID is the resolver for the userId field.
+func (r *userMarkResolver) UserID(ctx context.Context, obj *model.UserMark) (int, error) {
+	panic(fmt.Errorf("not implemented: UserID - userId"))
+}
+
+// AuthorID is the resolver for the authorId field.
+func (r *userMarkResolver) AuthorID(ctx context.Context, obj *model.UserMark) (int, error) {
+	panic(fmt.Errorf("not implemented: AuthorID - authorId"))
+}
+
+// AuthorMark is the resolver for the authorMark field.
+func (r *userMarkResolver) AuthorMark(ctx context.Context, obj *model.UserMark) (string, error) {
+	panic(fmt.Errorf("not implemented: AuthorMark - authorMark"))
+}
+
+// ID is the resolver for the id field.
 func (r *userPhoneNumberResolver) ID(ctx context.Context, obj *model.UserPhoneNumber) (int, error) {
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
@@ -358,6 +394,21 @@ func (r *subjectInputResolver) ID(ctx context.Context, obj *model.SubjectInput, 
 // EducationLevelID is the resolver for the educationLevelId field.
 func (r *subjectInputResolver) EducationLevelID(ctx context.Context, obj *model.SubjectInput, data int) error {
 	panic(fmt.Errorf("not implemented: EducationLevelID - educationLevelId"))
+}
+
+// UserID is the resolver for the userId field.
+func (r *userMarkInputResolver) UserID(ctx context.Context, obj *model.UserMarkInput, data int) error {
+	panic(fmt.Errorf("not implemented: UserID - userId"))
+}
+
+// AuthorID is the resolver for the authorId field.
+func (r *userMarkInputResolver) AuthorID(ctx context.Context, obj *model.UserMarkInput, data int) error {
+	panic(fmt.Errorf("not implemented: AuthorID - authorId"))
+}
+
+// AuthorMark is the resolver for the authorMark field.
+func (r *userMarkInputResolver) AuthorMark(ctx context.Context, obj *model.UserMarkInput, data string) error {
+	panic(fmt.Errorf("not implemented: AuthorMark - authorMark"))
 }
 
 // Address returns AddressResolver implementation.
@@ -416,6 +467,9 @@ func (r *Resolver) UserEducationLevelSubject() UserEducationLevelSubjectResolver
 	return &userEducationLevelSubjectResolver{r}
 }
 
+// UserMark returns UserMarkResolver implementation.
+func (r *Resolver) UserMark() UserMarkResolver { return &userMarkResolver{r} }
+
 // UserPhoneNumber returns UserPhoneNumberResolver implementation.
 func (r *Resolver) UserPhoneNumber() UserPhoneNumberResolver { return &userPhoneNumberResolver{r} }
 
@@ -424,6 +478,9 @@ func (r *Resolver) NewUserInput() NewUserInputResolver { return &newUserInputRes
 
 // SubjectInput returns SubjectInputResolver implementation.
 func (r *Resolver) SubjectInput() SubjectInputResolver { return &subjectInputResolver{r} }
+
+// UserMarkInput returns UserMarkInputResolver implementation.
+func (r *Resolver) UserMarkInput() UserMarkInputResolver { return &userMarkInputResolver{r} }
 
 type addressResolver struct{ *Resolver }
 type authorizationResolver struct{ *Resolver }
@@ -441,9 +498,11 @@ type userAddressResolver struct{ *Resolver }
 type userAuthorizationLinkResolver struct{ *Resolver }
 type userAuthorizationLinkActorResolver struct{ *Resolver }
 type userEducationLevelSubjectResolver struct{ *Resolver }
+type userMarkResolver struct{ *Resolver }
 type userPhoneNumberResolver struct{ *Resolver }
 type newUserInputResolver struct{ *Resolver }
 type subjectInputResolver struct{ *Resolver }
+type userMarkInputResolver struct{ *Resolver }
 
 // !!! WARNING !!!
 // The code below was going to be deleted when updating resolvers. It has been copied here so you have

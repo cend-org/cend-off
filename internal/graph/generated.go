@@ -56,9 +56,11 @@ type ResolverRoot interface {
 	UserAuthorizationLink() UserAuthorizationLinkResolver
 	UserAuthorizationLinkActor() UserAuthorizationLinkActorResolver
 	UserEducationLevelSubject() UserEducationLevelSubjectResolver
+	UserMark() UserMarkResolver
 	UserPhoneNumber() UserPhoneNumberResolver
 	NewUserInput() NewUserInputResolver
 	SubjectInput() SubjectInputResolver
+	UserMarkInput() UserMarkInputResolver
 }
 
 type DirectiveRoot struct {
@@ -132,6 +134,7 @@ type ComplexityRoot struct {
 		NewAddress               func(childComplexity int, input model.NewAddress) int
 		NewPassword              func(childComplexity int, input model.NewPassword) int
 		NewPhoneNumber           func(childComplexity int, input model.NewPhoneNumber) int
+		RateUser                 func(childComplexity int, input model.UserMarkInput) int
 		Register                 func(childComplexity int, input model.NewUserInput, typeArg int) int
 		RegisterByEmail          func(childComplexity int, authorizationLevel int, email string) int
 		SetUserEducationLevel    func(childComplexity int, input model.SubjectInput) int
@@ -168,7 +171,9 @@ type ComplexityRoot struct {
 		GetPlanningActors             func(childComplexity int, calendarID int) int
 		GetSubjects                   func(childComplexity int, eduID int) int
 		GetUserAddress                func(childComplexity int) int
+		GetUserAverageMark            func(childComplexity int, userID int) int
 		GetUserEducationLevel         func(childComplexity int) int
+		GetUserMarkComment            func(childComplexity int) int
 		GetUserPhoneNumber            func(childComplexity int) int
 		GetUserPlannings              func(childComplexity int) int
 		GetUserSubjects               func(childComplexity int) int
@@ -252,6 +257,17 @@ type ComplexityRoot struct {
 		UserID    func(childComplexity int) int
 	}
 
+	UserMark struct {
+		AuthorComment func(childComplexity int) int
+		AuthorID      func(childComplexity int) int
+		AuthorMark    func(childComplexity int) int
+		CreatedAt     func(childComplexity int) int
+		DeletedAt     func(childComplexity int) int
+		ID            func(childComplexity int) int
+		UpdatedAt     func(childComplexity int) int
+		UserID        func(childComplexity int) int
+	}
+
 	UserPhoneNumber struct {
 		CreatedAt     func(childComplexity int) int
 		DeletedAt     func(childComplexity int) int
@@ -304,6 +320,7 @@ type MutationResolver interface {
 	AddUserIntoPlanning(ctx context.Context, calendarID int, selectedUserID int) (*model.CalendarPlanningActor, error)
 	SetUserEducationLevel(ctx context.Context, input model.SubjectInput) (*model.Education, error)
 	UpdateUserEducationLevel(ctx context.Context, input model.SubjectInput) (*model.Education, error)
+	RateUser(ctx context.Context, input model.UserMarkInput) (*model.UserMark, error)
 }
 type PasswordResolver interface {
 	ID(ctx context.Context, obj *model.Password) (int, error)
@@ -333,6 +350,8 @@ type QueryResolver interface {
 	GetSubjects(ctx context.Context, eduID int) ([]*model.Subject, error)
 	GetEducation(ctx context.Context) ([]*model.Education, error)
 	GetUserEducationLevel(ctx context.Context) (*model.Education, error)
+	GetUserAverageMark(ctx context.Context, userID int) (*int, error)
+	GetUserMarkComment(ctx context.Context) ([]*model.UserMark, error)
 }
 type SubjectResolver interface {
 	ID(ctx context.Context, obj *model.Subject) (int, error)
@@ -368,6 +387,14 @@ type UserEducationLevelSubjectResolver interface {
 	UserID(ctx context.Context, obj *model.UserEducationLevelSubject) (int, error)
 	SubjectID(ctx context.Context, obj *model.UserEducationLevelSubject) (int, error)
 }
+type UserMarkResolver interface {
+	ID(ctx context.Context, obj *model.UserMark) (int, error)
+
+	UserID(ctx context.Context, obj *model.UserMark) (int, error)
+	AuthorID(ctx context.Context, obj *model.UserMark) (int, error)
+
+	AuthorMark(ctx context.Context, obj *model.UserMark) (string, error)
+}
 type UserPhoneNumberResolver interface {
 	ID(ctx context.Context, obj *model.UserPhoneNumber) (int, error)
 
@@ -381,6 +408,12 @@ type NewUserInputResolver interface {
 type SubjectInputResolver interface {
 	ID(ctx context.Context, obj *model.SubjectInput, data *int) error
 	EducationLevelID(ctx context.Context, obj *model.SubjectInput, data int) error
+}
+type UserMarkInputResolver interface {
+	UserID(ctx context.Context, obj *model.UserMarkInput, data int) error
+	AuthorID(ctx context.Context, obj *model.UserMarkInput, data int) error
+
+	AuthorMark(ctx context.Context, obj *model.UserMarkInput, data string) error
 }
 
 type executableSchema struct {
@@ -768,6 +801,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.NewPhoneNumber(childComplexity, args["input"].(model.NewPhoneNumber)), true
 
+	case "Mutation.rateUser":
+		if e.complexity.Mutation.RateUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_rateUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RateUser(childComplexity, args["input"].(model.UserMarkInput)), true
+
 	case "Mutation.register":
 		if e.complexity.Mutation.Register == nil {
 			break
@@ -1002,12 +1047,31 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetUserAddress(childComplexity), true
 
+	case "Query.getUserAverageMark":
+		if e.complexity.Query.GetUserAverageMark == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getUserAverageMark_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetUserAverageMark(childComplexity, args["userId"].(int)), true
+
 	case "Query.getUserEducationLevel":
 		if e.complexity.Query.GetUserEducationLevel == nil {
 			break
 		}
 
 		return e.complexity.Query.GetUserEducationLevel(childComplexity), true
+
+	case "Query.getUserMarkComment":
+		if e.complexity.Query.GetUserMarkComment == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserMarkComment(childComplexity), true
 
 	case "Query.getUserPhoneNumber":
 		if e.complexity.Query.GetUserPhoneNumber == nil {
@@ -1465,6 +1529,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserEducationLevelSubject.UserID(childComplexity), true
 
+	case "UserMark.authorComment":
+		if e.complexity.UserMark.AuthorComment == nil {
+			break
+		}
+
+		return e.complexity.UserMark.AuthorComment(childComplexity), true
+
+	case "UserMark.authorId":
+		if e.complexity.UserMark.AuthorID == nil {
+			break
+		}
+
+		return e.complexity.UserMark.AuthorID(childComplexity), true
+
+	case "UserMark.authorMark":
+		if e.complexity.UserMark.AuthorMark == nil {
+			break
+		}
+
+		return e.complexity.UserMark.AuthorMark(childComplexity), true
+
+	case "UserMark.createdAt":
+		if e.complexity.UserMark.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserMark.CreatedAt(childComplexity), true
+
+	case "UserMark.deletedAt":
+		if e.complexity.UserMark.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.UserMark.DeletedAt(childComplexity), true
+
+	case "UserMark.id":
+		if e.complexity.UserMark.ID == nil {
+			break
+		}
+
+		return e.complexity.UserMark.ID(childComplexity), true
+
+	case "UserMark.updatedAt":
+		if e.complexity.UserMark.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserMark.UpdatedAt(childComplexity), true
+
+	case "UserMark.userId":
+		if e.complexity.UserMark.UserID == nil {
+			break
+		}
+
+		return e.complexity.UserMark.UserID(childComplexity), true
+
 	case "UserPhoneNumber.createdAt":
 		if e.complexity.UserPhoneNumber.CreatedAt == nil {
 			break
@@ -1523,6 +1643,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputSubjectInput,
 		ec.unmarshalInputUpdateUser,
 		ec.unmarshalInputUserLogin,
+		ec.unmarshalInputUserMarkInput,
 	)
 	first := true
 
@@ -1738,6 +1859,21 @@ func (ec *executionContext) field_Mutation_newPhoneNumber_args(ctx context.Conte
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_rateUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.UserMarkInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNUserMarkInput2duvalᚋinternalᚋgraphᚋmodelᚐUserMarkInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_registerByEmail_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1903,6 +2039,21 @@ func (ec *executionContext) field_Query_getSubjects_args(ctx context.Context, ra
 		}
 	}
 	args["eduId"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getUserAverageMark_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["userId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+		arg0, err = ec.unmarshalNID2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["userId"] = arg0
 	return args, nil
 }
 
@@ -4686,6 +4837,79 @@ func (ec *executionContext) fieldContext_Mutation_updateUserEducationLevel(ctx c
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_rateUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_rateUser(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RateUser(rctx, fc.Args["input"].(model.UserMarkInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.UserMark)
+	fc.Result = res
+	return ec.marshalNUserMark2ᚖduvalᚋinternalᚋgraphᚋmodelᚐUserMark(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_rateUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_UserMark_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_UserMark_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_UserMark_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_UserMark_deletedAt(ctx, field)
+			case "userId":
+				return ec.fieldContext_UserMark_userId(ctx, field)
+			case "authorId":
+				return ec.fieldContext_UserMark_authorId(ctx, field)
+			case "authorComment":
+				return ec.fieldContext_UserMark_authorComment(ctx, field)
+			case "authorMark":
+				return ec.fieldContext_UserMark_authorMark(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserMark", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_rateUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Password_id(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Password_id(ctx, field)
 	if err != nil {
@@ -6453,6 +6677,117 @@ func (ec *executionContext) fieldContext_Query_getUserEducationLevel(ctx context
 				return ec.fieldContext_Education_name(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Education", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getUserAverageMark(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getUserAverageMark(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetUserAverageMark(rctx, fc.Args["userId"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*int)
+	fc.Result = res
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getUserAverageMark(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getUserAverageMark_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getUserMarkComment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getUserMarkComment(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetUserMarkComment(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]*model.UserMark)
+	fc.Result = res
+	return ec.marshalOUserMark2ᚕᚖduvalᚋinternalᚋgraphᚋmodelᚐUserMarkᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getUserMarkComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "id":
+				return ec.fieldContext_UserMark_id(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_UserMark_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_UserMark_updatedAt(ctx, field)
+			case "deletedAt":
+				return ec.fieldContext_UserMark_deletedAt(ctx, field)
+			case "userId":
+				return ec.fieldContext_UserMark_userId(ctx, field)
+			case "authorId":
+				return ec.fieldContext_UserMark_authorId(ctx, field)
+			case "authorComment":
+				return ec.fieldContext_UserMark_authorComment(ctx, field)
+			case "authorMark":
+				return ec.fieldContext_UserMark_authorMark(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserMark", field.Name)
 		},
 	}
 	return fc, nil
@@ -8871,6 +9206,352 @@ func (ec *executionContext) fieldContext_UserEducationLevelSubject_SubjectId(ctx
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserMark_id(ctx context.Context, field graphql.CollectedField, obj *model.UserMark) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserMark_id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.UserMark().ID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserMark_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserMark",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserMark_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.UserMark) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserMark_createdAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserMark_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserMark",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserMark_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.UserMark) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserMark_updatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserMark_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserMark",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserMark_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.UserMark) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserMark_deletedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalOTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserMark_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserMark",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Time does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserMark_userId(ctx context.Context, field graphql.CollectedField, obj *model.UserMark) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserMark_userId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.UserMark().UserID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserMark_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserMark",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserMark_authorId(ctx context.Context, field graphql.CollectedField, obj *model.UserMark) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserMark_authorId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.UserMark().AuthorID(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserMark_authorId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserMark",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserMark_authorComment(ctx context.Context, field graphql.CollectedField, obj *model.UserMark) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserMark_authorComment(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AuthorComment, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalOString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserMark_authorComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserMark",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserMark_authorMark(ctx context.Context, field graphql.CollectedField, obj *model.UserMark) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserMark_authorMark(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.UserMark().AuthorMark(rctx, obj)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserMark_authorMark(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserMark",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -11328,6 +12009,60 @@ func (ec *executionContext) unmarshalInputUserLogin(ctx context.Context, obj int
 	return it, nil
 }
 
+func (ec *executionContext) unmarshalInputUserMarkInput(ctx context.Context, obj interface{}) (model.UserMarkInput, error) {
+	var it model.UserMarkInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"userId", "authorId", "authorComment", "authorMark"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "userId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("userId"))
+			data, err := ec.unmarshalNID2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.UserMarkInput().UserID(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "authorId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("authorId"))
+			data, err := ec.unmarshalNID2int(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.UserMarkInput().AuthorID(ctx, &it, data); err != nil {
+				return it, err
+			}
+		case "authorComment":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("authorComment"))
+			data, err := ec.unmarshalOString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AuthorComment = data
+		case "authorMark":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("authorMark"))
+			data, err := ec.unmarshalNString2string(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			if err = ec.resolvers.UserMarkInput().AuthorMark(ctx, &it, data); err != nil {
+				return it, err
+			}
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -12181,6 +12916,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "rateUser":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_rateUser(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -12825,6 +13567,44 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getUserAverageMark":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getUserAverageMark(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getUserMarkComment":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getUserMarkComment(ctx, field)
 				return res
 			}
 
@@ -13798,6 +14578,198 @@ func (ec *executionContext) _UserEducationLevelSubject(ctx context.Context, sel 
 	return out
 }
 
+var userMarkImplementors = []string{"UserMark"}
+
+func (ec *executionContext) _UserMark(ctx context.Context, sel ast.SelectionSet, obj *model.UserMark) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, userMarkImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("UserMark")
+		case "id":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._UserMark_id(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "createdAt":
+			out.Values[i] = ec._UserMark_createdAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "updatedAt":
+			out.Values[i] = ec._UserMark_updatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				atomic.AddUint32(&out.Invalids, 1)
+			}
+		case "deletedAt":
+			out.Values[i] = ec._UserMark_deletedAt(ctx, field, obj)
+		case "userId":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._UserMark_userId(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "authorId":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._UserMark_authorId(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		case "authorComment":
+			out.Values[i] = ec._UserMark_authorComment(ctx, field, obj)
+		case "authorMark":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._UserMark_authorMark(ctx, field, obj)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			if field.Deferrable != nil {
+				dfs, ok := deferred[field.Deferrable.Label]
+				di := 0
+				if ok {
+					dfs.AddField(field)
+					di = len(dfs.Values) - 1
+				} else {
+					dfs = graphql.NewFieldSet([]graphql.CollectedField{field})
+					deferred[field.Deferrable.Label] = dfs
+				}
+				dfs.Concurrently(di, func(ctx context.Context) graphql.Marshaler {
+					return innerFunc(ctx, dfs)
+				})
+
+				// don't run the out.Concurrently() call below
+				out.Values[i] = graphql.Null
+				continue
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var userPhoneNumberImplementors = []string{"UserPhoneNumber"}
 
 func (ec *executionContext) _UserPhoneNumber(ctx context.Context, sel ast.SelectionSet, obj *model.UserPhoneNumber) graphql.Marshaler {
@@ -14612,6 +15584,25 @@ func (ec *executionContext) unmarshalNUserLogin2duvalᚋinternalᚋgraphᚋmodel
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) marshalNUserMark2duvalᚋinternalᚋgraphᚋmodelᚐUserMark(ctx context.Context, sel ast.SelectionSet, v model.UserMark) graphql.Marshaler {
+	return ec._UserMark(ctx, sel, &v)
+}
+
+func (ec *executionContext) marshalNUserMark2ᚖduvalᚋinternalᚋgraphᚋmodelᚐUserMark(ctx context.Context, sel ast.SelectionSet, v *model.UserMark) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._UserMark(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNUserMarkInput2duvalᚋinternalᚋgraphᚋmodelᚐUserMarkInput(ctx context.Context, v interface{}) (model.UserMarkInput, error) {
+	res, err := ec.unmarshalInputUserMarkInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
 func (ec *executionContext) marshalN__Directive2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐDirective(ctx context.Context, sel ast.SelectionSet, v introspection.Directive) graphql.Marshaler {
 	return ec.___Directive(ctx, sel, &v)
 }
@@ -15176,6 +16167,53 @@ func (ec *executionContext) marshalOUserAuthorizationLinkActor2ᚖduvalᚋintern
 		return graphql.Null
 	}
 	return ec._UserAuthorizationLinkActor(ctx, sel, v)
+}
+
+func (ec *executionContext) marshalOUserMark2ᚕᚖduvalᚋinternalᚋgraphᚋmodelᚐUserMarkᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.UserMark) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNUserMark2ᚖduvalᚋinternalᚋgraphᚋmodelᚐUserMark(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
 }
 
 func (ec *executionContext) marshalO__EnumValue2ᚕgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚋintrospectionᚐEnumValueᚄ(ctx context.Context, sel ast.SelectionSet, v []introspection.EnumValue) graphql.Marshaler {
