@@ -46,21 +46,21 @@ func Register(input *model.NewUserInput, userType *int) (string, error) {
 	authorizationLevel = *userType
 
 	if !utils.IsValidEmail(user.Email) {
-		return "", errx.InvalidEmailError
+		return tokenStr, errx.InvalidEmailError
 	}
 
 	_, err = GetUserByEmail(user.Email)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		return "", errx.Lambda(err)
+		return tokenStr, errx.Lambda(err)
 	}
 
 	if user.Id > state.ZERO {
-		return "", errx.DuplicateUserError
+		return tokenStr, errx.DuplicateUserError
 	}
 
 	user.Matricule, err = utils.GenerateMatricule()
 	if err != nil {
-		return "", errx.Lambda(err)
+		return tokenStr, errx.Lambda(err)
 	}
 
 	if user.Name == state.EMPTY {
@@ -222,15 +222,17 @@ func UpdMyProfile(ctx *context.Context, input *model.UpdateUser) (*model.User, e
 		return &usr, errx.DbGetError
 	}
 
-	usr.Name = input.Name
-	usr.FamilyName = input.FamilyName
-	usr.NickName = input.NickName
-	usr.Description = input.Description
-	usr.CoverText = input.CoverText
-	usr.Profile = input.Profile
-	usr.ExperienceDetail = input.ExperienceDetail
-	usr.AdditionalDescription = input.AdditionalDescription
-	usr.AddOnTitle = input.AddOnTitle
+	usr = model.User{
+		Name:                  input.Name,
+		FamilyName:            input.FamilyName,
+		NickName:              input.NickName,
+		Description:           input.Description,
+		CoverText:             input.CoverText,
+		Profile:               input.Profile,
+		ExperienceDetail:      input.ExperienceDetail,
+		AdditionalDescription: input.AdditionalDescription,
+		AddOnTitle:            input.AddOnTitle,
+	}
 
 	err = database.Update(usr)
 	if err != nil {
