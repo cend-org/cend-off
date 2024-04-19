@@ -34,13 +34,15 @@ func Register(input *model.NewUserInput, userType *int) (string, error) {
 		authorizationLevel int
 	)
 
-	user.Email = input.Email
-	user.Name = input.Name
-	user.FamilyName = input.FamilyName
-	user.NickName = input.NickName
-	user.BirthDate = input.BirthDate
-	user.Sex = input.Sex
-	user.Lang = input.Lang
+	user = model.User{
+		Name:       input.Name,
+		FamilyName: input.FamilyName,
+		NickName:   input.NickName,
+		BirthDate:  input.BirthDate,
+		Email:      input.Email,
+		Sex:        input.Sex,
+		Lang:       input.Lang,
+	}
 	authorizationLevel = *userType
 
 	if !utils.IsValidEmail(user.Email) {
