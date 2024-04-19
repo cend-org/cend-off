@@ -29,11 +29,9 @@ func camelToSnake(camelCase string) string {
 	return string(result)
 }
 
-// mutateHook is a custom hook to modify the generated model's field names.
 func mutateHook(b *modelgen.ModelBuild) *modelgen.ModelBuild {
 	for _, model := range b.Models {
 		for _, field := range model.Fields {
-			// Convert camel case field name to snake case
 			snakeCaseName := camelToSnake(field.Name)
 			field.Tag = `json:"` + snakeCaseName + `"`
 		}
@@ -49,12 +47,10 @@ func main() {
 		os.Exit(2)
 	}
 
-	// Create a new modelgen plugin with the mutate hook.
 	p := modelgen.Plugin{
 		MutateHook: mutateHook,
 	}
 
-	// Generate the code with the custom plugin.
 	err = api.Generate(cfg, api.ReplacePlugin(&p))
 	if err != nil {
 		fmt.Fprintln(os.Stderr, err.Error())
