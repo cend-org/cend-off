@@ -14,6 +14,7 @@ import (
 	"duval/internal/pkg/planning"
 	"duval/internal/pkg/translator"
 	"duval/internal/pkg/user"
+	"duval/internal/pkg/user/link"
 	"fmt"
 )
 
@@ -187,6 +188,46 @@ func (r *mutationResolver) RateUser(ctx context.Context, input model.UserMarkInp
 	return mark.RateUser(&ctx, &input)
 }
 
+// AddParentToUser is the resolver for the addParentToUser field.
+func (r *mutationResolver) AddParentToUser(ctx context.Context, input model.UpdateUser) (*model.User, error) {
+	return link.AddParentToUser(&ctx, &input)
+}
+
+// RemoveUserParent is the resolver for the removeUserParent field.
+func (r *mutationResolver) RemoveUserParent(ctx context.Context, input model.UpdateUser) (*string, error) {
+	return link.RemoveUserParent(&ctx, &input)
+}
+
+// AddTutorToUser is the resolver for the addTutorToUser field.
+func (r *mutationResolver) AddTutorToUser(ctx context.Context, input model.UpdateUser) (*model.User, error) {
+	return link.AddTutorToUser(&ctx, &input)
+}
+
+// RemoveUserTutor is the resolver for the removeUserTutor field.
+func (r *mutationResolver) RemoveUserTutor(ctx context.Context, input model.UpdateUser) (*string, error) {
+	return link.RemoveUserTutor(&ctx, &input)
+}
+
+// AddProfessorToUser is the resolver for the addProfessorToUser field.
+func (r *mutationResolver) AddProfessorToUser(ctx context.Context, input model.UpdateUser) (*model.User, error) {
+	return link.AddProfessorToUser(&ctx, &input)
+}
+
+// RemoveUserProfessor is the resolver for the removeUserProfessor field.
+func (r *mutationResolver) RemoveUserProfessor(ctx context.Context, input model.UpdateUser) (*string, error) {
+	return link.RemoveUserProfessor(&ctx, &input)
+}
+
+// AddStudentToLink is the resolver for the addStudentToLink field.
+func (r *mutationResolver) AddStudentToLink(ctx context.Context, input model.UpdateUser) (*model.User, error) {
+	return link.AddStudentToLink(&ctx, &input)
+}
+
+// RemoveStudent is the resolver for the removeStudent field.
+func (r *mutationResolver) RemoveStudent(ctx context.Context, input model.UpdateUser) (*string, error) {
+	return link.RemoveStudent(&ctx, &input)
+}
+
 // ID is the resolver for the id field.
 func (r *passwordResolver) ID(ctx context.Context, obj *model.Password) (int, error) {
 	panic(fmt.Errorf("not implemented: ID - id"))
@@ -330,6 +371,26 @@ func (r *queryResolver) GetUserAverageMark(ctx context.Context, userID int) (*in
 // GetUserMarkComment is the resolver for the getUserMarkComment field.
 func (r *queryResolver) GetUserMarkComment(ctx context.Context) ([]*model.UserMark, error) {
 	return mark.GetUserMarkComment(&ctx)
+}
+
+// GetUserParent is the resolver for the getUserParent field.
+func (r *queryResolver) GetUserParent(ctx context.Context) ([]*model.User, error) {
+	return link.GetUserParent(&ctx)
+}
+
+// GetUserTutor is the resolver for the getUserTutor field.
+func (r *queryResolver) GetUserTutor(ctx context.Context) ([]*model.User, error) {
+	return link.GetUserTutor(&ctx)
+}
+
+// GetUserProfessor is the resolver for the getUserProfessor field.
+func (r *queryResolver) GetUserProfessor(ctx context.Context) ([]*model.User, error) {
+	return link.GetUserProfessor(&ctx)
+}
+
+// GetStudent is the resolver for the getStudent field.
+func (r *queryResolver) GetStudent(ctx context.Context) ([]*model.User, error) {
+	return link.GetStudent(&ctx)
 }
 
 // ID is the resolver for the id field.
@@ -584,13 +645,3 @@ type messageUpdateInputResolver struct{ *Resolver }
 type newUserInputResolver struct{ *Resolver }
 type subjectInputResolver struct{ *Resolver }
 type userMarkInputResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *queryResolver) GetEducationLevel(ctx context.Context) (*model.Education, error) {
-	panic(fmt.Errorf("not implemented: GetEducationLevel - getEducationLevel"))
-}

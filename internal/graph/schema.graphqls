@@ -361,6 +361,12 @@ type Query {
     getUserAverageMark(userId: ID!): Int
     getUserMarkComment: [UserMark!]
 
+    #    Link QUERIES
+    getUserParent :[User!]
+    getUserTutor :[User!]
+    getUserProfessor :[User!]
+    getStudent :[User!]
+
 
 }
 #
@@ -404,5 +410,19 @@ type Mutation {
 
     #    Mark mutations
     rateUser(input: UserMarkInput!): UserMark!
+
+    #    Link Mutations
+    addParentToUser(input: UpdateUser!) :User!
+    removeUserParent(input: UpdateUser!): String
+
+    addTutorToUser(input: UpdateUser!) :User!
+    removeUserTutor(input: UpdateUser!): String
+
+    addProfessorToUser(input: UpdateUser!) :User!
+    removeUserProfessor(input: UpdateUser!): String
+
+    addStudentToLink(input: UpdateUser!) :User!
+    removeStudent(input: UpdateUser!): String
+
 
 }

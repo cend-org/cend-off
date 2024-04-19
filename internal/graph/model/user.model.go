@@ -39,6 +39,7 @@ type NewUserInput struct {
 }
 
 type UpdateUser struct {
+	Id                    uint   `json:"id"`
 	Name                  string `json:"name,omitempty"`
 	FamilyName            string `json:"family_name,omitempty"`
 	NickName              string `json:"nick_name,omitempty"`

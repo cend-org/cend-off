@@ -13,7 +13,6 @@ import (
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
-	"time"
 )
 
 const (
@@ -321,8 +320,6 @@ func GetPasswordHistory(ctx *context.Context) ([]*model.Password, error) {
 	if err != nil {
 		return passwords, errx.DbGetError
 	}
-
-	time.Sleep(100)
 
 	for _, userPassword := range userPasswords {
 		passwords = append(passwords, &model.Password{
