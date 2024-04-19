@@ -13,7 +13,6 @@ import (
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
-	"time"
 )
 
 const (
@@ -222,8 +221,7 @@ func UpdMyProfile(ctx *context.Context, input map[string]interface{}) (*model.Us
 	if err != nil {
 		return &usr, errx.DbGetError
 	}
-	time.Sleep(100)
-	err = utils.ApplyChanges(input, &usr)
+	err = utils.ShouldBindJSON(input, &usr)
 	if err != nil {
 		return &usr, errx.Lambda(err)
 	}

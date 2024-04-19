@@ -539,39 +539,39 @@ func (r *userPhoneNumberResolver) PhoneNumberID(ctx context.Context, obj *model.
 	panic(fmt.Errorf("not implemented: PhoneNumberID - phoneNumberId"))
 }
 
-// ID is the resolver for the id field.
+// ID is the resolver for the Id field.
 func (r *messageUpdateInputResolver) ID(ctx context.Context, obj *model.MessageUpdateInput, data int) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	panic(fmt.Errorf("not implemented: ID - Id"))
 }
 
-// Age is the resolver for the age field.
+// Age is the resolver for the Age field.
 func (r *newUserInputResolver) Age(ctx context.Context, obj *model.NewUserInput, data *int) error {
-	panic(fmt.Errorf("not implemented: Age - age"))
+	panic(fmt.Errorf("not implemented: Age - Age"))
 }
 
-// ID is the resolver for the id field.
+// ID is the resolver for the Id field.
 func (r *subjectInputResolver) ID(ctx context.Context, obj *model.SubjectInput, data *int) error {
-	panic(fmt.Errorf("not implemented: ID - id"))
+	panic(fmt.Errorf("not implemented: ID - Id"))
 }
 
-// EducationLevelID is the resolver for the educationLevelId field.
+// EducationLevelID is the resolver for the EducationLevelId field.
 func (r *subjectInputResolver) EducationLevelID(ctx context.Context, obj *model.SubjectInput, data int) error {
-	panic(fmt.Errorf("not implemented: EducationLevelID - educationLevelId"))
+	panic(fmt.Errorf("not implemented: EducationLevelID - EducationLevelId"))
 }
 
-// UserID is the resolver for the userId field.
+// UserID is the resolver for the UserId field.
 func (r *userMarkInputResolver) UserID(ctx context.Context, obj *model.UserMarkInput, data int) error {
-	panic(fmt.Errorf("not implemented: UserID - userId"))
+	panic(fmt.Errorf("not implemented: UserID - UserId"))
 }
 
-// AuthorID is the resolver for the authorId field.
+// AuthorID is the resolver for the AuthorId field.
 func (r *userMarkInputResolver) AuthorID(ctx context.Context, obj *model.UserMarkInput, data int) error {
-	panic(fmt.Errorf("not implemented: AuthorID - authorId"))
+	panic(fmt.Errorf("not implemented: AuthorID - AuthorId"))
 }
 
-// AuthorMark is the resolver for the authorMark field.
+// AuthorMark is the resolver for the AuthorMark field.
 func (r *userMarkInputResolver) AuthorMark(ctx context.Context, obj *model.UserMarkInput, data string) error {
-	panic(fmt.Errorf("not implemented: AuthorMark - authorMark"))
+	panic(fmt.Errorf("not implemented: AuthorMark - AuthorMark"))
 }
 
 // Address returns AddressResolver implementation.

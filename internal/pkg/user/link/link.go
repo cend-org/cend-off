@@ -49,7 +49,7 @@ func AddParentToUser(ctx *context.Context, input map[string]interface{}) (*model
 		return &currentParent, errx.Lambda(errors.New("user is not a student"))
 	}
 
-	err = utils.ApplyChanges(input, &parent)
+	err = utils.ShouldBindJSON(input, &parent)
 	if err != nil {
 		return &currentParent, errx.Lambda(err)
 	}
@@ -179,7 +179,7 @@ func RemoveUserParent(ctx *context.Context, input map[string]interface{}) (*stri
 		return &status, errx.UnAuthorizedError
 	}
 
-	err = utils.ApplyChanges(input, &parent)
+	err = utils.ShouldBindJSON(input, &parent)
 	if err != nil {
 		return &status, errx.Lambda(err)
 	}
@@ -220,7 +220,7 @@ func AddTutorToUser(ctx *context.Context, input map[string]interface{}) (*model.
 
 	}
 
-	err = utils.ApplyChanges(input, &tutor)
+	err = utils.ShouldBindJSON(input, &tutor)
 	if err != nil {
 		return &currentTutor, errx.Lambda(err)
 	}
@@ -355,7 +355,7 @@ func RemoveUserTutor(ctx *context.Context, input map[string]interface{}) (*strin
 
 	}
 
-	err = utils.ApplyChanges(input, &tutor)
+	err = utils.ShouldBindJSON(input, &tutor)
 	if err != nil {
 		return &status, errx.Lambda(err)
 	}
@@ -398,7 +398,7 @@ func AddProfessorToUser(ctx *context.Context, input map[string]interface{}) (*mo
 
 	}
 
-	err = utils.ApplyChanges(input, &professor)
+	err = utils.ShouldBindJSON(input, &professor)
 	if err != nil {
 		return &currentProfessor, errx.Lambda(err)
 	}
@@ -535,7 +535,7 @@ func RemoveUserProfessor(ctx *context.Context, input map[string]interface{}) (*s
 
 	}
 
-	err = utils.ApplyChanges(input, &professor)
+	err = utils.ShouldBindJSON(input, &professor)
 	if err != nil {
 		return &status, errx.Lambda(err)
 	}
@@ -587,7 +587,7 @@ func AddStudentToLink(ctx *context.Context, input map[string]interface{}) (*mode
 		linkType = StudentProfessor
 	}
 
-	err = utils.ApplyChanges(input, &student)
+	err = utils.ShouldBindJSON(input, &student)
 	if err != nil {
 		return &currentStudent, errx.Lambda(err)
 	}
@@ -723,7 +723,7 @@ func RemoveStudent(ctx *context.Context, input map[string]interface{}) (*string,
 		return &status, errx.UnAuthorizedError
 	}
 
-	err = utils.ApplyChanges(input, &student)
+	err = utils.ShouldBindJSON(input, &student)
 	if err != nil {
 		return &status, errx.Lambda(err)
 	}

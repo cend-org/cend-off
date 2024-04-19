@@ -84,3 +84,5 @@ models:
       - github.com/99designs/gqlgen/graphql.Int32
   UpdateUser:
     model: "map[string]interface{}"
+#  MessageUpdateInput:
+#    model: "map[string]interface{}"
