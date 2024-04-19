@@ -1,4 +1,8 @@
+#
+#
 # User type
+#
+#
 scalar Time
 
 type User {
@@ -57,8 +61,11 @@ input UpdateUser {
     addOnTitle: String
 }
 
-
+#
+#
 # Authorization type
+#
+#
 
 type Authorization {
     id: ID!
@@ -86,8 +93,11 @@ type UserAuthorizationLinkActor {
     userAuthorizationLink: UserAuthorizationLink!
     authorizationId: Int!
 }
-
+#
+#
 # Password type
+#
+#
 type Password {
     id: ID!
     createdAt: Time!
@@ -102,7 +112,12 @@ input NewPassword {
     psw: String!
 }
 
+#
+#
 # Code type
+#
+#
+
 type Code {
     id: ID!
     createdAt: Time!
@@ -112,8 +127,11 @@ type Code {
     verificationCode: Int!
 }
 
-
+#
+#
 # Address type
+#
+#
 type Address {
     id: ID!
     createdAt: Time!
@@ -146,9 +164,11 @@ type UserAddress {
     addressId: ID
     addressType: String
 }
-
+#
+#
 # Phone Type
-
+#
+#
 type PhoneNumber{
     id: ID!
     createdAt: Time!
@@ -171,9 +191,11 @@ type UserPhoneNumber{
     userId: ID!
     phoneNumberId: ID!
 }
-
+#
+#
 # Calendar Planning Type
-
+#
+#
 type CalendarPlanning {
     id: ID!
     createdAt: Time!
@@ -200,8 +222,11 @@ type CalendarPlanningActor {
     authorizationId: ID!
     calendarPlanningId: ID
 }
-
+#
+#
 # Education Type
+#
+#
 type Education {
     id: ID!
     createdAt: Time!
@@ -233,9 +258,11 @@ input SubjectInput {
     educationLevelId : ID!
     Name : String
 }
-
+#
+#
 # Mark type
-
+#
+#
 type UserMark {
     id: ID!
     createdAt: Time!
@@ -254,7 +281,44 @@ input UserMarkInput {
     authorMark: String!
 }
 
+#
+#
+# Message Type
+#
+#
+
+type Message {
+    id: ID!
+    createdAt: Time!
+    updatedAt: Time!
+    deletedAt: Time
+    resourceType: Int!
+    resourceValue :Int!
+    resourceLabel: String
+    resourceLanguage: Int
+}
+
+input MessageInput {
+    resourceType: Int!
+    resourceValue :Int!
+    resourceLabel: String
+    resourceLanguage: Int
+}
+
+input MessageUpdateInput {
+    id: ID!
+    resourceType: Int!
+    resourceValue :Int!
+    resourceLabel: String
+    resourceLanguage: Int
+}
+
+#
+#
 # ALL QUERIES
+#
+#
+
 type Query {
 
     #    USER QUERIES
@@ -266,6 +330,13 @@ type Query {
     myProfile: User!
     getPasswordHistory: [Password]
     activateUser: User!
+
+    #    Message QUERIES
+    getMessages: [Message]
+    getMessagesInLanguage(language: Int!) : [Message]
+    getMessage(language: Int!, resourceNumber :Int!): Message!
+    getMenuList: [Message]
+    getMenuItems(language:Int!, menuNumber: Int!): [Message]
 
     #    Address QUERIES
     getUserAddress: Address!
@@ -292,8 +363,11 @@ type Query {
 
 
 }
-
+#
+#
 # ALL MUTATIONS
+#
+#
 
 type Mutation {
     #    USER MUTATIONS
@@ -302,6 +376,15 @@ type Mutation {
     login(input: UserLogin!): String!
     newPassword(input: NewPassword!): String
     registerByEmail(authorizationLevel: Int!, email: String!): String
+
+    #   Message mutations
+    newMessage(input: MessageInput!): Message!
+    updMessage(input: MessageUpdateInput!): Message!
+    delMessage(language: Int!, messageNumber :Int!) : String
+    newMenu(input: MessageInput!) : Message!
+    delMenu(menuNumber: Int!): String
+    newMenuItem(input: MessageInput!): Message!
+    delMenuItem(input: MessageUpdateInput!) : String
 
     #    Address mutations
     newAddress(input: NewAddress!): Address!

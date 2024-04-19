@@ -12,6 +12,7 @@ import (
 	"duval/internal/pkg/mark"
 	"duval/internal/pkg/phone"
 	"duval/internal/pkg/planning"
+	"duval/internal/pkg/translator"
 	"duval/internal/pkg/user"
 	"fmt"
 )
@@ -76,6 +77,11 @@ func (r *educationResolver) ID(ctx context.Context, obj *model.Education) (int, 
 	panic(fmt.Errorf("not implemented: ID - id"))
 }
 
+// ID is the resolver for the id field.
+func (r *messageResolver) ID(ctx context.Context, obj *model.Message) (int, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
 // Register is the resolver for the register field.
 func (r *mutationResolver) Register(ctx context.Context, input model.NewUserInput, typeArg int) (string, error) {
 	return user.Register(&input, &typeArg)
@@ -99,6 +105,41 @@ func (r *mutationResolver) NewPassword(ctx context.Context, input model.NewPassw
 // RegisterByEmail is the resolver for the registerByEmail field.
 func (r *mutationResolver) RegisterByEmail(ctx context.Context, authorizationLevel int, email string) (*string, error) {
 	return user.RegisterByEmail(&authorizationLevel, &email)
+}
+
+// NewMessage is the resolver for the newMessage field.
+func (r *mutationResolver) NewMessage(ctx context.Context, input model.MessageInput) (*model.Message, error) {
+	return translator.NewMessage(&ctx, &input)
+}
+
+// UpdMessage is the resolver for the updMessage field.
+func (r *mutationResolver) UpdMessage(ctx context.Context, input model.MessageUpdateInput) (*model.Message, error) {
+	return translator.UpdMessage(&ctx, &input)
+}
+
+// DelMessage is the resolver for the delMessage field.
+func (r *mutationResolver) DelMessage(ctx context.Context, language int, messageNumber int) (*string, error) {
+	return translator.DelMessage(&ctx, language, messageNumber)
+}
+
+// NewMenu is the resolver for the newMenu field.
+func (r *mutationResolver) NewMenu(ctx context.Context, input model.MessageInput) (*model.Message, error) {
+	return translator.NewMenu(&ctx, &input)
+}
+
+// DelMenu is the resolver for the delMenu field.
+func (r *mutationResolver) DelMenu(ctx context.Context, menuNumber int) (*string, error) {
+	return translator.DelMenu(&ctx, menuNumber)
+}
+
+// NewMenuItem is the resolver for the newMenuItem field.
+func (r *mutationResolver) NewMenuItem(ctx context.Context, input model.MessageInput) (*model.Message, error) {
+	return translator.NewMenuItem(&ctx, &input)
+}
+
+// DelMenuItem is the resolver for the delMenuItem field.
+func (r *mutationResolver) DelMenuItem(ctx context.Context, input model.MessageUpdateInput) (*string, error) {
+	return translator.DelMenuItem(&ctx, &input)
 }
 
 // NewAddress is the resolver for the newAddress field.
@@ -199,6 +240,31 @@ func (r *queryResolver) GetPasswordHistory(ctx context.Context) ([]*model.Passwo
 // ActivateUser is the resolver for the activateUser field.
 func (r *queryResolver) ActivateUser(ctx context.Context) (*model.User, error) {
 	return user.ActivateUser(&ctx)
+}
+
+// GetMessages is the resolver for the getMessages field.
+func (r *queryResolver) GetMessages(ctx context.Context) ([]*model.Message, error) {
+	return translator.GetMessages(&ctx)
+}
+
+// GetMessagesInLanguage is the resolver for the getMessagesInLanguage field.
+func (r *queryResolver) GetMessagesInLanguage(ctx context.Context, language int) ([]*model.Message, error) {
+	return translator.GetMessagesInLanguage(&ctx, language)
+}
+
+// GetMessage is the resolver for the getMessage field.
+func (r *queryResolver) GetMessage(ctx context.Context, language int, resourceNumber int) (*model.Message, error) {
+	return translator.GetMessage(&ctx, language, resourceNumber)
+}
+
+// GetMenuList is the resolver for the getMenuList field.
+func (r *queryResolver) GetMenuList(ctx context.Context) ([]*model.Message, error) {
+	return translator.GetMenuList(&ctx)
+}
+
+// GetMenuItems is the resolver for the getMenuItems field.
+func (r *queryResolver) GetMenuItems(ctx context.Context, language int, menuNumber int) ([]*model.Message, error) {
+	return translator.GetMenuItems(&ctx, language, menuNumber)
 }
 
 // GetUserAddress is the resolver for the getUserAddress field.
@@ -381,6 +447,11 @@ func (r *userPhoneNumberResolver) PhoneNumberID(ctx context.Context, obj *model.
 	panic(fmt.Errorf("not implemented: PhoneNumberID - phoneNumberId"))
 }
 
+// ID is the resolver for the id field.
+func (r *messageUpdateInputResolver) ID(ctx context.Context, obj *model.MessageUpdateInput, data int) error {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
 // Age is the resolver for the age field.
 func (r *newUserInputResolver) Age(ctx context.Context, obj *model.NewUserInput, data *int) error {
 	panic(fmt.Errorf("not implemented: Age - age"))
@@ -431,6 +502,9 @@ func (r *Resolver) Code() CodeResolver { return &codeResolver{r} }
 // Education returns EducationResolver implementation.
 func (r *Resolver) Education() EducationResolver { return &educationResolver{r} }
 
+// Message returns MessageResolver implementation.
+func (r *Resolver) Message() MessageResolver { return &messageResolver{r} }
+
 // Mutation returns MutationResolver implementation.
 func (r *Resolver) Mutation() MutationResolver { return &mutationResolver{r} }
 
@@ -473,6 +547,11 @@ func (r *Resolver) UserMark() UserMarkResolver { return &userMarkResolver{r} }
 // UserPhoneNumber returns UserPhoneNumberResolver implementation.
 func (r *Resolver) UserPhoneNumber() UserPhoneNumberResolver { return &userPhoneNumberResolver{r} }
 
+// MessageUpdateInput returns MessageUpdateInputResolver implementation.
+func (r *Resolver) MessageUpdateInput() MessageUpdateInputResolver {
+	return &messageUpdateInputResolver{r}
+}
+
 // NewUserInput returns NewUserInputResolver implementation.
 func (r *Resolver) NewUserInput() NewUserInputResolver { return &newUserInputResolver{r} }
 
@@ -488,6 +567,7 @@ type calendarPlanningResolver struct{ *Resolver }
 type calendarPlanningActorResolver struct{ *Resolver }
 type codeResolver struct{ *Resolver }
 type educationResolver struct{ *Resolver }
+type messageResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type passwordResolver struct{ *Resolver }
 type phoneNumberResolver struct{ *Resolver }
@@ -500,6 +580,7 @@ type userAuthorizationLinkActorResolver struct{ *Resolver }
 type userEducationLevelSubjectResolver struct{ *Resolver }
 type userMarkResolver struct{ *Resolver }
 type userPhoneNumberResolver struct{ *Resolver }
+type messageUpdateInputResolver struct{ *Resolver }
 type newUserInputResolver struct{ *Resolver }
 type subjectInputResolver struct{ *Resolver }
 type userMarkInputResolver struct{ *Resolver }
