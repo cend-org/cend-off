@@ -306,38 +306,38 @@ func NewPassword(ctx *context.Context, input *model.NewPassword) (*string, error
 
 func GetPasswordHistory(ctx *context.Context) ([]*model.Password, error) {
 	var (
-		passwords     []*model.Password
-		userPasswords []model.Password
-		tok           *authentication.Token
-		err           error
+		passwords    []model.Password
+		gqlPasswords []*model.Password
+		tok          *authentication.Token
+		err          error
 	)
 
 	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		return passwords, errx.UnAuthorizedError
+		return gqlPasswords, errx.UnAuthorizedError
 	}
-	err = database.GetMany(&userPasswords,
+	err = database.GetMany(&passwords,
 		`SELECT password.*
 			FROM password
 			WHERE password.user_id = ?
 			ORDER BY password.created_at DESC`, tok.UserId)
 	if err != nil {
-		return passwords, errx.DbGetError
+		return gqlPasswords, errx.DbGetError
 	}
 
-	for _, userPassword := range userPasswords {
-		passwords = append(passwords, &model.Password{
-			Id:          userPassword.Id,
-			CreatedAt:   userPassword.CreatedAt,
-			UpdatedAt:   userPassword.UpdatedAt,
-			DeletedAt:   userPassword.DeletedAt,
-			UserId:      userPassword.UserId,
-			Psw:         userPassword.Psw,
-			ContentHash: userPassword.ContentHash,
+	for _, pass := range passwords {
+		gqlPasswords = append(gqlPasswords, &model.Password{
+			Id:          pass.Id,
+			CreatedAt:   pass.CreatedAt,
+			UpdatedAt:   pass.UpdatedAt,
+			DeletedAt:   pass.DeletedAt,
+			UserId:      pass.UserId,
+			Psw:         pass.Psw,
+			ContentHash: pass.ContentHash,
 		})
 	}
 
-	return passwords, nil
+	return gqlPasswords, nil
 }
 
 func ActivateUser(ctx *context.Context) (*model.User, error) {
