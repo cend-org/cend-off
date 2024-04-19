@@ -29,7 +29,7 @@ const (
 
 // Parent Handler```
 
-func AddParentToUser(ctx *context.Context, input *model.UpdateUser) (*model.User, error) {
+func AddParentToUser(ctx *context.Context, input map[string]interface{}) (*model.User, error) {
 	var (
 		tok                     *authentication.Token
 		parent                  model.User
@@ -49,12 +49,9 @@ func AddParentToUser(ctx *context.Context, input *model.UpdateUser) (*model.User
 		return &currentParent, errx.Lambda(errors.New("user is not a student"))
 	}
 
-	parent = model.User{
-		Id:         input.Id,
-		Name:       input.Name,
-		FamilyName: input.FamilyName,
-		NickName:   input.NickName,
-		Email:      input.Email,
+	err = utils.ApplyChanges(input, &parent)
+	if err != nil {
+		return &currentParent, errx.Lambda(err)
 	}
 
 	// Check if parent  doesn't exist in the database based on name and family name then  create a user named parent if not
@@ -164,7 +161,7 @@ func GetUserParent(ctx *context.Context) ([]*model.User, error) {
 
 }
 
-func RemoveUserParent(ctx *context.Context, input *model.UpdateUser) (*string, error) {
+func RemoveUserParent(ctx *context.Context, input map[string]interface{}) (*string, error) {
 	var (
 		parent model.User
 		actor  model.UserAuthorizationLinkActor
@@ -182,12 +179,9 @@ func RemoveUserParent(ctx *context.Context, input *model.UpdateUser) (*string, e
 		return &status, errx.UnAuthorizedError
 	}
 
-	parent = model.User{
-		Id:         input.Id,
-		Name:       input.Name,
-		FamilyName: input.FamilyName,
-		NickName:   input.NickName,
-		Email:      input.Email,
+	err = utils.ApplyChanges(input, &parent)
+	if err != nil {
+		return &status, errx.Lambda(err)
 	}
 
 	actor, err = GetSelectedUserLinkActor(parent, StudentParent)
@@ -205,7 +199,7 @@ func RemoveUserParent(ctx *context.Context, input *model.UpdateUser) (*string, e
 
 // Tutor Handler
 
-func AddTutorToUser(ctx *context.Context, input *model.UpdateUser) (*model.User, error) {
+func AddTutorToUser(ctx *context.Context, input map[string]interface{}) (*model.User, error) {
 	var (
 		tok                     *authentication.Token
 		tutor                   model.User
@@ -226,12 +220,9 @@ func AddTutorToUser(ctx *context.Context, input *model.UpdateUser) (*model.User,
 
 	}
 
-	tutor = model.User{
-		Id:         input.Id,
-		Name:       input.Name,
-		FamilyName: input.FamilyName,
-		NickName:   input.NickName,
-		Email:      input.Email,
+	err = utils.ApplyChanges(input, &tutor)
+	if err != nil {
+		return &currentTutor, errx.Lambda(err)
 	}
 
 	currentTutor, err = GetUserByUserName(tutor)
@@ -345,7 +336,7 @@ func GetUserTutor(ctx *context.Context) ([]*model.User, error) {
 	return gqlTutors, nil
 }
 
-func RemoveUserTutor(ctx *context.Context, input *model.UpdateUser) (*string, error) {
+func RemoveUserTutor(ctx *context.Context, input map[string]interface{}) (*string, error) {
 	var (
 		tutor  model.User
 		actor  model.UserAuthorizationLinkActor
@@ -364,12 +355,9 @@ func RemoveUserTutor(ctx *context.Context, input *model.UpdateUser) (*string, er
 
 	}
 
-	tutor = model.User{
-		Id:         input.Id,
-		Name:       input.Name,
-		FamilyName: input.FamilyName,
-		NickName:   input.NickName,
-		Email:      input.Email,
+	err = utils.ApplyChanges(input, &tutor)
+	if err != nil {
+		return &status, errx.Lambda(err)
 	}
 
 	actor, err = GetSelectedUserLinkActor(tutor, StudentTutor)
@@ -390,7 +378,7 @@ func RemoveUserTutor(ctx *context.Context, input *model.UpdateUser) (*string, er
 
 // Professor Handler
 
-func AddProfessorToUser(ctx *context.Context, input *model.UpdateUser) (*model.User, error) {
+func AddProfessorToUser(ctx *context.Context, input map[string]interface{}) (*model.User, error) {
 	var (
 		tok                     *authentication.Token
 		professor               model.User
@@ -410,13 +398,11 @@ func AddProfessorToUser(ctx *context.Context, input *model.UpdateUser) (*model.U
 
 	}
 
-	professor = model.User{
-		Id:         input.Id,
-		Name:       input.Name,
-		FamilyName: input.FamilyName,
-		NickName:   input.NickName,
-		Email:      input.Email,
+	err = utils.ApplyChanges(input, &professor)
+	if err != nil {
+		return &currentProfessor, errx.Lambda(err)
 	}
+
 	currentProfessor, err = GetUserByUserName(professor)
 	if currentProfessor.Id == state.ZERO {
 		//	Create professor with email professor+1@cend.intra
@@ -529,7 +515,7 @@ func GetUserProfessor(ctx *context.Context) ([]*model.User, error) {
 	return gqlProfessors, nil
 }
 
-func RemoveUserProfessor(ctx *context.Context, input *model.UpdateUser) (*string, error) {
+func RemoveUserProfessor(ctx *context.Context, input map[string]interface{}) (*string, error) {
 	var (
 		professor model.User
 		actor     model.UserAuthorizationLinkActor
@@ -549,14 +535,10 @@ func RemoveUserProfessor(ctx *context.Context, input *model.UpdateUser) (*string
 
 	}
 
-	professor = model.User{
-		Id:         input.Id,
-		Name:       input.Name,
-		FamilyName: input.FamilyName,
-		NickName:   input.NickName,
-		Email:      input.Email,
+	err = utils.ApplyChanges(input, &professor)
+	if err != nil {
+		return &status, errx.Lambda(err)
 	}
-
 	actor, err = GetSelectedUserLinkActor(professor, StudentProfessor)
 	if err != nil {
 		return &status, errx.DbGetError
@@ -575,7 +557,7 @@ func RemoveUserProfessor(ctx *context.Context, input *model.UpdateUser) (*string
 
 //Student Handler
 
-func AddStudentToLink(ctx *context.Context, input *model.UpdateUser) (*model.User, error) {
+func AddStudentToLink(ctx *context.Context, input map[string]interface{}) (*model.User, error) {
 	var (
 		tok            *authentication.Token
 		err            error
@@ -605,12 +587,9 @@ func AddStudentToLink(ctx *context.Context, input *model.UpdateUser) (*model.Use
 		linkType = StudentProfessor
 	}
 
-	student = model.User{
-		Id:         input.Id,
-		Name:       input.Name,
-		FamilyName: input.FamilyName,
-		NickName:   input.NickName,
-		Email:      input.Email,
+	err = utils.ApplyChanges(input, &student)
+	if err != nil {
+		return &currentStudent, errx.Lambda(err)
 	}
 
 	currentStudent, err = GetUserByUserName(student)
@@ -725,7 +704,7 @@ func GetStudent(ctx *context.Context) ([]*model.User, error) {
 	return gqlStudents, nil
 }
 
-func RemoveStudent(ctx *context.Context, input *model.UpdateUser) (*string, error) {
+func RemoveStudent(ctx *context.Context, input map[string]interface{}) (*string, error) {
 	var (
 		student  model.User
 		actor    model.UserAuthorizationLinkActor
@@ -744,11 +723,9 @@ func RemoveStudent(ctx *context.Context, input *model.UpdateUser) (*string, erro
 		return &status, errx.UnAuthorizedError
 	}
 
-	student = model.User{
-		Name:       input.Name,
-		FamilyName: input.FamilyName,
-		NickName:   input.NickName,
-		Email:      input.Email,
+	err = utils.ApplyChanges(input, &student)
+	if err != nil {
+		return &status, errx.Lambda(err)
 	}
 
 	if authorization.IsUserParent(tok.UserId) {

@@ -13,6 +13,7 @@ import (
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
+	"time"
 )
 
 const (
@@ -203,7 +204,7 @@ func SendUserEmailValidationCode(ctx *context.Context) (*model.User, error) {
 	return &user, nil
 }
 
-func UpdMyProfile(ctx *context.Context, input *model.UpdateUser) (*model.User, error) {
+func UpdMyProfile(ctx *context.Context, input map[string]interface{}) (*model.User, error) {
 	var (
 		err error
 		tok *authentication.Token
@@ -221,19 +222,11 @@ func UpdMyProfile(ctx *context.Context, input *model.UpdateUser) (*model.User, e
 	if err != nil {
 		return &usr, errx.DbGetError
 	}
-
-	usr = model.User{
-		Name:                  input.Name,
-		FamilyName:            input.FamilyName,
-		NickName:              input.NickName,
-		Description:           input.Description,
-		CoverText:             input.CoverText,
-		Profile:               input.Profile,
-		ExperienceDetail:      input.ExperienceDetail,
-		AdditionalDescription: input.AdditionalDescription,
-		AddOnTitle:            input.AddOnTitle,
+	time.Sleep(100)
+	err = utils.ApplyChanges(input, &usr)
+	if err != nil {
+		return &usr, errx.Lambda(err)
 	}
-
 	err = database.Update(usr)
 	if err != nil {
 		return &usr, errx.Lambda(err)

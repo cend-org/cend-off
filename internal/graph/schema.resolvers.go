@@ -6,6 +6,7 @@ package graph
 
 import (
 	"context"
+	"duval/internal/authentication"
 	"duval/internal/graph/model"
 	"duval/internal/pkg/address"
 	"duval/internal/pkg/education"
@@ -89,8 +90,8 @@ func (r *mutationResolver) Register(ctx context.Context, input model.NewUserInpu
 }
 
 // UpdMyProfile is the resolver for the UpdMyProfile field.
-func (r *mutationResolver) UpdMyProfile(ctx context.Context, input model.UpdateUser) (*model.User, error) {
-	return user.UpdMyProfile(&ctx, &input)
+func (r *mutationResolver) UpdMyProfile(ctx context.Context, input map[string]interface{}) (*model.User, error) {
+	return user.UpdMyProfile(&ctx, input)
 }
 
 // Login is the resolver for the login field.
@@ -189,43 +190,48 @@ func (r *mutationResolver) RateUser(ctx context.Context, input model.UserMarkInp
 }
 
 // AddParentToUser is the resolver for the addParentToUser field.
-func (r *mutationResolver) AddParentToUser(ctx context.Context, input model.UpdateUser) (*model.User, error) {
-	return link.AddParentToUser(&ctx, &input)
+func (r *mutationResolver) AddParentToUser(ctx context.Context, input map[string]interface{}) (*model.User, error) {
+	return link.AddParentToUser(&ctx, input)
 }
 
 // RemoveUserParent is the resolver for the removeUserParent field.
-func (r *mutationResolver) RemoveUserParent(ctx context.Context, input model.UpdateUser) (*string, error) {
-	return link.RemoveUserParent(&ctx, &input)
+func (r *mutationResolver) RemoveUserParent(ctx context.Context, input map[string]interface{}) (*string, error) {
+	return link.RemoveUserParent(&ctx, input)
 }
 
 // AddTutorToUser is the resolver for the addTutorToUser field.
-func (r *mutationResolver) AddTutorToUser(ctx context.Context, input model.UpdateUser) (*model.User, error) {
-	return link.AddTutorToUser(&ctx, &input)
+func (r *mutationResolver) AddTutorToUser(ctx context.Context, input map[string]interface{}) (*model.User, error) {
+	return link.AddTutorToUser(&ctx, input)
 }
 
 // RemoveUserTutor is the resolver for the removeUserTutor field.
-func (r *mutationResolver) RemoveUserTutor(ctx context.Context, input model.UpdateUser) (*string, error) {
-	return link.RemoveUserTutor(&ctx, &input)
+func (r *mutationResolver) RemoveUserTutor(ctx context.Context, input map[string]interface{}) (*string, error) {
+	return link.RemoveUserTutor(&ctx, input)
 }
 
 // AddProfessorToUser is the resolver for the addProfessorToUser field.
-func (r *mutationResolver) AddProfessorToUser(ctx context.Context, input model.UpdateUser) (*model.User, error) {
-	return link.AddProfessorToUser(&ctx, &input)
+func (r *mutationResolver) AddProfessorToUser(ctx context.Context, input map[string]interface{}) (*model.User, error) {
+	return link.AddProfessorToUser(&ctx, input)
 }
 
 // RemoveUserProfessor is the resolver for the removeUserProfessor field.
-func (r *mutationResolver) RemoveUserProfessor(ctx context.Context, input model.UpdateUser) (*string, error) {
-	return link.RemoveUserProfessor(&ctx, &input)
+func (r *mutationResolver) RemoveUserProfessor(ctx context.Context, input map[string]interface{}) (*string, error) {
+	return link.RemoveUserProfessor(&ctx, input)
 }
 
 // AddStudentToLink is the resolver for the addStudentToLink field.
-func (r *mutationResolver) AddStudentToLink(ctx context.Context, input model.UpdateUser) (*model.User, error) {
-	return link.AddStudentToLink(&ctx, &input)
+func (r *mutationResolver) AddStudentToLink(ctx context.Context, input map[string]interface{}) (*model.User, error) {
+	return link.AddStudentToLink(&ctx, input)
 }
 
 // RemoveStudent is the resolver for the removeStudent field.
-func (r *mutationResolver) RemoveStudent(ctx context.Context, input model.UpdateUser) (*string, error) {
-	return link.RemoveStudent(&ctx, &input)
+func (r *mutationResolver) RemoveStudent(ctx context.Context, input map[string]interface{}) (*string, error) {
+	return link.RemoveStudent(&ctx, input)
+}
+
+// LoginWithQR is the resolver for the LoginWithQr field.
+func (r *mutationResolver) LoginWithQR(ctx context.Context, xID string) (*string, error) {
+	return authentication.LoginWithQr(&ctx, xID)
 }
 
 // ID is the resolver for the id field.
@@ -241,6 +247,26 @@ func (r *passwordResolver) UserID(ctx context.Context, obj *model.Password) (int
 // ID is the resolver for the id field.
 func (r *phoneNumberResolver) ID(ctx context.Context, obj *model.PhoneNumber) (int, error) {
 	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ID is the resolver for the id field.
+func (r *qrCodeRegistryResolver) ID(ctx context.Context, obj *model.QrCodeRegistry) (int, error) {
+	panic(fmt.Errorf("not implemented: ID - id"))
+}
+
+// ResourceType is the resolver for the resourceType field.
+func (r *qrCodeRegistryResolver) ResourceType(ctx context.Context, obj *model.QrCodeRegistry) (int, error) {
+	panic(fmt.Errorf("not implemented: ResourceType - resourceType"))
+}
+
+// ResourceValue is the resolver for the resourceValue field.
+func (r *qrCodeRegistryResolver) ResourceValue(ctx context.Context, obj *model.QrCodeRegistry) (int, error) {
+	panic(fmt.Errorf("not implemented: ResourceValue - resourceValue"))
+}
+
+// UserID is the resolver for the userId field.
+func (r *qrCodeRegistryResolver) UserID(ctx context.Context, obj *model.QrCodeRegistry) (int, error) {
+	panic(fmt.Errorf("not implemented: UserID - userId"))
 }
 
 // UserAuthorizationLink is the resolver for the userAuthorizationLink field.
@@ -391,6 +417,11 @@ func (r *queryResolver) GetUserProfessor(ctx context.Context) ([]*model.User, er
 // GetStudent is the resolver for the getStudent field.
 func (r *queryResolver) GetStudent(ctx context.Context) ([]*model.User, error) {
 	return link.GetStudent(&ctx)
+}
+
+// GenerateQRCode is the resolver for the generateQrCode field.
+func (r *queryResolver) GenerateQRCode(ctx context.Context) (*string, error) {
+	return authentication.GenerateQrCode(&ctx)
 }
 
 // ID is the resolver for the id field.
@@ -575,6 +606,9 @@ func (r *Resolver) Password() PasswordResolver { return &passwordResolver{r} }
 // PhoneNumber returns PhoneNumberResolver implementation.
 func (r *Resolver) PhoneNumber() PhoneNumberResolver { return &phoneNumberResolver{r} }
 
+// QrCodeRegistry returns QrCodeRegistryResolver implementation.
+func (r *Resolver) QrCodeRegistry() QrCodeRegistryResolver { return &qrCodeRegistryResolver{r} }
+
 // Query returns QueryResolver implementation.
 func (r *Resolver) Query() QueryResolver { return &queryResolver{r} }
 
@@ -632,6 +666,7 @@ type messageResolver struct{ *Resolver }
 type mutationResolver struct{ *Resolver }
 type passwordResolver struct{ *Resolver }
 type phoneNumberResolver struct{ *Resolver }
+type qrCodeRegistryResolver struct{ *Resolver }
 type queryResolver struct{ *Resolver }
 type subjectResolver struct{ *Resolver }
 type userResolver struct{ *Resolver }

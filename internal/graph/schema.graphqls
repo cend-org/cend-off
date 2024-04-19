@@ -6,59 +6,59 @@
 scalar Time
 
 type User {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    name: String!
-    familyName: String!
-    nickName: String!
-    email: String!
-    matricule: String!
-    age: Int!
-    birthDate: Time!
-    sex: Int!
-    lang: Int!
-    status: Int!
-    profileImageXid: String!
-    description: String!
-    coverText: String!
-    profile: String!
-    experienceDetail: String!
-    additionalDescription: String!
-    addOnTitle: String!
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    Name: String!
+    FamilyName: String!
+    NickName: String!
+    Email: String!
+    Matricule: String!
+    Age: Int!
+    BirthDate: Time!
+    Sex: Int!
+    Lang: Int!
+    Status: Int!
+    ProfileImageXid: String!
+    Description: String!
+    CoverText: String!
+    Profile: String!
+    ExperienceDetail: String!
+    AdditionalDescription: String!
+    AddOnTitle: String!
 }
 
 # Input
 
 input NewUserInput {
-    name: String!
-    familyName: String!
-    nickName: String
-    email: String!
-    matricule: String
-    age: Int
-    birthDate: Time!
-    sex: Int!
-    lang: Int!
+    Name: String!
+    FamilyName: String!
+    NickName: String
+    Email: String!
+    Matricule: String
+    Age: Int
+    BirthDate: Time!
+    Sex: Int!
+    Lang: Int!
 }
 
 input UserLogin {
-    email: String!
-    password: String!
+    Email: String!
+    Password: String!
 }
 
 input UpdateUser {
-    name: String
-    familyName: String
-    nickName: String
-    email: String
-    description: String
-    coverText: String
-    profile: String
-    experienceDetail: String
-    additionalDescription: String
-    addOnTitle: String
+    Name: String
+    FamilyName: String
+    NickName: String
+    Email: String
+    Description: String
+    CoverText: String
+    Profile: String
+    ExperienceDetail: String
+    AdditionalDescription: String
+    AddOnTitle: String
 }
 
 #
@@ -68,30 +68,30 @@ input UpdateUser {
 #
 
 type Authorization {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    userId: ID!
-    level: Int!
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId: ID!
+    Level: Int!
 }
 
 type UserAuthorizationLink {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    linkType: Int!
-    actors: [UserAuthorizationLinkActor]!
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    LinkType: Int!
+    Actors: [UserAuthorizationLinkActor]!
 }
 
 type UserAuthorizationLinkActor {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    userAuthorizationLink: UserAuthorizationLink!
-    authorizationId: Int!
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserAuthorizationLink: UserAuthorizationLink!
+    AuthorizationId: Int!
 }
 #
 #
@@ -99,17 +99,17 @@ type UserAuthorizationLinkActor {
 #
 #
 type Password {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    userId: ID!
-    psw: String!
-    contentHash: String!
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId: ID!
+    Psw: String!
+    ContentHash: String!
 }
 
 input NewPassword {
-    psw: String!
+    Psw: String!
 }
 
 #
@@ -119,12 +119,12 @@ input NewPassword {
 #
 
 type Code {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    userId: ID!
-    verificationCode: Int!
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId: ID!
+    VerificationCode: Int!
 }
 
 #
@@ -133,36 +133,36 @@ type Code {
 #
 #
 type Address {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    country: String
-    city: String
-    latitude: Float
-    longitude: Float
-    street: String
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    Country: String
+    City: String
+    Latitude: Float
+    Longitude: Float
+    Street: String
     FullAddress: String
-    xId: String
+    XId: String
 }
 
 input NewAddress {
-    country: String!
-    city: String!
-    latitude: Float!
-    longitude: Float!
-    street: String!
+    Country: String!
+    City: String!
+    Latitude: Float!
+    Longitude: Float!
+    Street: String!
     FullAddress: String
 }
 
 type UserAddress {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    userId: ID
-    addressId: ID
-    addressType: String
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId: ID
+    AddressId: ID
+    AddressType: String
 }
 #
 #
@@ -170,26 +170,26 @@ type UserAddress {
 #
 #
 type PhoneNumber{
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    mobilePhoneNumber: String!
-    isUrgency: Boolean
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    MobilePhoneNumber: String!
+    IsUrgency: Boolean
 }
 
 input NewPhoneNumber{
-    mobilePhoneNumber: String!
-    isUrgency: Boolean
+    MobilePhoneNumber: String!
+    IsUrgency: Boolean
 }
 
 type UserPhoneNumber{
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    userId: ID!
-    phoneNumberId: ID!
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId: ID!
+    PhoneNumberId: ID!
 }
 #
 #
@@ -197,30 +197,30 @@ type UserPhoneNumber{
 #
 #
 type CalendarPlanning {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    authorizationId : ID!
-    startDateTime: Time!
-    endDateTime: Time!
-    description: String
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    AuthorizationId : ID!
+    StartDateTime: Time!
+    EndDateTime: Time!
+    Description: String
 }
 
 
 input NewCalendarPlanning {
-    startDateTime: Time!
-    endDateTime: Time!
-    description: String
+    StartDateTime: Time!
+    EndDateTime: Time!
+    Description: String
 }
 
 type CalendarPlanningActor {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    authorizationId: ID!
-    calendarPlanningId: ID
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    AuthorizationId: ID!
+    CalendarPlanningId: ID
 }
 #
 #
@@ -228,34 +228,34 @@ type CalendarPlanningActor {
 #
 #
 type Education {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    name: String!
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    Name: String!
 }
 
 type Subject {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    educationLevelId: ID!
-    name: String!
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    EducationLevelId: ID!
+    Name: String!
 }
 
 type UserEducationLevelSubject {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    userId: ID!
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId: ID!
     SubjectId :ID!
 }
 
 input SubjectInput {
-    id: ID
-    educationLevelId : ID!
+    Id: ID
+    EducationLevelId : ID!
     Name : String
 }
 #
@@ -264,21 +264,21 @@ input SubjectInput {
 #
 #
 type UserMark {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    userId : ID!
-    authorId: ID!
-    authorComment: String
-    authorMark: String!
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId : ID!
+    AuthorId: ID!
+    AuthorComment: String
+    AuthorMark: String!
 }
 
 input UserMarkInput {
-    userId : ID!
-    authorId: ID!
-    authorComment: String
-    authorMark: String!
+    UserId : ID!
+    AuthorId: ID!
+    AuthorComment: String
+    AuthorMark: String!
 }
 
 #
@@ -288,29 +288,45 @@ input UserMarkInput {
 #
 
 type Message {
-    id: ID!
-    createdAt: Time!
-    updatedAt: Time!
-    deletedAt: Time
-    resourceType: Int!
-    resourceValue :Int!
-    resourceLabel: String
-    resourceLanguage: Int
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    ResourceType: Int!
+    ResourceValue :Int!
+    ResourceLabel: String
+    ResourceLanguage: Int
 }
 
 input MessageInput {
-    resourceType: Int!
-    resourceValue :Int!
-    resourceLabel: String
-    resourceLanguage: Int
+    ResourceType: Int!
+    ResourceValue :Int!
+    ResourceLabel: String
+    ResourceLanguage: Int
 }
 
 input MessageUpdateInput {
-    id: ID!
-    resourceType: Int!
-    resourceValue :Int!
-    resourceLabel: String
-    resourceLanguage: Int
+    Id: ID!
+    ResourceType: Int!
+    ResourceValue :Int!
+    ResourceLabel: String
+    ResourceLanguage: Int
+}
+
+
+#
+#
+# QrCodeRegistry Type
+#
+#
+
+type QrCodeRegistry {
+    Id: ID!
+    ResourceType: Int!
+    ResourceValue :Int!
+    UserId : ID!
+    Xid : String!
+    IsUsed :Boolean
 }
 
 #
@@ -366,6 +382,9 @@ type Query {
     getUserTutor :[User!]
     getUserProfessor :[User!]
     getStudent :[User!]
+
+    #    Qr QUERIES
+    generateQrCode: String
 
 
 }
@@ -424,5 +443,7 @@ type Mutation {
     addStudentToLink(input: UpdateUser!) :User!
     removeStudent(input: UpdateUser!): String
 
+    # Qr Mutations
+    LoginWithQr(xId: String!) :String
 
 }
