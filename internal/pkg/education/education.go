@@ -1,270 +1,176 @@
 package education
 
 import (
+	"context"
 	"duval/internal/authentication"
+	"duval/internal/graph/model"
 	"duval/internal/pkg/user/authorization"
-	"duval/internal/utils"
 	"duval/internal/utils/errx"
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
-	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
-	"time"
 )
 
-type Education struct {
-	Id        uint       `json:"id"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at"`
-	Name      string     `json:"name"`
-}
-
-type Subject struct {
-	Id               uint       `json:"id"`
-	CreatedAt        time.Time  `json:"created_at"`
-	UpdatedAt        time.Time  `json:"updated_at"`
-	DeletedAt        *time.Time `json:"deleted_at"`
-	EducationLevelId uint       `json:"education_level_id"`
-	Name             string     `json:"name"`
-}
-
-type UserEducationLevelSubject struct {
-	Id        uint       `json:"id"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at"`
-	UserId    uint       `json:"user_id"`
-	SubjectId uint       `json:"subject_id"`
-}
-
-func GetSubjects(ctx *gin.Context) {
+func GetSubjects(eduId int) ([]*model.Subject, error) {
 	var (
 		err      error
-		subjects []Subject
-		eduId    int
+		subjects []*model.Subject
 	)
-
-	eduId, err = strconv.Atoi(ctx.Param("edu"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Failed to retrieve params",
-		})
-	}
 
 	err = database.Select(&subjects, `SELECT * FROM subject WHERE education_level_id = ?`, eduId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return subjects, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, subjects)
-	return
+	return subjects, nil
 }
 
-func GetEducation(ctx *gin.Context) {
+func GetEducation() ([]*model.Education, error) {
 	var (
 		err  error
-		edus []Education
+		edus []*model.Education
 	)
 
 	err = database.Select(&edus, `SELECT * FROM education WHERE id > 0 ORDER BY  created_at`)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return edus, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, edus)
-	return
+	return edus, nil
 }
 
 // User educationLevel
 
-func SetUserEducationLevel(ctx *gin.Context) {
+func SetUserEducationLevel(ctx *context.Context, subject *model.SubjectInput) (*model.Education, error) {
 	var (
 		tok                       *authentication.Token
-		userEducationLevelSubject UserEducationLevelSubject
-		subject                   Subject
+		userEducationLevelSubject model.UserEducationLevelSubject
 		err                       error
+		userLevel                 model.Education
 	)
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &userLevel, errx.UnAuthorizedError
 	}
 	if tok.UserId == state.ZERO {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &userLevel, errx.UnAuthorizedError
 	}
 
 	if !authorization.IsUserStudent(tok.UserId) {
 		if !authorization.IsUserProfessor(tok.UserId) {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.Lambda(errors.New("not as student or professor")),
-			})
-			return
+			return &userLevel, errx.Lambda(errors.New("not a user or a professor"))
 		}
 	}
 
-	err = ctx.ShouldBindJSON(&subject)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParseError,
-		})
-		return
-	}
+	//err = ctx.ShouldBindJSON(&subject)
+	//if err != nil {
+	//	return &userLevel, errx.ParseError
+	//}
 
 	userEducationLevelSubject.SubjectId = uint(subject.Id)
 	userEducationLevelSubject.UserId = tok.UserId
 
 	_, err = database.InsertOne(userEducationLevelSubject)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbInsertError,
-		})
-		return
+		return &userLevel, errx.DbInsertError
 	}
 
-	userLevel, err := GetUserLevel(tok.UserId)
+	userLevel, err = GetUserLevel(tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{Message: errx.DbGetError})
-		return
+		return &userLevel, errx.DbGetError
 	}
 
-	ctx.AbortWithStatusJSON(http.StatusOK, userLevel)
+	return &userLevel, nil
 }
 
-func GetUserEducationLevel(ctx *gin.Context) {
+func GetUserEducationLevel(ctx *context.Context) (*model.Education, error) {
 	var (
-		err error
-		tok *authentication.Token
+		err       error
+		tok       *authentication.Token
+		userLevel model.Education
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &userLevel, errx.UnAuthorizedError
 	}
 
-	userLevel, err := GetUserLevel(tok.UserId)
+	userLevel, err = GetUserLevel(tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGetError,
-		})
-		return
+		return &userLevel, errx.DbGetError
 
 	}
-	ctx.AbortWithStatusJSON(http.StatusOK, userLevel)
+	return &userLevel, nil
 
 }
 
-func UpdateUserEducationLevel(ctx *gin.Context) {
+func UpdateUserEducationLevel(ctx *context.Context, subject *model.SubjectInput) (*model.Education, error) {
 	var (
 		tok                              *authentication.Token
-		currentUserEducationLevelSubject UserEducationLevelSubject
-		userEducationLevelSubject        UserEducationLevelSubject
-		subject                          Subject
+		currentUserEducationLevelSubject model.UserEducationLevelSubject
+		userEducationLevelSubject        model.UserEducationLevelSubject
 		err                              error
+		userLevel                        model.Education
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &userLevel, errx.UnAuthorizedError
 	}
 	if tok.UserId == state.ZERO {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &userLevel, errx.UnAuthorizedError
 	}
 
 	if !authorization.IsUserStudent(tok.UserId) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Not a student",
-		})
-		return
+		return &userLevel, errx.Lambda(errors.New("user is not a student"))
 	}
 
-	err = ctx.ShouldBindJSON(&subject)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParseError,
-		})
-		return
-	}
+	//err = ctx.ShouldBindJSON(&subject)
+	//if err != nil {
+	//	return &userLevel, errx.ParseError
+	//}
 
 	err = database.Get(&currentUserEducationLevelSubject, `SELECT user_education_level_subject.* FROM user_education_level_subject
 			WHERE user_education_level_subject.user_id = ?`, tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGetError,
-		})
-		return
+		return &userLevel, errx.DbGetError
 	}
 
 	err = RemoveUserEducationLevelSubject(currentUserEducationLevelSubject)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbDeleteError,
-		})
-		return
+		return &userLevel, errx.DbDeleteError
 	}
 
 	userEducationLevelSubject.SubjectId = subject.Id
 	userEducationLevelSubject.UserId = tok.UserId
 	_, err = database.InsertOne(userEducationLevelSubject)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbInsertError,
-		})
-		return
+		return &userLevel, errx.DbInsertError
 	}
 
-	userLevel, err := GetUserLevel(tok.UserId)
+	userLevel, err = GetUserLevel(tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{Message: errx.DbGetError})
-		return
+		return &userLevel, errx.DbGetError
 	}
 
-	ctx.AbortWithStatusJSON(http.StatusOK, userLevel)
+	return &userLevel, nil
 }
 
 // User education subjects
 
-func GetUserSubjects(ctx *gin.Context) {
+func GetUserSubjects(ctx *context.Context) ([]*model.Subject, error) {
 	var (
-		subjects []Subject
+		subjects []*model.Subject
 		tok      *authentication.Token
 		err      error
 	)
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return subjects, errx.UnAuthorizedError
 	}
 
 	if authorization.IsUserParent(tok.UserId) || authorization.IsUserTutor(tok.UserId) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return subjects, errx.UnAuthorizedError
 	}
 
 	if authorization.IsUserStudent(tok.UserId) {
@@ -273,10 +179,7 @@ func GetUserSubjects(ctx *gin.Context) {
 											WHERE subject.education_level_id = (SELECT education.id FROM education  JOIN subject ON education.id  =  subject.education_level_id JOIN user_education_level_subject ON subject.id = user_education_level_subject.subject_id
                                    			WHERE user_education_level_subject.user_id = ?)`, tok.UserId)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.DbGetError,
-			})
-			return
+			return subjects, errx.DbGetError
 		}
 	}
 
@@ -285,21 +188,18 @@ func GetUserSubjects(ctx *gin.Context) {
 			JOIN user_education_level_subject  ON subject.id = user_education_level_subject.subject_id
 			WHERE user_education_level_subject.user_id = ?`, tok.UserId)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.DbGetError,
-			})
-			return
+			return subjects, errx.DbGetError
 		}
 	}
 
-	ctx.AbortWithStatusJSON(http.StatusOK, subjects)
+	return subjects, nil
 }
 
 /*
 	UTILS
 */
 
-func GetUserLevel(userId uint) (educationLevel Education, err error) {
+func GetUserLevel(userId uint) (educationLevel model.Education, err error) {
 
 	err = database.Get(&educationLevel,
 		`SELECT education.* FROM education
@@ -313,7 +213,7 @@ func GetUserLevel(userId uint) (educationLevel Education, err error) {
 	return educationLevel, err
 }
 
-func RemoveUserEducationLevelSubject(userEducationLevelSubject UserEducationLevelSubject) (err error) {
+func RemoveUserEducationLevelSubject(userEducationLevelSubject model.UserEducationLevelSubject) (err error) {
 	err = database.Delete(userEducationLevelSubject)
 	if err != nil {
 		return err

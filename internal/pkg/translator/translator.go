@@ -1,337 +1,305 @@
 package translator
 
 import (
+	"context"
+	"duval/internal/graph/model"
 	"duval/internal/pkg/translator/resource"
-	"duval/internal/utils"
 	"duval/internal/utils/errx"
-	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
 )
 
-func GetMessages(ctx *gin.Context) {
+func GetMessages(ctx *context.Context) ([]*model.Message, error) {
 	var (
-		messages []resource.Message
-		err      error
+		messages    []model.Message
+		gqlMessages []*model.Message
+		err         error
 	)
 
 	messages, err = resource.GetMessages()
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return gqlMessages, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, messages)
-	return
+	for _, msg := range messages {
+		gqlMessages = append(gqlMessages, &model.Message{
+			Id:               msg.Id,
+			CreatedAt:        msg.CreatedAt,
+			UpdatedAt:        msg.UpdatedAt,
+			DeletedAt:        msg.DeletedAt,
+			ResourceType:     msg.ResourceType,
+			ResourceNumber:   msg.ResourceNumber,
+			ResourceValue:    msg.ResourceValue,
+			ResourceLabel:    msg.ResourceLabel,
+			ResourceLanguage: msg.ResourceLanguage,
+		})
+	}
+	return gqlMessages, nil
 }
 
-func GetMessagesInLanguage(ctx *gin.Context) {
+func GetMessagesInLanguage(ctx *context.Context, language int) ([]*model.Message, error) {
 	var (
-		messages []resource.Message
-		language int
-		err      error
+		messages    []model.Message
+		gqlMessages []*model.Message
+		err         error
 	)
-
-	language, err = strconv.Atoi(ctx.Param("language"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-	}
 
 	messages, err = resource.GetMessagesInLanguage(language)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+
+		return gqlMessages, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, messages)
-	return
+	for _, msg := range messages {
+		gqlMessages = append(gqlMessages, &model.Message{
+			Id:               msg.Id,
+			CreatedAt:        msg.CreatedAt,
+			UpdatedAt:        msg.UpdatedAt,
+			DeletedAt:        msg.DeletedAt,
+			ResourceType:     msg.ResourceType,
+			ResourceNumber:   msg.ResourceNumber,
+			ResourceValue:    msg.ResourceValue,
+			ResourceLabel:    msg.ResourceLabel,
+			ResourceLanguage: msg.ResourceLanguage,
+		})
+	}
+	return gqlMessages, nil
 }
 
-func GetMessage(ctx *gin.Context) {
+func GetMessage(ctx *context.Context, language int, resourceNumber int) (*model.Message, error) {
 	var (
-		message        resource.Message
-		resourceNumber int
-		language       int
-		err            error
+		message model.Message
+		err     error
 	)
-
-	language, err = strconv.Atoi(ctx.Param("language"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-	}
-
-	resourceNumber, err = strconv.Atoi(ctx.Param("number"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-	}
 
 	message, err = resource.GetMessage(resourceNumber, language)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &message, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, message)
-	return
+	return &message, nil
 }
 
-func NewMessage(ctx *gin.Context) {
+func NewMessage(ctx *context.Context, input *model.MessageInput) (*model.Message, error) {
 	var (
-		message resource.Message
+		message model.Message
 		err     error
 	)
 
-	err = ctx.ShouldBindJSON(&message)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
-	}
+	message.ResourceValue = input.ResourceValue
+	message.ResourceType = input.ResourceType
+	message.ResourceLanguage = input.ResourceLanguage
+	message.ResourceNumber = input.ResourceNumber
+	//
+	//err = ctx.ShouldBindJSON(&message)
+	//if err != nil {
+	//	ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+	//		Message: errx.Lambda(err),
+	//	})
+	//	return
+	//}
 
 	message, err = resource.NewMessage(message.ResourceLabel, message.ResourceLanguage)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+
+		return &message, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, message)
-	return
+	return &message, nil
 }
 
-func DelMessage(ctx *gin.Context) {
+func DelMessage(ctx *context.Context, language int, messageNumber int) (*string, error) {
 	var (
-		messageNumber int
-		language      int
-		err           error
+		err    error
+		status string
 	)
-
-	language, err = strconv.Atoi(ctx.Param("language"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-	}
-
-	messageNumber, err = strconv.Atoi(ctx.Param("number"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-	}
 
 	err = resource.DeleteMessage(messageNumber, language)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &status, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"status": "ok",
-	})
-	return
+	status = "ok"
+
+	return &status, nil
 }
 
-func UpdMessage(ctx *gin.Context) {
+func UpdMessage(ctx *context.Context, input *model.MessageUpdateInput) (*model.Message, error) {
 	var (
-		message resource.Message
+		message model.Message
 		err     error
 	)
 
-	err = ctx.ShouldBind(&message)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
-	}
+	message.Id = input.Id
+	message.ResourceValue = input.ResourceValue
+	message.ResourceType = input.ResourceType
+	message.ResourceLanguage = input.ResourceLanguage
+	message.ResourceNumber = input.ResourceNumber
+	//err = ctx.ShouldBind(&message)
+	//if err != nil {
+	//	ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+	//		Message: errx.Lambda(err),
+	//	})
+	//	return
+	//}
 
 	message, err = resource.UpdateMessage(message)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &message, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, message)
-	return
+	return &message, nil
 }
 
-func GetMenuList(ctx *gin.Context) {
+func GetMenuList(ctx *context.Context) ([]*model.Message, error) {
 	var (
-		messages []resource.Message
-		err      error
+		messages    []model.Message
+		gqlMessages []*model.Message
+		err         error
 	)
 
 	messages, err = resource.GetMenuList()
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
+		return gqlMessages, errx.Lambda(err)
+	}
+	for _, msg := range messages {
+		gqlMessages = append(gqlMessages, &model.Message{
+			Id:               msg.Id,
+			CreatedAt:        msg.CreatedAt,
+			UpdatedAt:        msg.UpdatedAt,
+			DeletedAt:        msg.DeletedAt,
+			ResourceType:     msg.ResourceType,
+			ResourceNumber:   msg.ResourceNumber,
+			ResourceValue:    msg.ResourceValue,
+			ResourceLabel:    msg.ResourceLabel,
+			ResourceLanguage: msg.ResourceLanguage,
 		})
-		return
 	}
 
-	ctx.JSON(http.StatusOK, messages)
-	return
+	return gqlMessages, nil
 }
 
-func GetMenuItems(ctx *gin.Context) {
+func GetMenuItems(ctx *context.Context, language int, menuNumber int) ([]*model.Message, error) {
 	var (
-		messages   []resource.Message
-		language   int
-		menuNumber int
-		err        error
+		messages    []model.Message
+		gqlMessages []*model.Message
+		err         error
 	)
-
-	language, err = strconv.Atoi(ctx.Param("language"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
-	}
-
-	menuNumber, err = strconv.Atoi(ctx.Param("number"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
-	}
 
 	messages, err = resource.GetMenuItems(menuNumber, language)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return gqlMessages, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, messages)
-	return
+	for _, msg := range messages {
+		gqlMessages = append(gqlMessages, &model.Message{
+			Id:               msg.Id,
+			CreatedAt:        msg.CreatedAt,
+			UpdatedAt:        msg.UpdatedAt,
+			DeletedAt:        msg.DeletedAt,
+			ResourceType:     msg.ResourceType,
+			ResourceNumber:   msg.ResourceNumber,
+			ResourceValue:    msg.ResourceValue,
+			ResourceLabel:    msg.ResourceLabel,
+			ResourceLanguage: msg.ResourceLanguage,
+		})
+	}
+
+	return gqlMessages, nil
 }
 
-func NewMenu(ctx *gin.Context) {
+func NewMenu(ctx *context.Context, input *model.MessageInput) (*model.Message, error) {
 	var (
-		message resource.Message
+		message model.Message
 		err     error
 	)
 
-	err = ctx.ShouldBindJSON(&message)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
-	}
+	message.ResourceValue = input.ResourceValue
+	message.ResourceType = input.ResourceType
+	message.ResourceLanguage = input.ResourceLanguage
+	message.ResourceNumber = input.ResourceNumber
+
+	//err = ctx.ShouldBindJSON(&message)
+	//if err != nil {
+	//	ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+	//		Message: errx.Lambda(err),
+	//	})
+	//	return
+	//}
 
 	message, err = resource.NewMenu(message.ResourceLabel, message.ResourceLanguage)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &message, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, message)
-	return
+	return &message, nil
 }
 
-func DelMenu(ctx *gin.Context) {
+func DelMenu(ctx *context.Context, menuNumber int) (*string, error) {
 	var (
-		menuNumber int
-		err        error
+		err    error
+		status string
 	)
-
-	menuNumber, err = strconv.Atoi(ctx.Param("number"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
-	}
 
 	err = resource.DeleteMenu(menuNumber)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &status, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"status": "ok",
-	})
-	return
+	status = "ok"
+
+	return &status, nil
 }
 
-func NewMenuItem(ctx *gin.Context) {
+func NewMenuItem(ctx *context.Context, input *model.MessageInput) (*model.Message, error) {
 	var (
-		menu resource.Message
+		menu model.Message
 		err  error
 	)
 
-	err = ctx.ShouldBind(&menu)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
-	}
+	menu.ResourceValue = input.ResourceValue
+	menu.ResourceType = input.ResourceType
+	menu.ResourceLanguage = input.ResourceLanguage
+	menu.ResourceNumber = input.ResourceNumber
+	//err = ctx.ShouldBind(&menu)
+	//if err != nil {
+	//	ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+	//		Message: errx.Lambda(err),
+	//	})
+	//	return
+	//}
 
 	menu, err = resource.NewMenuItem(menu.ResourceLabel, menu.ResourceNumber, menu.ResourceLanguage)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &menu, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, menu)
-	return
+	return &menu, nil
 }
 
-func DelMenuItem(ctx *gin.Context) {
+func DelMenuItem(ctx *context.Context, input *model.MessageUpdateInput) (*string, error) {
 	var (
-		menu resource.Message
-		err  error
+		menu   model.Message
+		err    error
+		status string
 	)
 
-	err = ctx.ShouldBind(&menu)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
-	}
+	menu.Id = input.Id
+	menu.ResourceValue = input.ResourceValue
+	menu.ResourceType = input.ResourceType
+	menu.ResourceLanguage = input.ResourceLanguage
+	menu.ResourceNumber = input.ResourceNumber
+	//err = ctx.ShouldBind(&menu)
+	//if err != nil {
+	//	ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+	//		Message: errx.Lambda(err),
+	//	})
+	//	return
+	//}
 
 	err = resource.DeleteMenuItem(menu.ResourceNumber, menu.ResourceValue, menu.ResourceLanguage)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &status, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"status": "ok",
-	})
-	return
+	status = "ok"
+	return &status, nil
 }

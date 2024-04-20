@@ -1,144 +1,92 @@
 package mark
 
 import (
+	"context"
 	"duval/internal/authentication"
+	"duval/internal/graph/model"
 	"duval/internal/pkg/user/authorization"
-	"duval/internal/utils"
 	"duval/internal/utils/errx"
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
-	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
-	"time"
 )
 
-type UserMark struct {
-	Id            uint       `json:"id"`
-	CreatedAt     time.Time  `json:"created_at"`
-	UpdatedAt     time.Time  `json:"updated_at"`
-	DeletedAt     *time.Time `json:"deleted_at"`
-	UserId        uint       `json:"user_id"`
-	AuthorId      uint       `json:"author_id"`
-	AuthorComment string     `json:"author_comment"`
-	AuthorMark    uint       `json:"author_mark"`
-}
-
-func RateUser(ctx *gin.Context) {
+func RateUser(ctx *context.Context, mark *model.UserMarkInput) (*model.UserMark, error) {
 	var (
 		tok         *authentication.Token
-		studentMark UserMark
+		studentMark model.UserMark
 		err         error
 	)
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	studentMark.UserId = mark.UserId
+	studentMark.AuthorId = mark.AuthorId
+	studentMark.AuthorMark = mark.AuthorMark
+	studentMark.AuthorComment = mark.AuthorComment
+
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &studentMark, errx.UnAuthorizedError
 	}
 
 	if authorization.IsUserStudent(tok.UserId) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &studentMark, errx.UnAuthorizedError
 	}
 
 	if authorization.IsUserParent(tok.UserId) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
-	}
-
-	err = ctx.ShouldBindJSON(&studentMark)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParseError,
-		})
-		return
+		return &studentMark, errx.UnAuthorizedError
 	}
 
 	if studentMark.AuthorMark > 5 {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(errors.New("value exceed 5 star")),
-		})
-		return
+		return &studentMark, errx.Lambda(errors.New("value exceed 5 star"))
 	}
 
 	studentMark.AuthorId = tok.UserId
 	err = SetUserMark(studentMark)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbInsertError,
-		})
-		return
+		return &studentMark, errx.DbInsertError
 	}
 
-	ctx.AbortWithStatusJSON(http.StatusOK, studentMark)
+	return &studentMark, nil
 }
 
-func GetUserAverageMark(ctx *gin.Context) {
+func GetUserAverageMark(ctx *context.Context, userId int) (*int, error) {
 	var (
-		userMarks []UserMark
-		err       error
-		totalMark uint
+		userMarks   []model.UserMark
+		err         error
+		totalMark   uint
+		averageMark int
 	)
-
-	userId, err := strconv.Atoi(ctx.Param("userId"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParseError,
-		})
-		return
-	}
 
 	err = database.GetMany(&userMarks, `SELECT user_mark.* FROM user_mark WHERE user_id = ?`, userId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGetError,
-		})
-		return
+		return &averageMark, errx.DbGetError
 	}
 
 	totalAuthor := len(userMarks)
 	if totalAuthor == state.ZERO {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(errors.New("not rated ")),
-		})
-		return
+		return &averageMark, errx.Lambda(errors.New("not rated "))
 	}
 
 	for _, userMark := range userMarks {
 		totalMark = totalMark + userMark.AuthorMark
 	}
-	averageMark := totalMark / (uint(totalAuthor))
-	ctx.AbortWithStatusJSON(http.StatusOK, gin.H{
-		"average_mark": averageMark,
-	})
+	averageMark = int(totalMark) / (totalAuthor)
+
+	return &averageMark, nil
 }
 
-func GetUserMarkComment(ctx *gin.Context) {
+func GetUserMarkComment(ctx *context.Context) ([]*model.UserMark, error) {
 	var (
 		tok  *authentication.Token
 		err  error
-		mark []UserMark
+		mark []*model.UserMark
 	)
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return mark, errx.UnAuthorizedError
 	}
 
 	if authorization.IsUserStudent(tok.UserId) || authorization.IsUserParent(tok.UserId) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return mark, errx.UnAuthorizedError
 	}
 
 	err = database.GetMany(&mark,
@@ -146,13 +94,10 @@ func GetUserMarkComment(ctx *gin.Context) {
 			FROM user_mark
 			WHERE user_mark.author_id= ?;`, tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGetError,
-		})
-		return
+		return mark, errx.DbGetError
 	}
 
-	ctx.AbortWithStatusJSON(http.StatusOK, mark)
+	return mark, nil
 }
 
 //
@@ -160,7 +105,7 @@ func GetUserMarkComment(ctx *gin.Context) {
 	UTILS
 */
 
-func SetUserMark(userMark UserMark) (err error) {
+func SetUserMark(userMark model.UserMark) (err error) {
 	_, err = database.InsertOne(userMark)
 	if err != nil {
 		return err

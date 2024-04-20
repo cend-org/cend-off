@@ -1,24 +1,26 @@
 package note
 
-const (
-	UnAuthorizedError = "UnAuthorized"
-	ParamsError       = "failed to parse params"
+import "errors"
+
+var (
+	UnAuthorizedError = errors.New("unauthorized")
+	ParamsError       = errors.New("failed to parse params")
 )
 
-const (
-	ParseError            = "cannot parse the corresponding object"
-	TypeError             = "invalid type of file"
-	InvalidEmailError     = "the email you enter is invalid"
-	DuplicateUserError    = "user already exists"
-	LinkUserError         = "failed to link to  user"
-	DuplicateAddressError = "user address already exists"
+var (
+	ParseError            = errors.New("cannot parse the corresponding object")
+	TypeError             = errors.New("invalid type of file")
+	InvalidEmailError     = errors.New("the email you enter is invalid")
+	DuplicateUserError    = errors.New("user already exists")
+	LinkUserError         = errors.New("failed to link to  user")
+	DuplicateAddressError = errors.New("user address already exists")
 )
 
-const (
-	DatabaseInsertOperationError = "error while trying to insert data into database"
-	DatabaseDeleteOperationError = "error while trying to delete data from database"
-	DatabaseGetOperationError    = "error while trying to get data from database"
-	DatabaseUpdateOperationError = "error while trying to update data to database"
+var (
+	DatabaseInsertOperationError = errors.New("error while trying to insert data into database")
+	DatabaseDeleteOperationError = errors.New("error while trying to delete data from database")
+	DatabaseGetOperationError    = errors.New("error while trying to get data from database")
+	DatabaseUpdateOperationError = errors.New("error while trying to update data to database")
 )
 
-const StatusNeedPasswordError = "user need at least a password and an email for login"
+var StatusNeedPasswordError = errors.New("user need at least a password and an email for login")

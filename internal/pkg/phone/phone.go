@@ -1,161 +1,111 @@
 package phone
 
 import (
+	"context"
+	"duval/internal/authentication"
+	"duval/internal/graph/model"
 	"duval/internal/utils"
+	"duval/internal/utils/errx"
 	"duval/pkg/database"
-	"net/http"
-	"strconv"
-	"time"
-
-	"github.com/gin-gonic/gin"
+	"errors"
 )
 
-type PhoneNumber struct {
-	Id                uint       `json:"id"`
-	CreatedAt         time.Time  `json:"created_at"`
-	UpdatedAt         time.Time  `json:"updated_at"`
-	DeletedAt         *time.Time `json:"deleted_at"`
-	MobilePhoneNumber string     `json:"mobile_phone_number"`
-	IsUrgency         bool       `json:"is_urgency"`
-}
-
-type UserPhoneNumber struct {
-	UserId        uint `json:"user_id"`
-	PhoneNumberId uint `json:"phone_number_id"`
-}
-
-/*
-
-	ROUTES Handlers
-
-*/
-
-/*
-ADD NEW PHONE NUMBER TO A USER BY PORVIDING user.id IN THE BODY
-*/
-func NewPhoneNumber(ctx *gin.Context) {
+func NewPhoneNumber(ctx *context.Context, input *model.NewPhoneNumber) (*model.PhoneNumber, error) {
 	var (
-		userPhoneNumber UserPhoneNumber
-		newPhone        PhoneNumber
+		userPhoneNumber model.UserPhoneNumber
+		newPhone        model.PhoneNumber
 		err             error
+		tok             *authentication.Token
 	)
-
-	userId, err := strconv.Atoi(ctx.Param("user_id"))
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Failed to retrieve params",
-		})
-	}
-
-	err = ctx.ShouldBindJSON(&newPhone)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Failed to get phone number form body",
-		})
-		return
+		return &newPhone, errx.UnAuthorizedError
 	}
 
 	if !utils.IsValidPhone(newPhone.MobilePhoneNumber) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Invalid format of phone number",
-		})
-		return
+		return &newPhone, errx.ParseError
 	}
-
+	newPhone.MobilePhoneNumber = input.MobilePhoneNumber
+	newPhone.IsUrgency = input.IsUrgency
 	newPhone.Id, err = database.InsertOne(newPhone)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Phone number already exist in the database",
-		})
-		return
+		return &newPhone, errx.Lambda(err)
 	}
 	// Link phone to user.
-	userPhoneNumber.UserId = uint(userId)
+	userPhoneNumber.UserId = tok.UserId
 	userPhoneNumber.PhoneNumberId = newPhone.Id
 	_, err = database.InsertOne(userPhoneNumber)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Failed to link phone number to user",
-		})
-		return
+		return &newPhone, errx.DbInsertError
 	}
 
-	ctx.JSON(http.StatusOK, newPhone)
-	return
+	return &newPhone, nil
 }
 
-/*
-UPDATE PHONE NUMBER OF A USER BY PORVIDING user.id in params AND LIST OF USER PHONE NUMBER
-*/
-func UpdateUserPhoneNumber(ctx *gin.Context) {
+func UpdateUserPhoneNumber(ctx *context.Context, input *model.NewPhoneNumber) (*model.PhoneNumber, error) {
 	var (
-		newPhone PhoneNumber
-		err      error
+		phoneNumber  model.PhoneNumber
+		currentPhone model.PhoneNumber
+		err          error
+		tok          *authentication.Token
 	)
 
-	err = ctx.ShouldBindJSON(&newPhone)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
-		})
-		return
-	}
-	if newPhone.Id == 0 {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "phone id is required for the operation",
-		})
-		return
-	}
-	if !utils.IsValidPhone(newPhone.MobilePhoneNumber) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Invalid format of phone number",
-		})
-		return
-	}
-	err = database.Update(newPhone)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Failed to update mobile phone number",
-		})
-		return
+		return &phoneNumber, errx.UnAuthorizedError
 	}
 
-	ctx.JSON(http.StatusOK, newPhone)
-	return
+	currentPhone, err = GetPhoneById(int(tok.UserId))
+	if currentPhone.Id == 0 {
+		return &phoneNumber, errx.Lambda(errors.New("create new phone number instead"))
+	}
+
+	if !utils.IsValidPhone(phoneNumber.MobilePhoneNumber) {
+		return &phoneNumber, errx.ParseError
+	}
+
+	err = database.Update(phoneNumber)
+	if err != nil {
+		return &phoneNumber, errx.DbUpdateError
+	}
+
+	return &phoneNumber, nil
 }
 
-/*
-GET USER PHONE NUMBER BASED ON user_id PROVIDED IN PARAMS
-*/
-
-func GetUserPhoneNumber(ctx *gin.Context) {
+func GetUserPhoneNumber(ctx *context.Context) (*model.PhoneNumber, error) {
 	var (
-		userId int
-		phone  PhoneNumber
-		err    error
+		phone model.PhoneNumber
+		err   error
+		tok   *authentication.Token
 	)
 
-	userId, err = strconv.Atoi(ctx.Param("user_id"))
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
-		})
+		return &phone, errx.UnAuthorizedError
 	}
 
 	err = database.Get(&phone, `SELECT phone_number.mobile_phone_number
 	FROM phone_number JOIN user_phone_number 
 	ON phone_number.id = user_phone_number.id 
-	WHERE user_phone_number.user_id = ?`, userId)
+	WHERE user_phone_number.user_id = ?`, tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "Failed to fetch phone number  user_id unknown",
-		})
-		return
+		return &phone, errx.DbGetError
 	}
 
-	ctx.JSON(http.StatusOK, phone)
+	return &phone, nil
 }
 
 /*
-UTILS
+
+	UTILS
+
 */
+
+func GetPhoneById(userId int) (phoneNumber model.PhoneNumber, err error) {
+	err = database.Get(&phoneNumber, `SELECT * FROM phone_number JOIN user_phone_number ON phone_number.id = user_phone_number.phone_number_id WHERE user_phone_number.user_id = ?`, userId)
+	if err != nil {
+		return phoneNumber, err
+	}
+
+	return phoneNumber, nil
+}

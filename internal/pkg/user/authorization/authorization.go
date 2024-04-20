@@ -1,9 +1,9 @@
 package authorization
 
 import (
+	"duval/internal/graph/model"
 	"duval/internal/utils/state"
 	"duval/pkg/database"
-	"time"
 )
 
 const (
@@ -13,18 +13,9 @@ const (
 	ProfessorAuthorizationLevel = 3
 )
 
-type Authorization struct {
-	Id        uint       `json:"id"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at"`
-	UserId    uint       `json:"user_id"`
-	Level     uint       `json:"level"`
-}
-
 func NewUserAuthorization(userId, authorizationLevel uint) (err error) {
 	var (
-		auth Authorization
+		auth model.Authorization
 	)
 
 	auth.UserId = userId
@@ -37,7 +28,7 @@ func NewUserAuthorization(userId, authorizationLevel uint) (err error) {
 	return err
 }
 
-func GetUserAuthorizations(userId uint) (auth []Authorization, err error) {
+func GetUserAuthorizations(userId uint) (auth []model.Authorization, err error) {
 	query := `SELECT a.* FROM authorization a WHERE a.user_id = ?`
 	err = database.Select(&auth, query, userId)
 	if err != nil {
@@ -46,7 +37,7 @@ func GetUserAuthorizations(userId uint) (auth []Authorization, err error) {
 	return auth, err
 }
 
-func GetUserAuthorization(userId, level uint) (auth Authorization, err error) {
+func GetUserAuthorization(userId, level uint) (auth model.Authorization, err error) {
 	err = database.Get(&auth, `SELECT * FROM authorization WHERE user_id = ? AND level = ?`, userId, level)
 	if err != nil {
 		return auth, err
@@ -57,7 +48,7 @@ func GetUserAuthorization(userId, level uint) (auth Authorization, err error) {
 
 func DeleteUserAuthorization(userId, level uint) (err error) {
 	var (
-		auth Authorization
+		auth model.Authorization
 	)
 
 	auth, err = GetUserAuthorization(userId, level)
@@ -74,7 +65,15 @@ func DeleteUserAuthorization(userId, level uint) (err error) {
 }
 
 func DeleteUserAuthorizations(userId uint) (err error) {
-	err = database.Exec(`DELETE FROM authorization WHERE user_id = ?`, userId)
+	var (
+		authorization model.Authorization
+	)
+	err = database.Get(&authorization, `SELECT  * FROM authorization WHERE  authorization.user_id= ?`, userId)
+	if err != nil {
+		return err
+	}
+
+	err = database.Delete(authorization)
 	if err != nil {
 		return err
 	}
@@ -84,7 +83,7 @@ func DeleteUserAuthorizations(userId uint) (err error) {
 func isUserHasAuthorizationLevel(userId, authorizationLevel uint) (ret bool) {
 	var (
 		err  error
-		auth Authorization
+		auth model.Authorization
 	)
 
 	auth, err = GetUserAuthorization(userId, authorizationLevel)

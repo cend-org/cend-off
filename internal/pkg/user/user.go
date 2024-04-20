@@ -1,8 +1,10 @@
 package user
 
 import (
+	"context"
 	"database/sql"
 	"duval/internal/authentication"
+	"duval/internal/graph/model"
 	"duval/internal/pkg/code"
 	"duval/internal/pkg/user/authorization"
 	"duval/internal/pkg/user/password"
@@ -11,22 +13,8 @@ import (
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
-	"net/http"
-	"strconv"
-	"time"
-
-	"github.com/gin-gonic/gin"
 )
 
-// user status is used as follows:
-// a- first user create an account with an email required. ( at this point user is called new ) .
-// b- One created, a user received a verification code to validate his email ( user pass to status unverified )
-//
-//	Once validated, user need password ( status 2 ).
-//
-// c- Now, the user got an email and password which can we used for authentication. But He must be enrolled on an onboarding
-// process ( status 3 )
-// d- Once onboarding done, user can be active and redirected to dashboard page.
 const (
 	StatusNew        = 0
 	StatusUnverified = 1
@@ -38,88 +26,41 @@ const (
 	StatusActive = 4
 )
 
-type User struct {
-	Id                    uint       `json:"id"`
-	CreatedAt             time.Time  `json:"created_at"`
-	UpdatedAt             time.Time  `json:"updated_at"`
-	DeletedAt             *time.Time `json:"deleted_at"`
-	Name                  string     `json:"name"`
-	FamilyName            string     `json:"family_name"`
-	NickName              string     `json:"nick_name"`
-	Email                 string     `json:"email"`
-	Matricule             string     `json:"matricule"`
-	Age                   uint       `json:"age"`
-	BirthDate             time.Time  `json:"birth_date"`
-	Sex                   int        `json:"sex"`
-	Lang                  int        `json:"language"`
-	Status                int        `json:"status"`
-	ProfileImageXid       string     `json:"profile_image_xid"`
-	Description           string     `json:"description"`
-	CoverText             string     `json:"cover_text"`
-	Profile               string     `json:"profile"`
-	ExperienceDetail      string     `json:"experience_detail"`
-	AdditionalDescription string     `json:"additional_description"`
-	AddOnTitle            string     `json:"add_on_title"`
-}
-
-/*
-
-	ROUTES
-
-*/
-
-func Register(ctx *gin.Context) {
+func Register(input *model.NewUserInput, userType *int) (string, error) {
 	var (
+		user               model.User
 		err                error
-		user               User
+		tokenStr           string
 		authorizationLevel int
 	)
 
-	err = ctx.ShouldBindJSON(&user)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		//
-		return
+	user = model.User{
+		Name:       input.Name,
+		FamilyName: input.FamilyName,
+		NickName:   input.NickName,
+		BirthDate:  input.BirthDate,
+		Email:      input.Email,
+		Sex:        input.Sex,
+		Lang:       input.Lang,
 	}
-
-	authorizationLevel, err = strconv.Atoi(ctx.Param("as"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
-	}
+	authorizationLevel = *userType
 
 	if !utils.IsValidEmail(user.Email) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.InvalidEmailError,
-		})
-		return
+		return tokenStr, errx.InvalidEmailError
 	}
 
 	_, err = GetUserByEmail(user.Email)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return tokenStr, errx.Lambda(err)
 	}
 
 	if user.Id > state.ZERO {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse{
-			Message: errx.DuplicateUserError,
-		})
-		return
+		return tokenStr, errx.DuplicateUserError
 	}
 
 	user.Matricule, err = utils.GenerateMatricule()
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return tokenStr, errx.Lambda(err)
 	}
 
 	if user.Name == state.EMPTY {
@@ -130,109 +71,91 @@ func Register(ctx *gin.Context) {
 		user.NickName = user.Matricule
 	}
 
-	user.Id, err = database.InsertOne(user)
+	userId, err := database.InsertOne(user)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbInsertError,
-		})
-		return
+		return tokenStr, errx.DuplicateUserError
 	}
+
+	user.Id = userId
 
 	err = authorization.NewUserAuthorization(user.Id, uint(authorizationLevel))
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return tokenStr, errx.Lambda(err)
 	}
 
-	tokenStr, err := authentication.GetTokenString(user.Id)
+	tokenStr, err = authentication.GetTokenString(user.Id)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return tokenStr, errx.Lambda(err)
 	}
 
 	err = code.NewUserVerificationCode(user.Id)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return tokenStr, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"token": tokenStr,
-	})
-	return
+	return tokenStr, nil
 }
 
-func GetCode(ctx *gin.Context) {
+func MyProfile(ctx *context.Context) (*model.User, error) {
 	var (
-		err            error
-		tok            *authentication.Token
-		validationCode code.Code
+		tok  *authentication.Token
+		err  error
+		user model.User
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
-	}
-
-	err = database.Get(&validationCode, `SELECT * FROM code WHERE user_id = ? ORDER BY created_at desc LIMIT 1`, tok.UserId)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, validationCode)
-	return
-}
-
-func VerifyUserEmailValidationCode(ctx *gin.Context) {
-	var (
-		err            error
-		tok            *authentication.Token
-		validationCode int
-		user           User
-	)
-
-	tok, err = authentication.GetTokenDataFromContext(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
-	}
-
-	validationCode, err = strconv.Atoi(ctx.Param("code"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParseError,
-		})
-		return
-	}
-
-	err = code.IsUserVerificationCodeValid(tok.UserId, validationCode)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &user, errx.Lambda(err)
 	}
 
 	user, err = GetUserWithId(tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &user, errx.Lambda(err)
+	}
+
+	return &user, nil
+}
+
+func GetCode(ctx *context.Context) (*model.Code, error) {
+	var (
+		err            error
+		tok            *authentication.Token
+		validationCode model.Code
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	if err != nil {
+		return &validationCode, errx.Lambda(err)
+	}
+
+	err = database.Get(&validationCode, `SELECT * FROM code WHERE user_id = ? ORDER BY created_at desc LIMIT 1`, tok.UserId)
+	if err != nil {
+		return &validationCode, errx.UnAuthorizedError
+	}
+
+	return &validationCode, nil
+}
+
+func VerifyUserEmailValidationCode(ctx *context.Context, validationCode int) (int, error) {
+	var (
+		err  error
+		tok  *authentication.Token
+		user model.User
+	)
+
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	if err != nil {
+		return 0, errx.UnAuthorizedError
+	}
+
+	err = code.IsUserVerificationCodeValid(tok.UserId, validationCode)
+	if err != nil {
+		return 0, errx.Lambda(err)
+	}
+
+	user, err = GetUserWithId(tok.UserId)
+	if err != nil {
+		return 0, errx.Lambda(err)
 	}
 
 	if user.Status < StatusNeedPassword {
@@ -241,237 +164,148 @@ func VerifyUserEmailValidationCode(ctx *gin.Context) {
 
 	err = database.Update(user)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return 0, errx.Lambda(err)
 	}
 
-	ctx.Status(http.StatusOK)
-	return
+	return validationCode, nil
 }
 
-func SendUserEmailValidationCode(ctx *gin.Context) {
+func SendUserEmailValidationCode(ctx *context.Context) (*model.User, error) {
 	var (
 		err  error
 		tok  *authentication.Token
-		user User
+		user model.User
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &user, errx.UnAuthorizedError
 	}
 
 	err = code.NewUserVerificationCode(tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &user, errx.Lambda(err)
+
 	}
 
 	user, err = GetUserWithId(tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &user, errx.Lambda(err)
 	}
 
 	user.Status = StatusUnverified
 
 	err = database.Update(user)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &user, errx.Lambda(err)
 	}
 
-	ctx.Status(http.StatusOK)
-	return
+	return &user, nil
 }
 
-func MyProfile(ctx *gin.Context) {
-	var (
-		tok  *authentication.Token
-		err  error
-		user User
-	)
-
-	tok, err = authentication.GetTokenDataFromContext(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
-	}
-
-	user, err = GetUserWithId(tok.UserId)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
-		})
-		return
-	}
-
-	ctx.JSON(http.StatusOK, user)
-	return
-}
-
-func UpdMyProfile(ctx *gin.Context) {
+func UpdMyProfile(ctx *context.Context, input map[string]interface{}) (*model.User, error) {
 	var (
 		err error
 		tok *authentication.Token
-		usr User
+		usr model.User
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
-	}
-
-	err = ctx.ShouldBindJSON(&usr)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &usr, errx.UnAuthorizedError
 	}
 
 	usr.Id = tok.UserId
+
+	usr, err = GetUserWithId(usr.Id)
+	if err != nil {
+		return &usr, errx.DbGetError
+	}
+	err = utils.ShouldBindJSON(input, &usr)
+	if err != nil {
+		return &usr, errx.Lambda(err)
+	}
 	err = database.Update(usr)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &usr, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, usr)
-	return
+	return &usr, nil
 }
 
-func Login(ctx *gin.Context) {
+func Login(input *model.UserLogin) (string, error) {
 	var (
-		err  error
-		usr  User
-		auth authentication.Auth
+		err      error
+		usr      model.User
+		tokenStr string
 	)
-
-	err = ctx.ShouldBindJSON(&auth)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
-		})
-	}
 
 	// GET USER DATA
-	usr, err = GetUserByEmail(auth.Email)
+	usr, err = GetUserByEmail(input.Email)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
-		})
-		return
+		return tokenStr, errx.Lambda(err)
 	}
 
-	if !password.IsPasswordValid(usr.Id, auth.Password) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+	if !password.IsPasswordValid(usr.Id, input.Password) {
+		return tokenStr, errx.Lambda(err)
 	}
 
-	tokenStr, err := authentication.GetTokenString(usr.Id)
+	tokenStr, err = authentication.GetTokenString(usr.Id)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return tokenStr, errx.Lambda(err)
+
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"token": tokenStr,
-	})
-
-	return
+	return tokenStr, nil
 }
 
-func NewPassword(ctx *gin.Context) {
+func NewPassword(ctx *context.Context, input *model.NewPassword) (*string, error) {
 	var (
-		pass password.Password
-		err  error
-		tok  *authentication.Token
-		usr  User
+		err    error
+		tok    *authentication.Token
+		usr    model.User
+		status string
+		pass   model.Password
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	pass.Psw = input.Psw
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
-	}
-
-	err = ctx.ShouldBindJSON(&pass)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
-		})
-		return
+		return &status, errx.UnAuthorizedError
 	}
 
 	err = password.CreatePassword(tok.UserId, pass)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
-		})
-		return
+		return &status, errx.Lambda(err)
 	}
 
 	usr, err = GetUserWithId(tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &status, errx.Lambda(err)
 	}
 
 	if usr.Status < StatusOnboardingInProgress {
 		usr.Status = StatusOnboardingInProgress
 		err = database.Update(usr)
 		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.Lambda(err),
-			})
-			return
+			return &status, errx.Lambda(err)
 		}
 	}
-
-	ctx.AbortWithStatus(http.StatusOK)
-	return
+	status = "success"
+	return &status, nil
 }
 
-func GetPasswordHistory(ctx *gin.Context) {
+func GetPasswordHistory(ctx *context.Context) ([]*model.Password, error) {
 	var (
-		passwords []password.Password
-		tok       *authentication.Token
-		err       error
+		passwords    []model.Password
+		gqlPasswords []*model.Password
+		tok          *authentication.Token
+		err          error
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return gqlPasswords, errx.UnAuthorizedError
 	}
 	err = database.GetMany(&passwords,
 		`SELECT password.*
@@ -479,93 +313,74 @@ func GetPasswordHistory(ctx *gin.Context) {
 			WHERE password.user_id = ?
 			ORDER BY password.created_at DESC`, tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGetError,
-		})
-		return
+		return gqlPasswords, errx.DbGetError
 	}
 
-	ctx.AbortWithStatusJSON(http.StatusOK, passwords)
+	for _, pass := range passwords {
+		gqlPasswords = append(gqlPasswords, &model.Password{
+			Id:          pass.Id,
+			CreatedAt:   pass.CreatedAt,
+			UpdatedAt:   pass.UpdatedAt,
+			DeletedAt:   pass.DeletedAt,
+			UserId:      pass.UserId,
+			Psw:         pass.Psw,
+			ContentHash: pass.ContentHash,
+		})
+	}
+
+	return gqlPasswords, nil
 }
 
-func ActivateUser(ctx *gin.Context) {
+func ActivateUser(ctx *context.Context) (*model.User, error) {
 	var (
 		tok *authentication.Token
 		err error
-		usr User
+		usr model.User
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &usr, errx.Lambda(err)
 	}
 
 	usr, err = GetUserWithId(tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &usr, errx.Lambda(err)
 	}
 
 	if usr.Status <= StatusNeedPassword {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.NeedPasswordError,
-		})
-		return
+		return &usr, errx.Lambda(err)
 	}
 
 	usr.Status = StatusActive
 
-	ctx.JSON(http.StatusOK, usr)
-	return
+	return &usr, nil
 }
 
-func RegisterByEmail(ctx *gin.Context) {
+func RegisterByEmail(authorizationLevel *int, email *string) (*string, error) {
 	var (
-		user User
-		err  error
+		user     model.User
+		err      error
+		tokenStr string
 	)
 
-	authorizationLevel, err := strconv.Atoi(ctx.Param("as"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
-	}
-	user.Email = ctx.Param("email")
+	user.Email = *email
 	if !utils.IsValidEmail(user.Email) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.InvalidEmailError,
-		})
-		return
+		return &tokenStr, errx.InvalidEmailError
 	}
 
 	_, err = GetUserByEmail(user.Email)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &tokenStr, errx.Lambda(err)
 	}
 
 	if user.Id > state.ZERO {
-		ctx.AbortWithStatusJSON(http.StatusUnauthorized, utils.ErrorResponse{
-			Message: errx.DuplicateUserError,
-		})
-		return
+		return &tokenStr, errx.DuplicateUserError
 	}
 
 	user.Matricule, err = utils.GenerateMatricule()
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &tokenStr, errx.Lambda(err)
 	}
 
 	if user.Name == state.EMPTY {
@@ -578,40 +393,25 @@ func RegisterByEmail(ctx *gin.Context) {
 
 	user.Id, err = database.InsertOne(user)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbInsertError,
-		})
-		return
+		return &tokenStr, errx.DbInsertError
 	}
 
-	err = authorization.NewUserAuthorization(user.Id, uint(authorizationLevel))
+	err = authorization.NewUserAuthorization(user.Id, uint(*authorizationLevel))
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &tokenStr, errx.Lambda(err)
 	}
 
-	tokenStr, err := authentication.GetTokenString(user.Id)
+	tokenStr, err = authentication.GetTokenString(user.Id)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &tokenStr, errx.Lambda(err)
 	}
 
 	err = code.NewUserVerificationCode(user.Id)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &tokenStr, errx.Lambda(err)
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"token": tokenStr,
-	})
-	return
+	return &tokenStr, nil
 }
 
 /*
@@ -620,7 +420,7 @@ func RegisterByEmail(ctx *gin.Context) {
 
 */
 
-func GetUserByEmail(email string) (user User, err error) {
+func GetUserByEmail(email string) (user model.User, err error) {
 	err = database.Get(&user, `SELECT * FROM user WHERE email = ?`, email)
 	if err != nil {
 		return user, err
@@ -629,7 +429,7 @@ func GetUserByEmail(email string) (user User, err error) {
 	return user, err
 }
 
-func GetUserWithId(id uint) (user User, err error) {
+func GetUserWithId(id uint) (user model.User, err error) {
 	err = database.Get(&user, `SELECT * FROM user WHERE id = ?`, id)
 	if err != nil {
 		return user, err

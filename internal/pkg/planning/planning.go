@@ -1,77 +1,38 @@
 package planning
 
 import (
+	"context"
 	"duval/internal/authentication"
-	"duval/internal/pkg/user"
-	"duval/internal/pkg/user/authorization"
-	"duval/internal/utils"
+	"duval/internal/graph/model"
 	"duval/internal/utils/errx"
 	"duval/internal/utils/state"
 	"duval/pkg/database"
-	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
-	"time"
 )
 
-type CalendarPlanning struct {
-	Id              uint       `json:"id"`
-	CreatedAt       time.Time  `json:"created_at"`
-	UpdatedAt       time.Time  `json:"updated_at"`
-	DeletedAt       *time.Time `json:"deleted_at"`
-	AuthorizationId uint       `json:"authorization_id"`
-	StartDateTime   time.Time  `json:"start_date_time"`
-	EndDateTime     time.Time  `json:"end_date_time"`
-	Description     string     `json:"description"`
-}
-
-type CalendarPlanningActor struct {
-	Id                 uint       `json:"id"`
-	CreatedAt          time.Time  `json:"created_at"`
-	UpdatedAt          time.Time  `json:"updated_at"`
-	DeletedAt          *time.Time `json:"deleted_at"`
-	AuthorizationId    uint       `json:"authorization_id"`
-	CalendarPlanningId uint       `json:"calendar_planning_id"`
-}
-
-func CreateUserPlannings(ctx *gin.Context) {
+func CreateUserPlannings(ctx *context.Context, input *model.NewCalendarPlanning) (*model.CalendarPlanning, error) {
 	var (
 		tok                   *authentication.Token
 		err                   error
-		calendarPlanning      CalendarPlanning
-		calendarPlanningActor CalendarPlanningActor
+		calendarPlanning      model.CalendarPlanning
+		calendarPlanningActor model.CalendarPlanningActor
 	)
+	calendarPlanning.StartDateTime = input.StartDateTime
+	calendarPlanning.EndDateTime = input.EndDateTime
+	calendarPlanning.Description = input.Description
 
-	err = ctx.ShouldBindJSON(&calendarPlanning)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
-	}
-
-	tok, err = authentication.GetTokenDataFromContext(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &calendarPlanning, errx.Lambda(err)
 	}
 
 	calendarPlanning.AuthorizationId, err = GetUserAuthorizationId(tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &calendarPlanning, errx.Lambda(err)
 	}
 
 	calendarId, err := database.InsertOne(calendarPlanning)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbInsertError,
-		})
-		return
+		return &calendarPlanning, errx.DbInsertError
 	}
 
 	calendarPlanningActor.AuthorizationId = calendarPlanning.AuthorizationId
@@ -79,138 +40,90 @@ func CreateUserPlannings(ctx *gin.Context) {
 
 	err = AddCalendarPlanningActor(calendarPlanningActor)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbInsertError,
-		})
-		return
+		return &calendarPlanning, errx.DbInsertError
 	}
 
-	ctx.AbortWithStatusJSON(http.StatusOK, calendarPlanning)
+	return &calendarPlanning, nil
 }
 
-func GetUserPlannings(ctx *gin.Context) {
+func GetUserPlannings(ctx *context.Context) (*model.CalendarPlanning, error) {
 	var (
 		tok              *authentication.Token
 		err              error
 		authorizationId  uint
-		calendarPlanning CalendarPlanning
+		calendarPlanning model.CalendarPlanning
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &calendarPlanning, errx.Lambda(err)
 	}
 
 	authorizationId, err = GetUserAuthorizationId(tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &calendarPlanning, errx.Lambda(err)
 	}
 
 	calendarPlanning, err = GetPlanningById(authorizationId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &calendarPlanning, errx.Lambda(err)
 	}
 
-	ctx.AbortWithStatusJSON(http.StatusOK, calendarPlanning)
+	return &calendarPlanning, nil
 }
 
-func RemoveUserPlannings(ctx *gin.Context) {
+func RemoveUserPlannings(ctx *context.Context) (*string, error) {
 	var (
 		tok              *authentication.Token
 		err              error
 		authorizationId  uint
-		calendarPlanning CalendarPlanning
+		calendarPlanning model.CalendarPlanning
+		status           string
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &status, errx.UnAuthorizedError
 	}
 
 	authorizationId, err = GetUserAuthorizationId(tok.UserId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &status, errx.UnAuthorizedError
 	}
 
 	calendarPlanning, err = GetPlanningById(authorizationId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &status, errx.Lambda(err)
 	}
 
 	err = database.Delete(calendarPlanning)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbDeleteError,
-		})
-		return
+		return &status, errx.DbDeleteError
 	}
 
-	ctx.AbortWithStatus(http.StatusOK)
+	status = "success"
+	return &status, nil
 }
 
-func AddUserIntoPlanning(ctx *gin.Context) {
+func AddUserIntoPlanning(ctx *context.Context, calendarId int, selectedUserId int) (*model.CalendarPlanningActor, error) {
 	var (
 		tok                   *authentication.Token
-		calendarPlanningActor CalendarPlanningActor
-		selectedUser          user.User
+		calendarPlanningActor model.CalendarPlanningActor
 		err                   error
 	)
 
-	calendarId, err := strconv.Atoi(ctx.Param("calendar_id"))
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParseError,
-		})
-		return
-	}
-
-	err = ctx.ShouldBindJSON(&selectedUser)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParseError,
-		})
-		return
-	}
-
-	tok, err = authentication.GetTokenDataFromContext(ctx)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &calendarPlanningActor, errx.UnAuthorizedError
 	}
 
 	if tok.UserId == state.ZERO {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &calendarPlanningActor, errx.UnAuthorizedError
 	}
 
-	authorizationId, err := GetUserAuthorizationId(selectedUser.Id)
+	authorizationId, err := GetUserAuthorizationId(uint(selectedUserId))
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
-		})
-		return
+		return &calendarPlanningActor, errx.Lambda(err)
 	}
 
 	calendarPlanningActor.AuthorizationId = authorizationId
@@ -218,94 +131,67 @@ func AddUserIntoPlanning(ctx *gin.Context) {
 
 	err = AddCalendarPlanningActor(calendarPlanningActor)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbInsertError,
-		})
-		return
+		return &calendarPlanningActor, errx.DbInsertError
 	}
-	ctx.AbortWithStatusJSON(http.StatusOK, calendarPlanningActor)
+
+	return &calendarPlanningActor, nil
 }
 
-func GetPlanningActors(ctx *gin.Context) {
+func GetPlanningActors(ctx *context.Context, calendarId int) ([]*model.User, error) {
 	var (
-		err                    error
-		calendarPlanningActors []user.User
+		err                           error
+		calendarPlanningActors        []model.User
+		currentCalendarPlanningActors []*model.User
 	)
-
-	calendarId, err := strconv.Atoi(ctx.Param("calendar_id"))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParseError,
-		})
-		return
-	}
 
 	calendarPlanningActors, err = GetPlanningActorByCalendarId(uint(calendarId))
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGetError,
-		})
-		return
+		return currentCalendarPlanningActors, errx.DbGetError
 	}
 
-	ctx.AbortWithStatusJSON(http.StatusOK, calendarPlanningActors)
+	for _, actor := range calendarPlanningActors {
+		currentCalendarPlanningActors = append(currentCalendarPlanningActors, &model.User{
+			Id:          actor.Id,
+			Name:        actor.Name,
+			FamilyName:  actor.FamilyName,
+			NickName:    actor.NickName,
+			Description: actor.Description,
+			CoverText:   actor.CoverText,
+			Profile:     actor.Profile,
+			AddOnTitle:  actor.AddOnTitle,
+		})
+	}
+	return currentCalendarPlanningActors, errx.DbGetError
 }
 
-func RemoveUserFromPlanning(ctx *gin.Context) {
+func RemoveUserFromPlanning(ctx *context.Context, calendarPlanningId int, selectedUserId int) (*string, error) {
 	var (
-		selectedCalendarPlanningActor CalendarPlanningActor
-		selectedUser                  user.User
+		selectedCalendarPlanningActor model.CalendarPlanningActor
 		tok                           *authentication.Token
 		err                           error
+		status                        string
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParseError,
-		})
-		return
+		return &status, errx.UnAuthorizedError
 	}
 
 	if tok.UserId == state.ZERO {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &status, errx.UnAuthorizedError
 	}
 
-	calendarPlanningId, err := strconv.Atoi(ctx.Param("calendar_id"))
+	selectedCalendarPlanningActor, err = GetSelectedPlanningActor(uint(selectedUserId), uint(calendarPlanningId))
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParamsError,
-		})
-		return
-	}
-
-	err = ctx.ShouldBindJSON(&selectedUser)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParseError,
-		})
-		return
-	}
-
-	selectedCalendarPlanningActor, err = GetSelectedPlanningActor(selectedUser.Id, uint(calendarPlanningId))
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGetError,
-		})
-		return
+		return &status, errx.DbGetError
 	}
 
 	err = RemoveSelectedPlanningActor(selectedCalendarPlanningActor)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbDeleteError,
-		})
-		return
+		return &status, errx.DbDeleteError
 	}
-	ctx.AbortWithStatus(http.StatusOK)
+
+	return &status, nil
 }
 
 /*
@@ -313,7 +199,7 @@ func RemoveUserFromPlanning(ctx *gin.Context) {
 */
 
 func GetUserAuthorizationId(userId uint) (id uint, err error) {
-	var userAuthorization authorization.Authorization
+	var userAuthorization model.Authorization
 	err = database.Get(&userAuthorization, `SELECT * FROM authorization WHERE authorization.user_id = ?`, userId)
 	if err != nil {
 		return 0, err
@@ -321,7 +207,7 @@ func GetUserAuthorizationId(userId uint) (id uint, err error) {
 	return userAuthorization.Id, nil
 }
 
-func GetPlanningById(authorizationId uint) (calendarPlanning CalendarPlanning, err error) {
+func GetPlanningById(authorizationId uint) (calendarPlanning model.CalendarPlanning, err error) {
 	err = database.Get(&calendarPlanning, `SELECT *  FROM calendar_planning WHERE calendar_planning.authorization_id = ?`, authorizationId)
 	if err != nil {
 		return calendarPlanning, err
@@ -329,7 +215,7 @@ func GetPlanningById(authorizationId uint) (calendarPlanning CalendarPlanning, e
 	return calendarPlanning, err
 }
 
-func AddCalendarPlanningActor(calendarPlanningActor CalendarPlanningActor) (err error) {
+func AddCalendarPlanningActor(calendarPlanningActor model.CalendarPlanningActor) (err error) {
 	_, err = database.InsertOne(calendarPlanningActor)
 	if err != nil {
 		return err
@@ -337,7 +223,7 @@ func AddCalendarPlanningActor(calendarPlanningActor CalendarPlanningActor) (err 
 	return nil
 }
 
-func GetPlanningActorByCalendarId(calendarId uint) (calendarPlanningActors []user.User, err error) {
+func GetPlanningActorByCalendarId(calendarId uint) (calendarPlanningActors []model.User, err error) {
 	err = database.GetMany(&calendarPlanningActors,
 		`SELECT user.* FROM user
               JOIN authorization ON user.id = authorization.user_id
@@ -350,7 +236,7 @@ func GetPlanningActorByCalendarId(calendarId uint) (calendarPlanningActors []use
 	return calendarPlanningActors, err
 }
 
-func GetSelectedPlanningActor(userId uint, calendarPlanningId uint) (calendarPlanningActor CalendarPlanningActor, err error) {
+func GetSelectedPlanningActor(userId uint, calendarPlanningId uint) (calendarPlanningActor model.CalendarPlanningActor, err error) {
 	err = database.Get(&calendarPlanningActor,
 		`SELECT calendar_planning_actor.*  FROM calendar_planning_actor
                                   JOIN authorization ON calendar_planning_actor.authorization_id = authorization.id
@@ -363,7 +249,7 @@ func GetSelectedPlanningActor(userId uint, calendarPlanningId uint) (calendarPla
 	return calendarPlanningActor, nil
 }
 
-func RemoveSelectedPlanningActor(calendarPlanningActor CalendarPlanningActor) (err error) {
+func RemoveSelectedPlanningActor(calendarPlanningActor model.CalendarPlanningActor) (err error) {
 	err = database.Delete(calendarPlanningActor)
 	if err != nil {
 		return err

@@ -1,82 +1,48 @@
 package address
 
 import (
+	"context"
 	"duval/internal/authentication"
-	"duval/internal/utils"
+	"duval/internal/graph/model"
 	"duval/internal/utils/errx"
 	"duval/internal/utils/state"
 	"duval/pkg/database"
-	"net/http"
-	"time"
-
-	"github.com/gin-gonic/gin"
 	"github.com/joinverse/xid"
 )
 
-type Address struct {
-	Id          uint       `json:"id"`
-	Country     string     `json:"country"`
-	City        string     `json:"city"`
-	Latitude    float64    `json:"latitude"`
-	Longitude   float64    `json:"longitude"`
-	Street      string     `json:"street"`
-	FullAddress string     `json:"full_address"`
-	Xid         string     `json:"xid"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
-	DeletedAt   *time.Time `json:"deleted_at"`
-}
-
-type UserAddress struct {
-	Id          uint       `json:"id"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
-	DeletedAt   *time.Time `json:"deleted_at"`
-	UserId      uint       `json:"user_id"`
-	AddressId   uint       `json:"address_id"`
-	AddressType string     `json:"address_type"`
-}
-
-func NewAddress(ctx *gin.Context) {
+func NewAddress(ctx *context.Context, input *model.NewAddress) (*model.Address, error) {
 
 	var (
 		tok         *authentication.Token
+		isUser      model.UserAddress
 		userId      uint
-		address     Address
-		userAddress UserAddress
+		address     model.Address
+		userAddress model.UserAddress
 		err         error
 	)
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	address.Country = input.Country
+	address.City = input.City
+	address.Latitude = input.Latitude
+	address.Longitude = input.Longitude
+	address.Street = input.Street
+	address.FullAddress = input.FullAddress
+
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &address, errx.UnAuthorizedError
 	}
-	userId = uint(tok.UserId)
-	err = ctx.ShouldBindJSON(&address)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParseError,
-		})
-		return
-	}
+	userId = tok.UserId
+
 	// get user address
-	isUser, err := GetUserAddressWithId(userId)
+	isUser, err = GetUserAddressWithId(userId)
 	if isUser.AddressId > state.ZERO {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DuplicateAddressError,
-		})
-		return
+		return &address, errx.DuplicateAddressError
 	}
 	address.Xid = xid.New().String()
 
 	address.Id, err = database.InsertOne(address)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbInsertError,
-		})
-		return
+		return &address, errx.DbInsertError
 	}
 
 	// Link new address to the current user
@@ -84,152 +50,138 @@ func NewAddress(ctx *gin.Context) {
 	userAddress.AddressId = address.Id
 	_, err = database.InsertOne(userAddress)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.LinkUserError,
-		})
-		return
+		return &address, errx.LinkUserError
 	}
 
-	ctx.JSON(http.StatusOK, address)
-	return
+	return &address, nil
 }
 
 /*
 UPDATE ADDRESS OF A USER BY PROVIDING ID IN THE BODY
 */
-func UpdateUserAddress(ctx *gin.Context) {
+func UpdateUserAddress(ctx *context.Context, input *model.NewAddress) (*model.Address, error) {
 	var (
-		address Address
-		err     error
+		address     model.Address
+		userAddress model.UserAddress
+		err         error
+		tok         *authentication.Token
 	)
 
-	err = ctx.ShouldBindJSON(&address)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
-		})
-		return
+		return &address, errx.UnAuthorizedError
 	}
-	if address.Id == 0 {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "address id is required for the operation",
-		})
-		return
+
+	userAddress, err = GetUserAddressWithId(uint(tok.UserId))
+	if userAddress.AddressId == state.ZERO {
+		return &address, errx.UnAuthorizedError
 	}
+
+	address.Country = input.Country
+	address.City = input.City
+	address.Latitude = input.Latitude
+	address.Longitude = input.Longitude
+	address.Street = input.Street
+	address.FullAddress = input.FullAddress
 
 	err = database.Update(address)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbUpdateError,
-		})
-		return
+		return &address, errx.DbUpdateError
 	}
 
-	ctx.JSON(http.StatusOK, address)
-	return
+	return &address, nil
 }
 
 /*
-GET USER ADDRESS  BASED ON user_id PROVIDED IN PARAMS
+
+	GET USER ADDRESS  BASED ON user_id PROVIDED IN PARAMS
+
 */
-func GetUserAddress(ctx *gin.Context) {
+
+func GetUserAddress(ctx *context.Context) (*model.Address, error) {
 	var (
 		tok *authentication.Token
 
 		userId  uint
-		address Address
+		address model.Address
 		err     error
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return &address, errx.UnAuthorizedError
 	}
 
 	userId = uint(tok.UserId)
 
 	err = database.Get(&address, `SELECT address.*
-    FROM address JOIN user_address 
-    ON address.id = user_address.address_id 
-    WHERE user_address.user_id = ?`, userId)
+   FROM address JOIN user_address
+   ON address.id = user_address.address_id
+   WHERE user_address.user_id = ?`, userId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGetError,
-		})
-		return
+		return &address, errx.DbGetError
 	}
 
-	ctx.JSON(http.StatusOK, address)
+	return &address, nil
 }
 
 /*
-REMOVE USER ADDRESS  BASED ON user_id PROVIDED IN PARAMS
+
+	REMOVE USER ADDRESS  BASED ON user_id PROVIDED IN PARAMS
+
 */
 
-func RemoveUserAddress(ctx *gin.Context) {
+func RemoveUserAddress(ctx *context.Context) (string, error) {
 	var (
 		tok *authentication.Token
 
 		userId      uint
-		address     Address
-		userAddress UserAddress
+		address     model.Address
+		userAddress model.UserAddress
 		err         error
+		status      string
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(ctx)
+	tok, err = authentication.GetTokenDataFromContext(*ctx)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
-		})
-		return
+		return status, errx.UnAuthorizedError
 	}
-	userId = uint(tok.UserId)
+	userId = tok.UserId
 
 	err = database.Get(&address, `SELECT address.*
-    FROM address JOIN user_address 
-    ON address.id = user_address.address_id 
-    WHERE user_address.user_id = ?`, userId)
+   FROM address JOIN user_address
+   ON address.id = user_address.address_id
+   WHERE user_address.user_id = ?`, userId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGetError,
-		})
-		return
+		return status, errx.DbGetError
 	}
 
 	err = database.Delete(address)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbDeleteError,
-		})
-		return
+		return status, errx.DbDeleteError
 	}
 	// and remove user_address
 
 	err = database.Get(&userAddress, `SELECT * FROM user_address where user_id = ?`, userId)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbGetError,
-		})
-		return
+		return status, errx.DbGetError
 	}
 	err = database.Delete(userAddress)
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbDeleteError,
-		})
-		return
+		return status, errx.DbDeleteError
 	}
-	ctx.JSON(http.StatusOK, "Address removed successfuly!")
+	status = "Address removed successfully!"
+
+	return status, nil
 }
 
 /*
-GET USER_ADDRESS WITH USER_ID
+
+	GET USER_ADDRESS WITH USER_ID
+
 */
 
-func GetUserAddressWithId(userId uint) (userAddress UserAddress, err error) {
+func GetUserAddressWithId(userId uint) (userAddress model.UserAddress, err error) {
 	err = database.Get(&userAddress, "SELECT * FROM user_address Where user_id = ?", userId)
 	if err != nil {
 		return userAddress, err

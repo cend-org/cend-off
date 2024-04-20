@@ -1,0 +1,449 @@
+#
+#
+# User type
+#
+#
+scalar Time
+
+type User {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    Name: String!
+    FamilyName: String!
+    NickName: String!
+    Email: String!
+    Matricule: String!
+    Age: Int!
+    BirthDate: Time!
+    Sex: Int!
+    Lang: Int!
+    Status: Int!
+    ProfileImageXid: String!
+    Description: String!
+    CoverText: String!
+    Profile: String!
+    ExperienceDetail: String!
+    AdditionalDescription: String!
+    AddOnTitle: String!
+}
+
+# Input
+
+input NewUserInput {
+    Name: String!
+    FamilyName: String!
+    NickName: String
+    Email: String!
+    Matricule: String
+    Age: Int
+    BirthDate: Time!
+    Sex: Int!
+    Lang: Int!
+}
+
+input UserLogin {
+    Email: String!
+    Password: String!
+}
+
+input UpdateUser {
+    Name: String
+    FamilyName: String
+    NickName: String
+    Email: String
+    Description: String
+    CoverText: String
+    Profile: String
+    ExperienceDetail: String
+    AdditionalDescription: String
+    AddOnTitle: String
+}
+
+#
+#
+# Authorization type
+#
+#
+
+type Authorization {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId: ID!
+    Level: Int!
+}
+
+type UserAuthorizationLink {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    LinkType: Int!
+    Actors: [UserAuthorizationLinkActor]!
+}
+
+type UserAuthorizationLinkActor {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserAuthorizationLink: UserAuthorizationLink!
+    AuthorizationId: Int!
+}
+#
+#
+# Password type
+#
+#
+type Password {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId: ID!
+    Psw: String!
+    ContentHash: String!
+}
+
+input NewPassword {
+    Psw: String!
+}
+
+#
+#
+# Code type
+#
+#
+
+type Code {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId: ID!
+    VerificationCode: Int!
+}
+
+#
+#
+# Address type
+#
+#
+type Address {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    Country: String
+    City: String
+    Latitude: Float
+    Longitude: Float
+    Street: String
+    FullAddress: String
+    XId: String
+}
+
+input NewAddress {
+    Country: String!
+    City: String!
+    Latitude: Float!
+    Longitude: Float!
+    Street: String!
+    FullAddress: String
+}
+
+type UserAddress {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId: ID
+    AddressId: ID
+    AddressType: String
+}
+#
+#
+# Phone Type
+#
+#
+type PhoneNumber{
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    MobilePhoneNumber: String!
+    IsUrgency: Boolean
+}
+
+input NewPhoneNumber{
+    MobilePhoneNumber: String!
+    IsUrgency: Boolean
+}
+
+type UserPhoneNumber{
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId: ID!
+    PhoneNumberId: ID!
+}
+#
+#
+# Calendar Planning Type
+#
+#
+type CalendarPlanning {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    AuthorizationId : ID!
+    StartDateTime: Time!
+    EndDateTime: Time!
+    Description: String
+}
+
+
+input NewCalendarPlanning {
+    StartDateTime: Time!
+    EndDateTime: Time!
+    Description: String
+}
+
+type CalendarPlanningActor {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    AuthorizationId: ID!
+    CalendarPlanningId: ID
+}
+#
+#
+# Education Type
+#
+#
+type Education {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    Name: String!
+}
+
+type Subject {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    EducationLevelId: ID!
+    Name: String!
+}
+
+type UserEducationLevelSubject {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId: ID!
+    SubjectId :ID!
+}
+
+input SubjectInput {
+    Id: ID
+    EducationLevelId : ID!
+    Name : String
+}
+#
+#
+# Mark type
+#
+#
+type UserMark {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    UserId : ID!
+    AuthorId: ID!
+    AuthorComment: String
+    AuthorMark: String!
+}
+
+input UserMarkInput {
+    UserId : ID!
+    AuthorId: ID!
+    AuthorComment: String
+    AuthorMark: String!
+}
+
+#
+#
+# Message Type
+#
+#
+
+type Message {
+    Id: ID!
+    CreatedAt: Time!
+    UpdatedAt: Time!
+    DeletedAt: Time
+    ResourceType: Int!
+    ResourceValue :Int!
+    ResourceLabel: String
+    ResourceLanguage: Int
+}
+
+input MessageInput {
+    ResourceType: Int!
+    ResourceValue :Int!
+    ResourceLabel: String
+    ResourceLanguage: Int
+}
+
+input MessageUpdateInput {
+    Id: ID!
+    ResourceType: Int!
+    ResourceValue :Int!
+    ResourceLabel: String
+    ResourceLanguage: Int
+}
+
+
+#
+#
+# QrCodeRegistry Type
+#
+#
+
+type QrCodeRegistry {
+    Id: ID!
+    ResourceType: Int!
+    ResourceValue :Int!
+    UserId : ID!
+    Xid : String!
+    IsUsed :Boolean
+}
+
+#
+#
+# ALL QUERIES
+#
+#
+
+type Query {
+
+    #    USER QUERIES
+    userAuthorizationLink(id: ID!): UserAuthorizationLink
+    userAuthorizationLinks: [UserAuthorizationLink!]!
+    getCode: Code!
+    verifyUserEmailValidationCode(code: Int!) : Int!
+    sendUserEmailValidationCode: User!
+    myProfile: User!
+    getPasswordHistory: [Password]
+    activateUser: User!
+
+    #    Message QUERIES
+    getMessages: [Message]
+    getMessagesInLanguage(language: Int!) : [Message]
+    getMessage(language: Int!, resourceNumber :Int!): Message!
+    getMenuList: [Message]
+    getMenuItems(language:Int!, menuNumber: Int!): [Message]
+
+    #    Address QUERIES
+    getUserAddress: Address!
+    removeUserAddress: String!
+
+    #    Phone QUERIES
+    getUserPhoneNumber: PhoneNumber!
+
+    #    Calendar Planning QUERIES
+    getUserPlannings: CalendarPlanning!
+    removeUserPlannings: String
+    getPlanningActors(calendarId: ID!): [User!]
+    removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): String
+
+    #    Education QUERIES
+    getUserSubjects: [Subject!]
+    getSubjects(eduId: Int!) : [Subject!]
+    getEducation: [Education!]
+    getUserEducationLevel: Education!
+
+    #    Mark QUERIES
+    getUserAverageMark(userId: ID!): Int
+    getUserMarkComment: [UserMark!]
+
+    #    Link QUERIES
+    getUserParent :[User!]
+    getUserTutor :[User!]
+    getUserProfessor :[User!]
+    getStudent :[User!]
+
+    #    Qr QUERIES
+    generateQrCode: String
+
+
+}
+#
+#
+# ALL MUTATIONS
+#
+#
+
+type Mutation {
+    #    USER MUTATIONS
+    register(input: NewUserInput! , type: Int!) : String!
+    updMyProfile(input: UpdateUser! ) : User!
+    login(input: UserLogin!): String!
+    newPassword(input: NewPassword!): String
+    registerByEmail(authorizationLevel: Int!, email: String!): String
+
+    #   Message mutations
+    newMessage(input: MessageInput!): Message!
+    updMessage(input: MessageUpdateInput!): Message!
+    delMessage(language: Int!, messageNumber :Int!) : String
+    newMenu(input: MessageInput!) : Message!
+    delMenu(menuNumber: Int!): String
+    newMenuItem(input: MessageInput!): Message!
+    delMenuItem(input: MessageUpdateInput!) : String
+
+    #    Address mutations
+    newAddress(input: NewAddress!): Address!
+    updateUserAddress(input: NewAddress!): Address!
+
+    #    PHone mutations
+    newPhoneNumber(input: NewPhoneNumber!) : PhoneNumber!
+    updateUserPhoneNumber(input: NewPhoneNumber!) : PhoneNumber!
+
+    #    Planning mutations
+    createUserPlannings(input: NewCalendarPlanning!): CalendarPlanning!
+    addUserIntoPlanning(calendarId: ID!, selectedUserId: ID!):CalendarPlanningActor!
+
+    #   Education mutations
+    setUserEducationLevel(input: SubjectInput!): Education!
+    updateUserEducationLevel(input : SubjectInput!): Education!
+
+    #    Mark mutations
+    rateUser(input: UserMarkInput!): UserMark!
+
+    #    Link Mutations
+    addParentToUser(input: UpdateUser!) :User!
+    removeUserParent(input: UpdateUser!): String
+
+    addTutorToUser(input: UpdateUser!) :User!
+    removeUserTutor(input: UpdateUser!): String
+
+    addProfessorToUser(input: UpdateUser!) :User!
+    removeUserProfessor(input: UpdateUser!): String
+
+    addStudentToLink(input: UpdateUser!) :User!
+    removeStudent(input: UpdateUser!): String
+
+    # Qr Mutations
+    LoginWithQr(xId: String!) :String
+
+}

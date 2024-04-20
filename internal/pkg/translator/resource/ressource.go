@@ -1,10 +1,10 @@
 package resource
 
 import (
+	"duval/internal/graph/model"
 	"duval/internal/utils/state"
 	"duval/pkg/database"
 	"errors"
-	"time"
 )
 
 const (
@@ -12,19 +12,7 @@ const (
 	ResTypeMenu    = 1
 )
 
-type Message struct {
-	Id               uint       `json:"id"`
-	CreatedAt        time.Time  `json:"created_at"`
-	UpdatedAt        time.Time  `json:"updated_at"`
-	DeletedAt        *time.Time `json:"deleted_at"`
-	ResourceType     int        `json:"resource_type"`
-	ResourceNumber   int        `json:"resource_number"`
-	ResourceValue    int        `json:"resource_value"`
-	ResourceLabel    string     `json:"resource_label"`
-	ResourceLanguage int        `json:"resource_language"`
-}
-
-func GetMessages() (messages []Message, err error) {
+func GetMessages() (messages []model.Message, err error) {
 	query := `SELECT * FROM message WHERE resource_type = ?`
 	err = database.Select(&messages, query, ResTypeMessage)
 	if err != nil {
@@ -33,7 +21,7 @@ func GetMessages() (messages []Message, err error) {
 	return messages, err
 }
 
-func GetMessagesInLanguage(language int) (messages []Message, err error) {
+func GetMessagesInLanguage(language int) (messages []model.Message, err error) {
 	query := `
 				SELECT 
 				    COALESCE(target.id, english.id) as 'id',
@@ -62,7 +50,7 @@ func GetMessagesInLanguage(language int) (messages []Message, err error) {
 	return messages, err
 }
 
-func GetMessage(resourceNumber, resourceLanguage int) (message Message, err error) {
+func GetMessage(resourceNumber, resourceLanguage int) (message model.Message, err error) {
 	query := `
 				SELECT 
 				    COALESCE(target.id, english.id) as 'id',
@@ -94,7 +82,7 @@ func GetMessage(resourceNumber, resourceLanguage int) (message Message, err erro
 	return message, err
 }
 
-func NewMessage(resourceLabel string, resourceLanguage int) (message Message, err error) {
+func NewMessage(resourceLabel string, resourceLanguage int) (message model.Message, err error) {
 	message.ResourceType = ResTypeMessage
 	message.ResourceNumber = getNewMessageNumber()
 	message.ResourceValue = 0
@@ -119,7 +107,7 @@ func NewMessage(resourceLabel string, resourceLanguage int) (message Message, er
 }
 
 func DeleteMessage(resourceNumber, resourceLanguage int) (err error) {
-	var message Message
+	var message model.Message
 
 	message, err = getMessage(ResTypeMessage, resourceNumber, state.ZERO, resourceLanguage)
 	if err != nil {
@@ -143,7 +131,7 @@ func DeleteMessage(resourceNumber, resourceLanguage int) (err error) {
 	return err
 }
 
-func UpdateMessage(message Message) (msg Message, err error) {
+func UpdateMessage(message model.Message) (msg model.Message, err error) {
 	msg, err = getMessage(ResTypeMessage, message.ResourceNumber, message.ResourceValue, message.ResourceLanguage)
 	if err != nil {
 		return message, err
@@ -158,7 +146,7 @@ func UpdateMessage(message Message) (msg Message, err error) {
 	return message, err
 }
 
-func GetMenuList() (menus []Message, err error) {
+func GetMenuList() (menus []model.Message, err error) {
 	query := `SELECT * FROM message WHERE resource_type = ? AND resource_number = 0  AND resource_language = ? ORDER BY resource_number desc`
 	err = database.Select(&menus, query, ResTypeMenu, 0)
 	if err != nil {
@@ -167,7 +155,7 @@ func GetMenuList() (menus []Message, err error) {
 	return menus, err
 }
 
-func GetMenuItems(menuNumber, menuLanguage int) (menus []Message, err error) {
+func GetMenuItems(menuNumber, menuLanguage int) (menus []model.Message, err error) {
 	if menuNumber == 0 {
 		return nil, errors.New("cannot get menu list")
 	}
@@ -203,7 +191,7 @@ func GetMenuItems(menuNumber, menuLanguage int) (menus []Message, err error) {
 	return menus, err
 }
 
-func NewMenu(menuName string, resourceLanguage int) (menu Message, err error) {
+func NewMenu(menuName string, resourceLanguage int) (menu model.Message, err error) {
 	menu.ResourceType = ResTypeMenu
 	menu.ResourceNumber = 0
 	menu.ResourceLabel = menuName
@@ -228,7 +216,7 @@ func NewMenu(menuName string, resourceLanguage int) (menu Message, err error) {
 }
 
 func DeleteMenu(menuNumber int) (err error) {
-	var menu Message
+	var menu model.Message
 	err = database.Get(&menu, `SELECT * FROM message WHERE resource_type = ? AND resource_number = 0 AND resource_value = ?`, ResTypeMenu, menuNumber)
 	if err != nil {
 		return err
@@ -247,7 +235,7 @@ func DeleteMenu(menuNumber int) (err error) {
 	return err
 }
 
-func NewMenuItem(menuLabel string, menuNumber, resourceLanguage int) (menu Message, err error) {
+func NewMenuItem(menuLabel string, menuNumber, resourceLanguage int) (menu model.Message, err error) {
 	menu.ResourceType = ResTypeMenu
 	menu.ResourceNumber = menuNumber
 	menu.ResourceLabel = menuLabel
@@ -272,7 +260,7 @@ func NewMenuItem(menuLabel string, menuNumber, resourceLanguage int) (menu Messa
 }
 
 func DeleteMenuItem(menuNumber, menuValue, resourceLanguage int) (err error) {
-	var menu Message
+	var menu model.Message
 	err = database.Get(&menu, `SELECT * FROM message WHERE resource_type = ? AND resource_number = ? AND resource_value = ? AND resource_language = ?`, ResTypeMenu, menuNumber, menuValue, resourceLanguage)
 	if err != nil {
 		return err
@@ -318,7 +306,7 @@ func getNewMenuItemNumber(menuNumber int) (number int) {
 	return number + 1
 }
 
-func getMessage(resourceType, resourceNumber, resourceValue, resourceLanguage int) (message Message, err error) {
+func getMessage(resourceType, resourceNumber, resourceValue, resourceLanguage int) (message model.Message, err error) {
 	query := `SELECT * FROM message WHERE resource_type = ? AND resource_number = ? AND resource_value = ? AND resource_language = ?`
 	err = database.Get(&message, query, resourceType, resourceNumber, resourceValue, resourceLanguage)
 	if err != nil {
