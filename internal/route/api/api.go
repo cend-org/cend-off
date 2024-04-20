@@ -3,6 +3,7 @@ package api
 import (
 	"duval/internal/authentication"
 	"duval/internal/pkg/address"
+	"duval/internal/pkg/contract"
 	"duval/internal/pkg/education"
 	"duval/internal/pkg/mark"
 	"duval/internal/pkg/media"
@@ -422,5 +423,54 @@ var Routes = []docs.RouteDocumentation{
 		Handler:      mark.GetUserMarkComment,
 		NeedToken:    true,
 	},
-   
+	//contract Routes
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/contract",
+		Handler:      contract.AddNewContract,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/contract",
+		Handler:      contract.GetContract,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodPut,
+		RelativePath: "/contract",
+		Handler:      contract.RenewContract,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodDelete,
+		RelativePath: "/contract",
+		Handler:      contract.RemoveContract,
+		NeedToken:    true,
+	},
+	//contract timesheet detail Routes
+	{
+		HttpMethod:   http.MethodPost,
+		RelativePath: "/contract/timesheet",
+		Handler:      contract.AddNewContractTimesheetDetail,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/contract/timesheet",
+		Handler:      contract.GetContractTimesheetDetail,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodDelete,
+		RelativePath: "/contract/timesheet",
+		Handler:      contract.RemoveContractTimesheetDetail,
+		NeedToken:    true,
+	},
+	{
+		HttpMethod:   http.MethodGet,
+		RelativePath: "/contract/timesheet/total",
+		Handler:      contract.GetTotalWorkHour,
+		NeedToken:    true,
+	},
 }
