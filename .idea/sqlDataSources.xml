@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="6869b174-d351-474b-8d15-b13891eb64a6" name="@reforge.ctw4aeiceahd.eu-north-1.rds.amazonaws.com Mapping">
+      <data-sources db="b733fab6-6774-4d13-8ae6-3068639b71eb" />
+      <scope>
+        <node kind="database" negative="1" />
+      </scope>
+    </mapping>
+  </component>
+</project>
