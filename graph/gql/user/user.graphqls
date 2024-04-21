@@ -1,0 +1,15 @@
+type User {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    Name: String!
+    LastName: String!
+    Email: String!
+}
+
+input UserInput {
+    Name: String
+    LastName: String
+    Email: String
+}

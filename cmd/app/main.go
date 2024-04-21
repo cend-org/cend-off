@@ -1,21 +1,11 @@
 package main
 
 import (
-	"duval/internal/route"
-	"duval/pkg/database"
-	"github.com/jmoiron/sqlx"
+	"github.com/cend-org/duval/internal/server"
 )
 
-func main() {
-	defer func(Client *sqlx.DB) {
-		err := Client.Close()
-		if err != nil {
-			return
-		}
-	}(database.Client)
+import _ "github.com/go-sql-driver/mysql"
 
-	err := route.Serve()
-	if err != nil {
-		panic(err)
-	}
+func main() {
+	server.Begin()
 }

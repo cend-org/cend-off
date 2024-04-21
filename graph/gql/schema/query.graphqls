@@ -1,0 +1,13 @@
+type Query {
+    Passwords: [Password!]
+
+    Users: [User!]!
+    MyProfile: User!
+
+    GetAsset(id: ID!): Asset
+    Assets: [Asset!]
+
+    getSchools: [School!]
+    getSubjects(id: ID!): [SchoolSubject!]
+    getSchool(id: ID!): School
+}

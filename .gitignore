@@ -20,19 +20,5 @@
 # Go workspace file
 go.work
 
-#public file
-public/*.jpg
-public/*.png
-public/*.pdf
-public/*.word
-
-public/thumb/*.jpg
-public/thumb/*.png
-public/thumb/*.pdf
-public/thumb/*.word
-
+*.yml
 .idea
-
-.vscode
-
-config.toml
