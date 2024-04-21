@@ -1,7 +1,11 @@
 package main
 
-import "fmt"
+import (
+	"github.com/cend-org/duval/internal/server"
+)
+
+import _ "github.com/go-sql-driver/mysql"
 
 func main() {
-	fmt.Println("ok")
+	server.Begin()
 }

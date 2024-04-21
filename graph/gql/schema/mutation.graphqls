@@ -1,0 +1,13 @@
+type Mutation {
+    RegisterWithEmail(input: String!, as: Int!): String
+    Register(input: UserInput!): Boolean
+
+    LogIn(email: String!, password: String!): String
+
+    NewPassword(password: String!): Boolean
+    DelPassword(id: ID!): Boolean
+
+    NewAsset(asset: AssetInput!): Asset
+
+    PopulateSchool: Boolean
+}
