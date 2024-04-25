@@ -31,6 +31,8 @@ type Mutation {
     #    Planning mutations
     createUserPlannings(input: CalendarPlanningInput!): CalendarPlanning!
     addUserIntoPlanning(calendarId: ID!, selectedUserId: ID!):CalendarPlanningActor!
+    removeUserPlannings: String
+    removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): String
 
     #   Education mutations
     setUserEducationLevel(input: SubjectInput!): Education!

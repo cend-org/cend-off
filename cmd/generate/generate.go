@@ -10,7 +10,25 @@ import (
 	"log"
 	"os"
 	"strings"
+	"unicode"
 )
+
+func camelToSnake(camelCase string) string {
+	var result []rune
+
+	for i, char := range camelCase {
+		if unicode.IsUpper(char) {
+			if i > 0 {
+				result = append(result, '_')
+			}
+			result = append(result, unicode.ToLower(char))
+		} else {
+			result = append(result, char)
+		}
+	}
+
+	return string(result)
+}
 
 // Defining mutation function
 func mutateHook(b *modelgen.ModelBuild) *modelgen.ModelBuild {
@@ -33,6 +51,13 @@ func mutateHook(b *modelgen.ModelBuild) *modelgen.ModelBuild {
 	err = f.Sync()
 	if err != nil {
 		panic(err)
+	}
+
+	for _, model := range b.Models {
+		for _, field := range model.Fields {
+			snakeCaseName := camelToSnake(field.Name)
+			field.Tag = `json:"` + snakeCaseName + `"`
+		}
 	}
 
 	return b

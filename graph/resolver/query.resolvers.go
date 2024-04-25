@@ -11,6 +11,9 @@ import (
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/pkg/phone"
+	"github.com/cend-org/duval/internal/pkg/planning"
+	"github.com/cend-org/duval/internal/pkg/user"
 )
 
 // Passwords is the resolver for the Passwords field.
@@ -50,37 +53,37 @@ func (r *queryResolver) Assets(ctx context.Context) ([]model.Asset, error) {
 
 // UserAuthorizationLink is the resolver for the userAuthorizationLink field.
 func (r *queryResolver) UserAuthorizationLink(ctx context.Context, id int) (*model.UserAuthorizationLink, error) {
-	panic(fmt.Errorf("not implemented: UserAuthorizationLink - userAuthorizationLink"))
+	return user.GetUserAuthorizationLink(ctx, id)
 }
 
 // UserAuthorizationLinks is the resolver for the userAuthorizationLinks field.
 func (r *queryResolver) UserAuthorizationLinks(ctx context.Context) ([]model.UserAuthorizationLink, error) {
-	panic(fmt.Errorf("not implemented: UserAuthorizationLinks - userAuthorizationLinks"))
+	return user.GetUserAuthorizationLinks(ctx)
 }
 
 // GetCode is the resolver for the getCode field.
 func (r *queryResolver) GetCode(ctx context.Context) (*model.Code, error) {
-	panic(fmt.Errorf("not implemented: GetCode - getCode"))
+	return user.GetCode(ctx)
 }
 
 // VerifyUserEmailValidationCode is the resolver for the verifyUserEmailValidationCode field.
 func (r *queryResolver) VerifyUserEmailValidationCode(ctx context.Context, code int) (int, error) {
-	panic(fmt.Errorf("not implemented: VerifyUserEmailValidationCode - verifyUserEmailValidationCode"))
+	return user.VerifyUserEmailValidationCode(ctx, code)
 }
 
 // SendUserEmailValidationCode is the resolver for the sendUserEmailValidationCode field.
 func (r *queryResolver) SendUserEmailValidationCode(ctx context.Context) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: SendUserEmailValidationCode - sendUserEmailValidationCode"))
+	return user.SendUserEmailValidationCode(ctx)
 }
 
 // GetPasswordHistory is the resolver for the getPasswordHistory field.
-func (r *queryResolver) GetPasswordHistory(ctx context.Context) ([]*model.Password, error) {
-	panic(fmt.Errorf("not implemented: GetPasswordHistory - getPasswordHistory"))
+func (r *queryResolver) GetPasswordHistory(ctx context.Context) ([]model.Password, error) {
+	return user.GetPasswordHistory(ctx)
 }
 
 // ActivateUser is the resolver for the activateUser field.
 func (r *queryResolver) ActivateUser(ctx context.Context) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: ActivateUser - activateUser"))
+	return user.ActivateUser(ctx)
 }
 
 // Users is the resolver for the Users field.
@@ -90,7 +93,7 @@ func (r *queryResolver) Users(ctx context.Context) ([]model.User, error) {
 
 // MyProfile is the resolver for the MyProfile field.
 func (r *queryResolver) MyProfile(ctx context.Context) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: Register - Register"))
+	return user.MyProfile(ctx)
 }
 
 // GetMessages is the resolver for the getMessages field.
@@ -130,27 +133,17 @@ func (r *queryResolver) RemoveUserAddress(ctx context.Context) (string, error) {
 
 // GetUserPhoneNumber is the resolver for the getUserPhoneNumber field.
 func (r *queryResolver) GetUserPhoneNumber(ctx context.Context) (*model.PhoneNumber, error) {
-	panic(fmt.Errorf("not implemented: GetUserPhoneNumber - getUserPhoneNumber"))
+	return phone.GetUserPhoneNumber(ctx)
 }
 
 // GetUserPlannings is the resolver for the getUserPlannings field.
 func (r *queryResolver) GetUserPlannings(ctx context.Context) (*model.CalendarPlanning, error) {
-	panic(fmt.Errorf("not implemented: GetUserPlannings - getUserPlannings"))
-}
-
-// RemoveUserPlannings is the resolver for the removeUserPlannings field.
-func (r *queryResolver) RemoveUserPlannings(ctx context.Context) (*string, error) {
-	panic(fmt.Errorf("not implemented: RemoveUserPlannings - removeUserPlannings"))
+	return planning.GetUserPlannings(ctx)
 }
 
 // GetPlanningActors is the resolver for the getPlanningActors field.
 func (r *queryResolver) GetPlanningActors(ctx context.Context, calendarID int) ([]model.User, error) {
-	panic(fmt.Errorf("not implemented: GetPlanningActors - getPlanningActors"))
-}
-
-// RemoveUserFromPlanning is the resolver for the removeUserFromPlanning field.
-func (r *queryResolver) RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*string, error) {
-	panic(fmt.Errorf("not implemented: RemoveUserFromPlanning - removeUserFromPlanning"))
+	return planning.GetPlanningActors(ctx, calendarID)
 }
 
 // GetUserSubjects is the resolver for the getUserSubjects field.
@@ -248,3 +241,16 @@ func (r *queryResolver) GenerateQRCode(ctx context.Context) (*string, error) {
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *queryResolver) RemoveUserPlannings(ctx context.Context) (*string, error) {
+	panic(fmt.Errorf("not implemented: RemoveUserPlannings - removeUserPlannings"))
+}
+func (r *queryResolver) RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*string, error) {
+	panic(fmt.Errorf("not implemented: RemoveUserFromPlanning - removeUserFromPlanning"))
+}

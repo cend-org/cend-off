@@ -26,7 +26,7 @@ type QueryResolver interface {
 	GetCode(ctx context.Context) (*model.Code, error)
 	VerifyUserEmailValidationCode(ctx context.Context, code int) (int, error)
 	SendUserEmailValidationCode(ctx context.Context) (*model.User, error)
-	GetPasswordHistory(ctx context.Context) ([]*model.Password, error)
+	GetPasswordHistory(ctx context.Context) ([]model.Password, error)
 	ActivateUser(ctx context.Context) (*model.User, error)
 	Users(ctx context.Context) ([]model.User, error)
 	MyProfile(ctx context.Context) (*model.User, error)
@@ -39,9 +39,7 @@ type QueryResolver interface {
 	RemoveUserAddress(ctx context.Context) (string, error)
 	GetUserPhoneNumber(ctx context.Context) (*model.PhoneNumber, error)
 	GetUserPlannings(ctx context.Context) (*model.CalendarPlanning, error)
-	RemoveUserPlannings(ctx context.Context) (*string, error)
 	GetPlanningActors(ctx context.Context, calendarID int) ([]model.User, error)
-	RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*string, error)
 	GetUserSubjects(ctx context.Context) ([]model.Subject, error)
 	GetEducation(ctx context.Context) ([]model.Education, error)
 	GetUserEducationLevel(ctx context.Context) (*model.Education, error)
@@ -211,30 +209,6 @@ func (ec *executionContext) field_Query_getUserAverageMark_args(ctx context.Cont
 		}
 	}
 	args["userId"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_removeUserFromPlanning_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["calendarPlanningId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("calendarPlanningId"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["calendarPlanningId"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["selectedUserId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("selectedUserId"))
-		arg1, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["selectedUserId"] = arg1
 	return args, nil
 }
 
@@ -734,10 +708,38 @@ func (ec *executionContext) fieldContext_Query_sendUserEmailValidationCode(ctx c
 				return ec.fieldContext_User_DeletedAt(ctx, field)
 			case "Name":
 				return ec.fieldContext_User_Name(ctx, field)
-			case "LastName":
-				return ec.fieldContext_User_LastName(ctx, field)
+			case "FamilyName":
+				return ec.fieldContext_User_FamilyName(ctx, field)
+			case "NickName":
+				return ec.fieldContext_User_NickName(ctx, field)
 			case "Email":
 				return ec.fieldContext_User_Email(ctx, field)
+			case "Matricule":
+				return ec.fieldContext_User_Matricule(ctx, field)
+			case "Age":
+				return ec.fieldContext_User_Age(ctx, field)
+			case "BirthDate":
+				return ec.fieldContext_User_BirthDate(ctx, field)
+			case "Sex":
+				return ec.fieldContext_User_Sex(ctx, field)
+			case "Lang":
+				return ec.fieldContext_User_Lang(ctx, field)
+			case "Status":
+				return ec.fieldContext_User_Status(ctx, field)
+			case "ProfileImageXid":
+				return ec.fieldContext_User_ProfileImageXid(ctx, field)
+			case "Description":
+				return ec.fieldContext_User_Description(ctx, field)
+			case "CoverText":
+				return ec.fieldContext_User_CoverText(ctx, field)
+			case "Profile":
+				return ec.fieldContext_User_Profile(ctx, field)
+			case "ExperienceDetail":
+				return ec.fieldContext_User_ExperienceDetail(ctx, field)
+			case "AdditionalDescription":
+				return ec.fieldContext_User_AdditionalDescription(ctx, field)
+			case "AddOnTitle":
+				return ec.fieldContext_User_AddOnTitle(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -766,11 +768,14 @@ func (ec *executionContext) _Query_getPasswordHistory(ctx context.Context, field
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Password)
+	res := resTmp.([]model.Password)
 	fc.Result = res
-	return ec.marshalOPassword2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx, field.Selections, res)
+	return ec.marshalNPassword2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPasswordᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getPasswordHistory(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -849,10 +854,38 @@ func (ec *executionContext) fieldContext_Query_activateUser(ctx context.Context,
 				return ec.fieldContext_User_DeletedAt(ctx, field)
 			case "Name":
 				return ec.fieldContext_User_Name(ctx, field)
-			case "LastName":
-				return ec.fieldContext_User_LastName(ctx, field)
+			case "FamilyName":
+				return ec.fieldContext_User_FamilyName(ctx, field)
+			case "NickName":
+				return ec.fieldContext_User_NickName(ctx, field)
 			case "Email":
 				return ec.fieldContext_User_Email(ctx, field)
+			case "Matricule":
+				return ec.fieldContext_User_Matricule(ctx, field)
+			case "Age":
+				return ec.fieldContext_User_Age(ctx, field)
+			case "BirthDate":
+				return ec.fieldContext_User_BirthDate(ctx, field)
+			case "Sex":
+				return ec.fieldContext_User_Sex(ctx, field)
+			case "Lang":
+				return ec.fieldContext_User_Lang(ctx, field)
+			case "Status":
+				return ec.fieldContext_User_Status(ctx, field)
+			case "ProfileImageXid":
+				return ec.fieldContext_User_ProfileImageXid(ctx, field)
+			case "Description":
+				return ec.fieldContext_User_Description(ctx, field)
+			case "CoverText":
+				return ec.fieldContext_User_CoverText(ctx, field)
+			case "Profile":
+				return ec.fieldContext_User_Profile(ctx, field)
+			case "ExperienceDetail":
+				return ec.fieldContext_User_ExperienceDetail(ctx, field)
+			case "AdditionalDescription":
+				return ec.fieldContext_User_AdditionalDescription(ctx, field)
+			case "AddOnTitle":
+				return ec.fieldContext_User_AddOnTitle(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -909,10 +942,38 @@ func (ec *executionContext) fieldContext_Query_Users(ctx context.Context, field 
 				return ec.fieldContext_User_DeletedAt(ctx, field)
 			case "Name":
 				return ec.fieldContext_User_Name(ctx, field)
-			case "LastName":
-				return ec.fieldContext_User_LastName(ctx, field)
+			case "FamilyName":
+				return ec.fieldContext_User_FamilyName(ctx, field)
+			case "NickName":
+				return ec.fieldContext_User_NickName(ctx, field)
 			case "Email":
 				return ec.fieldContext_User_Email(ctx, field)
+			case "Matricule":
+				return ec.fieldContext_User_Matricule(ctx, field)
+			case "Age":
+				return ec.fieldContext_User_Age(ctx, field)
+			case "BirthDate":
+				return ec.fieldContext_User_BirthDate(ctx, field)
+			case "Sex":
+				return ec.fieldContext_User_Sex(ctx, field)
+			case "Lang":
+				return ec.fieldContext_User_Lang(ctx, field)
+			case "Status":
+				return ec.fieldContext_User_Status(ctx, field)
+			case "ProfileImageXid":
+				return ec.fieldContext_User_ProfileImageXid(ctx, field)
+			case "Description":
+				return ec.fieldContext_User_Description(ctx, field)
+			case "CoverText":
+				return ec.fieldContext_User_CoverText(ctx, field)
+			case "Profile":
+				return ec.fieldContext_User_Profile(ctx, field)
+			case "ExperienceDetail":
+				return ec.fieldContext_User_ExperienceDetail(ctx, field)
+			case "AdditionalDescription":
+				return ec.fieldContext_User_AdditionalDescription(ctx, field)
+			case "AddOnTitle":
+				return ec.fieldContext_User_AddOnTitle(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -969,10 +1030,38 @@ func (ec *executionContext) fieldContext_Query_MyProfile(ctx context.Context, fi
 				return ec.fieldContext_User_DeletedAt(ctx, field)
 			case "Name":
 				return ec.fieldContext_User_Name(ctx, field)
-			case "LastName":
-				return ec.fieldContext_User_LastName(ctx, field)
+			case "FamilyName":
+				return ec.fieldContext_User_FamilyName(ctx, field)
+			case "NickName":
+				return ec.fieldContext_User_NickName(ctx, field)
 			case "Email":
 				return ec.fieldContext_User_Email(ctx, field)
+			case "Matricule":
+				return ec.fieldContext_User_Matricule(ctx, field)
+			case "Age":
+				return ec.fieldContext_User_Age(ctx, field)
+			case "BirthDate":
+				return ec.fieldContext_User_BirthDate(ctx, field)
+			case "Sex":
+				return ec.fieldContext_User_Sex(ctx, field)
+			case "Lang":
+				return ec.fieldContext_User_Lang(ctx, field)
+			case "Status":
+				return ec.fieldContext_User_Status(ctx, field)
+			case "ProfileImageXid":
+				return ec.fieldContext_User_ProfileImageXid(ctx, field)
+			case "Description":
+				return ec.fieldContext_User_Description(ctx, field)
+			case "CoverText":
+				return ec.fieldContext_User_CoverText(ctx, field)
+			case "Profile":
+				return ec.fieldContext_User_Profile(ctx, field)
+			case "ExperienceDetail":
+				return ec.fieldContext_User_ExperienceDetail(ctx, field)
+			case "AdditionalDescription":
+				return ec.fieldContext_User_AdditionalDescription(ctx, field)
+			case "AddOnTitle":
+				return ec.fieldContext_User_AddOnTitle(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -1543,47 +1632,6 @@ func (ec *executionContext) fieldContext_Query_getUserPlannings(ctx context.Cont
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_removeUserPlannings(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_removeUserPlannings(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().RemoveUserPlannings(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_removeUserPlannings(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Query_getPlanningActors(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_getPlanningActors(ctx, field)
 	if err != nil {
@@ -1630,10 +1678,38 @@ func (ec *executionContext) fieldContext_Query_getPlanningActors(ctx context.Con
 				return ec.fieldContext_User_DeletedAt(ctx, field)
 			case "Name":
 				return ec.fieldContext_User_Name(ctx, field)
-			case "LastName":
-				return ec.fieldContext_User_LastName(ctx, field)
+			case "FamilyName":
+				return ec.fieldContext_User_FamilyName(ctx, field)
+			case "NickName":
+				return ec.fieldContext_User_NickName(ctx, field)
 			case "Email":
 				return ec.fieldContext_User_Email(ctx, field)
+			case "Matricule":
+				return ec.fieldContext_User_Matricule(ctx, field)
+			case "Age":
+				return ec.fieldContext_User_Age(ctx, field)
+			case "BirthDate":
+				return ec.fieldContext_User_BirthDate(ctx, field)
+			case "Sex":
+				return ec.fieldContext_User_Sex(ctx, field)
+			case "Lang":
+				return ec.fieldContext_User_Lang(ctx, field)
+			case "Status":
+				return ec.fieldContext_User_Status(ctx, field)
+			case "ProfileImageXid":
+				return ec.fieldContext_User_ProfileImageXid(ctx, field)
+			case "Description":
+				return ec.fieldContext_User_Description(ctx, field)
+			case "CoverText":
+				return ec.fieldContext_User_CoverText(ctx, field)
+			case "Profile":
+				return ec.fieldContext_User_Profile(ctx, field)
+			case "ExperienceDetail":
+				return ec.fieldContext_User_ExperienceDetail(ctx, field)
+			case "AdditionalDescription":
+				return ec.fieldContext_User_AdditionalDescription(ctx, field)
+			case "AddOnTitle":
+				return ec.fieldContext_User_AddOnTitle(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -1646,58 +1722,6 @@ func (ec *executionContext) fieldContext_Query_getPlanningActors(ctx context.Con
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_getPlanningActors_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_removeUserFromPlanning(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_removeUserFromPlanning(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().RemoveUserFromPlanning(rctx, fc.Args["calendarPlanningId"].(int), fc.Args["selectedUserId"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_removeUserFromPlanning(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_removeUserFromPlanning_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -2208,10 +2232,38 @@ func (ec *executionContext) fieldContext_Query_getUserParent(ctx context.Context
 				return ec.fieldContext_User_DeletedAt(ctx, field)
 			case "Name":
 				return ec.fieldContext_User_Name(ctx, field)
-			case "LastName":
-				return ec.fieldContext_User_LastName(ctx, field)
+			case "FamilyName":
+				return ec.fieldContext_User_FamilyName(ctx, field)
+			case "NickName":
+				return ec.fieldContext_User_NickName(ctx, field)
 			case "Email":
 				return ec.fieldContext_User_Email(ctx, field)
+			case "Matricule":
+				return ec.fieldContext_User_Matricule(ctx, field)
+			case "Age":
+				return ec.fieldContext_User_Age(ctx, field)
+			case "BirthDate":
+				return ec.fieldContext_User_BirthDate(ctx, field)
+			case "Sex":
+				return ec.fieldContext_User_Sex(ctx, field)
+			case "Lang":
+				return ec.fieldContext_User_Lang(ctx, field)
+			case "Status":
+				return ec.fieldContext_User_Status(ctx, field)
+			case "ProfileImageXid":
+				return ec.fieldContext_User_ProfileImageXid(ctx, field)
+			case "Description":
+				return ec.fieldContext_User_Description(ctx, field)
+			case "CoverText":
+				return ec.fieldContext_User_CoverText(ctx, field)
+			case "Profile":
+				return ec.fieldContext_User_Profile(ctx, field)
+			case "ExperienceDetail":
+				return ec.fieldContext_User_ExperienceDetail(ctx, field)
+			case "AdditionalDescription":
+				return ec.fieldContext_User_AdditionalDescription(ctx, field)
+			case "AddOnTitle":
+				return ec.fieldContext_User_AddOnTitle(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2265,10 +2317,38 @@ func (ec *executionContext) fieldContext_Query_getUserTutor(ctx context.Context,
 				return ec.fieldContext_User_DeletedAt(ctx, field)
 			case "Name":
 				return ec.fieldContext_User_Name(ctx, field)
-			case "LastName":
-				return ec.fieldContext_User_LastName(ctx, field)
+			case "FamilyName":
+				return ec.fieldContext_User_FamilyName(ctx, field)
+			case "NickName":
+				return ec.fieldContext_User_NickName(ctx, field)
 			case "Email":
 				return ec.fieldContext_User_Email(ctx, field)
+			case "Matricule":
+				return ec.fieldContext_User_Matricule(ctx, field)
+			case "Age":
+				return ec.fieldContext_User_Age(ctx, field)
+			case "BirthDate":
+				return ec.fieldContext_User_BirthDate(ctx, field)
+			case "Sex":
+				return ec.fieldContext_User_Sex(ctx, field)
+			case "Lang":
+				return ec.fieldContext_User_Lang(ctx, field)
+			case "Status":
+				return ec.fieldContext_User_Status(ctx, field)
+			case "ProfileImageXid":
+				return ec.fieldContext_User_ProfileImageXid(ctx, field)
+			case "Description":
+				return ec.fieldContext_User_Description(ctx, field)
+			case "CoverText":
+				return ec.fieldContext_User_CoverText(ctx, field)
+			case "Profile":
+				return ec.fieldContext_User_Profile(ctx, field)
+			case "ExperienceDetail":
+				return ec.fieldContext_User_ExperienceDetail(ctx, field)
+			case "AdditionalDescription":
+				return ec.fieldContext_User_AdditionalDescription(ctx, field)
+			case "AddOnTitle":
+				return ec.fieldContext_User_AddOnTitle(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2322,10 +2402,38 @@ func (ec *executionContext) fieldContext_Query_getUserProfessor(ctx context.Cont
 				return ec.fieldContext_User_DeletedAt(ctx, field)
 			case "Name":
 				return ec.fieldContext_User_Name(ctx, field)
-			case "LastName":
-				return ec.fieldContext_User_LastName(ctx, field)
+			case "FamilyName":
+				return ec.fieldContext_User_FamilyName(ctx, field)
+			case "NickName":
+				return ec.fieldContext_User_NickName(ctx, field)
 			case "Email":
 				return ec.fieldContext_User_Email(ctx, field)
+			case "Matricule":
+				return ec.fieldContext_User_Matricule(ctx, field)
+			case "Age":
+				return ec.fieldContext_User_Age(ctx, field)
+			case "BirthDate":
+				return ec.fieldContext_User_BirthDate(ctx, field)
+			case "Sex":
+				return ec.fieldContext_User_Sex(ctx, field)
+			case "Lang":
+				return ec.fieldContext_User_Lang(ctx, field)
+			case "Status":
+				return ec.fieldContext_User_Status(ctx, field)
+			case "ProfileImageXid":
+				return ec.fieldContext_User_ProfileImageXid(ctx, field)
+			case "Description":
+				return ec.fieldContext_User_Description(ctx, field)
+			case "CoverText":
+				return ec.fieldContext_User_CoverText(ctx, field)
+			case "Profile":
+				return ec.fieldContext_User_Profile(ctx, field)
+			case "ExperienceDetail":
+				return ec.fieldContext_User_ExperienceDetail(ctx, field)
+			case "AdditionalDescription":
+				return ec.fieldContext_User_AdditionalDescription(ctx, field)
+			case "AddOnTitle":
+				return ec.fieldContext_User_AddOnTitle(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2379,10 +2487,38 @@ func (ec *executionContext) fieldContext_Query_getStudent(ctx context.Context, f
 				return ec.fieldContext_User_DeletedAt(ctx, field)
 			case "Name":
 				return ec.fieldContext_User_Name(ctx, field)
-			case "LastName":
-				return ec.fieldContext_User_LastName(ctx, field)
+			case "FamilyName":
+				return ec.fieldContext_User_FamilyName(ctx, field)
+			case "NickName":
+				return ec.fieldContext_User_NickName(ctx, field)
 			case "Email":
 				return ec.fieldContext_User_Email(ctx, field)
+			case "Matricule":
+				return ec.fieldContext_User_Matricule(ctx, field)
+			case "Age":
+				return ec.fieldContext_User_Age(ctx, field)
+			case "BirthDate":
+				return ec.fieldContext_User_BirthDate(ctx, field)
+			case "Sex":
+				return ec.fieldContext_User_Sex(ctx, field)
+			case "Lang":
+				return ec.fieldContext_User_Lang(ctx, field)
+			case "Status":
+				return ec.fieldContext_User_Status(ctx, field)
+			case "ProfileImageXid":
+				return ec.fieldContext_User_ProfileImageXid(ctx, field)
+			case "Description":
+				return ec.fieldContext_User_Description(ctx, field)
+			case "CoverText":
+				return ec.fieldContext_User_CoverText(ctx, field)
+			case "Profile":
+				return ec.fieldContext_User_Profile(ctx, field)
+			case "ExperienceDetail":
+				return ec.fieldContext_User_ExperienceDetail(ctx, field)
+			case "AdditionalDescription":
+				return ec.fieldContext_User_AdditionalDescription(ctx, field)
+			case "AddOnTitle":
+				return ec.fieldContext_User_AddOnTitle(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
 		},
@@ -2765,6 +2901,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getPasswordHistory(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -3026,25 +3165,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "removeUserPlannings":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_removeUserPlannings(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "getPlanningActors":
 			field := field
 
@@ -3055,25 +3175,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getPlanningActors(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "removeUserFromPlanning":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_removeUserFromPlanning(ctx, field)
 				return res
 			}
 

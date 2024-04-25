@@ -6,56 +6,21 @@ package resolver
 
 import (
 	"context"
-	"database/sql"
-	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
-	"github.com/cend-org/duval/internal/authentication"
 	"github.com/cend-org/duval/internal/database"
-	password2 "github.com/cend-org/duval/internal/password"
+	"github.com/cend-org/duval/internal/pkg/address"
+	"github.com/cend-org/duval/internal/pkg/phone"
+	"github.com/cend-org/duval/internal/pkg/planning"
+	usr "github.com/cend-org/duval/internal/pkg/user"
 	"github.com/cend-org/duval/internal/school"
-	"github.com/cend-org/duval/internal/token"
-	"github.com/cend-org/duval/internal/user"
 )
 
 // RegisterWithEmail is the resolver for the RegisterWithEmail field.
 func (r *mutationResolver) RegisterWithEmail(ctx context.Context, input string, as int) (*string, error) {
-	var (
-		usr  model.User
-		auth model.Authorization
-		pat  string
-		err  error
-	)
-
-	usr, err = user.GetUserByEmail(input)
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		return nil, err
-	}
-
-	if usr.ID == 0 {
-		usr, err = user.NewUserWithEmail(input)
-		if err != nil {
-			return nil, err
-		}
-	}
-
-	auth.UserID = usr.ID
-	auth.AccessLevel = as
-
-	_, err = database.Insert(auth)
-	if err != nil {
-		return nil, err
-	}
-
-	pat, err = authentication.LoginWithEmail(input)
-	if err != nil {
-		return nil, err
-	}
-
-	return &pat, err
+	return usr.RegisterWithEmail(ctx, input, as)
 }
 
 // Register is the resolver for the Register field.
@@ -65,49 +30,12 @@ func (r *mutationResolver) Register(ctx context.Context, input model.UserInput) 
 
 // LogIn is the resolver for the LogIn field.
 func (r *mutationResolver) LogIn(ctx context.Context, email string, password string) (*string, error) {
-	var access string
-	var err error
-
-	access, err = authentication.LoginWithEmailAndPassword(email, password)
-	if err != nil {
-		return nil, err
-	}
-
-	return &access, err
+	return usr.LogIn(ctx, email, password)
 }
 
 // NewPassword is the resolver for the NewPassword field.
 func (r *mutationResolver) NewPassword(ctx context.Context, password string) (*bool, error) {
-	var (
-		psw  model.Password
-		err  error
-		done bool
-		tok  *token.Token
-	)
-
-	if len(strings.TrimSpace(password)) == 0 {
-		return nil, errors.New("password cannot be empty")
-	}
-
-	tok, err = token.GetFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	psw.UserID = tok.UserId
-	psw.Hash = password2.Encode(password)
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = database.Insert(psw)
-	if err != nil {
-		return nil, err
-	}
-
-	done = true
-
-	return &done, err
+	return usr.NewPassword(ctx, password)
 }
 
 // DelPassword is the resolver for the DelPassword field.
@@ -179,32 +107,42 @@ func (r *mutationResolver) DelMenuItem(ctx context.Context, input model.MessageI
 
 // NewAddress is the resolver for the newAddress field.
 func (r *mutationResolver) NewAddress(ctx context.Context, input model.AddressInput) (*model.Address, error) {
-	panic(fmt.Errorf("not implemented: NewAddress - newAddress"))
+	return address.NewAddress(ctx, input)
 }
 
 // UpdateUserAddress is the resolver for the updateUserAddress field.
 func (r *mutationResolver) UpdateUserAddress(ctx context.Context, input model.AddressInput) (*model.Address, error) {
-	panic(fmt.Errorf("not implemented: UpdateUserAddress - updateUserAddress"))
+	return address.UpdateUserAddress(ctx, &input)
 }
 
 // NewPhoneNumber is the resolver for the newPhoneNumber field.
 func (r *mutationResolver) NewPhoneNumber(ctx context.Context, input model.PhoneNumberInput) (*model.PhoneNumber, error) {
-	panic(fmt.Errorf("not implemented: NewPhoneNumber - newPhoneNumber"))
+	return phone.NewPhoneNumber(ctx, &input)
 }
 
 // UpdateUserPhoneNumber is the resolver for the updateUserPhoneNumber field.
 func (r *mutationResolver) UpdateUserPhoneNumber(ctx context.Context, input model.PhoneNumberInput) (*model.PhoneNumber, error) {
-	panic(fmt.Errorf("not implemented: UpdateUserPhoneNumber - updateUserPhoneNumber"))
+	return phone.UpdateUserPhoneNumber(ctx, &input)
 }
 
 // CreateUserPlannings is the resolver for the createUserPlannings field.
 func (r *mutationResolver) CreateUserPlannings(ctx context.Context, input model.CalendarPlanningInput) (*model.CalendarPlanning, error) {
-	panic(fmt.Errorf("not implemented: CreateUserPlannings - createUserPlannings"))
+	return planning.CreateUserPlannings(ctx, &input)
 }
 
 // AddUserIntoPlanning is the resolver for the addUserIntoPlanning field.
 func (r *mutationResolver) AddUserIntoPlanning(ctx context.Context, calendarID int, selectedUserID int) (*model.CalendarPlanningActor, error) {
-	panic(fmt.Errorf("not implemented: AddUserIntoPlanning - addUserIntoPlanning"))
+	return planning.AddUserIntoPlanning(ctx, calendarID, selectedUserID)
+}
+
+// RemoveUserPlannings is the resolver for the removeUserPlannings field.
+func (r *mutationResolver) RemoveUserPlannings(ctx context.Context) (*string, error) {
+	panic(fmt.Errorf("not implemented: RemoveUserPlannings - removeUserPlannings"))
+}
+
+// RemoveUserFromPlanning is the resolver for the removeUserFromPlanning field.
+func (r *mutationResolver) RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*string, error) {
+	panic(fmt.Errorf("not implemented: RemoveUserFromPlanning - removeUserFromPlanning"))
 }
 
 // SetUserEducationLevel is the resolver for the setUserEducationLevel field.

@@ -30,8 +30,8 @@ import (
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Authorization_id(ctx context.Context, field graphql.CollectedField, obj *model.Authorization) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Authorization_id(ctx, field)
+func (ec *executionContext) _Authorization_Id(ctx context.Context, field graphql.CollectedField, obj *model.Authorization) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Authorization_Id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -61,7 +61,7 @@ func (ec *executionContext) _Authorization_id(ctx context.Context, field graphql
 	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Authorization_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Authorization_Id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Authorization",
 		Field:      field,
@@ -74,8 +74,8 @@ func (ec *executionContext) fieldContext_Authorization_id(ctx context.Context, f
 	return fc, nil
 }
 
-func (ec *executionContext) _Authorization_createdAt(ctx context.Context, field graphql.CollectedField, obj *model.Authorization) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Authorization_createdAt(ctx, field)
+func (ec *executionContext) _Authorization_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Authorization) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Authorization_CreatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -105,7 +105,7 @@ func (ec *executionContext) _Authorization_createdAt(ctx context.Context, field 
 	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Authorization_createdAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Authorization_CreatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Authorization",
 		Field:      field,
@@ -118,8 +118,8 @@ func (ec *executionContext) fieldContext_Authorization_createdAt(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _Authorization_updatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Authorization) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Authorization_updatedAt(ctx, field)
+func (ec *executionContext) _Authorization_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Authorization) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Authorization_UpdatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -149,7 +149,7 @@ func (ec *executionContext) _Authorization_updatedAt(ctx context.Context, field 
 	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Authorization_updatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Authorization_UpdatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Authorization",
 		Field:      field,
@@ -162,8 +162,8 @@ func (ec *executionContext) fieldContext_Authorization_updatedAt(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _Authorization_deletedAt(ctx context.Context, field graphql.CollectedField, obj *model.Authorization) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Authorization_deletedAt(ctx, field)
+func (ec *executionContext) _Authorization_DeletedAt(ctx context.Context, field graphql.CollectedField, obj *model.Authorization) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Authorization_DeletedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -190,7 +190,7 @@ func (ec *executionContext) _Authorization_deletedAt(ctx context.Context, field 
 	return ec.marshalODateTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Authorization_deletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Authorization_DeletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Authorization",
 		Field:      field,
@@ -203,8 +203,8 @@ func (ec *executionContext) fieldContext_Authorization_deletedAt(ctx context.Con
 	return fc, nil
 }
 
-func (ec *executionContext) _Authorization_userId(ctx context.Context, field graphql.CollectedField, obj *model.Authorization) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Authorization_userId(ctx, field)
+func (ec *executionContext) _Authorization_UserId(ctx context.Context, field graphql.CollectedField, obj *model.Authorization) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Authorization_UserId(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -231,24 +231,24 @@ func (ec *executionContext) _Authorization_userId(ctx context.Context, field gra
 	}
 	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Authorization_userId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Authorization_UserId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Authorization",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Authorization_AccessLevel(ctx context.Context, field graphql.CollectedField, obj *model.Authorization) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Authorization_AccessLevel(ctx, field)
+func (ec *executionContext) _Authorization_Level(ctx context.Context, field graphql.CollectedField, obj *model.Authorization) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Authorization_Level(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -261,7 +261,7 @@ func (ec *executionContext) _Authorization_AccessLevel(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.AccessLevel, nil
+		return obj.Level, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -278,7 +278,7 @@ func (ec *executionContext) _Authorization_AccessLevel(ctx context.Context, fiel
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Authorization_AccessLevel(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Authorization_Level(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Authorization",
 		Field:      field,
@@ -864,30 +864,30 @@ func (ec *executionContext) _Authorization(ctx context.Context, sel ast.Selectio
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Authorization")
-		case "id":
-			out.Values[i] = ec._Authorization_id(ctx, field, obj)
+		case "Id":
+			out.Values[i] = ec._Authorization_Id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "createdAt":
-			out.Values[i] = ec._Authorization_createdAt(ctx, field, obj)
+		case "CreatedAt":
+			out.Values[i] = ec._Authorization_CreatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "updatedAt":
-			out.Values[i] = ec._Authorization_updatedAt(ctx, field, obj)
+		case "UpdatedAt":
+			out.Values[i] = ec._Authorization_UpdatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "deletedAt":
-			out.Values[i] = ec._Authorization_deletedAt(ctx, field, obj)
-		case "userId":
-			out.Values[i] = ec._Authorization_userId(ctx, field, obj)
+		case "DeletedAt":
+			out.Values[i] = ec._Authorization_DeletedAt(ctx, field, obj)
+		case "UserId":
+			out.Values[i] = ec._Authorization_UserId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "AccessLevel":
-			out.Values[i] = ec._Authorization_AccessLevel(ctx, field, obj)
+		case "Level":
+			out.Values[i] = ec._Authorization_Level(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}

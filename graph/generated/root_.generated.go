@@ -64,12 +64,12 @@ type ComplexityRoot struct {
 	}
 
 	Authorization struct {
-		AccessLevel func(childComplexity int) int
-		CreatedAt   func(childComplexity int) int
-		DeletedAt   func(childComplexity int) int
-		ID          func(childComplexity int) int
-		UpdatedAt   func(childComplexity int) int
-		UserID      func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Level     func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UserID    func(childComplexity int) int
 	}
 
 	CalendarPlanning struct {
@@ -156,7 +156,9 @@ type ComplexityRoot struct {
 		Register                 func(childComplexity int, input model.UserInput) int
 		RegisterWithEmail        func(childComplexity int, input string, as int) int
 		RemoveStudent            func(childComplexity int, input model.UserInput) int
+		RemoveUserFromPlanning   func(childComplexity int, calendarPlanningID int, selectedUserID int) int
 		RemoveUserParent         func(childComplexity int, input model.UserInput) int
+		RemoveUserPlannings      func(childComplexity int) int
 		RemoveUserProfessor      func(childComplexity int, input model.UserInput) int
 		RemoveUserTutor          func(childComplexity int, input model.UserInput) int
 		SetUserEducationLevel    func(childComplexity int, input model.SubjectInput) int
@@ -224,8 +226,6 @@ type ComplexityRoot struct {
 		MyProfile                     func(childComplexity int) int
 		Passwords                     func(childComplexity int) int
 		RemoveUserAddress             func(childComplexity int) int
-		RemoveUserFromPlanning        func(childComplexity int, calendarPlanningID int, selectedUserID int) int
-		RemoveUserPlannings           func(childComplexity int) int
 		SendUserEmailValidationCode   func(childComplexity int) int
 		UserAuthorizationLink         func(childComplexity int, id int) int
 		UserAuthorizationLinks        func(childComplexity int) int
@@ -260,13 +260,27 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		CreatedAt func(childComplexity int) int
-		DeletedAt func(childComplexity int) int
-		Email     func(childComplexity int) int
-		ID        func(childComplexity int) int
-		LastName  func(childComplexity int) int
-		Name      func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
+		AddOnTitle            func(childComplexity int) int
+		AdditionalDescription func(childComplexity int) int
+		Age                   func(childComplexity int) int
+		BirthDate             func(childComplexity int) int
+		CoverText             func(childComplexity int) int
+		CreatedAt             func(childComplexity int) int
+		DeletedAt             func(childComplexity int) int
+		Description           func(childComplexity int) int
+		Email                 func(childComplexity int) int
+		ExperienceDetail      func(childComplexity int) int
+		FamilyName            func(childComplexity int) int
+		ID                    func(childComplexity int) int
+		Lang                  func(childComplexity int) int
+		Matricule             func(childComplexity int) int
+		Name                  func(childComplexity int) int
+		NickName              func(childComplexity int) int
+		Profile               func(childComplexity int) int
+		ProfileImageXid       func(childComplexity int) int
+		Sex                   func(childComplexity int) int
+		Status                func(childComplexity int) int
+		UpdatedAt             func(childComplexity int) int
 	}
 
 	UserAddress struct {
@@ -447,42 +461,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Asset.UpdatedAt(childComplexity), true
 
-	case "Authorization.AccessLevel":
-		if e.complexity.Authorization.AccessLevel == nil {
-			break
-		}
-
-		return e.complexity.Authorization.AccessLevel(childComplexity), true
-
-	case "Authorization.createdAt":
+	case "Authorization.CreatedAt":
 		if e.complexity.Authorization.CreatedAt == nil {
 			break
 		}
 
 		return e.complexity.Authorization.CreatedAt(childComplexity), true
 
-	case "Authorization.deletedAt":
+	case "Authorization.DeletedAt":
 		if e.complexity.Authorization.DeletedAt == nil {
 			break
 		}
 
 		return e.complexity.Authorization.DeletedAt(childComplexity), true
 
-	case "Authorization.id":
+	case "Authorization.Id":
 		if e.complexity.Authorization.ID == nil {
 			break
 		}
 
 		return e.complexity.Authorization.ID(childComplexity), true
 
-	case "Authorization.updatedAt":
+	case "Authorization.Level":
+		if e.complexity.Authorization.Level == nil {
+			break
+		}
+
+		return e.complexity.Authorization.Level(childComplexity), true
+
+	case "Authorization.UpdatedAt":
 		if e.complexity.Authorization.UpdatedAt == nil {
 			break
 		}
 
 		return e.complexity.Authorization.UpdatedAt(childComplexity), true
 
-	case "Authorization.userId":
+	case "Authorization.UserId":
 		if e.complexity.Authorization.UserID == nil {
 			break
 		}
@@ -1059,6 +1073,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RemoveStudent(childComplexity, args["input"].(model.UserInput)), true
 
+	case "Mutation.removeUserFromPlanning":
+		if e.complexity.Mutation.RemoveUserFromPlanning == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeUserFromPlanning_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveUserFromPlanning(childComplexity, args["calendarPlanningId"].(int), args["selectedUserId"].(int)), true
+
 	case "Mutation.removeUserParent":
 		if e.complexity.Mutation.RemoveUserParent == nil {
 			break
@@ -1070,6 +1096,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RemoveUserParent(childComplexity, args["input"].(model.UserInput)), true
+
+	case "Mutation.removeUserPlannings":
+		if e.complexity.Mutation.RemoveUserPlannings == nil {
+			break
+		}
+
+		return e.complexity.Mutation.RemoveUserPlannings(childComplexity), true
 
 	case "Mutation.removeUserProfessor":
 		if e.complexity.Mutation.RemoveUserProfessor == nil {
@@ -1531,25 +1564,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.RemoveUserAddress(childComplexity), true
 
-	case "Query.removeUserFromPlanning":
-		if e.complexity.Query.RemoveUserFromPlanning == nil {
-			break
-		}
-
-		args, err := ec.field_Query_removeUserFromPlanning_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.RemoveUserFromPlanning(childComplexity, args["calendarPlanningId"].(int), args["selectedUserId"].(int)), true
-
-	case "Query.removeUserPlannings":
-		if e.complexity.Query.RemoveUserPlannings == nil {
-			break
-		}
-
-		return e.complexity.Query.RemoveUserPlannings(childComplexity), true
-
 	case "Query.sendUserEmailValidationCode":
 		if e.complexity.Query.SendUserEmailValidationCode == nil {
 			break
@@ -1714,6 +1728,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Subject.UpdatedAt(childComplexity), true
 
+	case "User.AddOnTitle":
+		if e.complexity.User.AddOnTitle == nil {
+			break
+		}
+
+		return e.complexity.User.AddOnTitle(childComplexity), true
+
+	case "User.AdditionalDescription":
+		if e.complexity.User.AdditionalDescription == nil {
+			break
+		}
+
+		return e.complexity.User.AdditionalDescription(childComplexity), true
+
+	case "User.Age":
+		if e.complexity.User.Age == nil {
+			break
+		}
+
+		return e.complexity.User.Age(childComplexity), true
+
+	case "User.BirthDate":
+		if e.complexity.User.BirthDate == nil {
+			break
+		}
+
+		return e.complexity.User.BirthDate(childComplexity), true
+
+	case "User.CoverText":
+		if e.complexity.User.CoverText == nil {
+			break
+		}
+
+		return e.complexity.User.CoverText(childComplexity), true
+
 	case "User.CreatedAt":
 		if e.complexity.User.CreatedAt == nil {
 			break
@@ -1728,12 +1777,33 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.DeletedAt(childComplexity), true
 
+	case "User.Description":
+		if e.complexity.User.Description == nil {
+			break
+		}
+
+		return e.complexity.User.Description(childComplexity), true
+
 	case "User.Email":
 		if e.complexity.User.Email == nil {
 			break
 		}
 
 		return e.complexity.User.Email(childComplexity), true
+
+	case "User.ExperienceDetail":
+		if e.complexity.User.ExperienceDetail == nil {
+			break
+		}
+
+		return e.complexity.User.ExperienceDetail(childComplexity), true
+
+	case "User.FamilyName":
+		if e.complexity.User.FamilyName == nil {
+			break
+		}
+
+		return e.complexity.User.FamilyName(childComplexity), true
 
 	case "User.Id":
 		if e.complexity.User.ID == nil {
@@ -1742,12 +1812,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.ID(childComplexity), true
 
-	case "User.LastName":
-		if e.complexity.User.LastName == nil {
+	case "User.Lang":
+		if e.complexity.User.Lang == nil {
 			break
 		}
 
-		return e.complexity.User.LastName(childComplexity), true
+		return e.complexity.User.Lang(childComplexity), true
+
+	case "User.Matricule":
+		if e.complexity.User.Matricule == nil {
+			break
+		}
+
+		return e.complexity.User.Matricule(childComplexity), true
 
 	case "User.Name":
 		if e.complexity.User.Name == nil {
@@ -1755,6 +1832,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.Name(childComplexity), true
+
+	case "User.NickName":
+		if e.complexity.User.NickName == nil {
+			break
+		}
+
+		return e.complexity.User.NickName(childComplexity), true
+
+	case "User.Profile":
+		if e.complexity.User.Profile == nil {
+			break
+		}
+
+		return e.complexity.User.Profile(childComplexity), true
+
+	case "User.ProfileImageXid":
+		if e.complexity.User.ProfileImageXid == nil {
+			break
+		}
+
+		return e.complexity.User.ProfileImageXid(childComplexity), true
+
+	case "User.Sex":
+		if e.complexity.User.Sex == nil {
+			break
+		}
+
+		return e.complexity.User.Sex(childComplexity), true
+
+	case "User.Status":
+		if e.complexity.User.Status == nil {
+			break
+		}
+
+		return e.complexity.User.Status(childComplexity), true
 
 	case "User.UpdatedAt":
 		if e.complexity.User.UpdatedAt == nil {
@@ -2130,12 +2242,12 @@ input AddressInput {
     FullAddress: String
 }`, BuiltIn: false},
 	{Name: "../gql/authorization/authorization.graphqls", Input: `type Authorization {
-    id: ID!
-    createdAt: DateTime!
-    updatedAt: DateTime!
-    deletedAt: DateTime
-    userId: Int!
-    AccessLevel: Int!
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId: ID!
+    Level: Int!
 }
 
 
@@ -2348,6 +2460,8 @@ scalar DateTime`, BuiltIn: false},
     #    Planning mutations
     createUserPlannings(input: CalendarPlanningInput!): CalendarPlanning!
     addUserIntoPlanning(calendarId: ID!, selectedUserId: ID!):CalendarPlanningActor!
+    removeUserPlannings: String
+    removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): String
 
     #   Education mutations
     setUserEducationLevel(input: SubjectInput!): Education!
@@ -2387,7 +2501,7 @@ scalar DateTime`, BuiltIn: false},
     getCode: Code!
     verifyUserEmailValidationCode(code: Int!) : Int!
     sendUserEmailValidationCode: User!
-    getPasswordHistory: [Password]
+    getPasswordHistory: [Password!]!
     activateUser: User!
     Users: [User!]!
     MyProfile: User!
@@ -2408,9 +2522,7 @@ scalar DateTime`, BuiltIn: false},
 
     #    Calendar Planning QUERIES
     getUserPlannings: CalendarPlanning!
-    removeUserPlannings: String
     getPlanningActors(calendarId: ID!): [User!]
-    removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): String
 
     #    Education QUERIES
     getUserSubjects: [Subject!]
@@ -2477,14 +2589,32 @@ input SubjectInput {
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     Name: String!
-    LastName: String!
+    FamilyName: String!
+    NickName: String!
     Email: String!
+    Matricule: String!
+    Age: Int!
+    BirthDate: DateTime!
+    Sex: Int!
+    Lang: Int!
+    Status: Int!
+    ProfileImageXid: String!
+    Description: String!
+    CoverText: String!
+    Profile: String!
+    ExperienceDetail: String!
+    AdditionalDescription: String!
+    AddOnTitle: String!
 }
 
 input UserInput {
     Name: String
-    LastName: String
+    FamilyName: String
+    NickName: String
     Email: String
+    BirthDate: DateTime
+    Sex: Int
+    Lang: Int
 }`, BuiltIn: false},
 	{Name: "../gql/utils/utils.graphqls", Input: `type Asset {
     Id: ID!

@@ -12,7 +12,7 @@ type Query {
     getCode: Code!
     verifyUserEmailValidationCode(code: Int!) : Int!
     sendUserEmailValidationCode: User!
-    getPasswordHistory: [Password]
+    getPasswordHistory: [Password!]!
     activateUser: User!
     Users: [User!]!
     MyProfile: User!
@@ -33,9 +33,7 @@ type Query {
 
     #    Calendar Planning QUERIES
     getUserPlannings: CalendarPlanning!
-    removeUserPlannings: String
     getPlanningActors(calendarId: ID!): [User!]
-    removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): String
 
     #    Education QUERIES
     getUserSubjects: [Subject!]

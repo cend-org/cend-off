@@ -1,10 +1,10 @@
 type Authorization {
-    id: ID!
-    createdAt: DateTime!
-    updatedAt: DateTime!
-    deletedAt: DateTime
-    userId: Int!
-    AccessLevel: Int!
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId: ID!
+    Level: Int!
 }
 
 

@@ -1,4 +1,4 @@
-package password
+package pwd
 
 import (
 	"github.com/go-crypt/crypt"

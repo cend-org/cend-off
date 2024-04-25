@@ -4,12 +4,30 @@ type User {
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     Name: String!
-    LastName: String!
+    FamilyName: String!
+    NickName: String!
     Email: String!
+    Matricule: String!
+    Age: Int!
+    BirthDate: DateTime!
+    Sex: Int!
+    Lang: Int!
+    Status: Int!
+    ProfileImageXid: String!
+    Description: String!
+    CoverText: String!
+    Profile: String!
+    ExperienceDetail: String!
+    AdditionalDescription: String!
+    AddOnTitle: String!
 }
 
 input UserInput {
     Name: String
-    LastName: String
+    FamilyName: String
+    NickName: String
     Email: String
+    BirthDate: DateTime
+    Sex: Int
+    Lang: Int
 }
