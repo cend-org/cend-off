@@ -6,9 +6,7 @@ import (
 	"context"
 	"errors"
 	"strconv"
-	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/cend-org/duval/graph/model"
@@ -29,8 +27,8 @@ import (
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Password_Id(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_Id(ctx, field)
+func (ec *executionContext) _QrCodeRegistry_Id(ctx context.Context, field graphql.CollectedField, obj *model.QRCodeRegistry) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QrCodeRegistry_Id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -60,9 +58,9 @@ func (ec *executionContext) _Password_Id(ctx context.Context, field graphql.Coll
 	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_Id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_QrCodeRegistry_Id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "QrCodeRegistry",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -73,8 +71,8 @@ func (ec *executionContext) fieldContext_Password_Id(ctx context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_CreatedAt(ctx, field)
+func (ec *executionContext) _QrCodeRegistry_ResourceType(ctx context.Context, field graphql.CollectedField, obj *model.QRCodeRegistry) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QrCodeRegistry_ResourceType(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -87,7 +85,7 @@ func (ec *executionContext) _Password_CreatedAt(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.CreatedAt, nil
+		return obj.ResourceType, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -99,26 +97,26 @@ func (ec *executionContext) _Password_CreatedAt(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_CreatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_QrCodeRegistry_ResourceType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "QrCodeRegistry",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type DateTime does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_UpdatedAt(ctx, field)
+func (ec *executionContext) _QrCodeRegistry_ResourceValue(ctx context.Context, field graphql.CollectedField, obj *model.QRCodeRegistry) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QrCodeRegistry_ResourceValue(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -131,7 +129,7 @@ func (ec *executionContext) _Password_UpdatedAt(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UpdatedAt, nil
+		return obj.ResourceValue, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -143,67 +141,26 @@ func (ec *executionContext) _Password_UpdatedAt(ctx context.Context, field graph
 		}
 		return graphql.Null
 	}
-	res := resTmp.(time.Time)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_UpdatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_QrCodeRegistry_ResourceValue(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "QrCodeRegistry",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type DateTime does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_DeletedAt(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_DeletedAt(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.DeletedAt, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*time.Time)
-	fc.Result = res
-	return ec.marshalODateTime2ᚖtimeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Password_DeletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Password",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type DateTime does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Password_UserId(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_UserId(ctx, field)
+func (ec *executionContext) _QrCodeRegistry_UserId(ctx context.Context, field graphql.CollectedField, obj *model.QRCodeRegistry) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QrCodeRegistry_UserId(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -230,24 +187,24 @@ func (ec *executionContext) _Password_UserId(ctx context.Context, field graphql.
 	}
 	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_UserId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_QrCodeRegistry_UserId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "QrCodeRegistry",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_Hash(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_Hash(ctx, field)
+func (ec *executionContext) _QrCodeRegistry_Xid(ctx context.Context, field graphql.CollectedField, obj *model.QRCodeRegistry) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QrCodeRegistry_Xid(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -260,7 +217,7 @@ func (ec *executionContext) _Password_Hash(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Hash, nil
+		return obj.Xid, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -277,9 +234,9 @@ func (ec *executionContext) _Password_Hash(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_Hash(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_QrCodeRegistry_Xid(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "QrCodeRegistry",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -290,36 +247,50 @@ func (ec *executionContext) fieldContext_Password_Hash(ctx context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _QrCodeRegistry_IsUsed(ctx context.Context, field graphql.CollectedField, obj *model.QRCodeRegistry) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QrCodeRegistry_IsUsed(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.IsUsed, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QrCodeRegistry_IsUsed(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QrCodeRegistry",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
-
-func (ec *executionContext) unmarshalInputPasswordInput(ctx context.Context, obj interface{}) (model.PasswordInput, error) {
-	var it model.PasswordInput
-	asMap := map[string]interface{}{}
-	for k, v := range obj.(map[string]interface{}) {
-		asMap[k] = v
-	}
-
-	fieldsInOrder := [...]string{"Hash"}
-	for _, k := range fieldsInOrder {
-		v, ok := asMap[k]
-		if !ok {
-			continue
-		}
-		switch k {
-		case "Hash":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Hash"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Hash = data
-		}
-	}
-
-	return it, nil
-}
 
 // endregion **************************** input.gotpl *****************************
 
@@ -329,44 +300,44 @@ func (ec *executionContext) unmarshalInputPasswordInput(ctx context.Context, obj
 
 // region    **************************** object.gotpl ****************************
 
-var passwordImplementors = []string{"Password"}
+var qrCodeRegistryImplementors = []string{"QrCodeRegistry"}
 
-func (ec *executionContext) _Password(ctx context.Context, sel ast.SelectionSet, obj *model.Password) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, passwordImplementors)
+func (ec *executionContext) _QrCodeRegistry(ctx context.Context, sel ast.SelectionSet, obj *model.QRCodeRegistry) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, qrCodeRegistryImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	deferred := make(map[string]*graphql.FieldSet)
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("Password")
+			out.Values[i] = graphql.MarshalString("QrCodeRegistry")
 		case "Id":
-			out.Values[i] = ec._Password_Id(ctx, field, obj)
+			out.Values[i] = ec._QrCodeRegistry_Id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "CreatedAt":
-			out.Values[i] = ec._Password_CreatedAt(ctx, field, obj)
+		case "ResourceType":
+			out.Values[i] = ec._QrCodeRegistry_ResourceType(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "UpdatedAt":
-			out.Values[i] = ec._Password_UpdatedAt(ctx, field, obj)
+		case "ResourceValue":
+			out.Values[i] = ec._QrCodeRegistry_ResourceValue(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "DeletedAt":
-			out.Values[i] = ec._Password_DeletedAt(ctx, field, obj)
 		case "UserId":
-			out.Values[i] = ec._Password_UserId(ctx, field, obj)
+			out.Values[i] = ec._QrCodeRegistry_UserId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "Hash":
-			out.Values[i] = ec._Password_Hash(ctx, field, obj)
+		case "Xid":
+			out.Values[i] = ec._QrCodeRegistry_Xid(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "IsUsed":
+			out.Values[i] = ec._QrCodeRegistry_IsUsed(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -393,104 +364,5 @@ func (ec *executionContext) _Password(ctx context.Context, sel ast.SelectionSet,
 // endregion **************************** object.gotpl ****************************
 
 // region    ***************************** type.gotpl *****************************
-
-func (ec *executionContext) marshalNPassword2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx context.Context, sel ast.SelectionSet, v model.Password) graphql.Marshaler {
-	return ec._Password(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalOPassword2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPasswordᚄ(ctx context.Context, sel ast.SelectionSet, v []model.Password) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNPassword2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalOPassword2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx context.Context, sel ast.SelectionSet, v []*model.Password) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOPassword2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOPassword2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx context.Context, sel ast.SelectionSet, v *model.Password) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Password(ctx, sel, v)
-}
 
 // endregion ***************************** type.gotpl *****************************

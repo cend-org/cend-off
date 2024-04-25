@@ -29,8 +29,8 @@ import (
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Password_Id(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_Id(ctx, field)
+func (ec *executionContext) _Message_Id(ctx context.Context, field graphql.CollectedField, obj *model.Message) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Message_Id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -60,9 +60,9 @@ func (ec *executionContext) _Password_Id(ctx context.Context, field graphql.Coll
 	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_Id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Message_Id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "Message",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -73,8 +73,8 @@ func (ec *executionContext) fieldContext_Password_Id(ctx context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_CreatedAt(ctx, field)
+func (ec *executionContext) _Message_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Message) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Message_CreatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -104,9 +104,9 @@ func (ec *executionContext) _Password_CreatedAt(ctx context.Context, field graph
 	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_CreatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Message_CreatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "Message",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -117,8 +117,8 @@ func (ec *executionContext) fieldContext_Password_CreatedAt(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_UpdatedAt(ctx, field)
+func (ec *executionContext) _Message_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Message) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Message_UpdatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -148,9 +148,9 @@ func (ec *executionContext) _Password_UpdatedAt(ctx context.Context, field graph
 	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_UpdatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Message_UpdatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "Message",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -161,8 +161,8 @@ func (ec *executionContext) fieldContext_Password_UpdatedAt(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_DeletedAt(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_DeletedAt(ctx, field)
+func (ec *executionContext) _Message_DeletedAt(ctx context.Context, field graphql.CollectedField, obj *model.Message) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Message_DeletedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -189,9 +189,9 @@ func (ec *executionContext) _Password_DeletedAt(ctx context.Context, field graph
 	return ec.marshalODateTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_DeletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Message_DeletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "Message",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -202,8 +202,8 @@ func (ec *executionContext) fieldContext_Password_DeletedAt(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_UserId(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_UserId(ctx, field)
+func (ec *executionContext) _Message_ResourceType(ctx context.Context, field graphql.CollectedField, obj *model.Message) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Message_ResourceType(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -216,7 +216,7 @@ func (ec *executionContext) _Password_UserId(ctx context.Context, field graphql.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UserID, nil
+		return obj.ResourceType, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -233,9 +233,9 @@ func (ec *executionContext) _Password_UserId(ctx context.Context, field graphql.
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_UserId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Message_ResourceType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "Message",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -246,8 +246,8 @@ func (ec *executionContext) fieldContext_Password_UserId(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_Hash(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_Hash(ctx, field)
+func (ec *executionContext) _Message_ResourceValue(ctx context.Context, field graphql.CollectedField, obj *model.Message) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Message_ResourceValue(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -260,7 +260,51 @@ func (ec *executionContext) _Password_Hash(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Hash, nil
+		return obj.ResourceValue, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Message_ResourceValue(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Message",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Message_ResourceLabel(ctx context.Context, field graphql.CollectedField, obj *model.Message) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Message_ResourceLabel(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ResourceLabel, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -277,9 +321,9 @@ func (ec *executionContext) _Password_Hash(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_Hash(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Message_ResourceLabel(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "Message",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -290,31 +334,96 @@ func (ec *executionContext) fieldContext_Password_Hash(ctx context.Context, fiel
 	return fc, nil
 }
 
+func (ec *executionContext) _Message_ResourceLanguage(ctx context.Context, field graphql.CollectedField, obj *model.Message) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Message_ResourceLanguage(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ResourceLanguage, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNInt2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Message_ResourceLanguage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Message",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Int does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputPasswordInput(ctx context.Context, obj interface{}) (model.PasswordInput, error) {
-	var it model.PasswordInput
+func (ec *executionContext) unmarshalInputMessageInput(ctx context.Context, obj interface{}) (model.MessageInput, error) {
+	var it model.MessageInput
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"Hash"}
+	fieldsInOrder := [...]string{"ResourceType", "ResourceValue", "ResourceLabel", "ResourceLanguage"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "Hash":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Hash"))
+		case "ResourceType":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ResourceType"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ResourceType = data
+		case "ResourceValue":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ResourceValue"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ResourceValue = data
+		case "ResourceLabel":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ResourceLabel"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Hash = data
+			it.ResourceLabel = data
+		case "ResourceLanguage":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ResourceLanguage"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ResourceLanguage = data
 		}
 	}
 
@@ -329,41 +438,51 @@ func (ec *executionContext) unmarshalInputPasswordInput(ctx context.Context, obj
 
 // region    **************************** object.gotpl ****************************
 
-var passwordImplementors = []string{"Password"}
+var messageImplementors = []string{"Message"}
 
-func (ec *executionContext) _Password(ctx context.Context, sel ast.SelectionSet, obj *model.Password) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, passwordImplementors)
+func (ec *executionContext) _Message(ctx context.Context, sel ast.SelectionSet, obj *model.Message) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, messageImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	deferred := make(map[string]*graphql.FieldSet)
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("Password")
+			out.Values[i] = graphql.MarshalString("Message")
 		case "Id":
-			out.Values[i] = ec._Password_Id(ctx, field, obj)
+			out.Values[i] = ec._Message_Id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "CreatedAt":
-			out.Values[i] = ec._Password_CreatedAt(ctx, field, obj)
+			out.Values[i] = ec._Message_CreatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "UpdatedAt":
-			out.Values[i] = ec._Password_UpdatedAt(ctx, field, obj)
+			out.Values[i] = ec._Message_UpdatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "DeletedAt":
-			out.Values[i] = ec._Password_DeletedAt(ctx, field, obj)
-		case "UserId":
-			out.Values[i] = ec._Password_UserId(ctx, field, obj)
+			out.Values[i] = ec._Message_DeletedAt(ctx, field, obj)
+		case "ResourceType":
+			out.Values[i] = ec._Message_ResourceType(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "Hash":
-			out.Values[i] = ec._Password_Hash(ctx, field, obj)
+		case "ResourceValue":
+			out.Values[i] = ec._Message_ResourceValue(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "ResourceLabel":
+			out.Values[i] = ec._Message_ResourceLabel(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "ResourceLanguage":
+			out.Values[i] = ec._Message_ResourceLanguage(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -394,11 +513,26 @@ func (ec *executionContext) _Password(ctx context.Context, sel ast.SelectionSet,
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNPassword2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx context.Context, sel ast.SelectionSet, v model.Password) graphql.Marshaler {
-	return ec._Password(ctx, sel, &v)
+func (ec *executionContext) marshalNMessage2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessage(ctx context.Context, sel ast.SelectionSet, v model.Message) graphql.Marshaler {
+	return ec._Message(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOPassword2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPasswordᚄ(ctx context.Context, sel ast.SelectionSet, v []model.Password) graphql.Marshaler {
+func (ec *executionContext) marshalNMessage2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessage(ctx context.Context, sel ast.SelectionSet, v *model.Message) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Message(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNMessageInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessageInput(ctx context.Context, v interface{}) (model.MessageInput, error) {
+	res, err := ec.unmarshalInputMessageInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOMessage2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessage(ctx context.Context, sel ast.SelectionSet, v []*model.Message) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -425,54 +559,7 @@ func (ec *executionContext) marshalOPassword2ᚕgithubᚗcomᚋcendᚑorgᚋduva
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPassword2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) marshalOPassword2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx context.Context, sel ast.SelectionSet, v []*model.Password) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOPassword2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx, sel, v[i])
+			ret[i] = ec.marshalOMessage2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessage(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -486,11 +573,11 @@ func (ec *executionContext) marshalOPassword2ᚕᚖgithubᚗcomᚋcendᚑorgᚋd
 	return ret
 }
 
-func (ec *executionContext) marshalOPassword2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx context.Context, sel ast.SelectionSet, v *model.Password) graphql.Marshaler {
+func (ec *executionContext) marshalOMessage2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessage(ctx context.Context, sel ast.SelectionSet, v *model.Message) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	return ec._Password(ctx, sel, v)
+	return ec._Message(ctx, sel, v)
 }
 
 // endregion ***************************** type.gotpl *****************************

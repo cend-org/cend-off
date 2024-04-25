@@ -18,16 +18,6 @@ func (r *queryResolver) Passwords(ctx context.Context) ([]model.Password, error)
 	panic(fmt.Errorf("not implemented: Passwords - Passwords"))
 }
 
-// Users is the resolver for the Users field.
-func (r *queryResolver) Users(ctx context.Context) ([]model.User, error) {
-	panic(fmt.Errorf("not implemented: Register - Register"))
-}
-
-// MyProfile is the resolver for the MyProfile field.
-func (r *queryResolver) MyProfile(ctx context.Context) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: Register - Register"))
-}
-
 // GetAsset is the resolver for the GetAsset field.
 func (r *queryResolver) GetAsset(ctx context.Context, id int) (*model.Asset, error) {
 	var (
@@ -56,6 +46,126 @@ func (r *queryResolver) Assets(ctx context.Context) ([]model.Asset, error) {
 	}
 
 	return assets, err
+}
+
+// UserAuthorizationLink is the resolver for the userAuthorizationLink field.
+func (r *queryResolver) UserAuthorizationLink(ctx context.Context, id int) (*model.UserAuthorizationLink, error) {
+	panic(fmt.Errorf("not implemented: UserAuthorizationLink - userAuthorizationLink"))
+}
+
+// UserAuthorizationLinks is the resolver for the userAuthorizationLinks field.
+func (r *queryResolver) UserAuthorizationLinks(ctx context.Context) ([]model.UserAuthorizationLink, error) {
+	panic(fmt.Errorf("not implemented: UserAuthorizationLinks - userAuthorizationLinks"))
+}
+
+// GetCode is the resolver for the getCode field.
+func (r *queryResolver) GetCode(ctx context.Context) (*model.Code, error) {
+	panic(fmt.Errorf("not implemented: GetCode - getCode"))
+}
+
+// VerifyUserEmailValidationCode is the resolver for the verifyUserEmailValidationCode field.
+func (r *queryResolver) VerifyUserEmailValidationCode(ctx context.Context, code int) (int, error) {
+	panic(fmt.Errorf("not implemented: VerifyUserEmailValidationCode - verifyUserEmailValidationCode"))
+}
+
+// SendUserEmailValidationCode is the resolver for the sendUserEmailValidationCode field.
+func (r *queryResolver) SendUserEmailValidationCode(ctx context.Context) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: SendUserEmailValidationCode - sendUserEmailValidationCode"))
+}
+
+// GetPasswordHistory is the resolver for the getPasswordHistory field.
+func (r *queryResolver) GetPasswordHistory(ctx context.Context) ([]*model.Password, error) {
+	panic(fmt.Errorf("not implemented: GetPasswordHistory - getPasswordHistory"))
+}
+
+// ActivateUser is the resolver for the activateUser field.
+func (r *queryResolver) ActivateUser(ctx context.Context) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: ActivateUser - activateUser"))
+}
+
+// Users is the resolver for the Users field.
+func (r *queryResolver) Users(ctx context.Context) ([]model.User, error) {
+	panic(fmt.Errorf("not implemented: Register - Register"))
+}
+
+// MyProfile is the resolver for the MyProfile field.
+func (r *queryResolver) MyProfile(ctx context.Context) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: Register - Register"))
+}
+
+// GetMessages is the resolver for the getMessages field.
+func (r *queryResolver) GetMessages(ctx context.Context) ([]*model.Message, error) {
+	panic(fmt.Errorf("not implemented: GetMessages - getMessages"))
+}
+
+// GetMessagesInLanguage is the resolver for the getMessagesInLanguage field.
+func (r *queryResolver) GetMessagesInLanguage(ctx context.Context, language int) ([]*model.Message, error) {
+	panic(fmt.Errorf("not implemented: GetMessagesInLanguage - getMessagesInLanguage"))
+}
+
+// GetMessage is the resolver for the getMessage field.
+func (r *queryResolver) GetMessage(ctx context.Context, language int, resourceNumber int) (*model.Message, error) {
+	panic(fmt.Errorf("not implemented: GetMessage - getMessage"))
+}
+
+// GetMenuList is the resolver for the getMenuList field.
+func (r *queryResolver) GetMenuList(ctx context.Context) ([]*model.Message, error) {
+	panic(fmt.Errorf("not implemented: GetMenuList - getMenuList"))
+}
+
+// GetMenuItems is the resolver for the getMenuItems field.
+func (r *queryResolver) GetMenuItems(ctx context.Context, language int, menuNumber int) ([]*model.Message, error) {
+	panic(fmt.Errorf("not implemented: GetMenuItems - getMenuItems"))
+}
+
+// GetUserAddress is the resolver for the getUserAddress field.
+func (r *queryResolver) GetUserAddress(ctx context.Context) (*model.Address, error) {
+	panic(fmt.Errorf("not implemented: GetUserAddress - getUserAddress"))
+}
+
+// RemoveUserAddress is the resolver for the removeUserAddress field.
+func (r *queryResolver) RemoveUserAddress(ctx context.Context) (string, error) {
+	panic(fmt.Errorf("not implemented: RemoveUserAddress - removeUserAddress"))
+}
+
+// GetUserPhoneNumber is the resolver for the getUserPhoneNumber field.
+func (r *queryResolver) GetUserPhoneNumber(ctx context.Context) (*model.PhoneNumber, error) {
+	panic(fmt.Errorf("not implemented: GetUserPhoneNumber - getUserPhoneNumber"))
+}
+
+// GetUserPlannings is the resolver for the getUserPlannings field.
+func (r *queryResolver) GetUserPlannings(ctx context.Context) (*model.CalendarPlanning, error) {
+	panic(fmt.Errorf("not implemented: GetUserPlannings - getUserPlannings"))
+}
+
+// RemoveUserPlannings is the resolver for the removeUserPlannings field.
+func (r *queryResolver) RemoveUserPlannings(ctx context.Context) (*string, error) {
+	panic(fmt.Errorf("not implemented: RemoveUserPlannings - removeUserPlannings"))
+}
+
+// GetPlanningActors is the resolver for the getPlanningActors field.
+func (r *queryResolver) GetPlanningActors(ctx context.Context, calendarID int) ([]model.User, error) {
+	panic(fmt.Errorf("not implemented: GetPlanningActors - getPlanningActors"))
+}
+
+// RemoveUserFromPlanning is the resolver for the removeUserFromPlanning field.
+func (r *queryResolver) RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*string, error) {
+	panic(fmt.Errorf("not implemented: RemoveUserFromPlanning - removeUserFromPlanning"))
+}
+
+// GetUserSubjects is the resolver for the getUserSubjects field.
+func (r *queryResolver) GetUserSubjects(ctx context.Context) ([]model.Subject, error) {
+	panic(fmt.Errorf("not implemented: GetUserSubjects - getUserSubjects"))
+}
+
+// GetEducation is the resolver for the getEducation field.
+func (r *queryResolver) GetEducation(ctx context.Context) ([]model.Education, error) {
+	panic(fmt.Errorf("not implemented: GetEducation - getEducation"))
+}
+
+// GetUserEducationLevel is the resolver for the getUserEducationLevel field.
+func (r *queryResolver) GetUserEducationLevel(ctx context.Context) (*model.Education, error) {
+	panic(fmt.Errorf("not implemented: GetUserEducationLevel - getUserEducationLevel"))
 }
 
 // GetSchools is the resolver for the getSchools field.
@@ -97,6 +207,41 @@ func (r *queryResolver) GetSchool(ctx context.Context, id int) (*model.School, e
 	}
 
 	return &school, err
+}
+
+// GetUserAverageMark is the resolver for the getUserAverageMark field.
+func (r *queryResolver) GetUserAverageMark(ctx context.Context, userID int) (*int, error) {
+	panic(fmt.Errorf("not implemented: GetUserAverageMark - getUserAverageMark"))
+}
+
+// GetUserMarkComment is the resolver for the getUserMarkComment field.
+func (r *queryResolver) GetUserMarkComment(ctx context.Context) ([]model.Mark, error) {
+	panic(fmt.Errorf("not implemented: GetUserMarkComment - getUserMarkComment"))
+}
+
+// GetUserParent is the resolver for the getUserParent field.
+func (r *queryResolver) GetUserParent(ctx context.Context) ([]model.User, error) {
+	panic(fmt.Errorf("not implemented: GetUserParent - getUserParent"))
+}
+
+// GetUserTutor is the resolver for the getUserTutor field.
+func (r *queryResolver) GetUserTutor(ctx context.Context) ([]model.User, error) {
+	panic(fmt.Errorf("not implemented: GetUserTutor - getUserTutor"))
+}
+
+// GetUserProfessor is the resolver for the getUserProfessor field.
+func (r *queryResolver) GetUserProfessor(ctx context.Context) ([]model.User, error) {
+	panic(fmt.Errorf("not implemented: GetUserProfessor - getUserProfessor"))
+}
+
+// GetStudent is the resolver for the getStudent field.
+func (r *queryResolver) GetStudent(ctx context.Context) ([]model.User, error) {
+	panic(fmt.Errorf("not implemented: GetStudent - getStudent"))
+}
+
+// GenerateQRCode is the resolver for the generateQrCode field.
+func (r *queryResolver) GenerateQRCode(ctx context.Context) (*string, error) {
+	panic(fmt.Errorf("not implemented: GenerateQRCode - generateQrCode"))
 }
 
 // Query returns generated.QueryResolver implementation.

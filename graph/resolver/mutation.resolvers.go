@@ -142,6 +142,131 @@ func (r *mutationResolver) PopulateSchool(ctx context.Context) (*bool, error) {
 	return &done, err
 }
 
+// NewMessage is the resolver for the newMessage field.
+func (r *mutationResolver) NewMessage(ctx context.Context, input model.MessageInput) (*model.Message, error) {
+	panic(fmt.Errorf("not implemented: NewMessage - newMessage"))
+}
+
+// UpdMessage is the resolver for the updMessage field.
+func (r *mutationResolver) UpdMessage(ctx context.Context, input model.MessageInput) (*model.Message, error) {
+	panic(fmt.Errorf("not implemented: UpdMessage - updMessage"))
+}
+
+// DelMessage is the resolver for the delMessage field.
+func (r *mutationResolver) DelMessage(ctx context.Context, language int, messageNumber int) (*string, error) {
+	panic(fmt.Errorf("not implemented: DelMessage - delMessage"))
+}
+
+// NewMenu is the resolver for the newMenu field.
+func (r *mutationResolver) NewMenu(ctx context.Context, input model.MessageInput) (*model.Message, error) {
+	panic(fmt.Errorf("not implemented: NewMenu - newMenu"))
+}
+
+// DelMenu is the resolver for the delMenu field.
+func (r *mutationResolver) DelMenu(ctx context.Context, menuNumber int) (*string, error) {
+	panic(fmt.Errorf("not implemented: DelMenu - delMenu"))
+}
+
+// NewMenuItem is the resolver for the newMenuItem field.
+func (r *mutationResolver) NewMenuItem(ctx context.Context, input model.MessageInput) (*model.Message, error) {
+	panic(fmt.Errorf("not implemented: NewMenuItem - newMenuItem"))
+}
+
+// DelMenuItem is the resolver for the delMenuItem field.
+func (r *mutationResolver) DelMenuItem(ctx context.Context, input model.MessageInput) (*string, error) {
+	panic(fmt.Errorf("not implemented: DelMenuItem - delMenuItem"))
+}
+
+// NewAddress is the resolver for the newAddress field.
+func (r *mutationResolver) NewAddress(ctx context.Context, input model.AddressInput) (*model.Address, error) {
+	panic(fmt.Errorf("not implemented: NewAddress - newAddress"))
+}
+
+// UpdateUserAddress is the resolver for the updateUserAddress field.
+func (r *mutationResolver) UpdateUserAddress(ctx context.Context, input model.AddressInput) (*model.Address, error) {
+	panic(fmt.Errorf("not implemented: UpdateUserAddress - updateUserAddress"))
+}
+
+// NewPhoneNumber is the resolver for the newPhoneNumber field.
+func (r *mutationResolver) NewPhoneNumber(ctx context.Context, input model.PhoneNumberInput) (*model.PhoneNumber, error) {
+	panic(fmt.Errorf("not implemented: NewPhoneNumber - newPhoneNumber"))
+}
+
+// UpdateUserPhoneNumber is the resolver for the updateUserPhoneNumber field.
+func (r *mutationResolver) UpdateUserPhoneNumber(ctx context.Context, input model.PhoneNumberInput) (*model.PhoneNumber, error) {
+	panic(fmt.Errorf("not implemented: UpdateUserPhoneNumber - updateUserPhoneNumber"))
+}
+
+// CreateUserPlannings is the resolver for the createUserPlannings field.
+func (r *mutationResolver) CreateUserPlannings(ctx context.Context, input model.CalendarPlanningInput) (*model.CalendarPlanning, error) {
+	panic(fmt.Errorf("not implemented: CreateUserPlannings - createUserPlannings"))
+}
+
+// AddUserIntoPlanning is the resolver for the addUserIntoPlanning field.
+func (r *mutationResolver) AddUserIntoPlanning(ctx context.Context, calendarID int, selectedUserID int) (*model.CalendarPlanningActor, error) {
+	panic(fmt.Errorf("not implemented: AddUserIntoPlanning - addUserIntoPlanning"))
+}
+
+// SetUserEducationLevel is the resolver for the setUserEducationLevel field.
+func (r *mutationResolver) SetUserEducationLevel(ctx context.Context, input model.SubjectInput) (*model.Education, error) {
+	panic(fmt.Errorf("not implemented: SetUserEducationLevel - setUserEducationLevel"))
+}
+
+// UpdateUserEducationLevel is the resolver for the updateUserEducationLevel field.
+func (r *mutationResolver) UpdateUserEducationLevel(ctx context.Context, input model.SubjectInput) (*model.Education, error) {
+	panic(fmt.Errorf("not implemented: UpdateUserEducationLevel - updateUserEducationLevel"))
+}
+
+// RateUser is the resolver for the rateUser field.
+func (r *mutationResolver) RateUser(ctx context.Context, input model.MarkInput) (*model.Mark, error) {
+	panic(fmt.Errorf("not implemented: RateUser - rateUser"))
+}
+
+// AddParentToUser is the resolver for the addParentToUser field.
+func (r *mutationResolver) AddParentToUser(ctx context.Context, input model.UserInput) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: AddParentToUser - addParentToUser"))
+}
+
+// RemoveUserParent is the resolver for the removeUserParent field.
+func (r *mutationResolver) RemoveUserParent(ctx context.Context, input model.UserInput) (*string, error) {
+	panic(fmt.Errorf("not implemented: RemoveUserParent - removeUserParent"))
+}
+
+// AddTutorToUser is the resolver for the addTutorToUser field.
+func (r *mutationResolver) AddTutorToUser(ctx context.Context, input model.UserInput) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: AddTutorToUser - addTutorToUser"))
+}
+
+// RemoveUserTutor is the resolver for the removeUserTutor field.
+func (r *mutationResolver) RemoveUserTutor(ctx context.Context, input model.UserInput) (*string, error) {
+	panic(fmt.Errorf("not implemented: RemoveUserTutor - removeUserTutor"))
+}
+
+// AddProfessorToUser is the resolver for the addProfessorToUser field.
+func (r *mutationResolver) AddProfessorToUser(ctx context.Context, input model.UserInput) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: AddProfessorToUser - addProfessorToUser"))
+}
+
+// RemoveUserProfessor is the resolver for the removeUserProfessor field.
+func (r *mutationResolver) RemoveUserProfessor(ctx context.Context, input model.UserInput) (*string, error) {
+	panic(fmt.Errorf("not implemented: RemoveUserProfessor - removeUserProfessor"))
+}
+
+// AddStudentToLink is the resolver for the addStudentToLink field.
+func (r *mutationResolver) AddStudentToLink(ctx context.Context, input model.UserInput) (*model.User, error) {
+	panic(fmt.Errorf("not implemented: AddStudentToLink - addStudentToLink"))
+}
+
+// RemoveStudent is the resolver for the removeStudent field.
+func (r *mutationResolver) RemoveStudent(ctx context.Context, input model.UserInput) (*string, error) {
+	panic(fmt.Errorf("not implemented: RemoveStudent - removeStudent"))
+}
+
+// LoginWithQR is the resolver for the loginWithQr field.
+func (r *mutationResolver) LoginWithQR(ctx context.Context, xID string) (*string, error) {
+	panic(fmt.Errorf("not implemented: LoginWithQR - loginWithQr"))
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

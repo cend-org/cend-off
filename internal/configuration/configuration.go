@@ -2,42 +2,30 @@ package configuration
 
 import (
 	"fmt"
-	uuid "github.com/satori/go.uuid"
+	"github.com/BurntSushi/toml"
 )
 
-var App Configuration
-
-type Configuration struct {
-	Version                 string   `yaml:"version"`
-	RunningMode             string   `yaml:"running_mode"`
-	Database                Database `yaml:"database"`
-	RunHash                 string   `yaml:"run_hash"`
+type Config struct {
+	Version                 string `toml:"version"`
+	Port                    string `toml:"port"`
+	Host                    string `toml:"host"`
+	TokenSecret             string `toml:"token_secret"`
+	DatabaseUserName        string `toml:"database_user_name"`
+	DatabaseUserPassword    string `toml:"database_user_password"`
+	DatabaseName            string `toml:"database_name"`
+	DatabaseHost            string `toml:"database_host"`
+	DatabasePort            string `toml:"database_port"`
 	DatabaseConnexionString string
 }
 
-type Database struct {
-	Host         string `yaml:"host"`
-	Port         string `yaml:"port"`
-	UserName     string `yaml:"user_name"`
-	UserPassword string `yaml:"user_password"`
-	Name         string `yaml:"name"`
-}
+var App Config
 
 func init() {
-	App = local
-
-	App.DatabaseConnexionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", App.Database.UserName,
-		App.Database.UserPassword, App.Database.Host, App.Database.Port,
-		App.Database.Name)
-
-	App.RunHash = uuid.NewV4().String()
-
-}
-
-func (app *Configuration) IsDebug() bool {
-	return app.RunningMode == "DEBUG"
-}
-
-func (app *Configuration) IsProd() bool {
-	return app.RunHash == "PROD"
+	_, err := toml.DecodeFile("./config.toml", &App)
+	if err != nil {
+		panic(err)
+	}
+	App.DatabaseConnexionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", App.DatabaseUserName,
+		App.DatabaseUserPassword, App.DatabaseHost, App.DatabasePort,
+		App.DatabaseName)
 }

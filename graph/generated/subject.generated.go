@@ -29,8 +29,8 @@ import (
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Password_Id(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_Id(ctx, field)
+func (ec *executionContext) _Subject_Id(ctx context.Context, field graphql.CollectedField, obj *model.Subject) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Subject_Id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -60,9 +60,9 @@ func (ec *executionContext) _Password_Id(ctx context.Context, field graphql.Coll
 	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_Id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Subject_Id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "Subject",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -73,8 +73,8 @@ func (ec *executionContext) fieldContext_Password_Id(ctx context.Context, field 
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_CreatedAt(ctx, field)
+func (ec *executionContext) _Subject_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Subject) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Subject_CreatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -104,9 +104,9 @@ func (ec *executionContext) _Password_CreatedAt(ctx context.Context, field graph
 	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_CreatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Subject_CreatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "Subject",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -117,8 +117,8 @@ func (ec *executionContext) fieldContext_Password_CreatedAt(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_UpdatedAt(ctx, field)
+func (ec *executionContext) _Subject_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Subject) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Subject_UpdatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -148,9 +148,9 @@ func (ec *executionContext) _Password_UpdatedAt(ctx context.Context, field graph
 	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_UpdatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Subject_UpdatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "Subject",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -161,8 +161,8 @@ func (ec *executionContext) fieldContext_Password_UpdatedAt(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_DeletedAt(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_DeletedAt(ctx, field)
+func (ec *executionContext) _Subject_DeletedAt(ctx context.Context, field graphql.CollectedField, obj *model.Subject) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Subject_DeletedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -189,9 +189,9 @@ func (ec *executionContext) _Password_DeletedAt(ctx context.Context, field graph
 	return ec.marshalODateTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_DeletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Subject_DeletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "Subject",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -202,8 +202,8 @@ func (ec *executionContext) fieldContext_Password_DeletedAt(ctx context.Context,
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_UserId(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_UserId(ctx, field)
+func (ec *executionContext) _Subject_EducationLevelId(ctx context.Context, field graphql.CollectedField, obj *model.Subject) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Subject_EducationLevelId(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -216,7 +216,7 @@ func (ec *executionContext) _Password_UserId(ctx context.Context, field graphql.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UserID, nil
+		return obj.EducationLevelID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -230,24 +230,24 @@ func (ec *executionContext) _Password_UserId(ctx context.Context, field graphql.
 	}
 	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_UserId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Subject_EducationLevelId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "Subject",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _Password_Hash(ctx context.Context, field graphql.CollectedField, obj *model.Password) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Password_Hash(ctx, field)
+func (ec *executionContext) _Subject_Name(ctx context.Context, field graphql.CollectedField, obj *model.Subject) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Subject_Name(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -260,7 +260,7 @@ func (ec *executionContext) _Password_Hash(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Hash, nil
+		return obj.Name, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -277,9 +277,9 @@ func (ec *executionContext) _Password_Hash(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Password_Hash(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Subject_Name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Password",
+		Object:     "Subject",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -294,27 +294,34 @@ func (ec *executionContext) fieldContext_Password_Hash(ctx context.Context, fiel
 
 // region    **************************** input.gotpl *****************************
 
-func (ec *executionContext) unmarshalInputPasswordInput(ctx context.Context, obj interface{}) (model.PasswordInput, error) {
-	var it model.PasswordInput
+func (ec *executionContext) unmarshalInputSubjectInput(ctx context.Context, obj interface{}) (model.SubjectInput, error) {
+	var it model.SubjectInput
 	asMap := map[string]interface{}{}
 	for k, v := range obj.(map[string]interface{}) {
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"Hash"}
+	fieldsInOrder := [...]string{"EducationLevelID", "Name"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "Hash":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Hash"))
+		case "EducationLevelID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EducationLevelID"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.EducationLevelID = data
+		case "Name":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Name"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Hash = data
+			it.Name = data
 		}
 	}
 
@@ -329,41 +336,41 @@ func (ec *executionContext) unmarshalInputPasswordInput(ctx context.Context, obj
 
 // region    **************************** object.gotpl ****************************
 
-var passwordImplementors = []string{"Password"}
+var subjectImplementors = []string{"Subject"}
 
-func (ec *executionContext) _Password(ctx context.Context, sel ast.SelectionSet, obj *model.Password) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, passwordImplementors)
+func (ec *executionContext) _Subject(ctx context.Context, sel ast.SelectionSet, obj *model.Subject) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, subjectImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	deferred := make(map[string]*graphql.FieldSet)
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("Password")
+			out.Values[i] = graphql.MarshalString("Subject")
 		case "Id":
-			out.Values[i] = ec._Password_Id(ctx, field, obj)
+			out.Values[i] = ec._Subject_Id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "CreatedAt":
-			out.Values[i] = ec._Password_CreatedAt(ctx, field, obj)
+			out.Values[i] = ec._Subject_CreatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "UpdatedAt":
-			out.Values[i] = ec._Password_UpdatedAt(ctx, field, obj)
+			out.Values[i] = ec._Subject_UpdatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "DeletedAt":
-			out.Values[i] = ec._Password_DeletedAt(ctx, field, obj)
-		case "UserId":
-			out.Values[i] = ec._Password_UserId(ctx, field, obj)
+			out.Values[i] = ec._Subject_DeletedAt(ctx, field, obj)
+		case "EducationLevelId":
+			out.Values[i] = ec._Subject_EducationLevelId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "Hash":
-			out.Values[i] = ec._Password_Hash(ctx, field, obj)
+		case "Name":
+			out.Values[i] = ec._Subject_Name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -394,11 +401,16 @@ func (ec *executionContext) _Password(ctx context.Context, sel ast.SelectionSet,
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNPassword2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx context.Context, sel ast.SelectionSet, v model.Password) graphql.Marshaler {
-	return ec._Password(ctx, sel, &v)
+func (ec *executionContext) marshalNSubject2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐSubject(ctx context.Context, sel ast.SelectionSet, v model.Subject) graphql.Marshaler {
+	return ec._Subject(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOPassword2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPasswordᚄ(ctx context.Context, sel ast.SelectionSet, v []model.Password) graphql.Marshaler {
+func (ec *executionContext) unmarshalNSubjectInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐSubjectInput(ctx context.Context, v interface{}) (model.SubjectInput, error) {
+	res, err := ec.unmarshalInputSubjectInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
+}
+
+func (ec *executionContext) marshalOSubject2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐSubjectᚄ(ctx context.Context, sel ast.SelectionSet, v []model.Subject) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -425,7 +437,7 @@ func (ec *executionContext) marshalOPassword2ᚕgithubᚗcomᚋcendᚑorgᚋduva
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNPassword2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx, sel, v[i])
+			ret[i] = ec.marshalNSubject2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐSubject(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -443,54 +455,6 @@ func (ec *executionContext) marshalOPassword2ᚕgithubᚗcomᚋcendᚑorgᚋduva
 	}
 
 	return ret
-}
-
-func (ec *executionContext) marshalOPassword2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx context.Context, sel ast.SelectionSet, v []*model.Password) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalOPassword2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	return ret
-}
-
-func (ec *executionContext) marshalOPassword2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPassword(ctx context.Context, sel ast.SelectionSet, v *model.Password) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._Password(ctx, sel, v)
 }
 
 // endregion ***************************** type.gotpl *****************************

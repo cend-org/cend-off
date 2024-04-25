@@ -6,6 +6,29 @@ import (
 	"time"
 )
 
+type Address struct {
+	ID          int        `json:"Id"`
+	CreatedAt   time.Time  `json:"CreatedAt"`
+	UpdatedAt   time.Time  `json:"UpdatedAt"`
+	DeletedAt   *time.Time `json:"DeletedAt,omitempty"`
+	Country     string     `json:"Country"`
+	City        string     `json:"City"`
+	Latitude    float64    `json:"Latitude"`
+	Longitude   float64    `json:"Longitude"`
+	Street      string     `json:"Street"`
+	FullAddress string     `json:"FullAddress"`
+	XId         *string    `json:"XId,omitempty"`
+}
+
+type AddressInput struct {
+	Country     *string  `json:"Country,omitempty"`
+	City        *string  `json:"City,omitempty"`
+	Latitude    *float64 `json:"Latitude,omitempty"`
+	Longitude   *float64 `json:"Longitude,omitempty"`
+	Street      *string  `json:"Street,omitempty"`
+	FullAddress *string  `json:"FullAddress,omitempty"`
+}
+
 type Asset struct {
 	ID          int        `json:"Id"`
 	CreatedAt   time.Time  `json:"CreatedAt"`
@@ -27,6 +50,85 @@ type Authorization struct {
 	AccessLevel int        `json:"AccessLevel"`
 }
 
+type CalendarPlanning struct {
+	ID              int        `json:"Id"`
+	CreatedAt       time.Time  `json:"CreatedAt"`
+	UpdatedAt       time.Time  `json:"UpdatedAt"`
+	DeletedAt       *time.Time `json:"DeletedAt,omitempty"`
+	AuthorizationID int        `json:"AuthorizationId"`
+	StartDateTime   time.Time  `json:"StartDateTime"`
+	EndDateTime     time.Time  `json:"EndDateTime"`
+	Description     string     `json:"Description"`
+}
+
+type CalendarPlanningActor struct {
+	ID                 int        `json:"Id"`
+	CreatedAt          time.Time  `json:"CreatedAt"`
+	UpdatedAt          time.Time  `json:"UpdatedAt"`
+	DeletedAt          *time.Time `json:"DeletedAt,omitempty"`
+	AuthorizationID    int        `json:"AuthorizationId"`
+	CalendarPlanningID *int       `json:"CalendarPlanningId,omitempty"`
+}
+
+type CalendarPlanningInput struct {
+	StartDateTime *time.Time `json:"StartDateTime,omitempty"`
+	EndDateTime   *time.Time `json:"EndDateTime,omitempty"`
+	Description   *string    `json:"Description,omitempty"`
+}
+
+type Code struct {
+	ID               int        `json:"Id"`
+	CreatedAt        time.Time  `json:"CreatedAt"`
+	UpdatedAt        time.Time  `json:"UpdatedAt"`
+	DeletedAt        *time.Time `json:"DeletedAt,omitempty"`
+	UserID           int        `json:"UserId"`
+	VerificationCode int        `json:"VerificationCode"`
+}
+
+type Education struct {
+	ID        int        `json:"Id"`
+	CreatedAt time.Time  `json:"CreatedAt"`
+	UpdatedAt time.Time  `json:"UpdatedAt"`
+	DeletedAt *time.Time `json:"DeletedAt,omitempty"`
+	Name      string     `json:"Name"`
+}
+
+type Mark struct {
+	ID            int        `json:"Id"`
+	CreatedAt     time.Time  `json:"CreatedAt"`
+	UpdatedAt     time.Time  `json:"UpdatedAt"`
+	DeletedAt     *time.Time `json:"DeletedAt,omitempty"`
+	UserID        int        `json:"UserId"`
+	AuthorID      int        `json:"AuthorId"`
+	AuthorComment string     `json:"AuthorComment"`
+	AuthorMark    string     `json:"AuthorMark"`
+}
+
+type MarkInput struct {
+	UserID        *int    `json:"UserID,omitempty"`
+	AuthorID      *int    `json:"AuthorID,omitempty"`
+	AuthorComment *string `json:"AuthorComment,omitempty"`
+	AuthorMark    *string `json:"AuthorMark,omitempty"`
+}
+
+type Message struct {
+	ID               int        `json:"Id"`
+	CreatedAt        time.Time  `json:"CreatedAt"`
+	UpdatedAt        time.Time  `json:"UpdatedAt"`
+	DeletedAt        *time.Time `json:"DeletedAt,omitempty"`
+	ResourceType     int        `json:"ResourceType"`
+	ResourceValue    int        `json:"ResourceValue"`
+	ResourceLabel    string     `json:"ResourceLabel"`
+	ResourceLanguage int        `json:"ResourceLanguage"`
+}
+
+type MessageInput struct {
+	ResourceType     *int    `json:"ResourceType,omitempty"`
+	ResourceValue    *int    `json:"ResourceValue,omitempty"`
+	ResourceLabel    *string `json:"ResourceLabel,omitempty"`
+	ResourceLanguage *int    `json:"ResourceLanguage,omitempty"`
+}
+
 type Mutation struct {
 }
 
@@ -41,6 +143,29 @@ type Password struct {
 
 type PasswordInput struct {
 	Hash *string `json:"Hash,omitempty"`
+}
+
+type PhoneNumber struct {
+	ID                int        `json:"Id"`
+	CreatedAt         time.Time  `json:"CreatedAt"`
+	UpdatedAt         time.Time  `json:"UpdatedAt"`
+	DeletedAt         *time.Time `json:"DeletedAt,omitempty"`
+	MobilePhoneNumber string     `json:"MobilePhoneNumber"`
+	IsUrgency         bool       `json:"IsUrgency"`
+}
+
+type PhoneNumberInput struct {
+	MobilePhoneNumber *string `json:"MobilePhoneNumber,omitempty"`
+	IsUrgency         *bool   `json:"IsUrgency,omitempty"`
+}
+
+type QRCodeRegistry struct {
+	ID            int    `json:"Id"`
+	ResourceType  int    `json:"ResourceType"`
+	ResourceValue int    `json:"ResourceValue"`
+	UserID        int    `json:"UserId"`
+	Xid           string `json:"Xid"`
+	IsUsed        *bool  `json:"IsUsed,omitempty"`
 }
 
 type Query struct {
@@ -72,6 +197,20 @@ type SchoolSubjectInput struct {
 	Name         *string `json:"Name,omitempty"`
 }
 
+type Subject struct {
+	ID               int        `json:"Id"`
+	CreatedAt        time.Time  `json:"CreatedAt"`
+	UpdatedAt        time.Time  `json:"UpdatedAt"`
+	DeletedAt        *time.Time `json:"DeletedAt,omitempty"`
+	EducationLevelID int        `json:"EducationLevelId"`
+	Name             string     `json:"Name"`
+}
+
+type SubjectInput struct {
+	EducationLevelID *int    `json:"EducationLevelID,omitempty"`
+	Name             *string `json:"Name,omitempty"`
+}
+
 type User struct {
 	ID        int        `json:"Id"`
 	CreatedAt time.Time  `json:"CreatedAt"`
@@ -82,8 +221,54 @@ type User struct {
 	Email     string     `json:"Email"`
 }
 
+type UserAddress struct {
+	ID          int        `json:"Id"`
+	CreatedAt   time.Time  `json:"CreatedAt"`
+	UpdatedAt   time.Time  `json:"UpdatedAt"`
+	DeletedAt   *time.Time `json:"DeletedAt,omitempty"`
+	UserID      *int       `json:"UserId,omitempty"`
+	AddressID   *int       `json:"AddressId,omitempty"`
+	AddressType *string    `json:"AddressType,omitempty"`
+}
+
+type UserAuthorizationLink struct {
+	ID        int                           `json:"Id"`
+	CreatedAt time.Time                     `json:"CreatedAt"`
+	UpdatedAt time.Time                     `json:"UpdatedAt"`
+	DeletedAt *time.Time                    `json:"DeletedAt,omitempty"`
+	LinkType  int                           `json:"LinkType"`
+	Actors    []*UserAuthorizationLinkActor `json:"Actors"`
+}
+
+type UserAuthorizationLinkActor struct {
+	ID                    int                    `json:"Id"`
+	CreatedAt             time.Time              `json:"CreatedAt"`
+	UpdatedAt             time.Time              `json:"UpdatedAt"`
+	DeletedAt             *time.Time             `json:"DeletedAt,omitempty"`
+	UserAuthorizationLink *UserAuthorizationLink `json:"UserAuthorizationLink"`
+	AuthorizationID       int                    `json:"AuthorizationId"`
+}
+
+type UserEducationLevelSubject struct {
+	ID        int        `json:"Id"`
+	CreatedAt time.Time  `json:"CreatedAt"`
+	UpdatedAt time.Time  `json:"UpdatedAt"`
+	DeletedAt *time.Time `json:"DeletedAt,omitempty"`
+	UserID    int        `json:"UserId"`
+	SubjectID int        `json:"SubjectId"`
+}
+
 type UserInput struct {
 	Name     *string `json:"Name,omitempty"`
 	LastName *string `json:"LastName,omitempty"`
 	Email    *string `json:"Email,omitempty"`
+}
+
+type UserPhoneNumber struct {
+	ID            int        `json:"Id"`
+	CreatedAt     time.Time  `json:"CreatedAt"`
+	UpdatedAt     time.Time  `json:"UpdatedAt"`
+	DeletedAt     *time.Time `json:"DeletedAt,omitempty"`
+	UserID        int        `json:"UserId"`
+	PhoneNumberID int        `json:"PhoneNumberId"`
 }

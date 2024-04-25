@@ -4,6 +4,7 @@ go 1.22
 
 require (
 	github.com/99designs/gqlgen v0.17.45
+	github.com/BurntSushi/toml v1.3.2
 	github.com/fatih/structs v1.1.0
 	github.com/gin-contrib/cors v1.7.1
 	github.com/gin-gonic/gin v1.9.1

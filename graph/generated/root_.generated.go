@@ -41,6 +41,20 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	Address struct {
+		City        func(childComplexity int) int
+		Country     func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		DeletedAt   func(childComplexity int) int
+		FullAddress func(childComplexity int) int
+		ID          func(childComplexity int) int
+		Latitude    func(childComplexity int) int
+		Longitude   func(childComplexity int) int
+		Street      func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		XId         func(childComplexity int) int
+	}
+
 	Asset struct {
 		CreatedAt   func(childComplexity int) int
 		DeletedAt   func(childComplexity int) int
@@ -58,14 +72,98 @@ type ComplexityRoot struct {
 		UserID      func(childComplexity int) int
 	}
 
+	CalendarPlanning struct {
+		AuthorizationID func(childComplexity int) int
+		CreatedAt       func(childComplexity int) int
+		DeletedAt       func(childComplexity int) int
+		Description     func(childComplexity int) int
+		EndDateTime     func(childComplexity int) int
+		ID              func(childComplexity int) int
+		StartDateTime   func(childComplexity int) int
+		UpdatedAt       func(childComplexity int) int
+	}
+
+	CalendarPlanningActor struct {
+		AuthorizationID    func(childComplexity int) int
+		CalendarPlanningID func(childComplexity int) int
+		CreatedAt          func(childComplexity int) int
+		DeletedAt          func(childComplexity int) int
+		ID                 func(childComplexity int) int
+		UpdatedAt          func(childComplexity int) int
+	}
+
+	Code struct {
+		CreatedAt        func(childComplexity int) int
+		DeletedAt        func(childComplexity int) int
+		ID               func(childComplexity int) int
+		UpdatedAt        func(childComplexity int) int
+		UserID           func(childComplexity int) int
+		VerificationCode func(childComplexity int) int
+	}
+
+	Education struct {
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		ID        func(childComplexity int) int
+		Name      func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+	}
+
+	Mark struct {
+		AuthorComment func(childComplexity int) int
+		AuthorID      func(childComplexity int) int
+		AuthorMark    func(childComplexity int) int
+		CreatedAt     func(childComplexity int) int
+		DeletedAt     func(childComplexity int) int
+		ID            func(childComplexity int) int
+		UpdatedAt     func(childComplexity int) int
+		UserID        func(childComplexity int) int
+	}
+
+	Message struct {
+		CreatedAt        func(childComplexity int) int
+		DeletedAt        func(childComplexity int) int
+		ID               func(childComplexity int) int
+		ResourceLabel    func(childComplexity int) int
+		ResourceLanguage func(childComplexity int) int
+		ResourceType     func(childComplexity int) int
+		ResourceValue    func(childComplexity int) int
+		UpdatedAt        func(childComplexity int) int
+	}
+
 	Mutation struct {
-		DelPassword       func(childComplexity int, id int) int
-		LogIn             func(childComplexity int, email string, password string) int
-		NewAsset          func(childComplexity int, asset model.AssetInput) int
-		NewPassword       func(childComplexity int, password string) int
-		PopulateSchool    func(childComplexity int) int
-		Register          func(childComplexity int, input model.UserInput) int
-		RegisterWithEmail func(childComplexity int, input string, as int) int
+		AddParentToUser          func(childComplexity int, input model.UserInput) int
+		AddProfessorToUser       func(childComplexity int, input model.UserInput) int
+		AddStudentToLink         func(childComplexity int, input model.UserInput) int
+		AddTutorToUser           func(childComplexity int, input model.UserInput) int
+		AddUserIntoPlanning      func(childComplexity int, calendarID int, selectedUserID int) int
+		CreateUserPlannings      func(childComplexity int, input model.CalendarPlanningInput) int
+		DelMenu                  func(childComplexity int, menuNumber int) int
+		DelMenuItem              func(childComplexity int, input model.MessageInput) int
+		DelMessage               func(childComplexity int, language int, messageNumber int) int
+		DelPassword              func(childComplexity int, id int) int
+		LogIn                    func(childComplexity int, email string, password string) int
+		LoginWithQR              func(childComplexity int, xID string) int
+		NewAddress               func(childComplexity int, input model.AddressInput) int
+		NewAsset                 func(childComplexity int, asset model.AssetInput) int
+		NewMenu                  func(childComplexity int, input model.MessageInput) int
+		NewMenuItem              func(childComplexity int, input model.MessageInput) int
+		NewMessage               func(childComplexity int, input model.MessageInput) int
+		NewPassword              func(childComplexity int, password string) int
+		NewPhoneNumber           func(childComplexity int, input model.PhoneNumberInput) int
+		PopulateSchool           func(childComplexity int) int
+		RateUser                 func(childComplexity int, input model.MarkInput) int
+		Register                 func(childComplexity int, input model.UserInput) int
+		RegisterWithEmail        func(childComplexity int, input string, as int) int
+		RemoveStudent            func(childComplexity int, input model.UserInput) int
+		RemoveUserParent         func(childComplexity int, input model.UserInput) int
+		RemoveUserProfessor      func(childComplexity int, input model.UserInput) int
+		RemoveUserTutor          func(childComplexity int, input model.UserInput) int
+		SetUserEducationLevel    func(childComplexity int, input model.SubjectInput) int
+		UpdMessage               func(childComplexity int, input model.MessageInput) int
+		UpdateUserAddress        func(childComplexity int, input model.AddressInput) int
+		UpdateUserEducationLevel func(childComplexity int, input model.SubjectInput) int
+		UpdateUserPhoneNumber    func(childComplexity int, input model.PhoneNumberInput) int
 	}
 
 	Password struct {
@@ -77,15 +175,62 @@ type ComplexityRoot struct {
 		UserID    func(childComplexity int) int
 	}
 
+	PhoneNumber struct {
+		CreatedAt         func(childComplexity int) int
+		DeletedAt         func(childComplexity int) int
+		ID                func(childComplexity int) int
+		IsUrgency         func(childComplexity int) int
+		MobilePhoneNumber func(childComplexity int) int
+		UpdatedAt         func(childComplexity int) int
+	}
+
+	QrCodeRegistry struct {
+		ID            func(childComplexity int) int
+		IsUsed        func(childComplexity int) int
+		ResourceType  func(childComplexity int) int
+		ResourceValue func(childComplexity int) int
+		UserID        func(childComplexity int) int
+		Xid           func(childComplexity int) int
+	}
+
 	Query struct {
-		Assets      func(childComplexity int) int
-		GetAsset    func(childComplexity int, id int) int
-		GetSchool   func(childComplexity int, id int) int
-		GetSchools  func(childComplexity int) int
-		GetSubjects func(childComplexity int, id int) int
-		MyProfile   func(childComplexity int) int
-		Passwords   func(childComplexity int) int
-		Users       func(childComplexity int) int
+		ActivateUser                  func(childComplexity int) int
+		Assets                        func(childComplexity int) int
+		GenerateQRCode                func(childComplexity int) int
+		GetAsset                      func(childComplexity int, id int) int
+		GetCode                       func(childComplexity int) int
+		GetEducation                  func(childComplexity int) int
+		GetMenuItems                  func(childComplexity int, language int, menuNumber int) int
+		GetMenuList                   func(childComplexity int) int
+		GetMessage                    func(childComplexity int, language int, resourceNumber int) int
+		GetMessages                   func(childComplexity int) int
+		GetMessagesInLanguage         func(childComplexity int, language int) int
+		GetPasswordHistory            func(childComplexity int) int
+		GetPlanningActors             func(childComplexity int, calendarID int) int
+		GetSchool                     func(childComplexity int, id int) int
+		GetSchools                    func(childComplexity int) int
+		GetStudent                    func(childComplexity int) int
+		GetSubjects                   func(childComplexity int, id int) int
+		GetUserAddress                func(childComplexity int) int
+		GetUserAverageMark            func(childComplexity int, userID int) int
+		GetUserEducationLevel         func(childComplexity int) int
+		GetUserMarkComment            func(childComplexity int) int
+		GetUserParent                 func(childComplexity int) int
+		GetUserPhoneNumber            func(childComplexity int) int
+		GetUserPlannings              func(childComplexity int) int
+		GetUserProfessor              func(childComplexity int) int
+		GetUserSubjects               func(childComplexity int) int
+		GetUserTutor                  func(childComplexity int) int
+		MyProfile                     func(childComplexity int) int
+		Passwords                     func(childComplexity int) int
+		RemoveUserAddress             func(childComplexity int) int
+		RemoveUserFromPlanning        func(childComplexity int, calendarPlanningID int, selectedUserID int) int
+		RemoveUserPlannings           func(childComplexity int) int
+		SendUserEmailValidationCode   func(childComplexity int) int
+		UserAuthorizationLink         func(childComplexity int, id int) int
+		UserAuthorizationLinks        func(childComplexity int) int
+		Users                         func(childComplexity int) int
+		VerifyUserEmailValidationCode func(childComplexity int, code int) int
 	}
 
 	School struct {
@@ -105,6 +250,15 @@ type ComplexityRoot struct {
 		UpdatedAt    func(childComplexity int) int
 	}
 
+	Subject struct {
+		CreatedAt        func(childComplexity int) int
+		DeletedAt        func(childComplexity int) int
+		EducationLevelID func(childComplexity int) int
+		ID               func(childComplexity int) int
+		Name             func(childComplexity int) int
+		UpdatedAt        func(childComplexity int) int
+	}
+
 	User struct {
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
@@ -113,6 +267,52 @@ type ComplexityRoot struct {
 		LastName  func(childComplexity int) int
 		Name      func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
+	}
+
+	UserAddress struct {
+		AddressID   func(childComplexity int) int
+		AddressType func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		DeletedAt   func(childComplexity int) int
+		ID          func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		UserID      func(childComplexity int) int
+	}
+
+	UserAuthorizationLink struct {
+		Actors    func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		ID        func(childComplexity int) int
+		LinkType  func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+	}
+
+	UserAuthorizationLinkActor struct {
+		AuthorizationID       func(childComplexity int) int
+		CreatedAt             func(childComplexity int) int
+		DeletedAt             func(childComplexity int) int
+		ID                    func(childComplexity int) int
+		UpdatedAt             func(childComplexity int) int
+		UserAuthorizationLink func(childComplexity int) int
+	}
+
+	UserEducationLevelSubject struct {
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		ID        func(childComplexity int) int
+		SubjectID func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UserID    func(childComplexity int) int
+	}
+
+	UserPhoneNumber struct {
+		CreatedAt     func(childComplexity int) int
+		DeletedAt     func(childComplexity int) int
+		ID            func(childComplexity int) int
+		PhoneNumberID func(childComplexity int) int
+		UpdatedAt     func(childComplexity int) int
+		UserID        func(childComplexity int) int
 	}
 }
 
@@ -134,6 +334,83 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e, 0, 0, nil}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "Address.City":
+		if e.complexity.Address.City == nil {
+			break
+		}
+
+		return e.complexity.Address.City(childComplexity), true
+
+	case "Address.Country":
+		if e.complexity.Address.Country == nil {
+			break
+		}
+
+		return e.complexity.Address.Country(childComplexity), true
+
+	case "Address.CreatedAt":
+		if e.complexity.Address.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Address.CreatedAt(childComplexity), true
+
+	case "Address.DeletedAt":
+		if e.complexity.Address.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Address.DeletedAt(childComplexity), true
+
+	case "Address.FullAddress":
+		if e.complexity.Address.FullAddress == nil {
+			break
+		}
+
+		return e.complexity.Address.FullAddress(childComplexity), true
+
+	case "Address.Id":
+		if e.complexity.Address.ID == nil {
+			break
+		}
+
+		return e.complexity.Address.ID(childComplexity), true
+
+	case "Address.Latitude":
+		if e.complexity.Address.Latitude == nil {
+			break
+		}
+
+		return e.complexity.Address.Latitude(childComplexity), true
+
+	case "Address.Longitude":
+		if e.complexity.Address.Longitude == nil {
+			break
+		}
+
+		return e.complexity.Address.Longitude(childComplexity), true
+
+	case "Address.Street":
+		if e.complexity.Address.Street == nil {
+			break
+		}
+
+		return e.complexity.Address.Street(childComplexity), true
+
+	case "Address.UpdatedAt":
+		if e.complexity.Address.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Address.UpdatedAt(childComplexity), true
+
+	case "Address.XId":
+		if e.complexity.Address.XId == nil {
+			break
+		}
+
+		return e.complexity.Address.XId(childComplexity), true
 
 	case "Asset.CreatedAt":
 		if e.complexity.Asset.CreatedAt == nil {
@@ -212,84 +489,671 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Authorization.UserID(childComplexity), true
 
-	case "Mutation.DelPassword":
+	case "CalendarPlanning.AuthorizationId":
+		if e.complexity.CalendarPlanning.AuthorizationID == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.AuthorizationID(childComplexity), true
+
+	case "CalendarPlanning.CreatedAt":
+		if e.complexity.CalendarPlanning.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.CreatedAt(childComplexity), true
+
+	case "CalendarPlanning.DeletedAt":
+		if e.complexity.CalendarPlanning.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.DeletedAt(childComplexity), true
+
+	case "CalendarPlanning.Description":
+		if e.complexity.CalendarPlanning.Description == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.Description(childComplexity), true
+
+	case "CalendarPlanning.EndDateTime":
+		if e.complexity.CalendarPlanning.EndDateTime == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.EndDateTime(childComplexity), true
+
+	case "CalendarPlanning.Id":
+		if e.complexity.CalendarPlanning.ID == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.ID(childComplexity), true
+
+	case "CalendarPlanning.StartDateTime":
+		if e.complexity.CalendarPlanning.StartDateTime == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.StartDateTime(childComplexity), true
+
+	case "CalendarPlanning.UpdatedAt":
+		if e.complexity.CalendarPlanning.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanning.UpdatedAt(childComplexity), true
+
+	case "CalendarPlanningActor.AuthorizationId":
+		if e.complexity.CalendarPlanningActor.AuthorizationID == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanningActor.AuthorizationID(childComplexity), true
+
+	case "CalendarPlanningActor.CalendarPlanningId":
+		if e.complexity.CalendarPlanningActor.CalendarPlanningID == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanningActor.CalendarPlanningID(childComplexity), true
+
+	case "CalendarPlanningActor.CreatedAt":
+		if e.complexity.CalendarPlanningActor.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanningActor.CreatedAt(childComplexity), true
+
+	case "CalendarPlanningActor.DeletedAt":
+		if e.complexity.CalendarPlanningActor.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanningActor.DeletedAt(childComplexity), true
+
+	case "CalendarPlanningActor.Id":
+		if e.complexity.CalendarPlanningActor.ID == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanningActor.ID(childComplexity), true
+
+	case "CalendarPlanningActor.UpdatedAt":
+		if e.complexity.CalendarPlanningActor.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.CalendarPlanningActor.UpdatedAt(childComplexity), true
+
+	case "Code.CreatedAt":
+		if e.complexity.Code.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Code.CreatedAt(childComplexity), true
+
+	case "Code.DeletedAt":
+		if e.complexity.Code.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Code.DeletedAt(childComplexity), true
+
+	case "Code.Id":
+		if e.complexity.Code.ID == nil {
+			break
+		}
+
+		return e.complexity.Code.ID(childComplexity), true
+
+	case "Code.UpdatedAt":
+		if e.complexity.Code.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Code.UpdatedAt(childComplexity), true
+
+	case "Code.UserId":
+		if e.complexity.Code.UserID == nil {
+			break
+		}
+
+		return e.complexity.Code.UserID(childComplexity), true
+
+	case "Code.VerificationCode":
+		if e.complexity.Code.VerificationCode == nil {
+			break
+		}
+
+		return e.complexity.Code.VerificationCode(childComplexity), true
+
+	case "Education.CreatedAt":
+		if e.complexity.Education.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Education.CreatedAt(childComplexity), true
+
+	case "Education.DeletedAt":
+		if e.complexity.Education.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Education.DeletedAt(childComplexity), true
+
+	case "Education.Id":
+		if e.complexity.Education.ID == nil {
+			break
+		}
+
+		return e.complexity.Education.ID(childComplexity), true
+
+	case "Education.Name":
+		if e.complexity.Education.Name == nil {
+			break
+		}
+
+		return e.complexity.Education.Name(childComplexity), true
+
+	case "Education.UpdatedAt":
+		if e.complexity.Education.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Education.UpdatedAt(childComplexity), true
+
+	case "Mark.AuthorComment":
+		if e.complexity.Mark.AuthorComment == nil {
+			break
+		}
+
+		return e.complexity.Mark.AuthorComment(childComplexity), true
+
+	case "Mark.AuthorId":
+		if e.complexity.Mark.AuthorID == nil {
+			break
+		}
+
+		return e.complexity.Mark.AuthorID(childComplexity), true
+
+	case "Mark.AuthorMark":
+		if e.complexity.Mark.AuthorMark == nil {
+			break
+		}
+
+		return e.complexity.Mark.AuthorMark(childComplexity), true
+
+	case "Mark.CreatedAt":
+		if e.complexity.Mark.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Mark.CreatedAt(childComplexity), true
+
+	case "Mark.DeletedAt":
+		if e.complexity.Mark.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Mark.DeletedAt(childComplexity), true
+
+	case "Mark.Id":
+		if e.complexity.Mark.ID == nil {
+			break
+		}
+
+		return e.complexity.Mark.ID(childComplexity), true
+
+	case "Mark.UpdatedAt":
+		if e.complexity.Mark.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Mark.UpdatedAt(childComplexity), true
+
+	case "Mark.UserId":
+		if e.complexity.Mark.UserID == nil {
+			break
+		}
+
+		return e.complexity.Mark.UserID(childComplexity), true
+
+	case "Message.CreatedAt":
+		if e.complexity.Message.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Message.CreatedAt(childComplexity), true
+
+	case "Message.DeletedAt":
+		if e.complexity.Message.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Message.DeletedAt(childComplexity), true
+
+	case "Message.Id":
+		if e.complexity.Message.ID == nil {
+			break
+		}
+
+		return e.complexity.Message.ID(childComplexity), true
+
+	case "Message.ResourceLabel":
+		if e.complexity.Message.ResourceLabel == nil {
+			break
+		}
+
+		return e.complexity.Message.ResourceLabel(childComplexity), true
+
+	case "Message.ResourceLanguage":
+		if e.complexity.Message.ResourceLanguage == nil {
+			break
+		}
+
+		return e.complexity.Message.ResourceLanguage(childComplexity), true
+
+	case "Message.ResourceType":
+		if e.complexity.Message.ResourceType == nil {
+			break
+		}
+
+		return e.complexity.Message.ResourceType(childComplexity), true
+
+	case "Message.ResourceValue":
+		if e.complexity.Message.ResourceValue == nil {
+			break
+		}
+
+		return e.complexity.Message.ResourceValue(childComplexity), true
+
+	case "Message.UpdatedAt":
+		if e.complexity.Message.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Message.UpdatedAt(childComplexity), true
+
+	case "Mutation.addParentToUser":
+		if e.complexity.Mutation.AddParentToUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addParentToUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddParentToUser(childComplexity, args["input"].(model.UserInput)), true
+
+	case "Mutation.addProfessorToUser":
+		if e.complexity.Mutation.AddProfessorToUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addProfessorToUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddProfessorToUser(childComplexity, args["input"].(model.UserInput)), true
+
+	case "Mutation.addStudentToLink":
+		if e.complexity.Mutation.AddStudentToLink == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addStudentToLink_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddStudentToLink(childComplexity, args["input"].(model.UserInput)), true
+
+	case "Mutation.addTutorToUser":
+		if e.complexity.Mutation.AddTutorToUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addTutorToUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddTutorToUser(childComplexity, args["input"].(model.UserInput)), true
+
+	case "Mutation.addUserIntoPlanning":
+		if e.complexity.Mutation.AddUserIntoPlanning == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_addUserIntoPlanning_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddUserIntoPlanning(childComplexity, args["calendarId"].(int), args["selectedUserId"].(int)), true
+
+	case "Mutation.createUserPlannings":
+		if e.complexity.Mutation.CreateUserPlannings == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_createUserPlannings_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.CreateUserPlannings(childComplexity, args["input"].(model.CalendarPlanningInput)), true
+
+	case "Mutation.delMenu":
+		if e.complexity.Mutation.DelMenu == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_delMenu_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DelMenu(childComplexity, args["menuNumber"].(int)), true
+
+	case "Mutation.delMenuItem":
+		if e.complexity.Mutation.DelMenuItem == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_delMenuItem_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DelMenuItem(childComplexity, args["input"].(model.MessageInput)), true
+
+	case "Mutation.delMessage":
+		if e.complexity.Mutation.DelMessage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_delMessage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.DelMessage(childComplexity, args["language"].(int), args["messageNumber"].(int)), true
+
+	case "Mutation.delPassword":
 		if e.complexity.Mutation.DelPassword == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_DelPassword_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_delPassword_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.DelPassword(childComplexity, args["id"].(int)), true
 
-	case "Mutation.LogIn":
+	case "Mutation.logIn":
 		if e.complexity.Mutation.LogIn == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_LogIn_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_logIn_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.LogIn(childComplexity, args["email"].(string), args["password"].(string)), true
 
-	case "Mutation.NewAsset":
+	case "Mutation.loginWithQr":
+		if e.complexity.Mutation.LoginWithQR == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_loginWithQr_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.LoginWithQR(childComplexity, args["xId"].(string)), true
+
+	case "Mutation.newAddress":
+		if e.complexity.Mutation.NewAddress == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_newAddress_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewAddress(childComplexity, args["input"].(model.AddressInput)), true
+
+	case "Mutation.newAsset":
 		if e.complexity.Mutation.NewAsset == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_NewAsset_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_newAsset_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.NewAsset(childComplexity, args["asset"].(model.AssetInput)), true
 
-	case "Mutation.NewPassword":
+	case "Mutation.newMenu":
+		if e.complexity.Mutation.NewMenu == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_newMenu_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewMenu(childComplexity, args["input"].(model.MessageInput)), true
+
+	case "Mutation.newMenuItem":
+		if e.complexity.Mutation.NewMenuItem == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_newMenuItem_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewMenuItem(childComplexity, args["input"].(model.MessageInput)), true
+
+	case "Mutation.newMessage":
+		if e.complexity.Mutation.NewMessage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_newMessage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewMessage(childComplexity, args["input"].(model.MessageInput)), true
+
+	case "Mutation.newPassword":
 		if e.complexity.Mutation.NewPassword == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_NewPassword_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_newPassword_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.NewPassword(childComplexity, args["password"].(string)), true
 
-	case "Mutation.PopulateSchool":
+	case "Mutation.newPhoneNumber":
+		if e.complexity.Mutation.NewPhoneNumber == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_newPhoneNumber_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewPhoneNumber(childComplexity, args["input"].(model.PhoneNumberInput)), true
+
+	case "Mutation.populateSchool":
 		if e.complexity.Mutation.PopulateSchool == nil {
 			break
 		}
 
 		return e.complexity.Mutation.PopulateSchool(childComplexity), true
 
-	case "Mutation.Register":
+	case "Mutation.rateUser":
+		if e.complexity.Mutation.RateUser == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_rateUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RateUser(childComplexity, args["input"].(model.MarkInput)), true
+
+	case "Mutation.register":
 		if e.complexity.Mutation.Register == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_Register_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_register_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.Register(childComplexity, args["input"].(model.UserInput)), true
 
-	case "Mutation.RegisterWithEmail":
+	case "Mutation.registerWithEmail":
 		if e.complexity.Mutation.RegisterWithEmail == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_RegisterWithEmail_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_registerWithEmail_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
 		return e.complexity.Mutation.RegisterWithEmail(childComplexity, args["input"].(string), args["as"].(int)), true
+
+	case "Mutation.removeStudent":
+		if e.complexity.Mutation.RemoveStudent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeStudent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveStudent(childComplexity, args["input"].(model.UserInput)), true
+
+	case "Mutation.removeUserParent":
+		if e.complexity.Mutation.RemoveUserParent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeUserParent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveUserParent(childComplexity, args["input"].(model.UserInput)), true
+
+	case "Mutation.removeUserProfessor":
+		if e.complexity.Mutation.RemoveUserProfessor == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeUserProfessor_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveUserProfessor(childComplexity, args["input"].(model.UserInput)), true
+
+	case "Mutation.removeUserTutor":
+		if e.complexity.Mutation.RemoveUserTutor == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeUserTutor_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveUserTutor(childComplexity, args["input"].(model.UserInput)), true
+
+	case "Mutation.setUserEducationLevel":
+		if e.complexity.Mutation.SetUserEducationLevel == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_setUserEducationLevel_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SetUserEducationLevel(childComplexity, args["input"].(model.SubjectInput)), true
+
+	case "Mutation.updMessage":
+		if e.complexity.Mutation.UpdMessage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updMessage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdMessage(childComplexity, args["input"].(model.MessageInput)), true
+
+	case "Mutation.updateUserAddress":
+		if e.complexity.Mutation.UpdateUserAddress == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateUserAddress_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateUserAddress(childComplexity, args["input"].(model.AddressInput)), true
+
+	case "Mutation.updateUserEducationLevel":
+		if e.complexity.Mutation.UpdateUserEducationLevel == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateUserEducationLevel_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateUserEducationLevel(childComplexity, args["input"].(model.SubjectInput)), true
+
+	case "Mutation.updateUserPhoneNumber":
+		if e.complexity.Mutation.UpdateUserPhoneNumber == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateUserPhoneNumber_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateUserPhoneNumber(childComplexity, args["input"].(model.PhoneNumberInput)), true
 
 	case "Password.CreatedAt":
 		if e.complexity.Password.CreatedAt == nil {
@@ -333,12 +1197,110 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Password.UserID(childComplexity), true
 
+	case "PhoneNumber.CreatedAt":
+		if e.complexity.PhoneNumber.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.PhoneNumber.CreatedAt(childComplexity), true
+
+	case "PhoneNumber.DeletedAt":
+		if e.complexity.PhoneNumber.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.PhoneNumber.DeletedAt(childComplexity), true
+
+	case "PhoneNumber.Id":
+		if e.complexity.PhoneNumber.ID == nil {
+			break
+		}
+
+		return e.complexity.PhoneNumber.ID(childComplexity), true
+
+	case "PhoneNumber.IsUrgency":
+		if e.complexity.PhoneNumber.IsUrgency == nil {
+			break
+		}
+
+		return e.complexity.PhoneNumber.IsUrgency(childComplexity), true
+
+	case "PhoneNumber.MobilePhoneNumber":
+		if e.complexity.PhoneNumber.MobilePhoneNumber == nil {
+			break
+		}
+
+		return e.complexity.PhoneNumber.MobilePhoneNumber(childComplexity), true
+
+	case "PhoneNumber.UpdatedAt":
+		if e.complexity.PhoneNumber.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.PhoneNumber.UpdatedAt(childComplexity), true
+
+	case "QrCodeRegistry.Id":
+		if e.complexity.QrCodeRegistry.ID == nil {
+			break
+		}
+
+		return e.complexity.QrCodeRegistry.ID(childComplexity), true
+
+	case "QrCodeRegistry.IsUsed":
+		if e.complexity.QrCodeRegistry.IsUsed == nil {
+			break
+		}
+
+		return e.complexity.QrCodeRegistry.IsUsed(childComplexity), true
+
+	case "QrCodeRegistry.ResourceType":
+		if e.complexity.QrCodeRegistry.ResourceType == nil {
+			break
+		}
+
+		return e.complexity.QrCodeRegistry.ResourceType(childComplexity), true
+
+	case "QrCodeRegistry.ResourceValue":
+		if e.complexity.QrCodeRegistry.ResourceValue == nil {
+			break
+		}
+
+		return e.complexity.QrCodeRegistry.ResourceValue(childComplexity), true
+
+	case "QrCodeRegistry.UserId":
+		if e.complexity.QrCodeRegistry.UserID == nil {
+			break
+		}
+
+		return e.complexity.QrCodeRegistry.UserID(childComplexity), true
+
+	case "QrCodeRegistry.Xid":
+		if e.complexity.QrCodeRegistry.Xid == nil {
+			break
+		}
+
+		return e.complexity.QrCodeRegistry.Xid(childComplexity), true
+
+	case "Query.activateUser":
+		if e.complexity.Query.ActivateUser == nil {
+			break
+		}
+
+		return e.complexity.Query.ActivateUser(childComplexity), true
+
 	case "Query.Assets":
 		if e.complexity.Query.Assets == nil {
 			break
 		}
 
 		return e.complexity.Query.Assets(childComplexity), true
+
+	case "Query.generateQrCode":
+		if e.complexity.Query.GenerateQRCode == nil {
+			break
+		}
+
+		return e.complexity.Query.GenerateQRCode(childComplexity), true
 
 	case "Query.GetAsset":
 		if e.complexity.Query.GetAsset == nil {
@@ -351,6 +1313,89 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetAsset(childComplexity, args["id"].(int)), true
+
+	case "Query.getCode":
+		if e.complexity.Query.GetCode == nil {
+			break
+		}
+
+		return e.complexity.Query.GetCode(childComplexity), true
+
+	case "Query.getEducation":
+		if e.complexity.Query.GetEducation == nil {
+			break
+		}
+
+		return e.complexity.Query.GetEducation(childComplexity), true
+
+	case "Query.getMenuItems":
+		if e.complexity.Query.GetMenuItems == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getMenuItems_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetMenuItems(childComplexity, args["language"].(int), args["menuNumber"].(int)), true
+
+	case "Query.getMenuList":
+		if e.complexity.Query.GetMenuList == nil {
+			break
+		}
+
+		return e.complexity.Query.GetMenuList(childComplexity), true
+
+	case "Query.getMessage":
+		if e.complexity.Query.GetMessage == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getMessage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetMessage(childComplexity, args["language"].(int), args["resourceNumber"].(int)), true
+
+	case "Query.getMessages":
+		if e.complexity.Query.GetMessages == nil {
+			break
+		}
+
+		return e.complexity.Query.GetMessages(childComplexity), true
+
+	case "Query.getMessagesInLanguage":
+		if e.complexity.Query.GetMessagesInLanguage == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getMessagesInLanguage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetMessagesInLanguage(childComplexity, args["language"].(int)), true
+
+	case "Query.getPasswordHistory":
+		if e.complexity.Query.GetPasswordHistory == nil {
+			break
+		}
+
+		return e.complexity.Query.GetPasswordHistory(childComplexity), true
+
+	case "Query.getPlanningActors":
+		if e.complexity.Query.GetPlanningActors == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getPlanningActors_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetPlanningActors(childComplexity, args["calendarId"].(int)), true
 
 	case "Query.getSchool":
 		if e.complexity.Query.GetSchool == nil {
@@ -371,6 +1416,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetSchools(childComplexity), true
 
+	case "Query.getStudent":
+		if e.complexity.Query.GetStudent == nil {
+			break
+		}
+
+		return e.complexity.Query.GetStudent(childComplexity), true
+
 	case "Query.getSubjects":
 		if e.complexity.Query.GetSubjects == nil {
 			break
@@ -382,6 +1434,81 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetSubjects(childComplexity, args["id"].(int)), true
+
+	case "Query.getUserAddress":
+		if e.complexity.Query.GetUserAddress == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserAddress(childComplexity), true
+
+	case "Query.getUserAverageMark":
+		if e.complexity.Query.GetUserAverageMark == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getUserAverageMark_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetUserAverageMark(childComplexity, args["userId"].(int)), true
+
+	case "Query.getUserEducationLevel":
+		if e.complexity.Query.GetUserEducationLevel == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserEducationLevel(childComplexity), true
+
+	case "Query.getUserMarkComment":
+		if e.complexity.Query.GetUserMarkComment == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserMarkComment(childComplexity), true
+
+	case "Query.getUserParent":
+		if e.complexity.Query.GetUserParent == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserParent(childComplexity), true
+
+	case "Query.getUserPhoneNumber":
+		if e.complexity.Query.GetUserPhoneNumber == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserPhoneNumber(childComplexity), true
+
+	case "Query.getUserPlannings":
+		if e.complexity.Query.GetUserPlannings == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserPlannings(childComplexity), true
+
+	case "Query.getUserProfessor":
+		if e.complexity.Query.GetUserProfessor == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserProfessor(childComplexity), true
+
+	case "Query.getUserSubjects":
+		if e.complexity.Query.GetUserSubjects == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserSubjects(childComplexity), true
+
+	case "Query.getUserTutor":
+		if e.complexity.Query.GetUserTutor == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserTutor(childComplexity), true
 
 	case "Query.MyProfile":
 		if e.complexity.Query.MyProfile == nil {
@@ -397,12 +1524,76 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Passwords(childComplexity), true
 
+	case "Query.removeUserAddress":
+		if e.complexity.Query.RemoveUserAddress == nil {
+			break
+		}
+
+		return e.complexity.Query.RemoveUserAddress(childComplexity), true
+
+	case "Query.removeUserFromPlanning":
+		if e.complexity.Query.RemoveUserFromPlanning == nil {
+			break
+		}
+
+		args, err := ec.field_Query_removeUserFromPlanning_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.RemoveUserFromPlanning(childComplexity, args["calendarPlanningId"].(int), args["selectedUserId"].(int)), true
+
+	case "Query.removeUserPlannings":
+		if e.complexity.Query.RemoveUserPlannings == nil {
+			break
+		}
+
+		return e.complexity.Query.RemoveUserPlannings(childComplexity), true
+
+	case "Query.sendUserEmailValidationCode":
+		if e.complexity.Query.SendUserEmailValidationCode == nil {
+			break
+		}
+
+		return e.complexity.Query.SendUserEmailValidationCode(childComplexity), true
+
+	case "Query.userAuthorizationLink":
+		if e.complexity.Query.UserAuthorizationLink == nil {
+			break
+		}
+
+		args, err := ec.field_Query_userAuthorizationLink_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserAuthorizationLink(childComplexity, args["id"].(int)), true
+
+	case "Query.userAuthorizationLinks":
+		if e.complexity.Query.UserAuthorizationLinks == nil {
+			break
+		}
+
+		return e.complexity.Query.UserAuthorizationLinks(childComplexity), true
+
 	case "Query.Users":
 		if e.complexity.Query.Users == nil {
 			break
 		}
 
 		return e.complexity.Query.Users(childComplexity), true
+
+	case "Query.verifyUserEmailValidationCode":
+		if e.complexity.Query.VerifyUserEmailValidationCode == nil {
+			break
+		}
+
+		args, err := ec.field_Query_verifyUserEmailValidationCode_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.VerifyUserEmailValidationCode(childComplexity, args["code"].(int)), true
 
 	case "School.CreatedAt":
 		if e.complexity.School.CreatedAt == nil {
@@ -481,6 +1672,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.SchoolSubject.UpdatedAt(childComplexity), true
 
+	case "Subject.CreatedAt":
+		if e.complexity.Subject.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Subject.CreatedAt(childComplexity), true
+
+	case "Subject.DeletedAt":
+		if e.complexity.Subject.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Subject.DeletedAt(childComplexity), true
+
+	case "Subject.EducationLevelId":
+		if e.complexity.Subject.EducationLevelID == nil {
+			break
+		}
+
+		return e.complexity.Subject.EducationLevelID(childComplexity), true
+
+	case "Subject.Id":
+		if e.complexity.Subject.ID == nil {
+			break
+		}
+
+		return e.complexity.Subject.ID(childComplexity), true
+
+	case "Subject.Name":
+		if e.complexity.Subject.Name == nil {
+			break
+		}
+
+		return e.complexity.Subject.Name(childComplexity), true
+
+	case "Subject.UpdatedAt":
+		if e.complexity.Subject.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Subject.UpdatedAt(childComplexity), true
+
 	case "User.CreatedAt":
 		if e.complexity.User.CreatedAt == nil {
 			break
@@ -530,6 +1763,223 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.UpdatedAt(childComplexity), true
 
+	case "UserAddress.AddressId":
+		if e.complexity.UserAddress.AddressID == nil {
+			break
+		}
+
+		return e.complexity.UserAddress.AddressID(childComplexity), true
+
+	case "UserAddress.AddressType":
+		if e.complexity.UserAddress.AddressType == nil {
+			break
+		}
+
+		return e.complexity.UserAddress.AddressType(childComplexity), true
+
+	case "UserAddress.CreatedAt":
+		if e.complexity.UserAddress.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAddress.CreatedAt(childComplexity), true
+
+	case "UserAddress.DeletedAt":
+		if e.complexity.UserAddress.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAddress.DeletedAt(childComplexity), true
+
+	case "UserAddress.Id":
+		if e.complexity.UserAddress.ID == nil {
+			break
+		}
+
+		return e.complexity.UserAddress.ID(childComplexity), true
+
+	case "UserAddress.UpdatedAt":
+		if e.complexity.UserAddress.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAddress.UpdatedAt(childComplexity), true
+
+	case "UserAddress.UserId":
+		if e.complexity.UserAddress.UserID == nil {
+			break
+		}
+
+		return e.complexity.UserAddress.UserID(childComplexity), true
+
+	case "UserAuthorizationLink.Actors":
+		if e.complexity.UserAuthorizationLink.Actors == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLink.Actors(childComplexity), true
+
+	case "UserAuthorizationLink.CreatedAt":
+		if e.complexity.UserAuthorizationLink.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLink.CreatedAt(childComplexity), true
+
+	case "UserAuthorizationLink.DeletedAt":
+		if e.complexity.UserAuthorizationLink.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLink.DeletedAt(childComplexity), true
+
+	case "UserAuthorizationLink.Id":
+		if e.complexity.UserAuthorizationLink.ID == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLink.ID(childComplexity), true
+
+	case "UserAuthorizationLink.LinkType":
+		if e.complexity.UserAuthorizationLink.LinkType == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLink.LinkType(childComplexity), true
+
+	case "UserAuthorizationLink.UpdatedAt":
+		if e.complexity.UserAuthorizationLink.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLink.UpdatedAt(childComplexity), true
+
+	case "UserAuthorizationLinkActor.AuthorizationId":
+		if e.complexity.UserAuthorizationLinkActor.AuthorizationID == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLinkActor.AuthorizationID(childComplexity), true
+
+	case "UserAuthorizationLinkActor.CreatedAt":
+		if e.complexity.UserAuthorizationLinkActor.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLinkActor.CreatedAt(childComplexity), true
+
+	case "UserAuthorizationLinkActor.DeletedAt":
+		if e.complexity.UserAuthorizationLinkActor.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLinkActor.DeletedAt(childComplexity), true
+
+	case "UserAuthorizationLinkActor.Id":
+		if e.complexity.UserAuthorizationLinkActor.ID == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLinkActor.ID(childComplexity), true
+
+	case "UserAuthorizationLinkActor.UpdatedAt":
+		if e.complexity.UserAuthorizationLinkActor.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLinkActor.UpdatedAt(childComplexity), true
+
+	case "UserAuthorizationLinkActor.UserAuthorizationLink":
+		if e.complexity.UserAuthorizationLinkActor.UserAuthorizationLink == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLinkActor.UserAuthorizationLink(childComplexity), true
+
+	case "UserEducationLevelSubject.CreatedAt":
+		if e.complexity.UserEducationLevelSubject.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserEducationLevelSubject.CreatedAt(childComplexity), true
+
+	case "UserEducationLevelSubject.DeletedAt":
+		if e.complexity.UserEducationLevelSubject.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.UserEducationLevelSubject.DeletedAt(childComplexity), true
+
+	case "UserEducationLevelSubject.Id":
+		if e.complexity.UserEducationLevelSubject.ID == nil {
+			break
+		}
+
+		return e.complexity.UserEducationLevelSubject.ID(childComplexity), true
+
+	case "UserEducationLevelSubject.SubjectId":
+		if e.complexity.UserEducationLevelSubject.SubjectID == nil {
+			break
+		}
+
+		return e.complexity.UserEducationLevelSubject.SubjectID(childComplexity), true
+
+	case "UserEducationLevelSubject.UpdatedAt":
+		if e.complexity.UserEducationLevelSubject.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserEducationLevelSubject.UpdatedAt(childComplexity), true
+
+	case "UserEducationLevelSubject.UserId":
+		if e.complexity.UserEducationLevelSubject.UserID == nil {
+			break
+		}
+
+		return e.complexity.UserEducationLevelSubject.UserID(childComplexity), true
+
+	case "UserPhoneNumber.CreatedAt":
+		if e.complexity.UserPhoneNumber.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserPhoneNumber.CreatedAt(childComplexity), true
+
+	case "UserPhoneNumber.DeletedAt":
+		if e.complexity.UserPhoneNumber.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.UserPhoneNumber.DeletedAt(childComplexity), true
+
+	case "UserPhoneNumber.Id":
+		if e.complexity.UserPhoneNumber.ID == nil {
+			break
+		}
+
+		return e.complexity.UserPhoneNumber.ID(childComplexity), true
+
+	case "UserPhoneNumber.PhoneNumberId":
+		if e.complexity.UserPhoneNumber.PhoneNumberID == nil {
+			break
+		}
+
+		return e.complexity.UserPhoneNumber.PhoneNumberID(childComplexity), true
+
+	case "UserPhoneNumber.UpdatedAt":
+		if e.complexity.UserPhoneNumber.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserPhoneNumber.UpdatedAt(childComplexity), true
+
+	case "UserPhoneNumber.UserId":
+		if e.complexity.UserPhoneNumber.UserID == nil {
+			break
+		}
+
+		return e.complexity.UserPhoneNumber.UserID(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -538,10 +1988,16 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputAddressInput,
 		ec.unmarshalInputAssetInput,
+		ec.unmarshalInputCalendarPlanningInput,
+		ec.unmarshalInputMarkInput,
+		ec.unmarshalInputMessageInput,
 		ec.unmarshalInputPasswordInput,
+		ec.unmarshalInputPhoneNumberInput,
 		ec.unmarshalInputSchoolInput,
 		ec.unmarshalInputSchoolSubjectInput,
+		ec.unmarshalInputSubjectInput,
 		ec.unmarshalInputUserInput,
 	)
 	first := true
@@ -640,6 +2096,39 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
+	{Name: "../gql/address/address.graphqls", Input: `type Address {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    Country: String!
+    City: String!
+    Latitude: Float!
+    Longitude: Float!
+    Street: String!
+    FullAddress: String!
+    XId: String
+}
+
+
+type UserAddress {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId: ID
+    AddressId: ID
+    AddressType: String
+}
+
+input AddressInput {
+    Country: String
+    City: String
+    Latitude: Float
+    Longitude: Float
+    Street: String
+    FullAddress: String
+}`, BuiltIn: false},
 	{Name: "../gql/authorization/authorization.graphqls", Input: `type Authorization {
     id: ID!
     createdAt: DateTime!
@@ -647,7 +2136,35 @@ var sources = []*ast.Source{
     deletedAt: DateTime
     userId: Int!
     AccessLevel: Int!
+}
+
+
+type UserAuthorizationLink {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    LinkType: Int!
+    Actors: [UserAuthorizationLinkActor]!
+}
+
+type UserAuthorizationLinkActor {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserAuthorizationLink: UserAuthorizationLink!
+    AuthorizationId: Int!
 }`, BuiltIn: false},
+	{Name: "../gql/code/code.graphqls", Input: `type Code {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId: ID!
+    VerificationCode: Int!
+}
+`, BuiltIn: false},
 	{Name: "../gql/directive/directive.graphqls", Input: `directive @goModel(
     model: String
     models: [String!]
@@ -667,6 +2184,60 @@ directive @goTag(
     value: String
 ) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
 `, BuiltIn: false},
+	{Name: "../gql/education/education.graphqls", Input: `type Education {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    Name: String!
+}
+
+type UserEducationLevelSubject {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId: ID!
+    SubjectId :ID!
+}
+`, BuiltIn: false},
+	{Name: "../gql/mark/mark.graphqls", Input: `type Mark {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId : ID!
+    AuthorId: ID!
+    AuthorComment: String!
+    AuthorMark: String!
+}
+
+input MarkInput {
+    UserID : Int
+    AuthorID: Int
+    AuthorComment: String
+    AuthorMark: String
+}
+`, BuiltIn: false},
+	{Name: "../gql/message/message.graphqls", Input: `
+type Message {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    ResourceType: Int!
+    ResourceValue :Int!
+    ResourceLabel: String!
+    ResourceLanguage: Int!
+}
+
+input MessageInput {
+    ResourceType: Int
+    ResourceValue :Int
+    ResourceLabel: String
+    ResourceLanguage: Int
+}
+`, BuiltIn: false},
 	{Name: "../gql/password/password.graphqls", Input: `type Password {
     Id: ID!
     CreatedAt: DateTime!
@@ -679,37 +2250,188 @@ directive @goTag(
 input PasswordInput{
     Hash: String
 }`, BuiltIn: false},
+	{Name: "../gql/phone/phone.graphqls", Input: `type PhoneNumber{
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    MobilePhoneNumber: String!
+    IsUrgency: Boolean!
+}
+
+type UserPhoneNumber{
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId: ID!
+    PhoneNumberId: ID!
+}
+
+input PhoneNumberInput{
+    MobilePhoneNumber: String
+    IsUrgency: Boolean
+}
+
+
+`, BuiltIn: false},
+	{Name: "../gql/planning/planning.graphqls", Input: `type CalendarPlanning {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    AuthorizationId : ID!
+    StartDateTime: DateTime!
+    EndDateTime: DateTime!
+    Description: String!
+}
+
+
+input CalendarPlanningInput {
+    StartDateTime: DateTime
+    EndDateTime: DateTime
+    Description: String
+}
+
+type CalendarPlanningActor {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    AuthorizationId: ID!
+    CalendarPlanningId: ID
+}`, BuiltIn: false},
+	{Name: "../gql/qr/qr.graphqls", Input: `type QrCodeRegistry {
+    Id: ID!
+    ResourceType: Int!
+    ResourceValue :Int!
+    UserId : ID!
+    Xid : String!
+    IsUsed :Boolean
+}
+`, BuiltIn: false},
 	{Name: "../gql/scalar/scalar.graphqls", Input: `"The ` + "`" + `Date` + "`" + ` is a date in the format YYYY-MM-DD"
 scalar Date
 
 "The ` + "`" + `DateTime` + "`" + ` is a date in the format ISO 8601 format: ` + "`" + `2006-01-02T15:04:05Z07:00` + "`" + `"
 scalar DateTime`, BuiltIn: false},
 	{Name: "../gql/schema/mutation.graphqls", Input: `type Mutation {
-    RegisterWithEmail(input: String!, as: Int!): String
-    Register(input: UserInput!): Boolean
+    registerWithEmail(input: String!, as: Int!): String
+    register(input: UserInput!): Boolean
 
-    LogIn(email: String!, password: String!): String
+    logIn(email: String!, password: String!): String
 
-    NewPassword(password: String!): Boolean
-    DelPassword(id: ID!): Boolean
+    newPassword(password: String!): Boolean
+    delPassword(id: ID!): Boolean
 
-    NewAsset(asset: AssetInput!): Asset
+    newAsset(asset: AssetInput!): Asset
 
-    PopulateSchool: Boolean
+    populateSchool: Boolean
+
+    #   Message mutations
+    newMessage(input: MessageInput!): Message!
+    updMessage(input: MessageInput!): Message!
+    delMessage(language: Int!, messageNumber :Int!) : String
+    newMenu(input: MessageInput!) : Message!
+    delMenu(menuNumber: Int!): String
+    newMenuItem(input: MessageInput!): Message!
+    delMenuItem(input: MessageInput!) : String
+
+    #    Address mutations
+    newAddress(input: AddressInput!): Address!
+    updateUserAddress(input: AddressInput!): Address!
+
+    #    Phone mutations
+    newPhoneNumber(input: PhoneNumberInput!) : PhoneNumber!
+    updateUserPhoneNumber(input: PhoneNumberInput!) : PhoneNumber!
+
+    #    Planning mutations
+    createUserPlannings(input: CalendarPlanningInput!): CalendarPlanning!
+    addUserIntoPlanning(calendarId: ID!, selectedUserId: ID!):CalendarPlanningActor!
+
+    #   Education mutations
+    setUserEducationLevel(input: SubjectInput!): Education!
+    updateUserEducationLevel(input : SubjectInput!): Education!
+
+    #    Mark mutations
+    rateUser(input: MarkInput!): Mark!
+
+    #    Link Mutations
+    addParentToUser(input: UserInput!) :User!
+    removeUserParent(input: UserInput!): String
+
+    addTutorToUser(input: UserInput!) :User!
+    removeUserTutor(input: UserInput!): String
+
+    addProfessorToUser(input: UserInput!) :User!
+    removeUserProfessor(input: UserInput!): String
+
+    addStudentToLink(input: UserInput!) :User!
+    removeStudent(input: UserInput!): String
+
+    # Qr Mutations
+    loginWithQr(xId: String!) :String
 }
 `, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {
+    #    PASSWORD QUERIES
     Passwords: [Password!]
 
-    Users: [User!]!
-    MyProfile: User!
-
+    #    ASSET QUERIES
     GetAsset(id: ID!): Asset
     Assets: [Asset!]
 
+    #    USER QUERIES
+    userAuthorizationLink(id: ID!): UserAuthorizationLink
+    userAuthorizationLinks: [UserAuthorizationLink!]!
+    getCode: Code!
+    verifyUserEmailValidationCode(code: Int!) : Int!
+    sendUserEmailValidationCode: User!
+    getPasswordHistory: [Password]
+    activateUser: User!
+    Users: [User!]!
+    MyProfile: User!
+
+    #    Message QUERIES
+    getMessages: [Message]
+    getMessagesInLanguage(language: Int!) : [Message]
+    getMessage(language: Int!, resourceNumber :Int!): Message!
+    getMenuList: [Message]
+    getMenuItems(language:Int!, menuNumber: Int!): [Message]
+
+    #    Address QUERIES
+    getUserAddress: Address!
+    removeUserAddress: String!
+
+    #    Phone QUERIES
+    getUserPhoneNumber: PhoneNumber!
+
+    #    Calendar Planning QUERIES
+    getUserPlannings: CalendarPlanning!
+    removeUserPlannings: String
+    getPlanningActors(calendarId: ID!): [User!]
+    removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): String
+
+    #    Education QUERIES
+    getUserSubjects: [Subject!]
+    getEducation: [Education!]
+    getUserEducationLevel: Education!
     getSchools: [School!]
     getSubjects(id: ID!): [SchoolSubject!]
     getSchool(id: ID!): School
+
+    #    Mark QUERIES
+    getUserAverageMark(userId: ID!): Int
+    getUserMarkComment: [Mark!]
+
+    #    Link QUERIES
+    getUserParent :[User!]
+    getUserTutor :[User!]
+    getUserProfessor :[User!]
+    getStudent :[User!]
+
+    #    Qr QUERIES
+    generateQrCode: String
 }`, BuiltIn: false},
 	{Name: "../gql/school/school.graphqls", Input: `type School {
     Id: ID!
@@ -734,6 +2456,19 @@ type SchoolSubject {
 
 input SchoolSubjectInput {
     SchoolNumber: Int
+    Name: String
+}`, BuiltIn: false},
+	{Name: "../gql/subject/subject.graphqls", Input: `type Subject {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    EducationLevelId: ID!
+    Name: String!
+}
+
+input SubjectInput {
+    EducationLevelID: Int
     Name: String
 }`, BuiltIn: false},
 	{Name: "../gql/user/user.graphqls", Input: `type User {

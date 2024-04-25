@@ -1,0 +1,17 @@
+type Mark {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId : ID!
+    AuthorId: ID!
+    AuthorComment: String!
+    AuthorMark: String!
+}
+
+input MarkInput {
+    UserID : Int
+    AuthorID: Int
+    AuthorComment: String
+    AuthorMark: String
+}

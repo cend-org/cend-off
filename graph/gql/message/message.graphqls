@@ -1,0 +1,18 @@
+
+type Message {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    ResourceType: Int!
+    ResourceValue :Int!
+    ResourceLabel: String!
+    ResourceLanguage: Int!
+}
+
+input MessageInput {
+    ResourceType: Int
+    ResourceValue :Int
+    ResourceLabel: String
+    ResourceLanguage: Int
+}

@@ -6,3 +6,22 @@ type Authorization {
     userId: Int!
     AccessLevel: Int!
 }
+
+
+type UserAuthorizationLink {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    LinkType: Int!
+    Actors: [UserAuthorizationLinkActor]!
+}
+
+type UserAuthorizationLinkActor {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserAuthorizationLink: UserAuthorizationLink!
+    AuthorizationId: Int!
+}

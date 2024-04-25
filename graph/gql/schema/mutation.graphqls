@@ -1,13 +1,57 @@
 type Mutation {
-    RegisterWithEmail(input: String!, as: Int!): String
-    Register(input: UserInput!): Boolean
+    registerWithEmail(input: String!, as: Int!): String
+    register(input: UserInput!): Boolean
 
-    LogIn(email: String!, password: String!): String
+    logIn(email: String!, password: String!): String
 
-    NewPassword(password: String!): Boolean
-    DelPassword(id: ID!): Boolean
+    newPassword(password: String!): Boolean
+    delPassword(id: ID!): Boolean
 
-    NewAsset(asset: AssetInput!): Asset
+    newAsset(asset: AssetInput!): Asset
 
-    PopulateSchool: Boolean
+    populateSchool: Boolean
+
+    #   Message mutations
+    newMessage(input: MessageInput!): Message!
+    updMessage(input: MessageInput!): Message!
+    delMessage(language: Int!, messageNumber :Int!) : String
+    newMenu(input: MessageInput!) : Message!
+    delMenu(menuNumber: Int!): String
+    newMenuItem(input: MessageInput!): Message!
+    delMenuItem(input: MessageInput!) : String
+
+    #    Address mutations
+    newAddress(input: AddressInput!): Address!
+    updateUserAddress(input: AddressInput!): Address!
+
+    #    Phone mutations
+    newPhoneNumber(input: PhoneNumberInput!) : PhoneNumber!
+    updateUserPhoneNumber(input: PhoneNumberInput!) : PhoneNumber!
+
+    #    Planning mutations
+    createUserPlannings(input: CalendarPlanningInput!): CalendarPlanning!
+    addUserIntoPlanning(calendarId: ID!, selectedUserId: ID!):CalendarPlanningActor!
+
+    #   Education mutations
+    setUserEducationLevel(input: SubjectInput!): Education!
+    updateUserEducationLevel(input : SubjectInput!): Education!
+
+    #    Mark mutations
+    rateUser(input: MarkInput!): Mark!
+
+    #    Link Mutations
+    addParentToUser(input: UserInput!) :User!
+    removeUserParent(input: UserInput!): String
+
+    addTutorToUser(input: UserInput!) :User!
+    removeUserTutor(input: UserInput!): String
+
+    addProfessorToUser(input: UserInput!) :User!
+    removeUserProfessor(input: UserInput!): String
+
+    addStudentToLink(input: UserInput!) :User!
+    removeStudent(input: UserInput!): String
+
+    # Qr Mutations
+    loginWithQr(xId: String!) :String
 }

@@ -1,0 +1,13 @@
+type Subject {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    EducationLevelId: ID!
+    Name: String!
+}
+
+input SubjectInput {
+    EducationLevelID: Int
+    Name: String
+}
