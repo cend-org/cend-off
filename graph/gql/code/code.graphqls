@@ -1,0 +1,8 @@
+type Code {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId: ID!
+    VerificationCode: Int!
+}

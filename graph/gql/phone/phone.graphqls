@@ -1,0 +1,24 @@
+type PhoneNumber{
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    MobilePhoneNumber: String!
+    IsUrgency: Boolean!
+}
+
+type UserPhoneNumber{
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId: ID!
+    PhoneNumberId: ID!
+}
+
+input PhoneNumberInput{
+    MobilePhoneNumber: String
+    IsUrgency: Boolean
+}
+
+

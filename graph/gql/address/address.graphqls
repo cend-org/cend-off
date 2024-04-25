@@ -1,0 +1,33 @@
+type Address {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    Country: String!
+    City: String!
+    Latitude: Float!
+    Longitude: Float!
+    Street: String!
+    FullAddress: String!
+    XId: String
+}
+
+
+type UserAddress {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId: ID
+    AddressId: ID
+    AddressType: String
+}
+
+input AddressInput {
+    Country: String
+    City: String
+    Latitude: Float
+    Longitude: Float
+    Street: String
+    FullAddress: String
+}

@@ -1,0 +1,8 @@
+type QrCodeRegistry {
+    Id: ID!
+    ResourceType: Int!
+    ResourceValue :Int!
+    UserId : ID!
+    Xid : String!
+    IsUsed :Boolean
+}

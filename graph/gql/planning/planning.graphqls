@@ -1,0 +1,26 @@
+type CalendarPlanning {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    AuthorizationId : ID!
+    StartDateTime: DateTime!
+    EndDateTime: DateTime!
+    Description: String!
+}
+
+
+input CalendarPlanningInput {
+    StartDateTime: DateTime
+    EndDateTime: DateTime
+    Description: String
+}
+
+type CalendarPlanningActor {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    AuthorizationId: ID!
+    CalendarPlanningId: ID
+}
