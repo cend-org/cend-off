@@ -9,9 +9,22 @@ import (
 	"github.com/cend-org/duval/internal/database"
 	pwd "github.com/cend-org/duval/internal/password"
 	"github.com/cend-org/duval/internal/token"
+	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/pkg/errors"
 	"net/mail"
 	"strings"
+	"time"
+)
+
+const (
+	StatusNew        = 0
+	StatusUnverified = 1
+
+	StatusNeedPassword = 2
+
+	StatusOnboardingInProgress = 3
+
+	StatusActive = 4
 )
 
 func RegisterWithEmail(ctx context.Context, input string, as int) (*string, error) {
@@ -108,15 +121,101 @@ func GetUserAuthorizationLinks(ctx context.Context) ([]model.UserAuthorizationLi
 }
 
 func GetPasswordHistory(ctx context.Context) ([]model.Password, error) {
-	panic(fmt.Errorf("not implemented: GetPasswordHistory - getPasswordHistory"))
+	var (
+		passwords []model.Password
+		tok       *token.Token
+		err       error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return passwords, errx.UnAuthorizedError
+	}
+	err = database.GetMany(&passwords,
+		`SELECT password.*
+			FROM password
+			WHERE password.user_id = ?
+			ORDER BY password.created_at DESC`, tok.UserId)
+	if err != nil {
+		return passwords, errx.DbGetError
+	}
+
+	return passwords, nil
 }
 
 func ActivateUser(ctx context.Context) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: ActivateUser - activateUser"))
+	var (
+		tok *token.Token
+		err error
+		usr model.User
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return &usr, errx.Lambda(err)
+	}
+
+	usr, err = GetUserWithId(tok.UserId)
+	if err != nil {
+		return &usr, errx.Lambda(err)
+	}
+
+	if usr.Status <= StatusNeedPassword {
+		return &usr, errx.Lambda(err)
+	}
+
+	usr.Status = StatusActive
+
+	return &usr, nil
 }
 
 func MyProfile(ctx context.Context) (*model.User, error) {
-	panic(fmt.Errorf("not implemented: Register - Register"))
+	var (
+		tok  *token.Token
+		err  error
+		user model.User
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return &user, errx.Lambda(err)
+	}
+
+	user, err = GetUserWithId(tok.UserId)
+	if err != nil {
+		return &user, errx.Lambda(err)
+	}
+
+	return &user, nil
+}
+
+func UpdMyProfile(ctx *context.Context, input model.UserInput) (*model.User, error) {
+	var (
+		err error
+		tok *token.Token
+		usr model.User
+	)
+
+	tok, err = token.GetFromContext(*ctx)
+	if err != nil {
+		return &usr, errx.UnAuthorizedError
+	}
+
+	usr.ID = tok.UserId
+
+	usr, err = GetUserWithId(usr.ID)
+	if err != nil {
+		return &usr, errx.DbGetError
+	}
+
+	usr = model.MapUserInputToUser(input, usr)
+
+	err = database.Update(usr)
+	if err != nil {
+		return &usr, errx.Lambda(err)
+	}
+
+	return &usr, nil
 }
 
 /*
@@ -199,4 +298,14 @@ func LoginWithEmailAndPassword(email, pass string) (access string, err error) {
 	}
 
 	return access, err
+}
+
+func GetUserWithId(id int) (user model.User, err error) {
+	time.Sleep(100)
+	err = database.Get(&user, `SELECT * FROM user WHERE id = ?`, id)
+	if err != nil {
+		return user, err
+	}
+
+	return user, err
 }
