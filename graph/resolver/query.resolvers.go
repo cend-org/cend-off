@@ -7,12 +7,11 @@ package resolver
 import (
 	"context"
 	"fmt"
-	"github.com/cend-org/duval/internal/pkg/address"
-	"github.com/cend-org/duval/internal/pkg/user/link"
 
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/pkg/address"
 	"github.com/cend-org/duval/internal/pkg/code"
 	"github.com/cend-org/duval/internal/pkg/education"
 	"github.com/cend-org/duval/internal/pkg/mark"
@@ -20,6 +19,7 @@ import (
 	"github.com/cend-org/duval/internal/pkg/planning"
 	"github.com/cend-org/duval/internal/pkg/translator"
 	"github.com/cend-org/duval/internal/pkg/user"
+	"github.com/cend-org/duval/internal/pkg/user/link"
 )
 
 // Passwords is the resolver for the Passwords field.
