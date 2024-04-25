@@ -64,13 +64,13 @@ func Get(R any, Q string, A ...any) (err error) {
 	return err
 }
 
-func InsertOne(T any) (id uint, err error) {
+func InsertOne(T any) (id int, err error) {
 	lastId, err := Insert(T)
 	if err != nil {
 		return 0, err
 	}
 
-	return uint(lastId), err
+	return int(lastId), err
 }
 
 func Update(T any) (err error) {

@@ -24,7 +24,7 @@ type QueryResolver interface {
 	UserAuthorizationLink(ctx context.Context, id int) (*model.UserAuthorizationLink, error)
 	UserAuthorizationLinks(ctx context.Context) ([]model.UserAuthorizationLink, error)
 	GetCode(ctx context.Context) (*model.Code, error)
-	VerifyUserEmailValidationCode(ctx context.Context, code int) (int, error)
+	VerifyUserEmailValidationCode(ctx context.Context, verifCode int) (int, error)
 	SendUserEmailValidationCode(ctx context.Context) (*model.User, error)
 	GetPasswordHistory(ctx context.Context) ([]model.Password, error)
 	ActivateUser(ctx context.Context) (*model.User, error)
@@ -231,14 +231,14 @@ func (ec *executionContext) field_Query_verifyUserEmailValidationCode_args(ctx c
 	var err error
 	args := map[string]interface{}{}
 	var arg0 int
-	if tmp, ok := rawArgs["code"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("code"))
+	if tmp, ok := rawArgs["verifCode"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("verifCode"))
 		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["code"] = arg0
+	args["verifCode"] = arg0
 	return args, nil
 }
 
@@ -468,8 +468,6 @@ func (ec *executionContext) fieldContext_Query_userAuthorizationLink(ctx context
 				return ec.fieldContext_UserAuthorizationLink_DeletedAt(ctx, field)
 			case "LinkType":
 				return ec.fieldContext_UserAuthorizationLink_LinkType(ctx, field)
-			case "Actors":
-				return ec.fieldContext_UserAuthorizationLink_Actors(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type UserAuthorizationLink", field.Name)
 		},
@@ -537,8 +535,6 @@ func (ec *executionContext) fieldContext_Query_userAuthorizationLinks(ctx contex
 				return ec.fieldContext_UserAuthorizationLink_DeletedAt(ctx, field)
 			case "LinkType":
 				return ec.fieldContext_UserAuthorizationLink_LinkType(ctx, field)
-			case "Actors":
-				return ec.fieldContext_UserAuthorizationLink_Actors(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type UserAuthorizationLink", field.Name)
 		},
@@ -618,7 +614,7 @@ func (ec *executionContext) _Query_verifyUserEmailValidationCode(ctx context.Con
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().VerifyUserEmailValidationCode(rctx, fc.Args["code"].(int))
+		return ec.resolvers.Query().VerifyUserEmailValidationCode(rctx, fc.Args["verifCode"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2148,11 +2144,14 @@ func (ec *executionContext) _Query_getUserMarkComment(ctx context.Context, field
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
 	res := resTmp.([]model.Mark)
 	fc.Result = res
-	return ec.marshalOMark2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMarkᚄ(ctx, field.Selections, res)
+	return ec.marshalNMark2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMarkᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getUserMarkComment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3330,6 +3329,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getUserMarkComment(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 

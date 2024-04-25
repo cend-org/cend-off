@@ -12,7 +12,7 @@ const SecretKey = "Secret_key"
 
 type Token struct {
 	UserId         int `json:"user_id,omitempty"`
-	AccessLevel    int `json:"access_level,omitempty"`
+	UserLevel      int `json:"level,omitempty"`
 	ExpirationDate struct {
 		Value time.Time `json:"value,omitempty"`
 	} `json:"expiration_date,omitempty"`

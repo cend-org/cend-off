@@ -22,7 +22,7 @@ func NewAccessToken(usr model.User) (string, error) {
 
 	/* fill token field */
 	tok.UserId = usr.ID
-	tok.AccessLevel = auth.Level
+	tok.UserLevel = auth.Level
 
 	tok.ExpirationDate.Value = time.Now().Add(time.Hour * 24)
 
@@ -35,4 +35,24 @@ func NewAccessToken(usr model.User) (string, error) {
 	time.Sleep(time.Second * 2)
 
 	return access, err
+}
+
+func GetTokenString(userId int) (str string, err error) {
+	var tok token.Token
+	err = database.Get(&tok, `SELECT u.id as 'user_id', u.status as 'user_status' FROM user u WHERE u.id = ?`, userId)
+	if err != nil {
+		return str, err
+	}
+
+	err = database.Get(&tok, `SELECT auth.level as 'user_level' FROM authorization auth WHERE auth.user_id = ?`, userId)
+	if err != nil {
+		return str, err
+	}
+
+	str, err = token.New(tok)
+	if err != nil {
+		return str, err
+	}
+
+	return str, err
 }

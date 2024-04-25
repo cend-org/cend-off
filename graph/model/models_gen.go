@@ -246,21 +246,20 @@ type UserAddress struct {
 }
 
 type UserAuthorizationLink struct {
-	ID        int                           `json:"id"`
-	CreatedAt time.Time                     `json:"created_at"`
-	UpdatedAt time.Time                     `json:"updated_at"`
-	DeletedAt *time.Time                    `json:"deleted_at"`
-	LinkType  int                           `json:"link_type"`
-	Actors    []*UserAuthorizationLinkActor `json:"actors"`
+	ID        int        `json:"id"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	DeletedAt *time.Time `json:"deleted_at"`
+	LinkType  int        `json:"link_type"`
 }
 
 type UserAuthorizationLinkActor struct {
-	ID                    int                    `json:"id"`
-	CreatedAt             time.Time              `json:"created_at"`
-	UpdatedAt             time.Time              `json:"updated_at"`
-	DeletedAt             *time.Time             `json:"deleted_at"`
-	UserAuthorizationLink *UserAuthorizationLink `json:"user_authorization_link"`
-	AuthorizationID       int                    `json:"authorization_id"`
+	ID                      int        `json:"id"`
+	CreatedAt               time.Time  `json:"created_at"`
+	UpdatedAt               time.Time  `json:"updated_at"`
+	DeletedAt               *time.Time `json:"deleted_at"`
+	UserAuthorizationLinkID int        `json:"user_authorization_link_id"`
+	AuthorizationID         int        `json:"authorization_id"`
 }
 
 type UserEducationLevelSubject struct {

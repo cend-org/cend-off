@@ -230,7 +230,7 @@ type ComplexityRoot struct {
 		UserAuthorizationLink         func(childComplexity int, id int) int
 		UserAuthorizationLinks        func(childComplexity int) int
 		Users                         func(childComplexity int) int
-		VerifyUserEmailValidationCode func(childComplexity int, code int) int
+		VerifyUserEmailValidationCode func(childComplexity int, verifCode int) int
 	}
 
 	School struct {
@@ -294,7 +294,6 @@ type ComplexityRoot struct {
 	}
 
 	UserAuthorizationLink struct {
-		Actors    func(childComplexity int) int
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
 		ID        func(childComplexity int) int
@@ -303,12 +302,12 @@ type ComplexityRoot struct {
 	}
 
 	UserAuthorizationLinkActor struct {
-		AuthorizationID       func(childComplexity int) int
-		CreatedAt             func(childComplexity int) int
-		DeletedAt             func(childComplexity int) int
-		ID                    func(childComplexity int) int
-		UpdatedAt             func(childComplexity int) int
-		UserAuthorizationLink func(childComplexity int) int
+		AuthorizationID         func(childComplexity int) int
+		CreatedAt               func(childComplexity int) int
+		DeletedAt               func(childComplexity int) int
+		ID                      func(childComplexity int) int
+		UpdatedAt               func(childComplexity int) int
+		UserAuthorizationLinkID func(childComplexity int) int
 	}
 
 	UserEducationLevelSubject struct {
@@ -1607,7 +1606,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.VerifyUserEmailValidationCode(childComplexity, args["code"].(int)), true
+		return e.complexity.Query.VerifyUserEmailValidationCode(childComplexity, args["verifCode"].(int)), true
 
 	case "School.CreatedAt":
 		if e.complexity.School.CreatedAt == nil {
@@ -1924,13 +1923,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserAddress.UserID(childComplexity), true
 
-	case "UserAuthorizationLink.Actors":
-		if e.complexity.UserAuthorizationLink.Actors == nil {
-			break
-		}
-
-		return e.complexity.UserAuthorizationLink.Actors(childComplexity), true
-
 	case "UserAuthorizationLink.CreatedAt":
 		if e.complexity.UserAuthorizationLink.CreatedAt == nil {
 			break
@@ -2001,12 +1993,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserAuthorizationLinkActor.UpdatedAt(childComplexity), true
 
-	case "UserAuthorizationLinkActor.UserAuthorizationLink":
-		if e.complexity.UserAuthorizationLinkActor.UserAuthorizationLink == nil {
+	case "UserAuthorizationLinkActor.UserAuthorizationLinkId":
+		if e.complexity.UserAuthorizationLinkActor.UserAuthorizationLinkID == nil {
 			break
 		}
 
-		return e.complexity.UserAuthorizationLinkActor.UserAuthorizationLink(childComplexity), true
+		return e.complexity.UserAuthorizationLinkActor.UserAuthorizationLinkID(childComplexity), true
 
 	case "UserEducationLevelSubject.CreatedAt":
 		if e.complexity.UserEducationLevelSubject.CreatedAt == nil {
@@ -2257,7 +2249,6 @@ type UserAuthorizationLink {
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     LinkType: Int!
-    Actors: [UserAuthorizationLinkActor]!
 }
 
 type UserAuthorizationLinkActor {
@@ -2265,7 +2256,7 @@ type UserAuthorizationLinkActor {
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserAuthorizationLink: UserAuthorizationLink!
+    UserAuthorizationLinkId: Int!
     AuthorizationId: Int!
 }`, BuiltIn: false},
 	{Name: "../gql/code/code.graphqls", Input: `type Code {
@@ -2499,7 +2490,7 @@ scalar DateTime`, BuiltIn: false},
     userAuthorizationLink(id: ID!): UserAuthorizationLink
     userAuthorizationLinks: [UserAuthorizationLink!]!
     getCode: Code!
-    verifyUserEmailValidationCode(code: Int!) : Int!
+    verifyUserEmailValidationCode(verifCode: Int!) : Int!
     sendUserEmailValidationCode: User!
     getPasswordHistory: [Password!]!
     activateUser: User!
@@ -2534,7 +2525,7 @@ scalar DateTime`, BuiltIn: false},
 
     #    Mark QUERIES
     getUserAverageMark(userId: ID!): Int
-    getUserMarkComment: [Mark!]
+    getUserMarkComment: [Mark!]!
 
     #    Link QUERIES
     getUserParent :[User!]

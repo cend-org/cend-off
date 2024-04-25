@@ -7,12 +7,18 @@ package resolver
 import (
 	"context"
 	"fmt"
+	"github.com/cend-org/duval/internal/pkg/address"
+	"github.com/cend-org/duval/internal/pkg/user/link"
 
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/pkg/code"
+	"github.com/cend-org/duval/internal/pkg/education"
+	"github.com/cend-org/duval/internal/pkg/mark"
 	"github.com/cend-org/duval/internal/pkg/phone"
 	"github.com/cend-org/duval/internal/pkg/planning"
+	"github.com/cend-org/duval/internal/pkg/translator"
 	"github.com/cend-org/duval/internal/pkg/user"
 )
 
@@ -63,17 +69,17 @@ func (r *queryResolver) UserAuthorizationLinks(ctx context.Context) ([]model.Use
 
 // GetCode is the resolver for the getCode field.
 func (r *queryResolver) GetCode(ctx context.Context) (*model.Code, error) {
-	return user.GetCode(ctx)
+	return code.GetCode(ctx)
 }
 
 // VerifyUserEmailValidationCode is the resolver for the verifyUserEmailValidationCode field.
-func (r *queryResolver) VerifyUserEmailValidationCode(ctx context.Context, code int) (int, error) {
-	return user.VerifyUserEmailValidationCode(ctx, code)
+func (r *queryResolver) VerifyUserEmailValidationCode(ctx context.Context, verifCode int) (int, error) {
+	return code.VerifyUserEmailValidationCode(ctx, verifCode)
 }
 
 // SendUserEmailValidationCode is the resolver for the sendUserEmailValidationCode field.
 func (r *queryResolver) SendUserEmailValidationCode(ctx context.Context) (*model.User, error) {
-	return user.SendUserEmailValidationCode(ctx)
+	return code.SendUserEmailValidationCode(ctx)
 }
 
 // GetPasswordHistory is the resolver for the getPasswordHistory field.
@@ -98,37 +104,37 @@ func (r *queryResolver) MyProfile(ctx context.Context) (*model.User, error) {
 
 // GetMessages is the resolver for the getMessages field.
 func (r *queryResolver) GetMessages(ctx context.Context) ([]*model.Message, error) {
-	panic(fmt.Errorf("not implemented: GetMessages - getMessages"))
+	return translator.GetMessages(ctx)
 }
 
 // GetMessagesInLanguage is the resolver for the getMessagesInLanguage field.
 func (r *queryResolver) GetMessagesInLanguage(ctx context.Context, language int) ([]*model.Message, error) {
-	panic(fmt.Errorf("not implemented: GetMessagesInLanguage - getMessagesInLanguage"))
+	return translator.GetMessagesInLanguage(ctx, language)
 }
 
 // GetMessage is the resolver for the getMessage field.
 func (r *queryResolver) GetMessage(ctx context.Context, language int, resourceNumber int) (*model.Message, error) {
-	panic(fmt.Errorf("not implemented: GetMessage - getMessage"))
+	return translator.GetMessage(ctx, language, resourceNumber)
 }
 
 // GetMenuList is the resolver for the getMenuList field.
 func (r *queryResolver) GetMenuList(ctx context.Context) ([]*model.Message, error) {
-	panic(fmt.Errorf("not implemented: GetMenuList - getMenuList"))
+	return translator.GetMenuList(ctx)
 }
 
 // GetMenuItems is the resolver for the getMenuItems field.
 func (r *queryResolver) GetMenuItems(ctx context.Context, language int, menuNumber int) ([]*model.Message, error) {
-	panic(fmt.Errorf("not implemented: GetMenuItems - getMenuItems"))
+	return translator.GetMenuItems(ctx, language, menuNumber)
 }
 
 // GetUserAddress is the resolver for the getUserAddress field.
 func (r *queryResolver) GetUserAddress(ctx context.Context) (*model.Address, error) {
-	panic(fmt.Errorf("not implemented: GetUserAddress - getUserAddress"))
+	return address.GetUserAddress(ctx)
 }
 
 // RemoveUserAddress is the resolver for the removeUserAddress field.
 func (r *queryResolver) RemoveUserAddress(ctx context.Context) (string, error) {
-	panic(fmt.Errorf("not implemented: RemoveUserAddress - removeUserAddress"))
+	return address.RemoveUserAddress(ctx)
 }
 
 // GetUserPhoneNumber is the resolver for the getUserPhoneNumber field.
@@ -148,88 +154,62 @@ func (r *queryResolver) GetPlanningActors(ctx context.Context, calendarID int) (
 
 // GetUserSubjects is the resolver for the getUserSubjects field.
 func (r *queryResolver) GetUserSubjects(ctx context.Context) ([]model.Subject, error) {
-	panic(fmt.Errorf("not implemented: GetUserSubjects - getUserSubjects"))
+	return education.GetUserSubjects(ctx)
 }
 
 // GetEducation is the resolver for the getEducation field.
 func (r *queryResolver) GetEducation(ctx context.Context) ([]model.Education, error) {
-	panic(fmt.Errorf("not implemented: GetEducation - getEducation"))
+	return education.GetEducation(ctx)
 }
 
 // GetUserEducationLevel is the resolver for the getUserEducationLevel field.
 func (r *queryResolver) GetUserEducationLevel(ctx context.Context) (*model.Education, error) {
-	panic(fmt.Errorf("not implemented: GetUserEducationLevel - getUserEducationLevel"))
+	return education.GetUserEducationLevel(ctx)
 }
 
 // GetSchools is the resolver for the getSchools field.
 func (r *queryResolver) GetSchools(ctx context.Context) ([]model.School, error) {
-	var schools []model.School
-	var err error
-
-	err = database.Select(&schools, `SELECT * FROM school ORDER BY created_at`)
-	if err != nil {
-		return nil, err
-	}
-
-	return schools, err
+	return education.GetSchools(ctx)
 }
 
 // GetSubjects is the resolver for the getSubjects field.
 func (r *queryResolver) GetSubjects(ctx context.Context, id int) ([]model.SchoolSubject, error) {
-	var subjects []model.SchoolSubject
-	var err error
-
-	err = database.Select(&subjects, `SELECT * FROM school_subject WHERE school_number = ?`, id)
-	if err != nil {
-		return nil, err
-	}
-
-	return subjects, err
+	return education.GetSubjects(ctx, id)
 }
 
 // GetSchool is the resolver for the getSchool field.
 func (r *queryResolver) GetSchool(ctx context.Context, id int) (*model.School, error) {
-	var (
-		err    error
-		school model.School
-	)
-
-	err = database.Get(&school, `SELECT * FROM school WHERE id = ?`, id)
-	if err != nil {
-		return nil, err
-	}
-
-	return &school, err
+	return education.GetSchool(ctx, id)
 }
 
 // GetUserAverageMark is the resolver for the getUserAverageMark field.
 func (r *queryResolver) GetUserAverageMark(ctx context.Context, userID int) (*int, error) {
-	panic(fmt.Errorf("not implemented: GetUserAverageMark - getUserAverageMark"))
+	return mark.GetUserAverageMark(ctx, userID)
 }
 
 // GetUserMarkComment is the resolver for the getUserMarkComment field.
 func (r *queryResolver) GetUserMarkComment(ctx context.Context) ([]model.Mark, error) {
-	panic(fmt.Errorf("not implemented: GetUserMarkComment - getUserMarkComment"))
+	return mark.GetUserMarkComment(ctx)
 }
 
 // GetUserParent is the resolver for the getUserParent field.
 func (r *queryResolver) GetUserParent(ctx context.Context) ([]model.User, error) {
-	panic(fmt.Errorf("not implemented: GetUserParent - getUserParent"))
+	return link.GetUserParent(ctx)
 }
 
 // GetUserTutor is the resolver for the getUserTutor field.
 func (r *queryResolver) GetUserTutor(ctx context.Context) ([]model.User, error) {
-	panic(fmt.Errorf("not implemented: GetUserTutor - getUserTutor"))
+	return link.GetUserTutor(ctx)
 }
 
 // GetUserProfessor is the resolver for the getUserProfessor field.
 func (r *queryResolver) GetUserProfessor(ctx context.Context) ([]model.User, error) {
-	panic(fmt.Errorf("not implemented: GetUserProfessor - getUserProfessor"))
+	return link.GetUserProfessor(ctx)
 }
 
 // GetStudent is the resolver for the getStudent field.
 func (r *queryResolver) GetStudent(ctx context.Context) ([]model.User, error) {
-	panic(fmt.Errorf("not implemented: GetStudent - getStudent"))
+	return link.GetStudent(ctx)
 }
 
 // GenerateQRCode is the resolver for the generateQrCode field.
@@ -241,16 +221,3 @@ func (r *queryResolver) GenerateQRCode(ctx context.Context) (*string, error) {
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *queryResolver) RemoveUserPlannings(ctx context.Context) (*string, error) {
-	panic(fmt.Errorf("not implemented: RemoveUserPlannings - removeUserPlannings"))
-}
-func (r *queryResolver) RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*string, error) {
-	panic(fmt.Errorf("not implemented: RemoveUserFromPlanning - removeUserFromPlanning"))
-}

@@ -517,25 +517,7 @@ func (ec *executionContext) marshalNMark2githubᚗcomᚋcendᚑorgᚋduvalᚋgra
 	return ec._Mark(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNMark2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMark(ctx context.Context, sel ast.SelectionSet, v *model.Mark) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._Mark(ctx, sel, v)
-}
-
-func (ec *executionContext) unmarshalNMarkInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMarkInput(ctx context.Context, v interface{}) (model.MarkInput, error) {
-	res, err := ec.unmarshalInputMarkInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOMark2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMarkᚄ(ctx context.Context, sel ast.SelectionSet, v []model.Mark) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
+func (ec *executionContext) marshalNMark2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMarkᚄ(ctx context.Context, sel ast.SelectionSet, v []model.Mark) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -577,6 +559,21 @@ func (ec *executionContext) marshalOMark2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋ
 	}
 
 	return ret
+}
+
+func (ec *executionContext) marshalNMark2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMark(ctx context.Context, sel ast.SelectionSet, v *model.Mark) graphql.Marshaler {
+	if v == nil {
+		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
+			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
+		}
+		return graphql.Null
+	}
+	return ec._Mark(ctx, sel, v)
+}
+
+func (ec *executionContext) unmarshalNMarkInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMarkInput(ctx context.Context, v interface{}) (model.MarkInput, error) {
+	res, err := ec.unmarshalInputMarkInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 // endregion ***************************** type.gotpl *****************************

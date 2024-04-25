@@ -14,7 +14,6 @@ type UserAuthorizationLink {
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     LinkType: Int!
-    Actors: [UserAuthorizationLinkActor]!
 }
 
 type UserAuthorizationLinkActor {
@@ -22,6 +21,6 @@ type UserAuthorizationLinkActor {
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserAuthorizationLink: UserAuthorizationLink!
+    UserAuthorizationLinkId: Int!
     AuthorizationId: Int!
 }

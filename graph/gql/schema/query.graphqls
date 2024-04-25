@@ -10,7 +10,7 @@ type Query {
     userAuthorizationLink(id: ID!): UserAuthorizationLink
     userAuthorizationLinks: [UserAuthorizationLink!]!
     getCode: Code!
-    verifyUserEmailValidationCode(code: Int!) : Int!
+    verifyUserEmailValidationCode(verifCode: Int!) : Int!
     sendUserEmailValidationCode: User!
     getPasswordHistory: [Password!]!
     activateUser: User!
@@ -45,7 +45,7 @@ type Query {
 
     #    Mark QUERIES
     getUserAverageMark(userId: ID!): Int
-    getUserMarkComment: [Mark!]
+    getUserMarkComment: [Mark!]!
 
     #    Link QUERIES
     getUserParent :[User!]
