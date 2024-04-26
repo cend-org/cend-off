@@ -111,6 +111,17 @@ type MarkInput struct {
 	AuthorMark    *int    `json:"author_mark"`
 }
 
+type Media struct {
+	ID          int        `json:"id"`
+	CreatedAt   time.Time  `json:"created_at"`
+	UpdatedAt   time.Time  `json:"updated_at"`
+	DeletedAt   *time.Time `json:"deleted_at"`
+	FileName    string     `json:"file_name"`
+	Extension   string     `json:"extension"`
+	Xid         string     `json:"xid"`
+	ContentType int        `json:"content_type"`
+}
+
 type Message struct {
 	ID               int        `json:"id"`
 	CreatedAt        time.Time  `json:"created_at"`
@@ -281,6 +292,15 @@ type UserInput struct {
 	BirthDate  *time.Time `json:"birth_date"`
 	Sex        *int       `json:"sex"`
 	Lang       *int       `json:"lang"`
+}
+
+type UserMediaDetail struct {
+	ID           int        `json:"id"`
+	CreatedAt    time.Time  `json:"created_at"`
+	UpdatedAt    time.Time  `json:"updated_at"`
+	DeletedAt    *time.Time `json:"deleted_at"`
+	OwnerID      int        `json:"owner_id"`
+	DocumentType int        `json:"document_type"`
 }
 
 type UserPhoneNumber struct {

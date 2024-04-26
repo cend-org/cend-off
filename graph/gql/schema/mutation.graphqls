@@ -57,4 +57,7 @@ type Mutation {
 
     # Qr Mutations
     loginWithQr(xId: String!) :String
+
+#    Upload
+    singleUpload(file: Upload!): Media!
 }

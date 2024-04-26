@@ -19,6 +19,6 @@ func IsValidVideo(mType string) bool {
 }
 
 func IsValidFile(mType string) bool {
-	allowed := []string{"text/plain", "application/png", "application/jpg", "application/word", "application/pdf"}
+	allowed := []string{"text/plain", "image/png", "image/jpeg", "application/word", "application/pdf", "video/mpeg", "video/mp4"}
 	return mimetype.EqualsAny(mType, allowed...)
 }

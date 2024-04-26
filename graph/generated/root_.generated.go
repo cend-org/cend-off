@@ -120,6 +120,17 @@ type ComplexityRoot struct {
 		UserID        func(childComplexity int) int
 	}
 
+	Media struct {
+		ContentType func(childComplexity int) int
+		CreatedAt   func(childComplexity int) int
+		DeletedAt   func(childComplexity int) int
+		Extension   func(childComplexity int) int
+		FileName    func(childComplexity int) int
+		ID          func(childComplexity int) int
+		UpdatedAt   func(childComplexity int) int
+		Xid         func(childComplexity int) int
+	}
+
 	Message struct {
 		CreatedAt        func(childComplexity int) int
 		DeletedAt        func(childComplexity int) int
@@ -163,6 +174,7 @@ type ComplexityRoot struct {
 		RemoveUserProfessor      func(childComplexity int, input model.UserInput) int
 		RemoveUserTutor          func(childComplexity int, input model.UserInput) int
 		SetUserEducationLevel    func(childComplexity int, subjectID int) int
+		SingleUpload             func(childComplexity int, file graphql.Upload) int
 		UpdMessage               func(childComplexity int, input model.MessageInput) int
 		UpdMyProfile             func(childComplexity int, input model.UserInput) int
 		UpdateUserAddress        func(childComplexity int, input model.AddressInput) int
@@ -319,6 +331,15 @@ type ComplexityRoot struct {
 		SubjectID func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		UserID    func(childComplexity int) int
+	}
+
+	UserMediaDetail struct {
+		CreatedAt    func(childComplexity int) int
+		DeletedAt    func(childComplexity int) int
+		DocumentType func(childComplexity int) int
+		ID           func(childComplexity int) int
+		OwnerID      func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
 	}
 
 	UserPhoneNumber struct {
@@ -735,6 +756,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mark.UserID(childComplexity), true
 
+	case "Media.ContentType":
+		if e.complexity.Media.ContentType == nil {
+			break
+		}
+
+		return e.complexity.Media.ContentType(childComplexity), true
+
+	case "Media.CreatedAt":
+		if e.complexity.Media.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Media.CreatedAt(childComplexity), true
+
+	case "Media.DeletedAt":
+		if e.complexity.Media.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Media.DeletedAt(childComplexity), true
+
+	case "Media.Extension":
+		if e.complexity.Media.Extension == nil {
+			break
+		}
+
+		return e.complexity.Media.Extension(childComplexity), true
+
+	case "Media.FileName":
+		if e.complexity.Media.FileName == nil {
+			break
+		}
+
+		return e.complexity.Media.FileName(childComplexity), true
+
+	case "Media.Id":
+		if e.complexity.Media.ID == nil {
+			break
+		}
+
+		return e.complexity.Media.ID(childComplexity), true
+
+	case "Media.UpdatedAt":
+		if e.complexity.Media.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Media.UpdatedAt(childComplexity), true
+
+	case "Media.Xid":
+		if e.complexity.Media.Xid == nil {
+			break
+		}
+
+		return e.complexity.Media.Xid(childComplexity), true
+
 	case "Message.CreatedAt":
 		if e.complexity.Message.CreatedAt == nil {
 			break
@@ -1147,6 +1224,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.SetUserEducationLevel(childComplexity, args["subjectId"].(int)), true
+
+	case "Mutation.singleUpload":
+		if e.complexity.Mutation.SingleUpload == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_singleUpload_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SingleUpload(childComplexity, args["file"].(graphql.Upload)), true
 
 	case "Mutation.updMessage":
 		if e.complexity.Mutation.UpdMessage == nil {
@@ -2063,6 +2152,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserEducationLevelSubject.UserID(childComplexity), true
 
+	case "UserMediaDetail.CreatedAt":
+		if e.complexity.UserMediaDetail.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserMediaDetail.CreatedAt(childComplexity), true
+
+	case "UserMediaDetail.DeletedAt":
+		if e.complexity.UserMediaDetail.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.UserMediaDetail.DeletedAt(childComplexity), true
+
+	case "UserMediaDetail.DocumentType":
+		if e.complexity.UserMediaDetail.DocumentType == nil {
+			break
+		}
+
+		return e.complexity.UserMediaDetail.DocumentType(childComplexity), true
+
+	case "UserMediaDetail.Id":
+		if e.complexity.UserMediaDetail.ID == nil {
+			break
+		}
+
+		return e.complexity.UserMediaDetail.ID(childComplexity), true
+
+	case "UserMediaDetail.OwnerId":
+		if e.complexity.UserMediaDetail.OwnerID == nil {
+			break
+		}
+
+		return e.complexity.UserMediaDetail.OwnerID(childComplexity), true
+
+	case "UserMediaDetail.UpdatedAt":
+		if e.complexity.UserMediaDetail.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserMediaDetail.UpdatedAt(childComplexity), true
+
 	case "UserPhoneNumber.CreatedAt":
 		if e.complexity.UserPhoneNumber.CreatedAt == nil {
 			break
@@ -2343,6 +2474,26 @@ input MarkInput {
     AuthorMark: Int
 }
 `, BuiltIn: false},
+	{Name: "../gql/media/media.graphqls", Input: `type Media {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    FileName : String!
+    Extension: String!
+    Xid: String!
+    ContentType: Int!
+}
+
+type UserMediaDetail {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    OwnerId : Int!
+    DocumentType: Int!
+}
+`, BuiltIn: false},
 	{Name: "../gql/message/message.graphqls", Input: `
 type Message {
     Id: ID!
@@ -2440,7 +2591,11 @@ type CalendarPlanningActor {
 scalar Date
 
 "The ` + "`" + `DateTime` + "`" + ` is a date in the format ISO 8601 format: ` + "`" + `2006-01-02T15:04:05Z07:00` + "`" + `"
-scalar DateTime`, BuiltIn: false},
+scalar DateTime
+
+
+"The ` + "`" + `UploadFile, // b.txt` + "`" + ` scalar type represents a multipart file upload."
+scalar Upload`, BuiltIn: false},
 	{Name: "../gql/schema/mutation.graphqls", Input: `type Mutation {
     registerWithEmail(input: String!, as: Int!): String
     register(input: UserInput!, as:Int!): String
@@ -2500,6 +2655,9 @@ scalar DateTime`, BuiltIn: false},
 
     # Qr Mutations
     loginWithQr(xId: String!) :String
+
+#    Upload
+    singleUpload(file: Upload!): Media!
 }
 `, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {

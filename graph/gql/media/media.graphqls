@@ -1,0 +1,19 @@
+type Media {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    FileName : String!
+    Extension: String!
+    Xid: String!
+    ContentType: Int!
+}
+
+type UserMediaDetail {
+    Id: ID!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    OwnerId : Int!
+    DocumentType: Int!
+}
