@@ -22,3 +22,22 @@ go.work
 
 *.yml
 .idea
+
+
+#public file
+public/*.jpg
+public/*.png
+public/*.pdf
+public/*.word
+
+public/thumb/*.jpg
+public/thumb/*.png
+public/thumb/*.pdf
+public/thumb/*.word
+
+public/qr/*.jpg
+
+
+.vscode
+
+config.toml
