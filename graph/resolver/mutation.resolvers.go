@@ -36,7 +36,7 @@ func (r *mutationResolver) Register(ctx context.Context, input model.UserInput, 
 
 // UpdMyProfile is the resolver for the updMyProfile field.
 func (r *mutationResolver) UpdMyProfile(ctx context.Context, input model.UserInput) (*string, error) {
-	panic(fmt.Errorf("not implemented: UpdMyProfile - updMyProfile"))
+	return usr.UpdMyProfile(ctx, &input)
 }
 
 // LogIn is the resolver for the LogIn field.

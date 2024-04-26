@@ -79,9 +79,9 @@ func Register(ctx context.Context, input *model.UserInput, as int) (*string, err
 		return &tokenStr, errx.Lambda(err)
 	}
 
-	tokenStr, err = token.GetTokenString(user.ID)
+	tokenStr, err = LoginWithEmail(user.Email)
 	if err != nil {
-		return &tokenStr, errx.Lambda(err)
+		return nil, err
 	}
 
 	err = code.NewUserVerificationCode(user.ID)
@@ -128,6 +128,30 @@ func RegisterWithEmail(ctx context.Context, input string, as int) (*string, erro
 	return &pat, err
 }
 
+func GetUserPasswordHash(userId uint) (hash string, err error) {
+	return hash, err
+}
+
+func LogIn(ctx context.Context, email string, password string) (*string, error) {
+	var access string
+	var err error
+
+	access, err = LoginWithEmailAndPassword(email, password)
+	if err != nil {
+		return nil, err
+	}
+
+	return &access, err
+}
+
+func GetUserAuthorizationLink(ctx context.Context, id int) (*model.UserAuthorizationLink, error) {
+	panic(fmt.Errorf("not implemented: UserAuthorizationLink - userAuthorizationLink"))
+}
+
+func GetUserAuthorizationLinks(ctx context.Context) ([]model.UserAuthorizationLink, error) {
+	panic(fmt.Errorf("not implemented: UserAuthorizationLink - userAuthorizationLink"))
+}
+
 func NewPassword(ctx context.Context, password string) (*bool, error) {
 	var (
 		psw  model.Password
@@ -161,30 +185,6 @@ func NewPassword(ctx context.Context, password string) (*bool, error) {
 	return &done, err
 }
 
-func GetUserPasswordHash(userId uint) (hash string, err error) {
-	return hash, err
-}
-
-func LogIn(ctx context.Context, email string, password string) (*string, error) {
-	var access string
-	var err error
-
-	access, err = LoginWithEmailAndPassword(email, password)
-	if err != nil {
-		return nil, err
-	}
-
-	return &access, err
-}
-
-func GetUserAuthorizationLink(ctx context.Context, id int) (*model.UserAuthorizationLink, error) {
-	panic(fmt.Errorf("not implemented: UserAuthorizationLink - userAuthorizationLink"))
-}
-
-func GetUserAuthorizationLinks(ctx context.Context) ([]model.UserAuthorizationLink, error) {
-	panic(fmt.Errorf("not implemented: UserAuthorizationLink - userAuthorizationLink"))
-}
-
 func GetPasswordHistory(ctx context.Context) ([]model.Password, error) {
 	var (
 		passwords []model.Password
@@ -196,6 +196,7 @@ func GetPasswordHistory(ctx context.Context) ([]model.Password, error) {
 	if err != nil {
 		return passwords, errx.UnAuthorizedError
 	}
+
 	err = database.GetMany(&passwords,
 		`SELECT password.*
 			FROM password
@@ -214,7 +215,6 @@ func ActivateUser(ctx context.Context) (*model.User, error) {
 		err error
 		usr model.User
 	)
-
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &usr, errx.Lambda(err)
@@ -254,33 +254,33 @@ func MyProfile(ctx context.Context) (*model.User, error) {
 	return &user, nil
 }
 
-func UpdMyProfile(ctx *context.Context, input model.UserInput) (*model.User, error) {
+func UpdMyProfile(ctx context.Context, input *model.UserInput) (*string, error) {
 	var (
-		err error
-		tok *token.Token
-		usr model.User
+		err  error
+		tok  *token.Token
+		usr  model.User
+		done string
 	)
-
-	tok, err = token.GetFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
-		return &usr, errx.UnAuthorizedError
+		return &done, errx.UnAuthorizedError
 	}
 
-	usr.ID = tok.UserID
-
-	usr, err = GetUserWithId(usr.ID)
+	usr, err = GetUserWithId(tok.UserID)
 	if err != nil {
-		return &usr, errx.DbGetError
+		return &done, errx.DbGetError
 	}
 
-	usr = model.MapUserInputToUser(input, usr)
+	usr = model.MapUserInputToUser(*input, usr)
 
+	//To do
 	err = database.Update(usr)
 	if err != nil {
-		return &usr, errx.Lambda(err)
+		return &done, errx.Lambda(err)
 	}
 
-	return &usr, nil
+	done = "success"
+	return &done, nil
 }
 
 /*

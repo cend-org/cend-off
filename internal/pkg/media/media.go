@@ -15,7 +15,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"time"
 )
 
 const (
@@ -32,7 +31,6 @@ func SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error
 		err          error
 		documentType int
 	)
-	time.Sleep(100)
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &media, errx.UnAuthorizedError
@@ -63,7 +61,8 @@ func SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error
 	}
 	defer f.Close()
 
-	_, err = io.Copy(f, file.File)
+	content, err := io.ReadAll(file.File)
+	_, err = f.Write(content)
 	if err != nil {
 		log.Fatal(err)
 		return nil, err

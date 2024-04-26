@@ -41,14 +41,13 @@ create table authorization
 
 create table password
 (
-    id           int auto_increment
+    id         int auto_increment
         primary key,
-    created_at   datetime      default CURRENT_TIMESTAMP     not null,
-    updated_at   datetime      default CURRENT_TIMESTAMP     not null,
-    deleted_at   datetime      default '0000-00-00 00:00:00' null,
-    user_id      int           default 0                     null,
-    psw          varchar(1000) default ''                    null,
-    content_hash varchar(500)  default ''                    null,
+    created_at datetime     default CURRENT_TIMESTAMP     not null,
+    updated_at datetime     default CURRENT_TIMESTAMP     not null,
+    deleted_at datetime     default '0000-00-00 00:00:00' null,
+    user_id    int          default 0                     null,
+    hash       varchar(500) default ''                    null,
     constraint password_user_id_fk
         foreign key (user_id) references user (id)
 );
@@ -631,15 +630,16 @@ CREATE TABLE school
 );
 
 
-CREATE TABLE school_subject (
-                                id int auto_increment primary key ,
-                                created_at timestamp default CURRENT_TIMESTAMP,
-                                updated_at timestamp default CURRENT_TIMESTAMP,
-                                deleted_at timestamp default '0000-00-00 00:00:00',
-                                school_number int default 0,
-                                name varchar(500) default ''
+CREATE TABLE school_subject
+(
+    id            int auto_increment primary key,
+    created_at    timestamp    default CURRENT_TIMESTAMP,
+    updated_at    timestamp    default CURRENT_TIMESTAMP,
+    deleted_at    timestamp    default '0000-00-00 00:00:00',
+    school_number int          default 0,
+    name          varchar(500) default ''
 );
 
 ALTER TABLE school_subject
     add constraint school_fk
-        foreign key (school_number) references school(id);
+        foreign key (school_number) references school (id);
