@@ -4,5 +4,5 @@ type QrCodeRegistry {
     ResourceValue :Int!
     UserId : ID!
     Xid : String!
-    IsUsed :Boolean
+    IsUsed :Boolean!
 }

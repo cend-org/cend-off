@@ -405,11 +405,6 @@ func (ec *executionContext) marshalNSubject2githubᚗcomᚋcendᚑorgᚋduvalᚋ
 	return ec._Subject(ctx, sel, &v)
 }
 
-func (ec *executionContext) unmarshalNSubjectInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐSubjectInput(ctx context.Context, v interface{}) (model.SubjectInput, error) {
-	res, err := ec.unmarshalInputSubjectInput(ctx, v)
-	return res, graphql.ErrorOnPath(ctx, err)
-}
-
 func (ec *executionContext) marshalOSubject2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐSubjectᚄ(ctx context.Context, sel ast.SelectionSet, v []model.Subject) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null

@@ -268,11 +268,14 @@ func (ec *executionContext) _QrCodeRegistry_IsUsed(ctx context.Context, field gr
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(bool)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_QrCodeRegistry_IsUsed(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -338,6 +341,9 @@ func (ec *executionContext) _QrCodeRegistry(ctx context.Context, sel ast.Selecti
 			}
 		case "IsUsed":
 			out.Values[i] = ec._QrCodeRegistry_IsUsed(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

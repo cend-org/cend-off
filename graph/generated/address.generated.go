@@ -486,11 +486,14 @@ func (ec *executionContext) _Address_XId(ctx context.Context, field graphql.Coll
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Address_XId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -700,11 +703,14 @@ func (ec *executionContext) _UserAddress_UserId(ctx context.Context, field graph
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*int)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalOID2ᚖint(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserAddress_UserId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -741,11 +747,14 @@ func (ec *executionContext) _UserAddress_AddressId(ctx context.Context, field gr
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*int)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalOID2ᚖint(ctx, field.Selections, res)
+	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserAddress_AddressId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -782,11 +791,14 @@ func (ec *executionContext) _UserAddress_AddressType(ctx context.Context, field 
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserAddress_AddressType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -936,6 +948,9 @@ func (ec *executionContext) _Address(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "XId":
 			out.Values[i] = ec._Address_XId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -989,10 +1004,19 @@ func (ec *executionContext) _UserAddress(ctx context.Context, sel ast.SelectionS
 			out.Values[i] = ec._UserAddress_DeletedAt(ctx, field, obj)
 		case "UserId":
 			out.Values[i] = ec._UserAddress_UserId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "AddressId":
 			out.Values[i] = ec._UserAddress_AddressId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "AddressType":
 			out.Values[i] = ec._UserAddress_AddressType(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}

@@ -8,8 +8,12 @@ import (
 	"github.com/cend-org/duval/internal/authentication"
 	"github.com/cend-org/duval/internal/database"
 	pwd "github.com/cend-org/duval/internal/password"
+	"github.com/cend-org/duval/internal/pkg/code"
+	"github.com/cend-org/duval/internal/pkg/user/authorization"
 	"github.com/cend-org/duval/internal/token"
+	"github.com/cend-org/duval/internal/utils"
 	"github.com/cend-org/duval/internal/utils/errx"
+	"github.com/cend-org/duval/internal/utils/state"
 	"github.com/pkg/errors"
 	"net/mail"
 	"strings"
@@ -26,6 +30,67 @@ const (
 
 	StatusActive = 4
 )
+
+func Register(ctx context.Context, input *model.UserInput, as int) (*string, error) {
+	var (
+		user               model.User
+		err                error
+		tokenStr           string
+		authorizationLevel int
+	)
+	user = model.MapUserInputToUser(*input, user)
+	authorizationLevel = as
+
+	if !utils.IsValidEmail(user.Email) {
+		return &tokenStr, errx.InvalidEmailError
+	}
+
+	_, err = GetUserByEmail(user.Email)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		return &tokenStr, errx.Lambda(err)
+	}
+
+	if user.ID > state.ZERO {
+		return &tokenStr, errx.DuplicateUserError
+	}
+
+	user.Matricule, err = utils.GenerateMatricule()
+	if err != nil {
+		return &tokenStr, errx.Lambda(err)
+	}
+
+	if user.Name == state.EMPTY {
+		user.Name = user.Matricule
+	}
+
+	if user.NickName == state.EMPTY {
+		user.NickName = user.Matricule
+	}
+
+	userId, err := database.InsertOne(user)
+	if err != nil {
+		return &tokenStr, errx.DuplicateUserError
+	}
+
+	user.ID = userId
+
+	err = authorization.NewUserAuthorization(user.ID, authorizationLevel)
+	if err != nil {
+		return &tokenStr, errx.Lambda(err)
+	}
+
+	tokenStr, err = token.GetTokenString(user.ID)
+	if err != nil {
+		return &tokenStr, errx.Lambda(err)
+	}
+
+	err = code.NewUserVerificationCode(user.ID)
+	if err != nil {
+		return &tokenStr, errx.Lambda(err)
+	}
+
+	return &tokenStr, nil
+}
 
 func RegisterWithEmail(ctx context.Context, input string, as int) (*string, error) {
 	var (
@@ -80,7 +145,7 @@ func NewPassword(ctx context.Context, password string) (*bool, error) {
 		return nil, err
 	}
 
-	psw.UserID = tok.UserId
+	psw.UserID = tok.UserID
 	psw.Hash = pwd.Encode(password)
 	if err != nil {
 		return nil, err
@@ -135,7 +200,7 @@ func GetPasswordHistory(ctx context.Context) ([]model.Password, error) {
 		`SELECT password.*
 			FROM password
 			WHERE password.user_id = ?
-			ORDER BY password.created_at DESC`, tok.UserId)
+			ORDER BY password.created_at DESC`, tok.UserID)
 	if err != nil {
 		return passwords, errx.DbGetError
 	}
@@ -155,7 +220,7 @@ func ActivateUser(ctx context.Context) (*model.User, error) {
 		return &usr, errx.Lambda(err)
 	}
 
-	usr, err = GetUserWithId(tok.UserId)
+	usr, err = GetUserWithId(tok.UserID)
 	if err != nil {
 		return &usr, errx.Lambda(err)
 	}
@@ -181,7 +246,7 @@ func MyProfile(ctx context.Context) (*model.User, error) {
 		return &user, errx.Lambda(err)
 	}
 
-	user, err = GetUserWithId(tok.UserId)
+	user, err = GetUserWithId(tok.UserID)
 	if err != nil {
 		return &user, errx.Lambda(err)
 	}
@@ -201,7 +266,7 @@ func UpdMyProfile(ctx *context.Context, input model.UserInput) (*model.User, err
 		return &usr, errx.UnAuthorizedError
 	}
 
-	usr.ID = tok.UserId
+	usr.ID = tok.UserID
 
 	usr, err = GetUserWithId(usr.ID)
 	if err != nil {

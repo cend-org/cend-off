@@ -18,7 +18,8 @@ import (
 
 type MutationResolver interface {
 	RegisterWithEmail(ctx context.Context, input string, as int) (*string, error)
-	Register(ctx context.Context, input model.UserInput) (*bool, error)
+	Register(ctx context.Context, input model.UserInput, as int) (*string, error)
+	UpdMyProfile(ctx context.Context, input model.UserInput) (*string, error)
 	LogIn(ctx context.Context, email string, password string) (*string, error)
 	NewPassword(ctx context.Context, password string) (*bool, error)
 	DelPassword(ctx context.Context, id int) (*bool, error)
@@ -39,8 +40,8 @@ type MutationResolver interface {
 	AddUserIntoPlanning(ctx context.Context, calendarID int, selectedUserID int) (*model.CalendarPlanningActor, error)
 	RemoveUserPlannings(ctx context.Context) (*string, error)
 	RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*string, error)
-	SetUserEducationLevel(ctx context.Context, input model.SubjectInput) (*model.Education, error)
-	UpdateUserEducationLevel(ctx context.Context, input model.SubjectInput) (*model.Education, error)
+	SetUserEducationLevel(ctx context.Context, subjectID int) (*model.Education, error)
+	UpdateUserEducationLevel(ctx context.Context, subjectID int) (*model.Education, error)
 	RateUser(ctx context.Context, input model.MarkInput) (*model.Mark, error)
 	AddParentToUser(ctx context.Context, input model.UserInput) (*model.User, error)
 	RemoveUserParent(ctx context.Context, input model.UserInput) (*string, error)
@@ -420,6 +421,15 @@ func (ec *executionContext) field_Mutation_register_args(ctx context.Context, ra
 		}
 	}
 	args["input"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["as"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("as"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["as"] = arg1
 	return args, nil
 }
 
@@ -510,15 +520,15 @@ func (ec *executionContext) field_Mutation_removeUserTutor_args(ctx context.Cont
 func (ec *executionContext) field_Mutation_setUserEducationLevel_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.SubjectInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNSubjectInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐSubjectInput(ctx, tmp)
+	var arg0 int
+	if tmp, ok := rawArgs["subjectId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("subjectId"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["subjectId"] = arg0
 	return args, nil
 }
 
@@ -529,6 +539,21 @@ func (ec *executionContext) field_Mutation_updMessage_args(ctx context.Context, 
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
 		arg0, err = ec.unmarshalNMessageInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessageInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updMyProfile_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.UserInput
+	if tmp, ok := rawArgs["input"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
+		arg0, err = ec.unmarshalNUserInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -555,15 +580,15 @@ func (ec *executionContext) field_Mutation_updateUserAddress_args(ctx context.Co
 func (ec *executionContext) field_Mutation_updateUserEducationLevel_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 model.SubjectInput
-	if tmp, ok := rawArgs["input"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNSubjectInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐSubjectInput(ctx, tmp)
+	var arg0 int
+	if tmp, ok := rawArgs["subjectId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("subjectId"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["input"] = arg0
+	args["subjectId"] = arg0
 	return args, nil
 }
 
@@ -656,7 +681,7 @@ func (ec *executionContext) _Mutation_register(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().Register(rctx, fc.Args["input"].(model.UserInput))
+		return ec.resolvers.Mutation().Register(rctx, fc.Args["input"].(model.UserInput), fc.Args["as"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -665,9 +690,9 @@ func (ec *executionContext) _Mutation_register(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_register(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -677,7 +702,7 @@ func (ec *executionContext) fieldContext_Mutation_register(ctx context.Context, 
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	defer func() {
@@ -688,6 +713,58 @@ func (ec *executionContext) fieldContext_Mutation_register(ctx context.Context, 
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Mutation_register_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updMyProfile(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updMyProfile(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdMyProfile(rctx, fc.Args["input"].(model.UserInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updMyProfile(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updMyProfile_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -1004,6 +1081,8 @@ func (ec *executionContext) fieldContext_Mutation_newMessage(ctx context.Context
 				return ec.fieldContext_Message_DeletedAt(ctx, field)
 			case "ResourceType":
 				return ec.fieldContext_Message_ResourceType(ctx, field)
+			case "ResourceNumber":
+				return ec.fieldContext_Message_ResourceNumber(ctx, field)
 			case "ResourceValue":
 				return ec.fieldContext_Message_ResourceValue(ctx, field)
 			case "ResourceLabel":
@@ -1077,6 +1156,8 @@ func (ec *executionContext) fieldContext_Mutation_updMessage(ctx context.Context
 				return ec.fieldContext_Message_DeletedAt(ctx, field)
 			case "ResourceType":
 				return ec.fieldContext_Message_ResourceType(ctx, field)
+			case "ResourceNumber":
+				return ec.fieldContext_Message_ResourceNumber(ctx, field)
 			case "ResourceValue":
 				return ec.fieldContext_Message_ResourceValue(ctx, field)
 			case "ResourceLabel":
@@ -1202,6 +1283,8 @@ func (ec *executionContext) fieldContext_Mutation_newMenu(ctx context.Context, f
 				return ec.fieldContext_Message_DeletedAt(ctx, field)
 			case "ResourceType":
 				return ec.fieldContext_Message_ResourceType(ctx, field)
+			case "ResourceNumber":
+				return ec.fieldContext_Message_ResourceNumber(ctx, field)
 			case "ResourceValue":
 				return ec.fieldContext_Message_ResourceValue(ctx, field)
 			case "ResourceLabel":
@@ -1327,6 +1410,8 @@ func (ec *executionContext) fieldContext_Mutation_newMenuItem(ctx context.Contex
 				return ec.fieldContext_Message_DeletedAt(ctx, field)
 			case "ResourceType":
 				return ec.fieldContext_Message_ResourceType(ctx, field)
+			case "ResourceNumber":
+				return ec.fieldContext_Message_ResourceNumber(ctx, field)
 			case "ResourceValue":
 				return ec.fieldContext_Message_ResourceValue(ctx, field)
 			case "ResourceLabel":
@@ -1948,7 +2033,7 @@ func (ec *executionContext) _Mutation_setUserEducationLevel(ctx context.Context,
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().SetUserEducationLevel(rctx, fc.Args["input"].(model.SubjectInput))
+		return ec.resolvers.Mutation().SetUserEducationLevel(rctx, fc.Args["subjectId"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2015,7 +2100,7 @@ func (ec *executionContext) _Mutation_updateUserEducationLevel(ctx context.Conte
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateUserEducationLevel(rctx, fc.Args["input"].(model.SubjectInput))
+		return ec.resolvers.Mutation().UpdateUserEducationLevel(rctx, fc.Args["subjectId"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2835,6 +2920,10 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "register":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_register(ctx, field)
+			})
+		case "updMyProfile":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updMyProfile(ctx, field)
 			})
 		case "logIn":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {

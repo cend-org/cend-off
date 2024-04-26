@@ -9,7 +9,7 @@ type Address {
     Longitude: Float!
     Street: String!
     FullAddress: String!
-    XId: String
+    XId: String!
 }
 
 
@@ -18,9 +18,9 @@ type UserAddress {
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: ID
-    AddressId: ID
-    AddressType: String
+    UserId: ID!
+    AddressId: ID!
+    AddressType: String!
 }
 
 input AddressInput {

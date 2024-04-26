@@ -2,29 +2,174 @@ package education
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/pkg/user/authorization"
+	"github.com/cend-org/duval/internal/token"
+	"github.com/cend-org/duval/internal/utils/errx"
+	"github.com/cend-org/duval/internal/utils/state"
 )
 
-func SetUserEducationLevel(ctx context.Context, input *model.SubjectInput) (*model.Education, error) {
-	panic(fmt.Errorf("not implemented: SetUserEducationLevel - setUserEducationLevel"))
+func SetUserEducationLevel(ctx context.Context, subjectId int) (*model.Education, error) {
+	var (
+		tok                       *token.Token
+		userEducationLevelSubject model.UserEducationLevelSubject
+		err                       error
+		userLevel                 model.Education
+	)
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return &userLevel, errx.UnAuthorizedError
+	}
+
+	if tok.UserID == state.ZERO {
+		return &userLevel, errx.UnAuthorizedError
+	}
+
+	if !authorization.IsUserStudent(tok.UserID) {
+		if !authorization.IsUserProfessor(tok.UserID) {
+			return &userLevel, errx.Lambda(errors.New("not a user or a professor"))
+		}
+	}
+
+	userEducationLevelSubject.SubjectID = subjectId
+	userEducationLevelSubject.UserID = tok.UserID
+
+	_, err = database.InsertOne(userEducationLevelSubject)
+	if err != nil {
+		return &userLevel, errx.DbInsertError
+	}
+
+	userLevel, err = GetUserLevel(tok.UserID)
+	if err != nil {
+		return &userLevel, errx.DbGetError
+	}
+
+	return &userLevel, nil
 }
 
-func UpdateUserEducationLevel(ctx context.Context, input *model.SubjectInput) (*model.Education, error) {
-	panic(fmt.Errorf("not implemented: UpdateUserEducationLevel - updateUserEducationLevel"))
+func UpdateUserEducationLevel(ctx context.Context, subjectId int) (*model.Education, error) {
+	var (
+		tok                              *token.Token
+		currentUserEducationLevelSubject model.UserEducationLevelSubject
+		userEducationLevelSubject        model.UserEducationLevelSubject
+		err                              error
+		userLevel                        model.Education
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return &userLevel, errx.UnAuthorizedError
+	}
+	if tok.UserID == state.ZERO {
+		return &userLevel, errx.UnAuthorizedError
+	}
+
+	if !authorization.IsUserStudent(tok.UserID) {
+		return &userLevel, errx.Lambda(errors.New("user is not a student"))
+	}
+
+	//err = ctx.ShouldBindJSON(&subject)
+	//if err != nil {
+	//	return &userLevel, errx.ParseError
+	//}
+
+	err = database.Get(&currentUserEducationLevelSubject, `SELECT user_education_level_subject.* FROM user_education_level_subject
+			WHERE user_education_level_subject.user_id = ?`, tok.UserID)
+	if err != nil {
+		return &userLevel, errx.DbGetError
+	}
+
+	err = RemoveUserEducationLevelSubject(currentUserEducationLevelSubject)
+	if err != nil {
+		return &userLevel, errx.DbDeleteError
+	}
+
+	userEducationLevelSubject.SubjectID = subjectId
+	userEducationLevelSubject.UserID = tok.UserID
+	_, err = database.InsertOne(userEducationLevelSubject)
+	if err != nil {
+		return &userLevel, errx.DbInsertError
+	}
+
+	userLevel, err = GetUserLevel(tok.UserID)
+	if err != nil {
+		return &userLevel, errx.DbGetError
+	}
+
+	return &userLevel, nil
 }
 
 func GetUserSubjects(ctx context.Context) ([]model.Subject, error) {
-	panic(fmt.Errorf("not implemented: GetUserSubjects - getUserSubjects"))
+	var (
+		subjects []model.Subject
+		tok      *token.Token
+		err      error
+	)
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return subjects, errx.UnAuthorizedError
+	}
+
+	if authorization.IsUserParent(tok.UserID) || authorization.IsUserTutor(tok.UserID) {
+		return subjects, errx.UnAuthorizedError
+	}
+
+	if authorization.IsUserStudent(tok.UserID) {
+		err = database.GetMany(&subjects, `SELECT subject.* 
+											FROM subject
+											WHERE subject.education_level_id = (SELECT education.id FROM education  JOIN subject ON education.id  =  subject.education_level_id JOIN user_education_level_subject ON subject.id = user_education_level_subject.subject_id
+                                   			WHERE user_education_level_subject.user_id = ?)`, tok.UserID)
+		if err != nil {
+			return subjects, errx.DbGetError
+		}
+	}
+
+	if authorization.IsUserProfessor(tok.UserID) {
+		err = database.GetMany(&subjects, `SELECT subject.* FROM subject
+			JOIN user_education_level_subject  ON subject.id = user_education_level_subject.subject_id
+			WHERE user_education_level_subject.user_id = ?`, tok.UserID)
+		if err != nil {
+			return subjects, errx.DbGetError
+		}
+	}
+
+	return subjects, nil
 }
 
 func GetEducation(ctx context.Context) ([]model.Education, error) {
-	panic(fmt.Errorf("not implemented: GetEducation - getEducation"))
+	var (
+		err  error
+		edus []model.Education
+	)
+
+	err = database.Select(&edus, `SELECT * FROM education WHERE id > 0 ORDER BY  created_at`)
+	if err != nil {
+		return edus, errx.Lambda(err)
+	}
+
+	return edus, nil
 }
 
 func GetUserEducationLevel(ctx context.Context) (*model.Education, error) {
-	panic(fmt.Errorf("not implemented: GetUserEducationLevel - getUserEducationLevel"))
+	var (
+		err       error
+		tok       *token.Token
+		userLevel model.Education
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return &userLevel, errx.UnAuthorizedError
+	}
+
+	userLevel, err = GetUserLevel(tok.UserID)
+	if err != nil {
+		return &userLevel, errx.DbGetError
+
+	}
+	return &userLevel, nil
 }
 
 func GetSchools(ctx context.Context) ([]model.School, error) {
@@ -63,4 +208,30 @@ func GetSchool(ctx context.Context, id int) (*model.School, error) {
 	}
 
 	return &school, err
+}
+
+/*
+	UTILS
+*/
+
+func GetUserLevel(UserID int) (educationLevel model.Education, err error) {
+
+	err = database.Get(&educationLevel,
+		`SELECT education.* FROM education
+				JOIN subject ON education.id  =  subject.education_level_id
+				JOIN user_education_level_subject ON subject.id = user_education_level_subject.subject_id
+			WHERE user_education_level_subject.user_id = ?`, UserID)
+	if err != nil {
+		return educationLevel, err
+	}
+
+	return educationLevel, err
+}
+
+func RemoveUserEducationLevelSubject(userEducationLevelSubject model.UserEducationLevelSubject) (err error) {
+	err = database.Delete(userEducationLevelSubject)
+	if err != nil {
+		return err
+	}
+	return err
 }

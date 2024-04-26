@@ -1,6 +1,7 @@
 type Mutation {
     registerWithEmail(input: String!, as: Int!): String
-    register(input: UserInput!): Boolean
+    register(input: UserInput!, as:Int!): String
+    updMyProfile(input: UserInput!): String
 
     logIn(email: String!, password: String!): String
 
@@ -35,8 +36,8 @@ type Mutation {
     removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): String
 
     #   Education mutations
-    setUserEducationLevel(input: SubjectInput!): Education!
-    updateUserEducationLevel(input : SubjectInput!): Education!
+    setUserEducationLevel(subjectId: Int!): Education!
+    updateUserEducationLevel(subjectId: Int!): Education!
 
     #    Mark mutations
     rateUser(input: MarkInput!): Mark!

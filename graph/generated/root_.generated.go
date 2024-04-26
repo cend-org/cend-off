@@ -126,6 +126,7 @@ type ComplexityRoot struct {
 		ID               func(childComplexity int) int
 		ResourceLabel    func(childComplexity int) int
 		ResourceLanguage func(childComplexity int) int
+		ResourceNumber   func(childComplexity int) int
 		ResourceType     func(childComplexity int) int
 		ResourceValue    func(childComplexity int) int
 		UpdatedAt        func(childComplexity int) int
@@ -153,7 +154,7 @@ type ComplexityRoot struct {
 		NewPhoneNumber           func(childComplexity int, input model.PhoneNumberInput) int
 		PopulateSchool           func(childComplexity int) int
 		RateUser                 func(childComplexity int, input model.MarkInput) int
-		Register                 func(childComplexity int, input model.UserInput) int
+		Register                 func(childComplexity int, input model.UserInput, as int) int
 		RegisterWithEmail        func(childComplexity int, input string, as int) int
 		RemoveStudent            func(childComplexity int, input model.UserInput) int
 		RemoveUserFromPlanning   func(childComplexity int, calendarPlanningID int, selectedUserID int) int
@@ -161,10 +162,11 @@ type ComplexityRoot struct {
 		RemoveUserPlannings      func(childComplexity int) int
 		RemoveUserProfessor      func(childComplexity int, input model.UserInput) int
 		RemoveUserTutor          func(childComplexity int, input model.UserInput) int
-		SetUserEducationLevel    func(childComplexity int, input model.SubjectInput) int
+		SetUserEducationLevel    func(childComplexity int, subjectID int) int
 		UpdMessage               func(childComplexity int, input model.MessageInput) int
+		UpdMyProfile             func(childComplexity int, input model.UserInput) int
 		UpdateUserAddress        func(childComplexity int, input model.AddressInput) int
-		UpdateUserEducationLevel func(childComplexity int, input model.SubjectInput) int
+		UpdateUserEducationLevel func(childComplexity int, subjectID int) int
 		UpdateUserPhoneNumber    func(childComplexity int, input model.PhoneNumberInput) int
 	}
 
@@ -768,6 +770,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Message.ResourceLanguage(childComplexity), true
 
+	case "Message.ResourceNumber":
+		if e.complexity.Message.ResourceNumber == nil {
+			break
+		}
+
+		return e.complexity.Message.ResourceNumber(childComplexity), true
+
 	case "Message.ResourceType":
 		if e.complexity.Message.ResourceType == nil {
 			break
@@ -1046,7 +1055,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.Register(childComplexity, args["input"].(model.UserInput)), true
+		return e.complexity.Mutation.Register(childComplexity, args["input"].(model.UserInput), args["as"].(int)), true
 
 	case "Mutation.registerWithEmail":
 		if e.complexity.Mutation.RegisterWithEmail == nil {
@@ -1137,7 +1146,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.SetUserEducationLevel(childComplexity, args["input"].(model.SubjectInput)), true
+		return e.complexity.Mutation.SetUserEducationLevel(childComplexity, args["subjectId"].(int)), true
 
 	case "Mutation.updMessage":
 		if e.complexity.Mutation.UpdMessage == nil {
@@ -1150,6 +1159,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdMessage(childComplexity, args["input"].(model.MessageInput)), true
+
+	case "Mutation.updMyProfile":
+		if e.complexity.Mutation.UpdMyProfile == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updMyProfile_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdMyProfile(childComplexity, args["input"].(model.UserInput)), true
 
 	case "Mutation.updateUserAddress":
 		if e.complexity.Mutation.UpdateUserAddress == nil {
@@ -1173,7 +1194,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateUserEducationLevel(childComplexity, args["input"].(model.SubjectInput)), true
+		return e.complexity.Mutation.UpdateUserEducationLevel(childComplexity, args["subjectId"].(int)), true
 
 	case "Mutation.updateUserPhoneNumber":
 		if e.complexity.Mutation.UpdateUserPhoneNumber == nil {
@@ -2211,7 +2232,7 @@ var sources = []*ast.Source{
     Longitude: Float!
     Street: String!
     FullAddress: String!
-    XId: String
+    XId: String!
 }
 
 
@@ -2220,9 +2241,9 @@ type UserAddress {
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: ID
-    AddressId: ID
-    AddressType: String
+    UserId: ID!
+    AddressId: ID!
+    AddressType: String!
 }
 
 input AddressInput {
@@ -2300,8 +2321,8 @@ type UserEducationLevelSubject {
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: ID!
-    SubjectId :ID!
+    UserId: Int!
+    SubjectId :Int!
 }
 `, BuiltIn: false},
 	{Name: "../gql/mark/mark.graphqls", Input: `type Mark {
@@ -2312,14 +2333,14 @@ type UserEducationLevelSubject {
     UserId : ID!
     AuthorId: ID!
     AuthorComment: String!
-    AuthorMark: String!
+    AuthorMark: Int!
 }
 
 input MarkInput {
     UserID : Int
     AuthorID: Int
     AuthorComment: String
-    AuthorMark: String
+    AuthorMark: Int
 }
 `, BuiltIn: false},
 	{Name: "../gql/message/message.graphqls", Input: `
@@ -2329,6 +2350,7 @@ type Message {
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     ResourceType: Int!
+    ResourceNumber: Int!
     ResourceValue :Int!
     ResourceLabel: String!
     ResourceLanguage: Int!
@@ -2337,6 +2359,7 @@ type Message {
 input MessageInput {
     ResourceType: Int
     ResourceValue :Int
+    ResourceNumber: Int
     ResourceLabel: String
     ResourceLanguage: Int
 }
@@ -2402,7 +2425,7 @@ type CalendarPlanningActor {
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     AuthorizationId: ID!
-    CalendarPlanningId: ID
+    CalendarPlanningId: ID!
 }`, BuiltIn: false},
 	{Name: "../gql/qr/qr.graphqls", Input: `type QrCodeRegistry {
     Id: ID!
@@ -2410,7 +2433,7 @@ type CalendarPlanningActor {
     ResourceValue :Int!
     UserId : ID!
     Xid : String!
-    IsUsed :Boolean
+    IsUsed :Boolean!
 }
 `, BuiltIn: false},
 	{Name: "../gql/scalar/scalar.graphqls", Input: `"The ` + "`" + `Date` + "`" + ` is a date in the format YYYY-MM-DD"
@@ -2420,7 +2443,8 @@ scalar Date
 scalar DateTime`, BuiltIn: false},
 	{Name: "../gql/schema/mutation.graphqls", Input: `type Mutation {
     registerWithEmail(input: String!, as: Int!): String
-    register(input: UserInput!): Boolean
+    register(input: UserInput!, as:Int!): String
+    updMyProfile(input: UserInput!): String
 
     logIn(email: String!, password: String!): String
 
@@ -2455,8 +2479,8 @@ scalar DateTime`, BuiltIn: false},
     removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): String
 
     #   Education mutations
-    setUserEducationLevel(input: SubjectInput!): Education!
-    updateUserEducationLevel(input : SubjectInput!): Education!
+    setUserEducationLevel(subjectId: Int!): Education!
+    updateUserEducationLevel(subjectId: Int!): Education!
 
     #    Mark mutations
     rateUser(input: MarkInput!): Mark!
@@ -2498,11 +2522,11 @@ scalar DateTime`, BuiltIn: false},
     MyProfile: User!
 
     #    Message QUERIES
-    getMessages: [Message]
-    getMessagesInLanguage(language: Int!) : [Message]
+    getMessages: [Message!]!
+    getMessagesInLanguage(language: Int!) : [Message!]!
     getMessage(language: Int!, resourceNumber :Int!): Message!
-    getMenuList: [Message]
-    getMenuItems(language:Int!, menuNumber: Int!): [Message]
+    getMenuList: [Message!]!
+    getMenuItems(language:Int!, menuNumber: Int!): [Message!]!
 
     #    Address QUERIES
     getUserAddress: Address!

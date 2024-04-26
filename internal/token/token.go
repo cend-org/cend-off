@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/cend-org/duval/internal/database"
 	"github.com/golang-jwt/jwt/v5"
 	"time"
 )
@@ -11,8 +12,9 @@ import (
 const SecretKey = "Secret_key"
 
 type Token struct {
-	UserId         int `json:"user_id,omitempty"`
-	UserLevel      int `json:"level,omitempty"`
+	UserID         int  `json:"user_id,omitempty"`
+	UserLevel      int  `json:"level,omitempty"`
+	UserStatus     uint `json:"user_status"`
 	ExpirationDate struct {
 		Value time.Time `json:"value,omitempty"`
 	} `json:"expiration_date,omitempty"`
@@ -72,4 +74,24 @@ func GetFromContext(ctx context.Context) (*Token, error) {
 	}
 
 	return &Token{}, errors.New("cannot reach token data")
+}
+
+func GetTokenString(userId int) (str string, err error) {
+	var tok Token
+	err = database.Get(&tok, `SELECT u.id as 'user_id', u.status as 'user_status' FROM user u WHERE u.id = ?`, userId)
+	if err != nil {
+		return str, err
+	}
+
+	err = database.Get(&tok, `SELECT auth.level as 'user_level' FROM authorization auth WHERE auth.user_id = ?`, userId)
+	if err != nil {
+		return str, err
+	}
+
+	str, err = New(tok)
+	if err != nil {
+		return str, err
+	}
+
+	return str, err
 }

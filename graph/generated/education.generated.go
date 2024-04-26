@@ -447,7 +447,7 @@ func (ec *executionContext) _UserEducationLevelSubject_UserId(ctx context.Contex
 	}
 	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserEducationLevelSubject_UserId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -457,7 +457,7 @@ func (ec *executionContext) fieldContext_UserEducationLevelSubject_UserId(ctx co
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -491,7 +491,7 @@ func (ec *executionContext) _UserEducationLevelSubject_SubjectId(ctx context.Con
 	}
 	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNID2int(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_UserEducationLevelSubject_SubjectId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -501,7 +501,7 @@ func (ec *executionContext) fieldContext_UserEducationLevelSubject_SubjectId(ctx
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil

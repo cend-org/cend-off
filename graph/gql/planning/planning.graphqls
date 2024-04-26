@@ -22,5 +22,5 @@ type CalendarPlanningActor {
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     AuthorizationId: ID!
-    CalendarPlanningId: ID
+    CalendarPlanningId: ID!
 }

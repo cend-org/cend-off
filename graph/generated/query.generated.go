@@ -30,11 +30,11 @@ type QueryResolver interface {
 	ActivateUser(ctx context.Context) (*model.User, error)
 	Users(ctx context.Context) ([]model.User, error)
 	MyProfile(ctx context.Context) (*model.User, error)
-	GetMessages(ctx context.Context) ([]*model.Message, error)
-	GetMessagesInLanguage(ctx context.Context, language int) ([]*model.Message, error)
+	GetMessages(ctx context.Context) ([]model.Message, error)
+	GetMessagesInLanguage(ctx context.Context, language int) ([]model.Message, error)
 	GetMessage(ctx context.Context, language int, resourceNumber int) (*model.Message, error)
-	GetMenuList(ctx context.Context) ([]*model.Message, error)
-	GetMenuItems(ctx context.Context, language int, menuNumber int) ([]*model.Message, error)
+	GetMenuList(ctx context.Context) ([]model.Message, error)
+	GetMenuItems(ctx context.Context, language int, menuNumber int) ([]model.Message, error)
 	GetUserAddress(ctx context.Context) (*model.Address, error)
 	RemoveUserAddress(ctx context.Context) (string, error)
 	GetUserPhoneNumber(ctx context.Context) (*model.PhoneNumber, error)
@@ -1086,11 +1086,14 @@ func (ec *executionContext) _Query_getMessages(ctx context.Context, field graphq
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Message)
+	res := resTmp.([]model.Message)
 	fc.Result = res
-	return ec.marshalOMessage2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessage(ctx, field.Selections, res)
+	return ec.marshalNMessage2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessageᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getMessages(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1111,6 +1114,8 @@ func (ec *executionContext) fieldContext_Query_getMessages(ctx context.Context, 
 				return ec.fieldContext_Message_DeletedAt(ctx, field)
 			case "ResourceType":
 				return ec.fieldContext_Message_ResourceType(ctx, field)
+			case "ResourceNumber":
+				return ec.fieldContext_Message_ResourceNumber(ctx, field)
 			case "ResourceValue":
 				return ec.fieldContext_Message_ResourceValue(ctx, field)
 			case "ResourceLabel":
@@ -1145,11 +1150,14 @@ func (ec *executionContext) _Query_getMessagesInLanguage(ctx context.Context, fi
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Message)
+	res := resTmp.([]model.Message)
 	fc.Result = res
-	return ec.marshalOMessage2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessage(ctx, field.Selections, res)
+	return ec.marshalNMessage2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessageᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getMessagesInLanguage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1170,6 +1178,8 @@ func (ec *executionContext) fieldContext_Query_getMessagesInLanguage(ctx context
 				return ec.fieldContext_Message_DeletedAt(ctx, field)
 			case "ResourceType":
 				return ec.fieldContext_Message_ResourceType(ctx, field)
+			case "ResourceNumber":
+				return ec.fieldContext_Message_ResourceNumber(ctx, field)
 			case "ResourceValue":
 				return ec.fieldContext_Message_ResourceValue(ctx, field)
 			case "ResourceLabel":
@@ -1243,6 +1253,8 @@ func (ec *executionContext) fieldContext_Query_getMessage(ctx context.Context, f
 				return ec.fieldContext_Message_DeletedAt(ctx, field)
 			case "ResourceType":
 				return ec.fieldContext_Message_ResourceType(ctx, field)
+			case "ResourceNumber":
+				return ec.fieldContext_Message_ResourceNumber(ctx, field)
 			case "ResourceValue":
 				return ec.fieldContext_Message_ResourceValue(ctx, field)
 			case "ResourceLabel":
@@ -1288,11 +1300,14 @@ func (ec *executionContext) _Query_getMenuList(ctx context.Context, field graphq
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Message)
+	res := resTmp.([]model.Message)
 	fc.Result = res
-	return ec.marshalOMessage2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessage(ctx, field.Selections, res)
+	return ec.marshalNMessage2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessageᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getMenuList(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1313,6 +1328,8 @@ func (ec *executionContext) fieldContext_Query_getMenuList(ctx context.Context, 
 				return ec.fieldContext_Message_DeletedAt(ctx, field)
 			case "ResourceType":
 				return ec.fieldContext_Message_ResourceType(ctx, field)
+			case "ResourceNumber":
+				return ec.fieldContext_Message_ResourceNumber(ctx, field)
 			case "ResourceValue":
 				return ec.fieldContext_Message_ResourceValue(ctx, field)
 			case "ResourceLabel":
@@ -1347,11 +1364,14 @@ func (ec *executionContext) _Query_getMenuItems(ctx context.Context, field graph
 		return graphql.Null
 	}
 	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
 		return graphql.Null
 	}
-	res := resTmp.([]*model.Message)
+	res := resTmp.([]model.Message)
 	fc.Result = res
-	return ec.marshalOMessage2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessage(ctx, field.Selections, res)
+	return ec.marshalNMessage2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMessageᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getMenuItems(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1372,6 +1392,8 @@ func (ec *executionContext) fieldContext_Query_getMenuItems(ctx context.Context,
 				return ec.fieldContext_Message_DeletedAt(ctx, field)
 			case "ResourceType":
 				return ec.fieldContext_Message_ResourceType(ctx, field)
+			case "ResourceNumber":
+				return ec.fieldContext_Message_ResourceNumber(ctx, field)
 			case "ResourceValue":
 				return ec.fieldContext_Message_ResourceValue(ctx, field)
 			case "ResourceLabel":
@@ -2988,6 +3010,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getMessages(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -3007,6 +3032,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getMessagesInLanguage(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -3048,6 +3076,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getMenuList(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 
@@ -3067,6 +3098,9 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getMenuItems(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 

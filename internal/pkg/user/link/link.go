@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"github.com/cend-org/duval/graph/model"
-	"github.com/cend-org/duval/internal/authentication"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/pkg/user/authorization"
 	"github.com/cend-org/duval/internal/token"
@@ -46,7 +45,7 @@ func AddParentToUser(ctx context.Context, input *model.UserInput) (*model.User, 
 	}
 
 	//check if user is a student
-	if !authorization.IsUserStudent(tok.UserId) {
+	if !authorization.IsUserStudent(tok.UserID) {
 		return &currentParent, errx.Lambda(errors.New("user is not a student"))
 	}
 
@@ -64,7 +63,7 @@ func AddParentToUser(ctx context.Context, input *model.UserInput) (*model.User, 
 	}
 
 	//Check if link already exist if not then create new link and add creator into link actor by default
-	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
+	auth, err := authorization.GetUserAuthorization(tok.UserID, tok.UserLevel)
 	if err != nil {
 		return &currentParent, errx.DbGetError
 	}
@@ -85,7 +84,7 @@ func AddParentToUser(ctx context.Context, input *model.UserInput) (*model.User, 
 	}
 
 	if userAuthorizationLinkId == state.ZERO {
-		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentParent, tok.UserId, tok.UserLevel)
+		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentParent, tok.UserID, tok.UserLevel)
 		if err != nil {
 			return &currentParent, errx.DbInsertError
 		}
@@ -111,12 +110,12 @@ func GetUserParent(ctx context.Context) ([]model.User, error) {
 		return parents, errx.ParseError
 	}
 
-	if tok.UserId == state.ZERO {
+	if tok.UserID == state.ZERO {
 		if err != nil {
 			return parents, errx.UnAuthorizedError
 		}
 	}
-	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
+	auth, err := authorization.GetUserAuthorization(tok.UserID, tok.UserLevel)
 	if err != nil {
 		if err != nil {
 			return parents, errx.DbGetError
@@ -146,7 +145,7 @@ func RemoveUserParent(ctx context.Context, input *model.UserInput) (*string, err
 		return &status, errx.UnAuthorizedError
 	}
 
-	if tok.UserId == state.ZERO {
+	if tok.UserID == state.ZERO {
 		return &status, errx.UnAuthorizedError
 	}
 
@@ -183,7 +182,7 @@ func AddTutorToUser(ctx context.Context, input *model.UserInput) (*model.User, e
 
 	}
 
-	if !authorization.IsUserStudent(tok.UserId) {
+	if !authorization.IsUserStudent(tok.UserID) {
 		return &currentTutor, errx.Lambda(errors.New("user is not a student"))
 
 	}
@@ -201,7 +200,7 @@ func AddTutorToUser(ctx context.Context, input *model.UserInput) (*model.User, e
 
 	}
 
-	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
+	auth, err := authorization.GetUserAuthorization(tok.UserID, tok.UserLevel)
 	if err != nil {
 		return &currentTutor, errx.DbGetError
 
@@ -223,7 +222,7 @@ func AddTutorToUser(ctx context.Context, input *model.UserInput) (*model.User, e
 	}
 
 	if userAuthorizationLinkId == state.ZERO {
-		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentTutor, tok.UserId, tok.UserLevel)
+		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentTutor, tok.UserID, tok.UserLevel)
 		if err != nil {
 			return &currentTutor, errx.DbInsertError
 
@@ -251,13 +250,13 @@ func GetUserTutor(ctx context.Context) ([]model.User, error) {
 		return tutors, errx.ParseError
 	}
 
-	if tok.UserId == state.ZERO {
+	if tok.UserID == state.ZERO {
 		if err != nil {
 			return tutors, errx.UnAuthorizedError
 		}
 	}
 
-	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
+	auth, err := authorization.GetUserAuthorization(tok.UserID, tok.UserLevel)
 	if err != nil {
 		if err != nil {
 			return tutors, errx.DbGetError
@@ -288,7 +287,7 @@ func RemoveUserTutor(ctx context.Context, input *model.UserInput) (*string, erro
 		return &status, errx.UnAuthorizedError
 	}
 
-	if tok.UserId == state.ZERO {
+	if tok.UserID == state.ZERO {
 		return &status, errx.UnAuthorizedError
 
 	}
@@ -328,7 +327,7 @@ func AddProfessorToUser(ctx context.Context, input *model.UserInput) (*model.Use
 
 	}
 
-	if !authorization.IsUserStudent(tok.UserId) {
+	if !authorization.IsUserStudent(tok.UserID) {
 		return &currentProfessor, errx.Lambda(errors.New("user is not a student"))
 
 	}
@@ -346,7 +345,7 @@ func AddProfessorToUser(ctx context.Context, input *model.UserInput) (*model.Use
 
 	}
 
-	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
+	auth, err := authorization.GetUserAuthorization(tok.UserID, tok.UserLevel)
 	if err != nil {
 		return &currentProfessor, errx.DbGetError
 
@@ -367,7 +366,7 @@ func AddProfessorToUser(ctx context.Context, input *model.UserInput) (*model.Use
 		}
 	}
 	if userAuthorizationLinkId == state.ZERO {
-		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentProfessor, tok.UserId, tok.UserLevel)
+		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentProfessor, tok.UserID, tok.UserLevel)
 		if err != nil {
 			return &currentProfessor, errx.DbInsertError
 
@@ -395,14 +394,14 @@ func GetUserProfessor(ctx context.Context) ([]model.User, error) {
 
 	}
 
-	if tok.UserId == state.ZERO {
+	if tok.UserID == state.ZERO {
 		if err != nil {
 			return professors, errx.UnAuthorizedError
 
 		}
 	}
 
-	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
+	auth, err := authorization.GetUserAuthorization(tok.UserID, tok.UserLevel)
 	if err != nil {
 		if err != nil {
 			return professors, errx.DbGetError
@@ -435,7 +434,7 @@ func RemoveUserProfessor(ctx context.Context, input *model.UserInput) (*string, 
 
 	}
 
-	if tok.UserId == state.ZERO {
+	if tok.UserID == state.ZERO {
 		return &status, errx.UnAuthorizedError
 
 	}
@@ -474,19 +473,19 @@ func AddStudentToLink(ctx context.Context, input *model.UserInput) (*model.User,
 		return &currentStudent, errx.UnAuthorizedError
 	}
 
-	if authorization.IsUserStudent(tok.UserId) {
+	if authorization.IsUserStudent(tok.UserID) {
 		return &currentStudent, errx.Lambda(errors.New("current user is a student"))
 	}
 
-	if authorization.IsUserParent(tok.UserId) {
+	if authorization.IsUserParent(tok.UserID) {
 		linkType = StudentParent
 	}
 
-	if authorization.IsUserTutor(tok.UserId) {
+	if authorization.IsUserTutor(tok.UserID) {
 		linkType = StudentTutor
 	}
 
-	if authorization.IsUserProfessor(tok.UserId) {
+	if authorization.IsUserProfessor(tok.UserID) {
 		linkType = StudentProfessor
 	}
 
@@ -497,7 +496,7 @@ func AddStudentToLink(ctx context.Context, input *model.UserInput) (*model.User,
 		return &currentStudent, errx.DbGetError
 	}
 
-	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
+	auth, err := authorization.GetUserAuthorization(tok.UserID, tok.UserLevel)
 	if err != nil {
 		return &currentStudent, errx.UnAuthorizedError
 	}
@@ -517,7 +516,7 @@ func AddStudentToLink(ctx context.Context, input *model.UserInput) (*model.User,
 
 	}
 	if userAuthorizationLinkId == state.ZERO {
-		userAuthorizationLinkId, err = SetUserAuthorizationLink(linkType, tok.UserId, tok.UserLevel)
+		userAuthorizationLinkId, err = SetUserAuthorizationLink(linkType, tok.UserID, tok.UserLevel)
 		if err != nil {
 			return &currentStudent, errx.DbInsertError
 		}
@@ -544,28 +543,28 @@ func GetStudent(ctx context.Context) ([]model.User, error) {
 		return students, errx.ParseError
 	}
 
-	if tok.UserId == state.ZERO {
+	if tok.UserID == state.ZERO {
 		if err != nil {
 			return students, errx.UnAuthorizedError
 		}
 	}
 
-	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
+	auth, err := authorization.GetUserAuthorization(tok.UserID, tok.UserLevel)
 	if err != nil {
 		if err != nil {
 			return students, errx.DbGetError
 		}
 	}
 
-	if authorization.IsUserParent(tok.UserId) {
+	if authorization.IsUserParent(tok.UserID) {
 		linkType = StudentParent
 	}
 
-	if authorization.IsUserTutor(tok.UserId) {
+	if authorization.IsUserTutor(tok.UserID) {
 		linkType = StudentTutor
 	}
 
-	if authorization.IsUserProfessor(tok.UserId) {
+	if authorization.IsUserProfessor(tok.UserID) {
 		linkType = StudentProfessor
 	}
 
@@ -592,21 +591,21 @@ func RemoveStudent(ctx context.Context, input *model.UserInput) (*string, error)
 		return &status, errx.UnAuthorizedError
 	}
 
-	if tok.UserId == state.ZERO {
+	if tok.UserID == state.ZERO {
 		return &status, errx.UnAuthorizedError
 	}
 
 	student = model.MapUserInputToUser(*input, student)
 
-	if authorization.IsUserParent(tok.UserId) {
+	if authorization.IsUserParent(tok.UserID) {
 		linkType = StudentParent
 	}
 
-	if authorization.IsUserTutor(tok.UserId) {
+	if authorization.IsUserTutor(tok.UserID) {
 		linkType = StudentTutor
 	}
 
-	if authorization.IsUserProfessor(tok.UserId) {
+	if authorization.IsUserProfessor(tok.UserID) {
 		linkType = StudentProfessor
 	}
 
@@ -703,7 +702,7 @@ func CreateNewUser(user model.User, authLevel int) (currentUser model.User, err 
 		return user, err
 	}
 
-	_, err = authentication.GetTokenString(user.ID)
+	_, err = token.GetTokenString(user.ID)
 	if err != nil {
 		return user, err
 	}

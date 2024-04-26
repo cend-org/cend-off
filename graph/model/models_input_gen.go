@@ -91,6 +91,10 @@ func MapMessageInputToMessage(input MessageInput, existing Message) Message {
 		existing.ResourceValue = *input.ResourceValue
 	}
 
+	if input.ResourceNumber != nil {
+		existing.ResourceNumber = *input.ResourceNumber
+	}
+
 	if input.ResourceLabel != nil {
 		existing.ResourceLabel = *input.ResourceLabel
 	}

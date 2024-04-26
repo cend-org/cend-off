@@ -5,6 +5,7 @@ type Message {
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     ResourceType: Int!
+    ResourceNumber: Int!
     ResourceValue :Int!
     ResourceLabel: String!
     ResourceLanguage: Int!
@@ -13,6 +14,7 @@ type Message {
 input MessageInput {
     ResourceType: Int
     ResourceValue :Int
+    ResourceNumber: Int
     ResourceLabel: String
     ResourceLanguage: Int
 }

@@ -18,11 +18,11 @@ type Query {
     MyProfile: User!
 
     #    Message QUERIES
-    getMessages: [Message]
-    getMessagesInLanguage(language: Int!) : [Message]
+    getMessages: [Message!]!
+    getMessagesInLanguage(language: Int!) : [Message!]!
     getMessage(language: Int!, resourceNumber :Int!): Message!
-    getMenuList: [Message]
-    getMenuItems(language:Int!, menuNumber: Int!): [Message]
+    getMenuList: [Message!]!
+    getMenuItems(language:Int!, menuNumber: Int!): [Message!]!
 
     #    Address QUERIES
     getUserAddress: Address!

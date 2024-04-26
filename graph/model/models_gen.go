@@ -17,7 +17,7 @@ type Address struct {
 	Longitude   float64    `json:"longitude"`
 	Street      string     `json:"street"`
 	FullAddress string     `json:"full_address"`
-	XId         *string    `json:"x_id"`
+	XId         string     `json:"x_id"`
 }
 
 type AddressInput struct {
@@ -67,7 +67,7 @@ type CalendarPlanningActor struct {
 	UpdatedAt          time.Time  `json:"updated_at"`
 	DeletedAt          *time.Time `json:"deleted_at"`
 	AuthorizationID    int        `json:"authorization_id"`
-	CalendarPlanningID *int       `json:"calendar_planning_id"`
+	CalendarPlanningID int        `json:"calendar_planning_id"`
 }
 
 type CalendarPlanningInput struct {
@@ -101,14 +101,14 @@ type Mark struct {
 	UserID        int        `json:"user_id"`
 	AuthorID      int        `json:"author_id"`
 	AuthorComment string     `json:"author_comment"`
-	AuthorMark    string     `json:"author_mark"`
+	AuthorMark    int        `json:"author_mark"`
 }
 
 type MarkInput struct {
 	UserID        *int    `json:"user_i_d"`
 	AuthorID      *int    `json:"author_i_d"`
 	AuthorComment *string `json:"author_comment"`
-	AuthorMark    *string `json:"author_mark"`
+	AuthorMark    *int    `json:"author_mark"`
 }
 
 type Message struct {
@@ -117,6 +117,7 @@ type Message struct {
 	UpdatedAt        time.Time  `json:"updated_at"`
 	DeletedAt        *time.Time `json:"deleted_at"`
 	ResourceType     int        `json:"resource_type"`
+	ResourceNumber   int        `json:"resource_number"`
 	ResourceValue    int        `json:"resource_value"`
 	ResourceLabel    string     `json:"resource_label"`
 	ResourceLanguage int        `json:"resource_language"`
@@ -125,6 +126,7 @@ type Message struct {
 type MessageInput struct {
 	ResourceType     *int    `json:"resource_type"`
 	ResourceValue    *int    `json:"resource_value"`
+	ResourceNumber   *int    `json:"resource_number"`
 	ResourceLabel    *string `json:"resource_label"`
 	ResourceLanguage *int    `json:"resource_language"`
 }
@@ -165,7 +167,7 @@ type QRCodeRegistry struct {
 	ResourceValue int    `json:"resource_value"`
 	UserID        int    `json:"user_id"`
 	Xid           string `json:"xid"`
-	IsUsed        *bool  `json:"is_used"`
+	IsUsed        bool   `json:"is_used"`
 }
 
 type Query struct {
@@ -240,9 +242,9 @@ type UserAddress struct {
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 	DeletedAt   *time.Time `json:"deleted_at"`
-	UserID      *int       `json:"user_id"`
-	AddressID   *int       `json:"address_id"`
-	AddressType *string    `json:"address_type"`
+	UserID      int        `json:"user_id"`
+	AddressID   int        `json:"address_id"`
+	AddressType string     `json:"address_type"`
 }
 
 type UserAuthorizationLink struct {

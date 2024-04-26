@@ -22,6 +22,8 @@ require (
 	github.com/satori/go.uuid v1.2.0
 	github.com/unidoc/unipdf/v3 v3.57.0
 	github.com/vektah/gqlparser/v2 v2.5.11
+	github.com/yeqown/go-qrcode/v2 v2.2.3
+	github.com/yeqown/go-qrcode/writer/standard v1.2.3
 	golang.org/x/crypto v0.22.0
 )
 
@@ -36,6 +38,7 @@ require (
 	github.com/cloudwego/base64x v0.1.3 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/fogleman/gg v1.3.0 // indirect
 	github.com/friendsofgo/errors v0.9.2 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-crypt/x v0.2.14 // indirect
@@ -44,6 +47,7 @@ require (
 	github.com/go-playground/validator/v10 v10.19.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/gofrs/uuid v4.4.0+incompatible // indirect
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/google/go-cmp v0.5.9 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.1 // indirect
@@ -71,6 +75,7 @@ require (
 	github.com/volatiletech/null/v8 v8.1.2 // indirect
 	github.com/volatiletech/randomize v0.0.1 // indirect
 	github.com/volatiletech/strmangle v0.0.6 // indirect
+	github.com/yeqown/reedsolomon v1.0.0 // indirect
 	golang.org/x/arch v0.7.0 // indirect
 	golang.org/x/image v0.15.0 // indirect
 	golang.org/x/mod v0.17.0 // indirect

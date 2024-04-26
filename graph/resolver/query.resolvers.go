@@ -103,12 +103,12 @@ func (r *queryResolver) MyProfile(ctx context.Context) (*model.User, error) {
 }
 
 // GetMessages is the resolver for the getMessages field.
-func (r *queryResolver) GetMessages(ctx context.Context) ([]*model.Message, error) {
+func (r *queryResolver) GetMessages(ctx context.Context) ([]model.Message, error) {
 	return translator.GetMessages(ctx)
 }
 
 // GetMessagesInLanguage is the resolver for the getMessagesInLanguage field.
-func (r *queryResolver) GetMessagesInLanguage(ctx context.Context, language int) ([]*model.Message, error) {
+func (r *queryResolver) GetMessagesInLanguage(ctx context.Context, language int) ([]model.Message, error) {
 	return translator.GetMessagesInLanguage(ctx, language)
 }
 
@@ -118,12 +118,12 @@ func (r *queryResolver) GetMessage(ctx context.Context, language int, resourceNu
 }
 
 // GetMenuList is the resolver for the getMenuList field.
-func (r *queryResolver) GetMenuList(ctx context.Context) ([]*model.Message, error) {
+func (r *queryResolver) GetMenuList(ctx context.Context) ([]model.Message, error) {
 	return translator.GetMenuList(ctx)
 }
 
 // GetMenuItems is the resolver for the getMenuItems field.
-func (r *queryResolver) GetMenuItems(ctx context.Context, language int, menuNumber int) ([]*model.Message, error) {
+func (r *queryResolver) GetMenuItems(ctx context.Context, language int, menuNumber int) ([]model.Message, error) {
 	return translator.GetMenuItems(ctx, language, menuNumber)
 }
 

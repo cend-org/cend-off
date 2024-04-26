@@ -11,6 +11,6 @@ type UserEducationLevelSubject {
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: ID!
-    SubjectId :ID!
+    UserId: Int!
+    SubjectId :Int!
 }

@@ -28,8 +28,13 @@ func (r *mutationResolver) RegisterWithEmail(ctx context.Context, input string, 
 }
 
 // Register is the resolver for the Register field.
-func (r *mutationResolver) Register(ctx context.Context, input model.UserInput) (*bool, error) {
-	panic(fmt.Errorf("not implemented: Register - Register"))
+func (r *mutationResolver) Register(ctx context.Context, input model.UserInput, as int) (*string, error) {
+	return usr.Register(ctx, &input, as)
+}
+
+// UpdMyProfile is the resolver for the updMyProfile field.
+func (r *mutationResolver) UpdMyProfile(ctx context.Context, input model.UserInput) (*string, error) {
+	panic(fmt.Errorf("not implemented: UpdMyProfile - updMyProfile"))
 }
 
 // LogIn is the resolver for the LogIn field.
@@ -111,7 +116,7 @@ func (r *mutationResolver) DelMenuItem(ctx context.Context, input model.MessageI
 
 // NewAddress is the resolver for the newAddress field.
 func (r *mutationResolver) NewAddress(ctx context.Context, input model.AddressInput) (*model.Address, error) {
-	return address.NewAddress(ctx, input)
+	return address.NewAddress(ctx, &input)
 }
 
 // UpdateUserAddress is the resolver for the updateUserAddress field.
@@ -146,17 +151,17 @@ func (r *mutationResolver) RemoveUserPlannings(ctx context.Context) (*string, er
 
 // RemoveUserFromPlanning is the resolver for the removeUserFromPlanning field.
 func (r *mutationResolver) RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*string, error) {
-	panic(fmt.Errorf("not implemented: RemoveUserFromPlanning - removeUserFromPlanning"))
+	return planning.RemoveUserFromPlanning(ctx, calendarPlanningID, selectedUserID)
 }
 
 // SetUserEducationLevel is the resolver for the setUserEducationLevel field.
-func (r *mutationResolver) SetUserEducationLevel(ctx context.Context, input model.SubjectInput) (*model.Education, error) {
-	return education.SetUserEducationLevel(ctx, &input)
+func (r *mutationResolver) SetUserEducationLevel(ctx context.Context, subjectID int) (*model.Education, error) {
+	return education.SetUserEducationLevel(ctx, subjectID)
 }
 
 // UpdateUserEducationLevel is the resolver for the updateUserEducationLevel field.
-func (r *mutationResolver) UpdateUserEducationLevel(ctx context.Context, input model.SubjectInput) (*model.Education, error) {
-	return education.UpdateUserEducationLevel(ctx, &input)
+func (r *mutationResolver) UpdateUserEducationLevel(ctx context.Context, subjectID int) (*model.Education, error) {
+	return education.UpdateUserEducationLevel(ctx, subjectID)
 }
 
 // RateUser is the resolver for the rateUser field.
