@@ -33,3 +33,7 @@ var (
 var (
 	NeedPasswordError = note.StatusNeedPasswordError
 )
+
+var (
+	ThumbError = note.ThumbError
+)

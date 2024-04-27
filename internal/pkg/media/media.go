@@ -15,6 +15,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 )
 
 const (
@@ -52,7 +53,7 @@ func SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error
 	media.FileName = file.Filename
 	media.Extension = filepath.Ext(file.Filename)
 	media.Xid = xid.New().String()
-
+	time.Sleep(100)
 	uploadPath := "./" + utils.FILE_UPLOAD_DIR + media.Xid + media.Extension
 
 	f, err := os.Create(uploadPath)
@@ -77,11 +78,21 @@ func SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error
 	if err != nil {
 		return &media, errx.DbInsertError
 	}
+
 	if utils.IsValidImage(mType.String()) {
 		documentType = UserProfileImage
+		err = utils.CreateThumb(media.Xid, media.Extension, file)
+		if err != nil {
+			return &media, errx.ThumbError
+		}
 	}
+
 	if utils.IsValidDocument(mType.String()) {
 		documentType = CV
+		err = utils.CreateDocumentThumb(media.Xid, media.Extension, file)
+		if err != nil {
+			return &media, errx.ThumbError
+		}
 	}
 	if utils.IsValidVideo(mType.String()) {
 		documentType = PresentationVideo
