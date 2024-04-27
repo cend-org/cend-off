@@ -46,10 +46,9 @@ func NewPhoneNumber(ctx context.Context, input *model.PhoneNumberInput) (*model.
 
 func UpdateUserPhoneNumber(ctx context.Context, input *model.PhoneNumberInput) (*model.PhoneNumber, error) {
 	var (
-		phoneNumber  model.PhoneNumber
-		currentPhone model.PhoneNumber
-		err          error
-		tok          *token.Token
+		phoneNumber model.PhoneNumber
+		err         error
+		tok         *token.Token
 	)
 
 	tok, err = token.GetFromContext(ctx)
@@ -57,14 +56,15 @@ func UpdateUserPhoneNumber(ctx context.Context, input *model.PhoneNumberInput) (
 		return &phoneNumber, errx.UnAuthorizedError
 	}
 
-	currentPhone, err = GetPhoneById(tok.UserId)
-	if currentPhone.Id == 0 {
+	phoneNumber, err = GetPhoneById(tok.UserId)
+	if phoneNumber.Id == 0 {
 		return &phoneNumber, errx.Lambda(errors.New("create new phone number instead"))
 	}
 
-	if !utils.IsValidPhone(phoneNumber.MobilePhoneNumber) {
+	if !utils.IsValidPhone(*input.MobilePhoneNumber) {
 		return &phoneNumber, errx.ParseError
 	}
+	phoneNumber = model.MapPhoneNumberInputToPhoneNumber(*input, phoneNumber)
 
 	err = database.Update(phoneNumber)
 	if err != nil {
@@ -86,10 +86,11 @@ func GetUserPhoneNumber(ctx context.Context) (*model.PhoneNumber, error) {
 		return &phone, errx.UnAuthorizedError
 	}
 
-	err = database.Get(&phone, `SELECT phone_number.mobile_phone_number
-	FROM phone_number JOIN user_phone_number 
-	ON phone_number.id = user_phone_number.id 
-	WHERE user_phone_number.user_id = ?`, tok.UserId)
+	err = database.Get(&phone,
+		`SELECT phone_number.* 
+				FROM phone_number 
+    			JOIN user_phone_number ON phone_number.id = user_phone_number.phone_number_id 
+				WHERE user_phone_number.user_id = ?`, tok.UserId)
 	if err != nil {
 		return &phone, errx.DbGetError
 	}
@@ -104,7 +105,7 @@ func GetUserPhoneNumber(ctx context.Context) (*model.PhoneNumber, error) {
 */
 
 func GetPhoneById(userId int) (phoneNumber model.PhoneNumber, err error) {
-	err = database.Get(&phoneNumber, `SELECT * FROM phone_number JOIN user_phone_number ON phone_number.id = user_phone_number.phone_number_id WHERE user_phone_number.user_id = ?`, userId)
+	err = database.Get(&phoneNumber, `SELECT phone_number.* FROM phone_number JOIN user_phone_number ON phone_number.id = user_phone_number.phone_number_id WHERE user_phone_number.user_id = ?`, userId)
 	if err != nil {
 		return phoneNumber, err
 	}
