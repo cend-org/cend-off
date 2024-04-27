@@ -89,9 +89,8 @@ func CreateDocumentThumb(mediaXid string, extension string, file graphql.Upload)
 		mediaThumb MediaThumb
 		thumbnail  image.Image
 	)
-
 	if _, err := file.File.Seek(0, io.SeekStart); err != nil {
-		return fmt.Errorf("failed to seek file: %w", err)
+		return err
 	}
 
 	pdfReader, err := model.NewPdfReader(file.File)

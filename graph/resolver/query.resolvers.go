@@ -10,6 +10,7 @@ import (
 
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
+	"github.com/cend-org/duval/internal/authentication"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/pkg/address"
 	"github.com/cend-org/duval/internal/pkg/code"
@@ -209,7 +210,7 @@ func (r *queryResolver) GetStudent(ctx context.Context) ([]model.User, error) {
 
 // GenerateQRCode is the resolver for the generateQrCode field.
 func (r *queryResolver) GenerateQRCode(ctx context.Context) (*string, error) {
-	panic(fmt.Errorf("not implemented: GenerateQRCode - generateQrCode"))
+	return authentication.GenerateQrCode(ctx)
 }
 
 // Query returns generated.QueryResolver implementation.

@@ -15,7 +15,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"time"
 )
 
 const (
@@ -53,7 +52,6 @@ func SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error
 	media.FileName = file.Filename
 	media.Extension = filepath.Ext(file.Filename)
 	media.Xid = xid.New().String()
-	time.Sleep(100)
 	uploadPath := "./" + utils.FILE_UPLOAD_DIR + media.Xid + media.Extension
 
 	f, err := os.Create(uploadPath)
@@ -62,16 +60,14 @@ func SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error
 	}
 	defer f.Close()
 
-	content, err := io.ReadAll(file.File)
-	_, err = f.Write(content)
+	_, err = io.Copy(f, file.File)
 	if err != nil {
-		log.Fatal(err)
-		return nil, err
+		return &media, nil
 	}
 
 	err = f.Sync()
 	if err != nil {
-		panic(err)
+		return &media, nil
 	}
 
 	_, err = database.InsertOne(media)
@@ -98,7 +94,7 @@ func SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error
 		documentType = PresentationVideo
 	}
 
-	err = SetUserMediaDetail(documentType, tok.UserId)
+	err = SetUserMediaDetail(documentType, tok.UserId, media.Xid)
 	if err != nil {
 		return &media, errx.DbInsertError
 	}
@@ -106,13 +102,15 @@ func SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error
 	return &media, nil
 }
 
-func SetUserMediaDetail(documentType int, userId int) (err error) {
+func SetUserMediaDetail(documentType int, userId int, xId string) (err error) {
 	var (
 		userMediaDetail model.UserMediaDetail
 	)
 
 	userMediaDetail.OwnerId = userId
 	userMediaDetail.DocumentType = documentType
+	userMediaDetail.DocumentXid = xId
+
 	_, err = database.InsertOne(userMediaDetail)
 	if err != nil {
 		return err

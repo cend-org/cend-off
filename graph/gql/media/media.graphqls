@@ -16,4 +16,5 @@ type UserMediaDetail {
     DeletedAt: DateTime
     OwnerId : Int! @goField(name: "OwnerId")
     DocumentType: Int!
+    DocumentXid : String! @goField(name: "DocumentXid")
 }
