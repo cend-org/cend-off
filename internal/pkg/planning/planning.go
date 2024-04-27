@@ -108,13 +108,12 @@ func GetPlanningActors(ctx context.Context, calendarId int) ([]model.User, error
 		err                    error
 		calendarPlanningActors []model.User
 	)
-
 	calendarPlanningActors, err = GetPlanningActorByCalendarId(calendarId)
 	if err != nil {
 		return calendarPlanningActors, errx.DbGetError
 	}
 
-	return calendarPlanningActors, errx.DbGetError
+	return calendarPlanningActors, nil
 }
 
 func RemoveUserFromPlanning(ctx context.Context, calendarPlanningId int, selectedUserId int) (*string, error) {
