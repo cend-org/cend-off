@@ -202,12 +202,13 @@ type ComplexityRoot struct {
 	}
 
 	QrCodeRegistry struct {
-		Id            func(childComplexity int) int
-		IsUsed        func(childComplexity int) int
-		ResourceType  func(childComplexity int) int
-		ResourceValue func(childComplexity int) int
-		UserId        func(childComplexity int) int
-		Xid           func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Id        func(childComplexity int) int
+		IsUsed    func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UserId    func(childComplexity int) int
+		Xid       func(childComplexity int) int
 	}
 
 	Query struct {
@@ -337,6 +338,7 @@ type ComplexityRoot struct {
 		CreatedAt    func(childComplexity int) int
 		DeletedAt    func(childComplexity int) int
 		DocumentType func(childComplexity int) int
+		DocumentXid  func(childComplexity int) int
 		Id           func(childComplexity int) int
 		OwnerId      func(childComplexity int) int
 		UpdatedAt    func(childComplexity int) int
@@ -1388,6 +1390,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.PhoneNumber.UpdatedAt(childComplexity), true
 
+	case "QrCodeRegistry.CreatedAt":
+		if e.complexity.QrCodeRegistry.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.QrCodeRegistry.CreatedAt(childComplexity), true
+
+	case "QrCodeRegistry.DeletedAt":
+		if e.complexity.QrCodeRegistry.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.QrCodeRegistry.DeletedAt(childComplexity), true
+
 	case "QrCodeRegistry.Id":
 		if e.complexity.QrCodeRegistry.Id == nil {
 			break
@@ -1402,19 +1418,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.QrCodeRegistry.IsUsed(childComplexity), true
 
-	case "QrCodeRegistry.ResourceType":
-		if e.complexity.QrCodeRegistry.ResourceType == nil {
+	case "QrCodeRegistry.UpdatedAt":
+		if e.complexity.QrCodeRegistry.UpdatedAt == nil {
 			break
 		}
 
-		return e.complexity.QrCodeRegistry.ResourceType(childComplexity), true
-
-	case "QrCodeRegistry.ResourceValue":
-		if e.complexity.QrCodeRegistry.ResourceValue == nil {
-			break
-		}
-
-		return e.complexity.QrCodeRegistry.ResourceValue(childComplexity), true
+		return e.complexity.QrCodeRegistry.UpdatedAt(childComplexity), true
 
 	case "QrCodeRegistry.UserId":
 		if e.complexity.QrCodeRegistry.UserId == nil {
@@ -2173,6 +2182,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserMediaDetail.DocumentType(childComplexity), true
 
+	case "UserMediaDetail.DocumentXid":
+		if e.complexity.UserMediaDetail.DocumentXid == nil {
+			break
+		}
+
+		return e.complexity.UserMediaDetail.DocumentXid(childComplexity), true
+
 	case "UserMediaDetail.Id":
 		if e.complexity.UserMediaDetail.Id == nil {
 			break
@@ -2492,6 +2508,7 @@ type UserMediaDetail {
     DeletedAt: DateTime
     OwnerId : Int! @goField(name: "OwnerId")
     DocumentType: Int!
+    DocumentXid : String! @goField(name: "DocumentXid")
 }
 `, BuiltIn: false},
 	{Name: "../gql/message/message.graphqls", Input: `
@@ -2580,8 +2597,9 @@ type CalendarPlanningActor {
 }`, BuiltIn: false},
 	{Name: "../gql/qr/qr.graphqls", Input: `type QrCodeRegistry {
     Id: ID! @goField(name: "Id")
-    ResourceType: Int!
-    ResourceValue :Int!
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
     UserId : ID! @goField(name: "UserId")
     Xid : String! @goField(name: "Xid")
     IsUsed :Boolean!

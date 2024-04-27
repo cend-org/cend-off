@@ -173,12 +173,13 @@ type PhoneNumberInput struct {
 }
 
 type QRCodeRegistry struct {
-	Id            int    `json:"id"`
-	ResourceType  int    `json:"resource_type"`
-	ResourceValue int    `json:"resource_value"`
-	UserId        int    `json:"user_id"`
-	Xid           string `json:"xid"`
-	IsUsed        bool   `json:"is_used"`
+	Id        int        `json:"id"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	DeletedAt *time.Time `json:"deleted_at"`
+	UserId    int        `json:"user_id"`
+	Xid       string     `json:"xid"`
+	IsUsed    bool       `json:"is_used"`
 }
 
 type Query struct {
@@ -301,6 +302,7 @@ type UserMediaDetail struct {
 	DeletedAt    *time.Time `json:"deleted_at"`
 	OwnerId      int        `json:"owner_id"`
 	DocumentType int        `json:"document_type"`
+	DocumentXid  string     `json:"document_xid"`
 }
 
 type UserPhoneNumber struct {

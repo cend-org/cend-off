@@ -7,6 +7,7 @@ import (
 	"errors"
 	"strconv"
 	"sync/atomic"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/cend-org/duval/graph/model"
@@ -71,8 +72,8 @@ func (ec *executionContext) fieldContext_QrCodeRegistry_Id(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _QrCodeRegistry_ResourceType(ctx context.Context, field graphql.CollectedField, obj *model.QRCodeRegistry) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_QrCodeRegistry_ResourceType(ctx, field)
+func (ec *executionContext) _QrCodeRegistry_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.QRCodeRegistry) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QrCodeRegistry_CreatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -85,7 +86,7 @@ func (ec *executionContext) _QrCodeRegistry_ResourceType(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ResourceType, nil
+		return obj.CreatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -97,26 +98,26 @@ func (ec *executionContext) _QrCodeRegistry_ResourceType(ctx context.Context, fi
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_QrCodeRegistry_ResourceType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_QrCodeRegistry_CreatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "QrCodeRegistry",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type DateTime does not have child fields")
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _QrCodeRegistry_ResourceValue(ctx context.Context, field graphql.CollectedField, obj *model.QRCodeRegistry) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_QrCodeRegistry_ResourceValue(ctx, field)
+func (ec *executionContext) _QrCodeRegistry_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.QRCodeRegistry) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QrCodeRegistry_UpdatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -129,7 +130,7 @@ func (ec *executionContext) _QrCodeRegistry_ResourceValue(ctx context.Context, f
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ResourceValue, nil
+		return obj.UpdatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -141,19 +142,60 @@ func (ec *executionContext) _QrCodeRegistry_ResourceValue(ctx context.Context, f
 		}
 		return graphql.Null
 	}
-	res := resTmp.(int)
+	res := resTmp.(time.Time)
 	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
+	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_QrCodeRegistry_ResourceValue(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_QrCodeRegistry_UpdatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "QrCodeRegistry",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
+			return nil, errors.New("field of type DateTime does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _QrCodeRegistry_DeletedAt(ctx context.Context, field graphql.CollectedField, obj *model.QRCodeRegistry) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_QrCodeRegistry_DeletedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalODateTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_QrCodeRegistry_DeletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "QrCodeRegistry",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type DateTime does not have child fields")
 		},
 	}
 	return fc, nil
@@ -319,16 +361,18 @@ func (ec *executionContext) _QrCodeRegistry(ctx context.Context, sel ast.Selecti
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "ResourceType":
-			out.Values[i] = ec._QrCodeRegistry_ResourceType(ctx, field, obj)
+		case "CreatedAt":
+			out.Values[i] = ec._QrCodeRegistry_CreatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "ResourceValue":
-			out.Values[i] = ec._QrCodeRegistry_ResourceValue(ctx, field, obj)
+		case "UpdatedAt":
+			out.Values[i] = ec._QrCodeRegistry_UpdatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
+		case "DeletedAt":
+			out.Values[i] = ec._QrCodeRegistry_DeletedAt(ctx, field, obj)
 		case "UserId":
 			out.Values[i] = ec._QrCodeRegistry_UserId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {

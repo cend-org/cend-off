@@ -14,7 +14,7 @@ import (
 	"strconv"
 )
 
-func GenerateQrCode(ctx *context.Context) (*string, error) {
+func GenerateQrCode(ctx context.Context) (*string, error) {
 	var (
 		tok            *token.Token
 		err            error
@@ -22,8 +22,7 @@ func GenerateQrCode(ctx *context.Context) (*string, error) {
 		qrImageLink    string
 		QRCodeRegistry model.QRCodeRegistry
 	)
-
-	tok, err = token.GetFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &qrImageLink, errx.UnAuthorizedError
 	}
@@ -60,7 +59,7 @@ func GenerateQrCode(ctx *context.Context) (*string, error) {
 	return &qrImageLink, nil
 }
 
-func LoginWithQr(ctx *context.Context, xId string) (*string, error) {
+func LoginWithQr(ctx context.Context, xId string) (*string, error) {
 	var (
 		tok            string
 		err            error

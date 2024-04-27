@@ -7,6 +7,7 @@ package resolver
 import (
 	"context"
 	"fmt"
+	"github.com/cend-org/duval/internal/authentication"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/cend-org/duval/graph/generated"
@@ -218,7 +219,7 @@ func (r *mutationResolver) RemoveStudent(ctx context.Context, input model.UserIn
 
 // LoginWithQR is the resolver for the loginWithQr field.
 func (r *mutationResolver) LoginWithQR(ctx context.Context, xID string) (*string, error) {
-	panic(fmt.Errorf("not implemented: LoginWithQR - loginWithQr"))
+	return authentication.LoginWithQr(ctx, xID)
 }
 
 // SingleUpload is the resolver for the singleUpload field.
