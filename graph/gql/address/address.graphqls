@@ -1,5 +1,5 @@
 type Address {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
@@ -9,17 +9,17 @@ type Address {
     Longitude: Float!
     Street: String!
     FullAddress: String!
-    XId: String!
+    Xid: String! @goField(name: "Xid")
 }
 
 
 type UserAddress {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: ID!
-    AddressId: ID!
+    UserId: ID! @goField(name: "UserId")
+    AddressId: ID! @goField(name: "AddressId")
     AddressType: String!
 }
 

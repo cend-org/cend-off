@@ -50,7 +50,7 @@ func Register(ctx context.Context, input *model.UserInput, as int) (*string, err
 		return &tokenStr, errx.Lambda(err)
 	}
 
-	if user.ID > state.ZERO {
+	if user.Id > state.ZERO {
 		return &tokenStr, errx.DuplicateUserError
 	}
 
@@ -67,14 +67,18 @@ func Register(ctx context.Context, input *model.UserInput, as int) (*string, err
 		user.NickName = user.Matricule
 	}
 
+	if input.BirthDate != nil {
+		user.Age = ComputeAge(user.BirthDate)
+	}
+
 	userId, err := database.InsertOne(user)
 	if err != nil {
 		return &tokenStr, errx.DuplicateUserError
 	}
 
-	user.ID = userId
+	user.Id = userId
 
-	err = authorization.NewUserAuthorization(user.ID, authorizationLevel)
+	err = authorization.NewUserAuthorization(user.Id, authorizationLevel)
 	if err != nil {
 		return &tokenStr, errx.Lambda(err)
 	}
@@ -84,7 +88,7 @@ func Register(ctx context.Context, input *model.UserInput, as int) (*string, err
 		return nil, err
 	}
 
-	err = code.NewUserVerificationCode(user.ID)
+	err = code.NewUserVerificationCode(user.Id)
 	if err != nil {
 		return &tokenStr, errx.Lambda(err)
 	}
@@ -105,14 +109,14 @@ func RegisterWithEmail(ctx context.Context, input string, as int) (*string, erro
 		return nil, err
 	}
 
-	if usr.ID == 0 {
+	if usr.Id == 0 {
 		usr, err = NewUserWithEmail(input)
 		if err != nil {
 			return nil, err
 		}
 	}
 
-	authorization.UserID = usr.ID
+	authorization.UserId = usr.Id
 	authorization.Level = as
 
 	_, err = database.Insert(authorization)
@@ -169,7 +173,7 @@ func NewPassword(ctx context.Context, password string) (*bool, error) {
 		return nil, err
 	}
 
-	psw.UserID = tok.UserID
+	psw.UserId = tok.UserId
 	psw.Hash = pwd.Encode(password)
 	if err != nil {
 		return nil, err
@@ -201,7 +205,7 @@ func GetPasswordHistory(ctx context.Context) ([]model.Password, error) {
 		`SELECT password.*
 			FROM password
 			WHERE password.user_id = ?
-			ORDER BY password.created_at DESC`, tok.UserID)
+			ORDER BY password.created_at DESC`, tok.UserId)
 	if err != nil {
 		return passwords, errx.DbGetError
 	}
@@ -220,7 +224,7 @@ func ActivateUser(ctx context.Context) (*model.User, error) {
 		return &usr, errx.Lambda(err)
 	}
 
-	usr, err = GetUserWithId(tok.UserID)
+	usr, err = GetUserWithId(tok.UserId)
 	if err != nil {
 		return &usr, errx.Lambda(err)
 	}
@@ -246,7 +250,7 @@ func MyProfile(ctx context.Context) (*model.User, error) {
 		return &user, errx.Lambda(err)
 	}
 
-	user, err = GetUserWithId(tok.UserID)
+	user, err = GetUserWithId(tok.UserId)
 	if err != nil {
 		return &user, errx.Lambda(err)
 	}
@@ -266,7 +270,7 @@ func UpdMyProfile(ctx context.Context, input *model.UserInput) (*string, error) 
 		return &done, errx.UnAuthorizedError
 	}
 
-	usr, err = GetUserWithId(tok.UserID)
+	usr, err = GetUserWithId(tok.UserId)
 	if err != nil {
 		return &done, errx.DbGetError
 	}
@@ -314,7 +318,7 @@ func NewUserWithEmail(email string) (usr model.User, err error) {
 		return usr, err
 	}
 
-	usr.ID = int(id)
+	usr.Id = int(id)
 
 	return usr, err
 }
@@ -348,7 +352,7 @@ func LoginWithEmailAndPassword(email, pass string) (access string, err error) {
 		return access, err
 	}
 
-	err = database.Get(&psw, `SELECT * FROM password WHERE user_id = ? ORDER BY created_at DESC  LIMIT 1`, usr.ID)
+	err = database.Get(&psw, `SELECT * FROM password WHERE user_id = ? ORDER BY created_at DESC  LIMIT 1`, usr.Id)
 	if err != nil {
 		return access, err
 	}
@@ -373,4 +377,8 @@ func GetUserWithId(id int) (user model.User, err error) {
 	}
 
 	return user, err
+}
+
+func ComputeAge(birthDate time.Time) int {
+	return time.Now().Year() - birthDate.Year()
 }

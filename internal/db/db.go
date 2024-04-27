@@ -19,7 +19,8 @@ func skipSpecialField(field *structs.Field) bool {
 func D(T any) (q string) {
 	t := structs.New(T)
 	q = fmt.Sprintf("delete from %s  ", strcase.ToSnake(t.Name()))
-	return q + fmt.Sprintf(" where id = %d", t.Field("Id").Value())
+	q = q + fmt.Sprintf(" where id = %d", t.Field("Id").Value())
+	return q
 }
 
 func U(T any) (q string) {

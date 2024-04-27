@@ -24,6 +24,7 @@ type Mutation {
     #    Address mutations
     newAddress(input: AddressInput!): Address!
     updateUserAddress(input: AddressInput!): Address!
+    removeUserAddress: String!
 
     #    Phone mutations
     newPhoneNumber(input: PhoneNumberInput!) : PhoneNumber!
@@ -58,6 +59,6 @@ type Mutation {
     # Qr Mutations
     loginWithQr(xId: String!) :String
 
-#    Upload
+    #    Upload
     singleUpload(file: Upload!): Media!
 }

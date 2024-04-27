@@ -1,5 +1,5 @@
 type School {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
@@ -11,7 +11,7 @@ input SchoolInput {
 }
 
 type SchoolSubject {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime

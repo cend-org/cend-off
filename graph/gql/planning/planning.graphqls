@@ -1,9 +1,9 @@
 type CalendarPlanning {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    AuthorizationId : ID!
+    AuthorizationId : ID! @goField(name: "AuthorizationId")
     StartDateTime: DateTime!
     EndDateTime: DateTime!
     Description: String!
@@ -17,10 +17,10 @@ input CalendarPlanningInput {
 }
 
 type CalendarPlanningActor {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    AuthorizationId: ID!
-    CalendarPlanningId: ID!
+    AuthorizationId: ID! @goField(name: "AuthorizationId")
+    CalendarPlanningId: ID! @goField(name: "CalendarPlanningId")
 }

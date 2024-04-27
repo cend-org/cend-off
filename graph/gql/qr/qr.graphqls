@@ -1,8 +1,8 @@
 type QrCodeRegistry {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     ResourceType: Int!
     ResourceValue :Int!
-    UserId : ID!
-    Xid : String!
+    UserId : ID! @goField(name: "UserId")
+    Xid : String! @goField(name: "Xid")
     IsUsed :Boolean!
 }

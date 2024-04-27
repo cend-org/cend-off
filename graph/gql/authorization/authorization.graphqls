@@ -1,15 +1,15 @@
 type Authorization {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: ID!
+    UserId: ID! @goField(name: "UserId")
     Level: Int!
 }
 
 
 type UserAuthorizationLink {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
@@ -17,10 +17,10 @@ type UserAuthorizationLink {
 }
 
 type UserAuthorizationLinkActor {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserAuthorizationLinkId: Int!
-    AuthorizationId: Int!
+    UserAuthorizationLinkId: Int! @goField(name: "UserAuthorizationLinkId")
+    AuthorizationId: Int! @goField(name: "AuthorizationId")
 }

@@ -12,7 +12,7 @@ import (
 const SecretKey = "Secret_key"
 
 type Token struct {
-	UserID         int  `json:"user_id,omitempty"`
+	UserId         int  `json:"user_id,omitempty"`
 	UserLevel      int  `json:"level,omitempty"`
 	UserStatus     uint `json:"user_status"`
 	ExpirationDate struct {

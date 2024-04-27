@@ -1,5 +1,5 @@
 type Education {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
@@ -7,10 +7,10 @@ type Education {
 }
 
 type UserEducationLevelSubject {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: Int!
-    SubjectId :Int!
+    UserId: Int! @goField(name: "UserId")
+    SubjectId :Int! @goField(name: "SubjectId")
 }

@@ -36,7 +36,7 @@ func SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error
 		return &media, errx.UnAuthorizedError
 	}
 
-	if tok.UserID == state.ZERO {
+	if tok.UserId == state.ZERO {
 		return &media, errx.UnAuthorizedError
 	}
 
@@ -87,7 +87,7 @@ func SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error
 		documentType = PresentationVideo
 	}
 
-	err = SetUserMediaDetail(documentType, tok.UserID)
+	err = SetUserMediaDetail(documentType, tok.UserId)
 	if err != nil {
 		return &media, errx.DbInsertError
 	}
@@ -100,7 +100,7 @@ func SetUserMediaDetail(documentType int, userId int) (err error) {
 		userMediaDetail model.UserMediaDetail
 	)
 
-	userMediaDetail.OwnerID = userId
+	userMediaDetail.OwnerId = userId
 	userMediaDetail.DocumentType = documentType
 	_, err = database.InsertOne(userMediaDetail)
 	if err != nil {

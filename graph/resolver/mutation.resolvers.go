@@ -126,6 +126,11 @@ func (r *mutationResolver) UpdateUserAddress(ctx context.Context, input model.Ad
 	return address.UpdateUserAddress(ctx, &input)
 }
 
+// RemoveUserAddress is the resolver for the removeUserAddress field.
+func (r *mutationResolver) RemoveUserAddress(ctx context.Context) (string, error) {
+	return address.RemoveUserAddress(ctx)
+}
+
 // NewPhoneNumber is the resolver for the newPhoneNumber field.
 func (r *mutationResolver) NewPhoneNumber(ctx context.Context, input model.PhoneNumberInput) (*model.PhoneNumber, error) {
 	return phone.NewPhoneNumber(ctx, &input)

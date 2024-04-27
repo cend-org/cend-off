@@ -43,7 +43,7 @@ func (ec *executionContext) _Authorization_Id(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return obj.Id, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -216,7 +216,7 @@ func (ec *executionContext) _Authorization_UserId(ctx context.Context, field gra
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UserID, nil
+		return obj.UserId, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -304,7 +304,7 @@ func (ec *executionContext) _UserAuthorizationLink_Id(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return obj.Id, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -521,7 +521,7 @@ func (ec *executionContext) _UserAuthorizationLinkActor_Id(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return obj.Id, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -694,7 +694,7 @@ func (ec *executionContext) _UserAuthorizationLinkActor_UserAuthorizationLinkId(
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UserAuthorizationLinkID, nil
+		return obj.UserAuthorizationLinkId, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -738,7 +738,7 @@ func (ec *executionContext) _UserAuthorizationLinkActor_AuthorizationId(ctx cont
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.AuthorizationID, nil
+		return obj.AuthorizationId, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)

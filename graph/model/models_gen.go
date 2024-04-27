@@ -7,7 +7,7 @@ import (
 )
 
 type Address struct {
-	ID          int        `json:"id"`
+	Id          int        `json:"id"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 	DeletedAt   *time.Time `json:"deleted_at"`
@@ -17,7 +17,7 @@ type Address struct {
 	Longitude   float64    `json:"longitude"`
 	Street      string     `json:"street"`
 	FullAddress string     `json:"full_address"`
-	XId         string     `json:"x_id"`
+	Xid         string     `json:"xid"`
 }
 
 type AddressInput struct {
@@ -30,7 +30,7 @@ type AddressInput struct {
 }
 
 type Asset struct {
-	ID          int        `json:"id"`
+	Id          int        `json:"id"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 	DeletedAt   *time.Time `json:"deleted_at"`
@@ -42,32 +42,32 @@ type AssetInput struct {
 }
 
 type Authorization struct {
-	ID        int        `json:"id"`
+	Id        int        `json:"id"`
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at"`
-	UserID    int        `json:"user_id"`
+	UserId    int        `json:"user_id"`
 	Level     int        `json:"level"`
 }
 
 type CalendarPlanning struct {
-	ID              int        `json:"id"`
+	Id              int        `json:"id"`
 	CreatedAt       time.Time  `json:"created_at"`
 	UpdatedAt       time.Time  `json:"updated_at"`
 	DeletedAt       *time.Time `json:"deleted_at"`
-	AuthorizationID int        `json:"authorization_id"`
+	AuthorizationId int        `json:"authorization_id"`
 	StartDateTime   time.Time  `json:"start_date_time"`
 	EndDateTime     time.Time  `json:"end_date_time"`
 	Description     string     `json:"description"`
 }
 
 type CalendarPlanningActor struct {
-	ID                 int        `json:"id"`
+	Id                 int        `json:"id"`
 	CreatedAt          time.Time  `json:"created_at"`
 	UpdatedAt          time.Time  `json:"updated_at"`
 	DeletedAt          *time.Time `json:"deleted_at"`
-	AuthorizationID    int        `json:"authorization_id"`
-	CalendarPlanningID int        `json:"calendar_planning_id"`
+	AuthorizationId    int        `json:"authorization_id"`
+	CalendarPlanningId int        `json:"calendar_planning_id"`
 }
 
 type CalendarPlanningInput struct {
@@ -77,16 +77,16 @@ type CalendarPlanningInput struct {
 }
 
 type Code struct {
-	ID               int        `json:"id"`
+	Id               int        `json:"id"`
 	CreatedAt        time.Time  `json:"created_at"`
 	UpdatedAt        time.Time  `json:"updated_at"`
 	DeletedAt        *time.Time `json:"deleted_at"`
-	UserID           int        `json:"user_id"`
+	UserId           int        `json:"user_id"`
 	VerificationCode int        `json:"verification_code"`
 }
 
 type Education struct {
-	ID        int        `json:"id"`
+	Id        int        `json:"id"`
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at"`
@@ -94,25 +94,25 @@ type Education struct {
 }
 
 type Mark struct {
-	ID            int        `json:"id"`
+	Id            int        `json:"id"`
 	CreatedAt     time.Time  `json:"created_at"`
 	UpdatedAt     time.Time  `json:"updated_at"`
 	DeletedAt     *time.Time `json:"deleted_at"`
-	UserID        int        `json:"user_id"`
-	AuthorID      int        `json:"author_id"`
+	UserId        int        `json:"user_id"`
+	AuthorId      int        `json:"author_id"`
 	AuthorComment string     `json:"author_comment"`
 	AuthorMark    int        `json:"author_mark"`
 }
 
 type MarkInput struct {
-	UserID        *int    `json:"user_i_d"`
-	AuthorID      *int    `json:"author_i_d"`
+	UserId        *int    `json:"user_id"`
+	AuthorId      *int    `json:"author_id"`
 	AuthorComment *string `json:"author_comment"`
 	AuthorMark    *int    `json:"author_mark"`
 }
 
 type Media struct {
-	ID          int        `json:"id"`
+	Id          int        `json:"id"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 	DeletedAt   *time.Time `json:"deleted_at"`
@@ -123,7 +123,7 @@ type Media struct {
 }
 
 type Message struct {
-	ID               int        `json:"id"`
+	Id               int        `json:"id"`
 	CreatedAt        time.Time  `json:"created_at"`
 	UpdatedAt        time.Time  `json:"updated_at"`
 	DeletedAt        *time.Time `json:"deleted_at"`
@@ -146,11 +146,11 @@ type Mutation struct {
 }
 
 type Password struct {
-	ID        int        `json:"id"`
+	Id        int        `json:"id"`
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at"`
-	UserID    int        `json:"user_id"`
+	UserId    int        `json:"user_id"`
 	Hash      string     `json:"hash"`
 }
 
@@ -159,7 +159,7 @@ type PasswordInput struct {
 }
 
 type PhoneNumber struct {
-	ID                int        `json:"id"`
+	Id                int        `json:"id"`
 	CreatedAt         time.Time  `json:"created_at"`
 	UpdatedAt         time.Time  `json:"updated_at"`
 	DeletedAt         *time.Time `json:"deleted_at"`
@@ -173,10 +173,10 @@ type PhoneNumberInput struct {
 }
 
 type QRCodeRegistry struct {
-	ID            int    `json:"id"`
+	Id            int    `json:"id"`
 	ResourceType  int    `json:"resource_type"`
 	ResourceValue int    `json:"resource_value"`
-	UserID        int    `json:"user_id"`
+	UserId        int    `json:"user_id"`
 	Xid           string `json:"xid"`
 	IsUsed        bool   `json:"is_used"`
 }
@@ -185,7 +185,7 @@ type Query struct {
 }
 
 type School struct {
-	ID        int        `json:"id"`
+	Id        int        `json:"id"`
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at"`
@@ -197,7 +197,7 @@ type SchoolInput struct {
 }
 
 type SchoolSubject struct {
-	ID           int        `json:"id"`
+	Id           int        `json:"id"`
 	CreatedAt    time.Time  `json:"created_at"`
 	UpdatedAt    time.Time  `json:"updated_at"`
 	DeletedAt    *time.Time `json:"deleted_at"`
@@ -211,21 +211,21 @@ type SchoolSubjectInput struct {
 }
 
 type Subject struct {
-	ID               int        `json:"id"`
+	Id               int        `json:"id"`
 	CreatedAt        time.Time  `json:"created_at"`
 	UpdatedAt        time.Time  `json:"updated_at"`
 	DeletedAt        *time.Time `json:"deleted_at"`
-	EducationLevelID int        `json:"education_level_id"`
+	EducationLevelId int        `json:"education_level_id"`
 	Name             string     `json:"name"`
 }
 
 type SubjectInput struct {
-	EducationLevelID *int    `json:"education_level_i_d"`
+	EducationLevelId *int    `json:"education_level_id"`
 	Name             *string `json:"name"`
 }
 
 type User struct {
-	ID                    int        `json:"id"`
+	Id                    int        `json:"id"`
 	CreatedAt             time.Time  `json:"created_at"`
 	UpdatedAt             time.Time  `json:"updated_at"`
 	DeletedAt             *time.Time `json:"deleted_at"`
@@ -249,17 +249,17 @@ type User struct {
 }
 
 type UserAddress struct {
-	ID          int        `json:"id"`
+	Id          int        `json:"id"`
 	CreatedAt   time.Time  `json:"created_at"`
 	UpdatedAt   time.Time  `json:"updated_at"`
 	DeletedAt   *time.Time `json:"deleted_at"`
-	UserID      int        `json:"user_id"`
-	AddressID   int        `json:"address_id"`
+	UserId      int        `json:"user_id"`
+	AddressId   int        `json:"address_id"`
 	AddressType string     `json:"address_type"`
 }
 
 type UserAuthorizationLink struct {
-	ID        int        `json:"id"`
+	Id        int        `json:"id"`
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at"`
@@ -267,21 +267,21 @@ type UserAuthorizationLink struct {
 }
 
 type UserAuthorizationLinkActor struct {
-	ID                      int        `json:"id"`
+	Id                      int        `json:"id"`
 	CreatedAt               time.Time  `json:"created_at"`
 	UpdatedAt               time.Time  `json:"updated_at"`
 	DeletedAt               *time.Time `json:"deleted_at"`
-	UserAuthorizationLinkID int        `json:"user_authorization_link_id"`
-	AuthorizationID         int        `json:"authorization_id"`
+	UserAuthorizationLinkId int        `json:"user_authorization_link_id"`
+	AuthorizationId         int        `json:"authorization_id"`
 }
 
 type UserEducationLevelSubject struct {
-	ID        int        `json:"id"`
+	Id        int        `json:"id"`
 	CreatedAt time.Time  `json:"created_at"`
 	UpdatedAt time.Time  `json:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at"`
-	UserID    int        `json:"user_id"`
-	SubjectID int        `json:"subject_id"`
+	UserId    int        `json:"user_id"`
+	SubjectId int        `json:"subject_id"`
 }
 
 type UserInput struct {
@@ -295,19 +295,19 @@ type UserInput struct {
 }
 
 type UserMediaDetail struct {
-	ID           int        `json:"id"`
+	Id           int        `json:"id"`
 	CreatedAt    time.Time  `json:"created_at"`
 	UpdatedAt    time.Time  `json:"updated_at"`
 	DeletedAt    *time.Time `json:"deleted_at"`
-	OwnerID      int        `json:"owner_id"`
+	OwnerId      int        `json:"owner_id"`
 	DocumentType int        `json:"document_type"`
 }
 
 type UserPhoneNumber struct {
-	ID            int        `json:"id"`
+	Id            int        `json:"id"`
 	CreatedAt     time.Time  `json:"created_at"`
 	UpdatedAt     time.Time  `json:"updated_at"`
 	DeletedAt     *time.Time `json:"deleted_at"`
-	UserID        int        `json:"user_id"`
-	PhoneNumberID int        `json:"phone_number_id"`
+	UserId        int        `json:"user_id"`
+	PhoneNumberId int        `json:"phone_number_id"`
 }

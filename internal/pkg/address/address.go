@@ -8,6 +8,7 @@ import (
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
 	"github.com/joinverse/xid"
+	"time"
 )
 
 func NewAddress(ctx context.Context, input *model.AddressInput) (*model.Address, error) {
@@ -20,30 +21,29 @@ func NewAddress(ctx context.Context, input *model.AddressInput) (*model.Address,
 		userAddress model.UserAddress
 		err         error
 	)
-
 	address = model.MapAddressInputToAddress(*input, address)
 
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &address, errx.UnAuthorizedError
 	}
-	userId = tok.UserID
+	userId = tok.UserId
 
 	// get user address
 	isUser, err = GetUserAddressWithId(userId)
-	if isUser.AddressID > state.ZERO {
+	if isUser.AddressId > state.ZERO {
 		return &address, errx.DuplicateAddressError
 	}
-	address.XId = xid.New().String()
+	address.Xid = xid.New().String()
 
-	address.ID, err = database.InsertOne(address)
+	address.Id, err = database.InsertOne(address)
 	if err != nil {
 		return &address, errx.DbInsertError
 	}
 
 	// Link new address to the current user
-	userAddress.UserID = userId
-	userAddress.AddressID = address.ID
+	userAddress.UserId = userId
+	userAddress.AddressId = address.Id
 	_, err = database.InsertOne(userAddress)
 	if err != nil {
 		return &address, errx.LinkUserError
@@ -59,14 +59,13 @@ func UpdateUserAddress(ctx context.Context, input *model.AddressInput) (*model.A
 		err         error
 		tok         *token.Token
 	)
-
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &address, errx.UnAuthorizedError
 	}
 
-	userAddress, err = GetUserAddressWithId(int(tok.UserID))
-	if userAddress.AddressID == state.ZERO {
+	userAddress, err = GetUserAddressWithId(int(tok.UserId))
+	if userAddress.AddressId == state.ZERO {
 		return &address, errx.UnAuthorizedError
 	}
 
@@ -88,13 +87,12 @@ func GetUserAddress(ctx context.Context) (*model.Address, error) {
 		address model.Address
 		err     error
 	)
-
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &address, errx.UnAuthorizedError
 	}
 
-	userId = int(tok.UserID)
+	userId = int(tok.UserId)
 
 	err = database.Get(&address, `SELECT address.*
    FROM address JOIN user_address
@@ -117,12 +115,11 @@ func RemoveUserAddress(ctx context.Context) (string, error) {
 		err         error
 		status      string
 	)
-
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return status, errx.UnAuthorizedError
 	}
-	userId = tok.UserID
+	userId = tok.UserId
 
 	err = database.Get(&address, `SELECT address.*
    FROM address JOIN user_address
@@ -131,7 +128,7 @@ func RemoveUserAddress(ctx context.Context) (string, error) {
 	if err != nil {
 		return status, errx.DbGetError
 	}
-
+	time.Sleep(100)
 	err = database.Delete(address)
 	if err != nil {
 		return status, errx.DbDeleteError
@@ -142,6 +139,7 @@ func RemoveUserAddress(ctx context.Context) (string, error) {
 	if err != nil {
 		return status, errx.DbGetError
 	}
+
 	err = database.Delete(userAddress)
 	if err != nil {
 		return status, errx.DbDeleteError
@@ -150,6 +148,10 @@ func RemoveUserAddress(ctx context.Context) (string, error) {
 
 	return status, nil
 }
+
+/*
+	UTILS
+*/
 
 func GetUserAddressWithId(userId int) (userAddress model.UserAddress, err error) {
 	err = database.Get(&userAddress, "SELECT * FROM user_address Where user_id = ?", userId)

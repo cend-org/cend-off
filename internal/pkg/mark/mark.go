@@ -25,11 +25,11 @@ func RateUser(ctx context.Context, input *model.MarkInput) (*model.Mark, error) 
 		return &studentMark, errx.UnAuthorizedError
 	}
 
-	if authorization.IsUserStudent(tok.UserID) {
+	if authorization.IsUserStudent(tok.UserId) {
 		return &studentMark, errx.UnAuthorizedError
 	}
 
-	if authorization.IsUserParent(tok.UserID) {
+	if authorization.IsUserParent(tok.UserId) {
 		return &studentMark, errx.UnAuthorizedError
 	}
 
@@ -37,7 +37,7 @@ func RateUser(ctx context.Context, input *model.MarkInput) (*model.Mark, error) 
 		return &studentMark, errx.Lambda(errors.New("value exceed 5 star"))
 	}
 
-	studentMark.AuthorID = tok.UserID
+	studentMark.AuthorId = tok.UserId
 	err = SetUserMark(studentMark)
 	if err != nil {
 		return &studentMark, errx.DbInsertError
@@ -46,7 +46,7 @@ func RateUser(ctx context.Context, input *model.MarkInput) (*model.Mark, error) 
 	return &studentMark, nil
 }
 
-func GetUserAverageMark(ctx context.Context, userID int) (*int, error) {
+func GetUserAverageMark(ctx context.Context, userId int) (*int, error) {
 	var (
 		userMarks   []model.Mark
 		err         error
@@ -54,7 +54,7 @@ func GetUserAverageMark(ctx context.Context, userID int) (*int, error) {
 		averageMark int
 	)
 
-	err = database.GetMany(&userMarks, `SELECT user_mark.* FROM user_mark WHERE user_id = ?`, userID)
+	err = database.GetMany(&userMarks, `SELECT user_mark.* FROM user_mark WHERE user_id = ?`, userId)
 	if err != nil {
 		return &averageMark, errx.DbGetError
 	}
@@ -83,14 +83,14 @@ func GetUserMarkComment(ctx context.Context) ([]model.Mark, error) {
 		return mark, errx.UnAuthorizedError
 	}
 
-	if authorization.IsUserStudent(tok.UserID) || authorization.IsUserParent(tok.UserID) {
+	if authorization.IsUserStudent(tok.UserId) || authorization.IsUserParent(tok.UserId) {
 		return mark, errx.UnAuthorizedError
 	}
 
 	err = database.GetMany(&mark,
 		`SELECT user_mark.* 
 			FROM user_mark
-			WHERE user_mark.author_id= ?;`, tok.UserID)
+			WHERE user_mark.author_id= ?;`, tok.UserId)
 	if err != nil {
 		return mark, errx.DbGetError
 	}

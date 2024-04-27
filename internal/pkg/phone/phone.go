@@ -27,14 +27,14 @@ func NewPhoneNumber(ctx context.Context, input *model.PhoneNumberInput) (*model.
 	}
 	phone = model.MapPhoneNumberInputToPhoneNumber(*input, phone)
 
-	phone.ID, err = database.InsertOne(phone)
+	phone.Id, err = database.InsertOne(phone)
 	if err != nil {
 		return &phone, errx.Lambda(err)
 	}
 
 	// Link phone to user.
-	userPhoneNumber.UserID = tok.UserID
-	userPhoneNumber.PhoneNumberID = phone.ID
+	userPhoneNumber.UserId = tok.UserId
+	userPhoneNumber.PhoneNumberId = phone.Id
 
 	_, err = database.InsertOne(userPhoneNumber)
 	if err != nil {
@@ -57,8 +57,8 @@ func UpdateUserPhoneNumber(ctx context.Context, input *model.PhoneNumberInput) (
 		return &phoneNumber, errx.UnAuthorizedError
 	}
 
-	currentPhone, err = GetPhoneById(tok.UserID)
-	if currentPhone.ID == 0 {
+	currentPhone, err = GetPhoneById(tok.UserId)
+	if currentPhone.Id == 0 {
 		return &phoneNumber, errx.Lambda(errors.New("create new phone number instead"))
 	}
 
@@ -89,7 +89,7 @@ func GetUserPhoneNumber(ctx context.Context) (*model.PhoneNumber, error) {
 	err = database.Get(&phone, `SELECT phone_number.mobile_phone_number
 	FROM phone_number JOIN user_phone_number 
 	ON phone_number.id = user_phone_number.id 
-	WHERE user_phone_number.user_id = ?`, tok.UserID)
+	WHERE user_phone_number.user_id = ?`, tok.UserId)
 	if err != nil {
 		return &phone, errx.DbGetError
 	}
@@ -103,8 +103,8 @@ func GetUserPhoneNumber(ctx context.Context) (*model.PhoneNumber, error) {
 
 */
 
-func GetPhoneById(userID int) (phoneNumber model.PhoneNumber, err error) {
-	err = database.Get(&phoneNumber, `SELECT * FROM phone_number JOIN user_phone_number ON phone_number.id = user_phone_number.phone_number_id WHERE user_phone_number.user_id = ?`, userID)
+func GetPhoneById(userId int) (phoneNumber model.PhoneNumber, err error) {
+	err = database.Get(&phoneNumber, `SELECT * FROM phone_number JOIN user_phone_number ON phone_number.id = user_phone_number.phone_number_id WHERE user_phone_number.user_id = ?`, userId)
 	if err != nil {
 		return phoneNumber, err
 	}

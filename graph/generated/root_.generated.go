@@ -47,77 +47,77 @@ type ComplexityRoot struct {
 		CreatedAt   func(childComplexity int) int
 		DeletedAt   func(childComplexity int) int
 		FullAddress func(childComplexity int) int
-		ID          func(childComplexity int) int
+		Id          func(childComplexity int) int
 		Latitude    func(childComplexity int) int
 		Longitude   func(childComplexity int) int
 		Street      func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
-		XId         func(childComplexity int) int
+		Xid         func(childComplexity int) int
 	}
 
 	Asset struct {
 		CreatedAt   func(childComplexity int) int
 		DeletedAt   func(childComplexity int) int
 		Description func(childComplexity int) int
-		ID          func(childComplexity int) int
+		Id          func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 	}
 
 	Authorization struct {
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
-		ID        func(childComplexity int) int
+		Id        func(childComplexity int) int
 		Level     func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
-		UserID    func(childComplexity int) int
+		UserId    func(childComplexity int) int
 	}
 
 	CalendarPlanning struct {
-		AuthorizationID func(childComplexity int) int
+		AuthorizationId func(childComplexity int) int
 		CreatedAt       func(childComplexity int) int
 		DeletedAt       func(childComplexity int) int
 		Description     func(childComplexity int) int
 		EndDateTime     func(childComplexity int) int
-		ID              func(childComplexity int) int
+		Id              func(childComplexity int) int
 		StartDateTime   func(childComplexity int) int
 		UpdatedAt       func(childComplexity int) int
 	}
 
 	CalendarPlanningActor struct {
-		AuthorizationID    func(childComplexity int) int
-		CalendarPlanningID func(childComplexity int) int
+		AuthorizationId    func(childComplexity int) int
+		CalendarPlanningId func(childComplexity int) int
 		CreatedAt          func(childComplexity int) int
 		DeletedAt          func(childComplexity int) int
-		ID                 func(childComplexity int) int
+		Id                 func(childComplexity int) int
 		UpdatedAt          func(childComplexity int) int
 	}
 
 	Code struct {
 		CreatedAt        func(childComplexity int) int
 		DeletedAt        func(childComplexity int) int
-		ID               func(childComplexity int) int
+		Id               func(childComplexity int) int
 		UpdatedAt        func(childComplexity int) int
-		UserID           func(childComplexity int) int
+		UserId           func(childComplexity int) int
 		VerificationCode func(childComplexity int) int
 	}
 
 	Education struct {
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
-		ID        func(childComplexity int) int
+		Id        func(childComplexity int) int
 		Name      func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 	}
 
 	Mark struct {
 		AuthorComment func(childComplexity int) int
-		AuthorID      func(childComplexity int) int
+		AuthorId      func(childComplexity int) int
 		AuthorMark    func(childComplexity int) int
 		CreatedAt     func(childComplexity int) int
 		DeletedAt     func(childComplexity int) int
-		ID            func(childComplexity int) int
+		Id            func(childComplexity int) int
 		UpdatedAt     func(childComplexity int) int
-		UserID        func(childComplexity int) int
+		UserId        func(childComplexity int) int
 	}
 
 	Media struct {
@@ -126,7 +126,7 @@ type ComplexityRoot struct {
 		DeletedAt   func(childComplexity int) int
 		Extension   func(childComplexity int) int
 		FileName    func(childComplexity int) int
-		ID          func(childComplexity int) int
+		Id          func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
 		Xid         func(childComplexity int) int
 	}
@@ -134,7 +134,7 @@ type ComplexityRoot struct {
 	Message struct {
 		CreatedAt        func(childComplexity int) int
 		DeletedAt        func(childComplexity int) int
-		ID               func(childComplexity int) int
+		Id               func(childComplexity int) int
 		ResourceLabel    func(childComplexity int) int
 		ResourceLanguage func(childComplexity int) int
 		ResourceNumber   func(childComplexity int) int
@@ -168,6 +168,7 @@ type ComplexityRoot struct {
 		Register                 func(childComplexity int, input model.UserInput, as int) int
 		RegisterWithEmail        func(childComplexity int, input string, as int) int
 		RemoveStudent            func(childComplexity int, input model.UserInput) int
+		RemoveUserAddress        func(childComplexity int) int
 		RemoveUserFromPlanning   func(childComplexity int, calendarPlanningID int, selectedUserID int) int
 		RemoveUserParent         func(childComplexity int, input model.UserInput) int
 		RemoveUserPlannings      func(childComplexity int) int
@@ -186,26 +187,26 @@ type ComplexityRoot struct {
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
 		Hash      func(childComplexity int) int
-		ID        func(childComplexity int) int
+		Id        func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
-		UserID    func(childComplexity int) int
+		UserId    func(childComplexity int) int
 	}
 
 	PhoneNumber struct {
 		CreatedAt         func(childComplexity int) int
 		DeletedAt         func(childComplexity int) int
-		ID                func(childComplexity int) int
+		Id                func(childComplexity int) int
 		IsUrgency         func(childComplexity int) int
 		MobilePhoneNumber func(childComplexity int) int
 		UpdatedAt         func(childComplexity int) int
 	}
 
 	QrCodeRegistry struct {
-		ID            func(childComplexity int) int
+		Id            func(childComplexity int) int
 		IsUsed        func(childComplexity int) int
 		ResourceType  func(childComplexity int) int
 		ResourceValue func(childComplexity int) int
-		UserID        func(childComplexity int) int
+		UserId        func(childComplexity int) int
 		Xid           func(childComplexity int) int
 	}
 
@@ -239,7 +240,6 @@ type ComplexityRoot struct {
 		GetUserTutor                  func(childComplexity int) int
 		MyProfile                     func(childComplexity int) int
 		Passwords                     func(childComplexity int) int
-		RemoveUserAddress             func(childComplexity int) int
 		SendUserEmailValidationCode   func(childComplexity int) int
 		UserAuthorizationLink         func(childComplexity int, id int) int
 		UserAuthorizationLinks        func(childComplexity int) int
@@ -250,7 +250,7 @@ type ComplexityRoot struct {
 	School struct {
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
-		ID        func(childComplexity int) int
+		Id        func(childComplexity int) int
 		Name      func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 	}
@@ -258,7 +258,7 @@ type ComplexityRoot struct {
 	SchoolSubject struct {
 		CreatedAt    func(childComplexity int) int
 		DeletedAt    func(childComplexity int) int
-		ID           func(childComplexity int) int
+		Id           func(childComplexity int) int
 		Name         func(childComplexity int) int
 		SchoolNumber func(childComplexity int) int
 		UpdatedAt    func(childComplexity int) int
@@ -267,8 +267,8 @@ type ComplexityRoot struct {
 	Subject struct {
 		CreatedAt        func(childComplexity int) int
 		DeletedAt        func(childComplexity int) int
-		EducationLevelID func(childComplexity int) int
-		ID               func(childComplexity int) int
+		EducationLevelId func(childComplexity int) int
+		Id               func(childComplexity int) int
 		Name             func(childComplexity int) int
 		UpdatedAt        func(childComplexity int) int
 	}
@@ -285,7 +285,7 @@ type ComplexityRoot struct {
 		Email                 func(childComplexity int) int
 		ExperienceDetail      func(childComplexity int) int
 		FamilyName            func(childComplexity int) int
-		ID                    func(childComplexity int) int
+		Id                    func(childComplexity int) int
 		Lang                  func(childComplexity int) int
 		Matricule             func(childComplexity int) int
 		Name                  func(childComplexity int) int
@@ -298,57 +298,57 @@ type ComplexityRoot struct {
 	}
 
 	UserAddress struct {
-		AddressID   func(childComplexity int) int
+		AddressId   func(childComplexity int) int
 		AddressType func(childComplexity int) int
 		CreatedAt   func(childComplexity int) int
 		DeletedAt   func(childComplexity int) int
-		ID          func(childComplexity int) int
+		Id          func(childComplexity int) int
 		UpdatedAt   func(childComplexity int) int
-		UserID      func(childComplexity int) int
+		UserId      func(childComplexity int) int
 	}
 
 	UserAuthorizationLink struct {
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
-		ID        func(childComplexity int) int
+		Id        func(childComplexity int) int
 		LinkType  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 	}
 
 	UserAuthorizationLinkActor struct {
-		AuthorizationID         func(childComplexity int) int
+		AuthorizationId         func(childComplexity int) int
 		CreatedAt               func(childComplexity int) int
 		DeletedAt               func(childComplexity int) int
-		ID                      func(childComplexity int) int
+		Id                      func(childComplexity int) int
 		UpdatedAt               func(childComplexity int) int
-		UserAuthorizationLinkID func(childComplexity int) int
+		UserAuthorizationLinkId func(childComplexity int) int
 	}
 
 	UserEducationLevelSubject struct {
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
-		ID        func(childComplexity int) int
-		SubjectID func(childComplexity int) int
+		Id        func(childComplexity int) int
+		SubjectId func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
-		UserID    func(childComplexity int) int
+		UserId    func(childComplexity int) int
 	}
 
 	UserMediaDetail struct {
 		CreatedAt    func(childComplexity int) int
 		DeletedAt    func(childComplexity int) int
 		DocumentType func(childComplexity int) int
-		ID           func(childComplexity int) int
-		OwnerID      func(childComplexity int) int
+		Id           func(childComplexity int) int
+		OwnerId      func(childComplexity int) int
 		UpdatedAt    func(childComplexity int) int
 	}
 
 	UserPhoneNumber struct {
 		CreatedAt     func(childComplexity int) int
 		DeletedAt     func(childComplexity int) int
-		ID            func(childComplexity int) int
-		PhoneNumberID func(childComplexity int) int
+		Id            func(childComplexity int) int
+		PhoneNumberId func(childComplexity int) int
 		UpdatedAt     func(childComplexity int) int
-		UserID        func(childComplexity int) int
+		UserId        func(childComplexity int) int
 	}
 }
 
@@ -407,11 +407,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Address.FullAddress(childComplexity), true
 
 	case "Address.Id":
-		if e.complexity.Address.ID == nil {
+		if e.complexity.Address.Id == nil {
 			break
 		}
 
-		return e.complexity.Address.ID(childComplexity), true
+		return e.complexity.Address.Id(childComplexity), true
 
 	case "Address.Latitude":
 		if e.complexity.Address.Latitude == nil {
@@ -441,12 +441,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Address.UpdatedAt(childComplexity), true
 
-	case "Address.XId":
-		if e.complexity.Address.XId == nil {
+	case "Address.Xid":
+		if e.complexity.Address.Xid == nil {
 			break
 		}
 
-		return e.complexity.Address.XId(childComplexity), true
+		return e.complexity.Address.Xid(childComplexity), true
 
 	case "Asset.CreatedAt":
 		if e.complexity.Asset.CreatedAt == nil {
@@ -470,11 +470,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Asset.Description(childComplexity), true
 
 	case "Asset.Id":
-		if e.complexity.Asset.ID == nil {
+		if e.complexity.Asset.Id == nil {
 			break
 		}
 
-		return e.complexity.Asset.ID(childComplexity), true
+		return e.complexity.Asset.Id(childComplexity), true
 
 	case "Asset.UpdatedAt":
 		if e.complexity.Asset.UpdatedAt == nil {
@@ -498,11 +498,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Authorization.DeletedAt(childComplexity), true
 
 	case "Authorization.Id":
-		if e.complexity.Authorization.ID == nil {
+		if e.complexity.Authorization.Id == nil {
 			break
 		}
 
-		return e.complexity.Authorization.ID(childComplexity), true
+		return e.complexity.Authorization.Id(childComplexity), true
 
 	case "Authorization.Level":
 		if e.complexity.Authorization.Level == nil {
@@ -519,18 +519,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Authorization.UpdatedAt(childComplexity), true
 
 	case "Authorization.UserId":
-		if e.complexity.Authorization.UserID == nil {
+		if e.complexity.Authorization.UserId == nil {
 			break
 		}
 
-		return e.complexity.Authorization.UserID(childComplexity), true
+		return e.complexity.Authorization.UserId(childComplexity), true
 
 	case "CalendarPlanning.AuthorizationId":
-		if e.complexity.CalendarPlanning.AuthorizationID == nil {
+		if e.complexity.CalendarPlanning.AuthorizationId == nil {
 			break
 		}
 
-		return e.complexity.CalendarPlanning.AuthorizationID(childComplexity), true
+		return e.complexity.CalendarPlanning.AuthorizationId(childComplexity), true
 
 	case "CalendarPlanning.CreatedAt":
 		if e.complexity.CalendarPlanning.CreatedAt == nil {
@@ -561,11 +561,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.CalendarPlanning.EndDateTime(childComplexity), true
 
 	case "CalendarPlanning.Id":
-		if e.complexity.CalendarPlanning.ID == nil {
+		if e.complexity.CalendarPlanning.Id == nil {
 			break
 		}
 
-		return e.complexity.CalendarPlanning.ID(childComplexity), true
+		return e.complexity.CalendarPlanning.Id(childComplexity), true
 
 	case "CalendarPlanning.StartDateTime":
 		if e.complexity.CalendarPlanning.StartDateTime == nil {
@@ -582,18 +582,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.CalendarPlanning.UpdatedAt(childComplexity), true
 
 	case "CalendarPlanningActor.AuthorizationId":
-		if e.complexity.CalendarPlanningActor.AuthorizationID == nil {
+		if e.complexity.CalendarPlanningActor.AuthorizationId == nil {
 			break
 		}
 
-		return e.complexity.CalendarPlanningActor.AuthorizationID(childComplexity), true
+		return e.complexity.CalendarPlanningActor.AuthorizationId(childComplexity), true
 
 	case "CalendarPlanningActor.CalendarPlanningId":
-		if e.complexity.CalendarPlanningActor.CalendarPlanningID == nil {
+		if e.complexity.CalendarPlanningActor.CalendarPlanningId == nil {
 			break
 		}
 
-		return e.complexity.CalendarPlanningActor.CalendarPlanningID(childComplexity), true
+		return e.complexity.CalendarPlanningActor.CalendarPlanningId(childComplexity), true
 
 	case "CalendarPlanningActor.CreatedAt":
 		if e.complexity.CalendarPlanningActor.CreatedAt == nil {
@@ -610,11 +610,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.CalendarPlanningActor.DeletedAt(childComplexity), true
 
 	case "CalendarPlanningActor.Id":
-		if e.complexity.CalendarPlanningActor.ID == nil {
+		if e.complexity.CalendarPlanningActor.Id == nil {
 			break
 		}
 
-		return e.complexity.CalendarPlanningActor.ID(childComplexity), true
+		return e.complexity.CalendarPlanningActor.Id(childComplexity), true
 
 	case "CalendarPlanningActor.UpdatedAt":
 		if e.complexity.CalendarPlanningActor.UpdatedAt == nil {
@@ -638,11 +638,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Code.DeletedAt(childComplexity), true
 
 	case "Code.Id":
-		if e.complexity.Code.ID == nil {
+		if e.complexity.Code.Id == nil {
 			break
 		}
 
-		return e.complexity.Code.ID(childComplexity), true
+		return e.complexity.Code.Id(childComplexity), true
 
 	case "Code.UpdatedAt":
 		if e.complexity.Code.UpdatedAt == nil {
@@ -652,11 +652,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Code.UpdatedAt(childComplexity), true
 
 	case "Code.UserId":
-		if e.complexity.Code.UserID == nil {
+		if e.complexity.Code.UserId == nil {
 			break
 		}
 
-		return e.complexity.Code.UserID(childComplexity), true
+		return e.complexity.Code.UserId(childComplexity), true
 
 	case "Code.VerificationCode":
 		if e.complexity.Code.VerificationCode == nil {
@@ -680,11 +680,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Education.DeletedAt(childComplexity), true
 
 	case "Education.Id":
-		if e.complexity.Education.ID == nil {
+		if e.complexity.Education.Id == nil {
 			break
 		}
 
-		return e.complexity.Education.ID(childComplexity), true
+		return e.complexity.Education.Id(childComplexity), true
 
 	case "Education.Name":
 		if e.complexity.Education.Name == nil {
@@ -708,11 +708,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Mark.AuthorComment(childComplexity), true
 
 	case "Mark.AuthorId":
-		if e.complexity.Mark.AuthorID == nil {
+		if e.complexity.Mark.AuthorId == nil {
 			break
 		}
 
-		return e.complexity.Mark.AuthorID(childComplexity), true
+		return e.complexity.Mark.AuthorId(childComplexity), true
 
 	case "Mark.AuthorMark":
 		if e.complexity.Mark.AuthorMark == nil {
@@ -736,11 +736,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Mark.DeletedAt(childComplexity), true
 
 	case "Mark.Id":
-		if e.complexity.Mark.ID == nil {
+		if e.complexity.Mark.Id == nil {
 			break
 		}
 
-		return e.complexity.Mark.ID(childComplexity), true
+		return e.complexity.Mark.Id(childComplexity), true
 
 	case "Mark.UpdatedAt":
 		if e.complexity.Mark.UpdatedAt == nil {
@@ -750,11 +750,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Mark.UpdatedAt(childComplexity), true
 
 	case "Mark.UserId":
-		if e.complexity.Mark.UserID == nil {
+		if e.complexity.Mark.UserId == nil {
 			break
 		}
 
-		return e.complexity.Mark.UserID(childComplexity), true
+		return e.complexity.Mark.UserId(childComplexity), true
 
 	case "Media.ContentType":
 		if e.complexity.Media.ContentType == nil {
@@ -792,11 +792,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Media.FileName(childComplexity), true
 
 	case "Media.Id":
-		if e.complexity.Media.ID == nil {
+		if e.complexity.Media.Id == nil {
 			break
 		}
 
-		return e.complexity.Media.ID(childComplexity), true
+		return e.complexity.Media.Id(childComplexity), true
 
 	case "Media.UpdatedAt":
 		if e.complexity.Media.UpdatedAt == nil {
@@ -827,11 +827,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Message.DeletedAt(childComplexity), true
 
 	case "Message.Id":
-		if e.complexity.Message.ID == nil {
+		if e.complexity.Message.Id == nil {
 			break
 		}
 
-		return e.complexity.Message.ID(childComplexity), true
+		return e.complexity.Message.Id(childComplexity), true
 
 	case "Message.ResourceLabel":
 		if e.complexity.Message.ResourceLabel == nil {
@@ -1158,6 +1158,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RemoveStudent(childComplexity, args["input"].(model.UserInput)), true
 
+	case "Mutation.removeUserAddress":
+		if e.complexity.Mutation.RemoveUserAddress == nil {
+			break
+		}
+
+		return e.complexity.Mutation.RemoveUserAddress(childComplexity), true
+
 	case "Mutation.removeUserFromPlanning":
 		if e.complexity.Mutation.RemoveUserFromPlanning == nil {
 			break
@@ -1319,11 +1326,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Password.Hash(childComplexity), true
 
 	case "Password.Id":
-		if e.complexity.Password.ID == nil {
+		if e.complexity.Password.Id == nil {
 			break
 		}
 
-		return e.complexity.Password.ID(childComplexity), true
+		return e.complexity.Password.Id(childComplexity), true
 
 	case "Password.UpdatedAt":
 		if e.complexity.Password.UpdatedAt == nil {
@@ -1333,11 +1340,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Password.UpdatedAt(childComplexity), true
 
 	case "Password.UserId":
-		if e.complexity.Password.UserID == nil {
+		if e.complexity.Password.UserId == nil {
 			break
 		}
 
-		return e.complexity.Password.UserID(childComplexity), true
+		return e.complexity.Password.UserId(childComplexity), true
 
 	case "PhoneNumber.CreatedAt":
 		if e.complexity.PhoneNumber.CreatedAt == nil {
@@ -1354,11 +1361,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.PhoneNumber.DeletedAt(childComplexity), true
 
 	case "PhoneNumber.Id":
-		if e.complexity.PhoneNumber.ID == nil {
+		if e.complexity.PhoneNumber.Id == nil {
 			break
 		}
 
-		return e.complexity.PhoneNumber.ID(childComplexity), true
+		return e.complexity.PhoneNumber.Id(childComplexity), true
 
 	case "PhoneNumber.IsUrgency":
 		if e.complexity.PhoneNumber.IsUrgency == nil {
@@ -1382,11 +1389,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.PhoneNumber.UpdatedAt(childComplexity), true
 
 	case "QrCodeRegistry.Id":
-		if e.complexity.QrCodeRegistry.ID == nil {
+		if e.complexity.QrCodeRegistry.Id == nil {
 			break
 		}
 
-		return e.complexity.QrCodeRegistry.ID(childComplexity), true
+		return e.complexity.QrCodeRegistry.Id(childComplexity), true
 
 	case "QrCodeRegistry.IsUsed":
 		if e.complexity.QrCodeRegistry.IsUsed == nil {
@@ -1410,11 +1417,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.QrCodeRegistry.ResourceValue(childComplexity), true
 
 	case "QrCodeRegistry.UserId":
-		if e.complexity.QrCodeRegistry.UserID == nil {
+		if e.complexity.QrCodeRegistry.UserId == nil {
 			break
 		}
 
-		return e.complexity.QrCodeRegistry.UserID(childComplexity), true
+		return e.complexity.QrCodeRegistry.UserId(childComplexity), true
 
 	case "QrCodeRegistry.Xid":
 		if e.complexity.QrCodeRegistry.Xid == nil {
@@ -1666,13 +1673,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.Passwords(childComplexity), true
 
-	case "Query.removeUserAddress":
-		if e.complexity.Query.RemoveUserAddress == nil {
-			break
-		}
-
-		return e.complexity.Query.RemoveUserAddress(childComplexity), true
-
 	case "Query.sendUserEmailValidationCode":
 		if e.complexity.Query.SendUserEmailValidationCode == nil {
 			break
@@ -1733,11 +1733,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.School.DeletedAt(childComplexity), true
 
 	case "School.Id":
-		if e.complexity.School.ID == nil {
+		if e.complexity.School.Id == nil {
 			break
 		}
 
-		return e.complexity.School.ID(childComplexity), true
+		return e.complexity.School.Id(childComplexity), true
 
 	case "School.Name":
 		if e.complexity.School.Name == nil {
@@ -1768,11 +1768,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.SchoolSubject.DeletedAt(childComplexity), true
 
 	case "SchoolSubject.Id":
-		if e.complexity.SchoolSubject.ID == nil {
+		if e.complexity.SchoolSubject.Id == nil {
 			break
 		}
 
-		return e.complexity.SchoolSubject.ID(childComplexity), true
+		return e.complexity.SchoolSubject.Id(childComplexity), true
 
 	case "SchoolSubject.Name":
 		if e.complexity.SchoolSubject.Name == nil {
@@ -1810,18 +1810,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.Subject.DeletedAt(childComplexity), true
 
 	case "Subject.EducationLevelId":
-		if e.complexity.Subject.EducationLevelID == nil {
+		if e.complexity.Subject.EducationLevelId == nil {
 			break
 		}
 
-		return e.complexity.Subject.EducationLevelID(childComplexity), true
+		return e.complexity.Subject.EducationLevelId(childComplexity), true
 
 	case "Subject.Id":
-		if e.complexity.Subject.ID == nil {
+		if e.complexity.Subject.Id == nil {
 			break
 		}
 
-		return e.complexity.Subject.ID(childComplexity), true
+		return e.complexity.Subject.Id(childComplexity), true
 
 	case "Subject.Name":
 		if e.complexity.Subject.Name == nil {
@@ -1915,11 +1915,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.User.FamilyName(childComplexity), true
 
 	case "User.Id":
-		if e.complexity.User.ID == nil {
+		if e.complexity.User.Id == nil {
 			break
 		}
 
-		return e.complexity.User.ID(childComplexity), true
+		return e.complexity.User.Id(childComplexity), true
 
 	case "User.Lang":
 		if e.complexity.User.Lang == nil {
@@ -1985,11 +1985,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.User.UpdatedAt(childComplexity), true
 
 	case "UserAddress.AddressId":
-		if e.complexity.UserAddress.AddressID == nil {
+		if e.complexity.UserAddress.AddressId == nil {
 			break
 		}
 
-		return e.complexity.UserAddress.AddressID(childComplexity), true
+		return e.complexity.UserAddress.AddressId(childComplexity), true
 
 	case "UserAddress.AddressType":
 		if e.complexity.UserAddress.AddressType == nil {
@@ -2013,11 +2013,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.UserAddress.DeletedAt(childComplexity), true
 
 	case "UserAddress.Id":
-		if e.complexity.UserAddress.ID == nil {
+		if e.complexity.UserAddress.Id == nil {
 			break
 		}
 
-		return e.complexity.UserAddress.ID(childComplexity), true
+		return e.complexity.UserAddress.Id(childComplexity), true
 
 	case "UserAddress.UpdatedAt":
 		if e.complexity.UserAddress.UpdatedAt == nil {
@@ -2027,11 +2027,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.UserAddress.UpdatedAt(childComplexity), true
 
 	case "UserAddress.UserId":
-		if e.complexity.UserAddress.UserID == nil {
+		if e.complexity.UserAddress.UserId == nil {
 			break
 		}
 
-		return e.complexity.UserAddress.UserID(childComplexity), true
+		return e.complexity.UserAddress.UserId(childComplexity), true
 
 	case "UserAuthorizationLink.CreatedAt":
 		if e.complexity.UserAuthorizationLink.CreatedAt == nil {
@@ -2048,11 +2048,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.UserAuthorizationLink.DeletedAt(childComplexity), true
 
 	case "UserAuthorizationLink.Id":
-		if e.complexity.UserAuthorizationLink.ID == nil {
+		if e.complexity.UserAuthorizationLink.Id == nil {
 			break
 		}
 
-		return e.complexity.UserAuthorizationLink.ID(childComplexity), true
+		return e.complexity.UserAuthorizationLink.Id(childComplexity), true
 
 	case "UserAuthorizationLink.LinkType":
 		if e.complexity.UserAuthorizationLink.LinkType == nil {
@@ -2069,11 +2069,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.UserAuthorizationLink.UpdatedAt(childComplexity), true
 
 	case "UserAuthorizationLinkActor.AuthorizationId":
-		if e.complexity.UserAuthorizationLinkActor.AuthorizationID == nil {
+		if e.complexity.UserAuthorizationLinkActor.AuthorizationId == nil {
 			break
 		}
 
-		return e.complexity.UserAuthorizationLinkActor.AuthorizationID(childComplexity), true
+		return e.complexity.UserAuthorizationLinkActor.AuthorizationId(childComplexity), true
 
 	case "UserAuthorizationLinkActor.CreatedAt":
 		if e.complexity.UserAuthorizationLinkActor.CreatedAt == nil {
@@ -2090,11 +2090,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.UserAuthorizationLinkActor.DeletedAt(childComplexity), true
 
 	case "UserAuthorizationLinkActor.Id":
-		if e.complexity.UserAuthorizationLinkActor.ID == nil {
+		if e.complexity.UserAuthorizationLinkActor.Id == nil {
 			break
 		}
 
-		return e.complexity.UserAuthorizationLinkActor.ID(childComplexity), true
+		return e.complexity.UserAuthorizationLinkActor.Id(childComplexity), true
 
 	case "UserAuthorizationLinkActor.UpdatedAt":
 		if e.complexity.UserAuthorizationLinkActor.UpdatedAt == nil {
@@ -2104,11 +2104,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.UserAuthorizationLinkActor.UpdatedAt(childComplexity), true
 
 	case "UserAuthorizationLinkActor.UserAuthorizationLinkId":
-		if e.complexity.UserAuthorizationLinkActor.UserAuthorizationLinkID == nil {
+		if e.complexity.UserAuthorizationLinkActor.UserAuthorizationLinkId == nil {
 			break
 		}
 
-		return e.complexity.UserAuthorizationLinkActor.UserAuthorizationLinkID(childComplexity), true
+		return e.complexity.UserAuthorizationLinkActor.UserAuthorizationLinkId(childComplexity), true
 
 	case "UserEducationLevelSubject.CreatedAt":
 		if e.complexity.UserEducationLevelSubject.CreatedAt == nil {
@@ -2125,18 +2125,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.UserEducationLevelSubject.DeletedAt(childComplexity), true
 
 	case "UserEducationLevelSubject.Id":
-		if e.complexity.UserEducationLevelSubject.ID == nil {
+		if e.complexity.UserEducationLevelSubject.Id == nil {
 			break
 		}
 
-		return e.complexity.UserEducationLevelSubject.ID(childComplexity), true
+		return e.complexity.UserEducationLevelSubject.Id(childComplexity), true
 
 	case "UserEducationLevelSubject.SubjectId":
-		if e.complexity.UserEducationLevelSubject.SubjectID == nil {
+		if e.complexity.UserEducationLevelSubject.SubjectId == nil {
 			break
 		}
 
-		return e.complexity.UserEducationLevelSubject.SubjectID(childComplexity), true
+		return e.complexity.UserEducationLevelSubject.SubjectId(childComplexity), true
 
 	case "UserEducationLevelSubject.UpdatedAt":
 		if e.complexity.UserEducationLevelSubject.UpdatedAt == nil {
@@ -2146,11 +2146,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.UserEducationLevelSubject.UpdatedAt(childComplexity), true
 
 	case "UserEducationLevelSubject.UserId":
-		if e.complexity.UserEducationLevelSubject.UserID == nil {
+		if e.complexity.UserEducationLevelSubject.UserId == nil {
 			break
 		}
 
-		return e.complexity.UserEducationLevelSubject.UserID(childComplexity), true
+		return e.complexity.UserEducationLevelSubject.UserId(childComplexity), true
 
 	case "UserMediaDetail.CreatedAt":
 		if e.complexity.UserMediaDetail.CreatedAt == nil {
@@ -2174,18 +2174,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.UserMediaDetail.DocumentType(childComplexity), true
 
 	case "UserMediaDetail.Id":
-		if e.complexity.UserMediaDetail.ID == nil {
+		if e.complexity.UserMediaDetail.Id == nil {
 			break
 		}
 
-		return e.complexity.UserMediaDetail.ID(childComplexity), true
+		return e.complexity.UserMediaDetail.Id(childComplexity), true
 
 	case "UserMediaDetail.OwnerId":
-		if e.complexity.UserMediaDetail.OwnerID == nil {
+		if e.complexity.UserMediaDetail.OwnerId == nil {
 			break
 		}
 
-		return e.complexity.UserMediaDetail.OwnerID(childComplexity), true
+		return e.complexity.UserMediaDetail.OwnerId(childComplexity), true
 
 	case "UserMediaDetail.UpdatedAt":
 		if e.complexity.UserMediaDetail.UpdatedAt == nil {
@@ -2209,18 +2209,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.UserPhoneNumber.DeletedAt(childComplexity), true
 
 	case "UserPhoneNumber.Id":
-		if e.complexity.UserPhoneNumber.ID == nil {
+		if e.complexity.UserPhoneNumber.Id == nil {
 			break
 		}
 
-		return e.complexity.UserPhoneNumber.ID(childComplexity), true
+		return e.complexity.UserPhoneNumber.Id(childComplexity), true
 
 	case "UserPhoneNumber.PhoneNumberId":
-		if e.complexity.UserPhoneNumber.PhoneNumberID == nil {
+		if e.complexity.UserPhoneNumber.PhoneNumberId == nil {
 			break
 		}
 
-		return e.complexity.UserPhoneNumber.PhoneNumberID(childComplexity), true
+		return e.complexity.UserPhoneNumber.PhoneNumberId(childComplexity), true
 
 	case "UserPhoneNumber.UpdatedAt":
 		if e.complexity.UserPhoneNumber.UpdatedAt == nil {
@@ -2230,11 +2230,11 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		return e.complexity.UserPhoneNumber.UpdatedAt(childComplexity), true
 
 	case "UserPhoneNumber.UserId":
-		if e.complexity.UserPhoneNumber.UserID == nil {
+		if e.complexity.UserPhoneNumber.UserId == nil {
 			break
 		}
 
-		return e.complexity.UserPhoneNumber.UserID(childComplexity), true
+		return e.complexity.UserPhoneNumber.UserId(childComplexity), true
 
 	}
 	return 0, false
@@ -2353,7 +2353,7 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 
 var sources = []*ast.Source{
 	{Name: "../gql/address/address.graphqls", Input: `type Address {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
@@ -2363,17 +2363,17 @@ var sources = []*ast.Source{
     Longitude: Float!
     Street: String!
     FullAddress: String!
-    XId: String!
+    Xid: String! @goField(name: "Xid")
 }
 
 
 type UserAddress {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: ID!
-    AddressId: ID!
+    UserId: ID! @goField(name: "UserId")
+    AddressId: ID! @goField(name: "AddressId")
     AddressType: String!
 }
 
@@ -2386,17 +2386,17 @@ input AddressInput {
     FullAddress: String
 }`, BuiltIn: false},
 	{Name: "../gql/authorization/authorization.graphqls", Input: `type Authorization {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: ID!
+    UserId: ID! @goField(name: "UserId")
     Level: Int!
 }
 
 
 type UserAuthorizationLink {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
@@ -2404,19 +2404,19 @@ type UserAuthorizationLink {
 }
 
 type UserAuthorizationLinkActor {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserAuthorizationLinkId: Int!
-    AuthorizationId: Int!
+    UserAuthorizationLinkId: Int! @goField(name: "UserAuthorizationLinkId")
+    AuthorizationId: Int! @goField(name: "AuthorizationId")
 }`, BuiltIn: false},
 	{Name: "../gql/code/code.graphqls", Input: `type Code {
-    Id: ID!
+    Id: ID!  @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: ID!
+    UserId: ID!  @goField(name: "UserId")
     VerificationCode: Int!
 }
 `, BuiltIn: false},
@@ -2440,7 +2440,7 @@ directive @goTag(
 ) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
 `, BuiltIn: false},
 	{Name: "../gql/education/education.graphqls", Input: `type Education {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
@@ -2448,55 +2448,55 @@ directive @goTag(
 }
 
 type UserEducationLevelSubject {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: Int!
-    SubjectId :Int!
+    UserId: Int! @goField(name: "UserId")
+    SubjectId :Int! @goField(name: "SubjectId")
 }
 `, BuiltIn: false},
 	{Name: "../gql/mark/mark.graphqls", Input: `type Mark {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId : ID!
-    AuthorId: ID!
+    UserId : ID! @goField(name: "UserId")
+    AuthorId: ID! @goField(name: "AuthorId")
     AuthorComment: String!
     AuthorMark: Int!
 }
 
 input MarkInput {
-    UserID : Int
-    AuthorID: Int
+    UserId : Int @goField(name: "UserId")
+    AuthorId: Int @goField(name: "AuthorId")
     AuthorComment: String
     AuthorMark: Int
 }
 `, BuiltIn: false},
 	{Name: "../gql/media/media.graphqls", Input: `type Media {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     FileName : String!
     Extension: String!
-    Xid: String!
+    Xid: String! @goField(name: "Xid")
     ContentType: Int!
 }
 
 type UserMediaDetail {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    OwnerId : Int!
+    OwnerId : Int! @goField(name: "OwnerId")
     DocumentType: Int!
 }
 `, BuiltIn: false},
 	{Name: "../gql/message/message.graphqls", Input: `
 type Message {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
@@ -2516,11 +2516,11 @@ input MessageInput {
 }
 `, BuiltIn: false},
 	{Name: "../gql/password/password.graphqls", Input: `type Password {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: Int!
+    UserId: Int! @goField(name: "UserId")
     Hash: String!
 }
 
@@ -2528,7 +2528,7 @@ input PasswordInput{
     Hash: String
 }`, BuiltIn: false},
 	{Name: "../gql/phone/phone.graphqls", Input: `type PhoneNumber{
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
@@ -2537,12 +2537,12 @@ input PasswordInput{
 }
 
 type UserPhoneNumber{
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: ID!
-    PhoneNumberId: ID!
+    UserId: ID! @goField(name: "UserId")
+    PhoneNumberId: ID! @goField(name: "PhoneNumberId")
 }
 
 input PhoneNumberInput{
@@ -2553,11 +2553,11 @@ input PhoneNumberInput{
 
 `, BuiltIn: false},
 	{Name: "../gql/planning/planning.graphqls", Input: `type CalendarPlanning {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    AuthorizationId : ID!
+    AuthorizationId : ID! @goField(name: "AuthorizationId")
     StartDateTime: DateTime!
     EndDateTime: DateTime!
     Description: String!
@@ -2571,19 +2571,19 @@ input CalendarPlanningInput {
 }
 
 type CalendarPlanningActor {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    AuthorizationId: ID!
-    CalendarPlanningId: ID!
+    AuthorizationId: ID! @goField(name: "AuthorizationId")
+    CalendarPlanningId: ID! @goField(name: "CalendarPlanningId")
 }`, BuiltIn: false},
 	{Name: "../gql/qr/qr.graphqls", Input: `type QrCodeRegistry {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     ResourceType: Int!
     ResourceValue :Int!
-    UserId : ID!
-    Xid : String!
+    UserId : ID! @goField(name: "UserId")
+    Xid : String! @goField(name: "Xid")
     IsUsed :Boolean!
 }
 `, BuiltIn: false},
@@ -2622,6 +2622,7 @@ scalar Upload`, BuiltIn: false},
     #    Address mutations
     newAddress(input: AddressInput!): Address!
     updateUserAddress(input: AddressInput!): Address!
+    removeUserAddress: String!
 
     #    Phone mutations
     newPhoneNumber(input: PhoneNumberInput!) : PhoneNumber!
@@ -2656,7 +2657,7 @@ scalar Upload`, BuiltIn: false},
     # Qr Mutations
     loginWithQr(xId: String!) :String
 
-#    Upload
+    #    Upload
     singleUpload(file: Upload!): Media!
 }
 `, BuiltIn: false},
@@ -2688,7 +2689,6 @@ scalar Upload`, BuiltIn: false},
 
     #    Address QUERIES
     getUserAddress: Address!
-    removeUserAddress: String!
 
     #    Phone QUERIES
     getUserPhoneNumber: PhoneNumber!
@@ -2719,7 +2719,7 @@ scalar Upload`, BuiltIn: false},
     generateQrCode: String
 }`, BuiltIn: false},
 	{Name: "../gql/school/school.graphqls", Input: `type School {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
@@ -2731,7 +2731,7 @@ input SchoolInput {
 }
 
 type SchoolSubject {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
@@ -2744,20 +2744,20 @@ input SchoolSubjectInput {
     Name: String
 }`, BuiltIn: false},
 	{Name: "../gql/subject/subject.graphqls", Input: `type Subject {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    EducationLevelId: ID!
+    EducationLevelId: ID! @goField(name: "EducationLevelId")
     Name: String!
 }
 
 input SubjectInput {
-    EducationLevelID: Int
+    EducationLevelId: Int @goField(name: "EducationLevelId")
     Name: String
 }`, BuiltIn: false},
 	{Name: "../gql/user/user.graphqls", Input: `type User {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
@@ -2790,7 +2790,7 @@ input UserInput {
     Lang: Int
 }`, BuiltIn: false},
 	{Name: "../gql/utils/utils.graphqls", Input: `type Asset {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime

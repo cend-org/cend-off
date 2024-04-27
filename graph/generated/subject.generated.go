@@ -43,7 +43,7 @@ func (ec *executionContext) _Subject_Id(ctx context.Context, field graphql.Colle
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return obj.Id, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -216,7 +216,7 @@ func (ec *executionContext) _Subject_EducationLevelId(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.EducationLevelID, nil
+		return obj.EducationLevelId, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -301,20 +301,20 @@ func (ec *executionContext) unmarshalInputSubjectInput(ctx context.Context, obj 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"EducationLevelID", "Name"}
+	fieldsInOrder := [...]string{"EducationLevelId", "Name"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "EducationLevelID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EducationLevelID"))
+		case "EducationLevelId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("EducationLevelId"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.EducationLevelID = data
+			it.EducationLevelId = data
 		case "Name":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Name"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)

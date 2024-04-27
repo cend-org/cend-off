@@ -42,7 +42,7 @@ func (ec *executionContext) _Address_Id(ctx context.Context, field graphql.Colle
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return obj.Id, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -465,8 +465,8 @@ func (ec *executionContext) fieldContext_Address_FullAddress(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Address_XId(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Address_XId(ctx, field)
+func (ec *executionContext) _Address_Xid(ctx context.Context, field graphql.CollectedField, obj *model.Address) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Address_Xid(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -479,7 +479,7 @@ func (ec *executionContext) _Address_XId(ctx context.Context, field graphql.Coll
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.XId, nil
+		return obj.Xid, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -496,7 +496,7 @@ func (ec *executionContext) _Address_XId(ctx context.Context, field graphql.Coll
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Address_XId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Address_Xid(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Address",
 		Field:      field,
@@ -523,7 +523,7 @@ func (ec *executionContext) _UserAddress_Id(ctx context.Context, field graphql.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return obj.Id, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -696,7 +696,7 @@ func (ec *executionContext) _UserAddress_UserId(ctx context.Context, field graph
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UserID, nil
+		return obj.UserId, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -740,7 +740,7 @@ func (ec *executionContext) _UserAddress_AddressId(ctx context.Context, field gr
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.AddressID, nil
+		return obj.AddressId, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -946,8 +946,8 @@ func (ec *executionContext) _Address(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "XId":
-			out.Values[i] = ec._Address_XId(ctx, field, obj)
+		case "Xid":
+			out.Values[i] = ec._Address_Xid(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}

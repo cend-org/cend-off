@@ -132,11 +132,6 @@ func (r *queryResolver) GetUserAddress(ctx context.Context) (*model.Address, err
 	return address.GetUserAddress(ctx)
 }
 
-// RemoveUserAddress is the resolver for the removeUserAddress field.
-func (r *queryResolver) RemoveUserAddress(ctx context.Context) (string, error) {
-	return address.RemoveUserAddress(ctx)
-}
-
 // GetUserPhoneNumber is the resolver for the getUserPhoneNumber field.
 func (r *queryResolver) GetUserPhoneNumber(ctx context.Context) (*model.PhoneNumber, error) {
 	return phone.GetUserPhoneNumber(ctx)
@@ -221,3 +216,13 @@ func (r *queryResolver) GenerateQRCode(ctx context.Context) (*string, error) {
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
+
+// !!! WARNING !!!
+// The code below was going to be deleted when updating resolvers. It has been copied here so you have
+// one last chance to move it out of harms way if you want. There are two reasons this happens:
+//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
+//     it when you're done.
+//   - You have helper methods in this file. Move them out to keep these resolver files clean.
+func (r *queryResolver) RemoveUserAddress(ctx context.Context) (string, error) {
+	return address.RemoveUserAddress(ctx)
+}

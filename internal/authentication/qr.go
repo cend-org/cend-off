@@ -28,14 +28,14 @@ func GenerateQrCode(ctx *context.Context) (*string, error) {
 		return &qrImageLink, errx.UnAuthorizedError
 	}
 
-	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/api/login/with-qr/:" + strconv.Itoa(int(tok.UserID))
+	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/api/login/with-qr/:" + strconv.Itoa(int(tok.UserId))
 
 	qrc, err := qrcode.New(networkLink)
 	if err != nil {
 		return &qrImageLink, errx.Lambda(err)
 	}
 
-	QRCodeRegistry.UserID = tok.UserID
+	QRCodeRegistry.UserId = tok.UserId
 	QRCodeRegistry.Xid = xid.New().String()
 	QRCodeRegistry.IsUsed = false
 
@@ -78,7 +78,7 @@ func LoginWithQr(ctx *context.Context, xId string) (*string, error) {
 		return &tok, nil
 	}
 
-	tok, err = token.GetTokenString(QRCodeRegistry.UserID)
+	tok, err = token.GetTokenString(QRCodeRegistry.UserId)
 	if err != nil {
 		return &tok, errx.Lambda(err)
 

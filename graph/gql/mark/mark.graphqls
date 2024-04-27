@@ -1,17 +1,17 @@
 type Mark {
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId : ID!
-    AuthorId: ID!
+    UserId : ID! @goField(name: "UserId")
+    AuthorId: ID! @goField(name: "AuthorId")
     AuthorComment: String!
     AuthorMark: Int!
 }
 
 input MarkInput {
-    UserID : Int
-    AuthorID: Int
+    UserId : Int @goField(name: "UserId")
+    AuthorId: Int @goField(name: "AuthorId")
     AuthorComment: String
     AuthorMark: Int
 }

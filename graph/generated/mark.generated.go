@@ -43,7 +43,7 @@ func (ec *executionContext) _Mark_Id(ctx context.Context, field graphql.Collecte
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return obj.Id, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -216,7 +216,7 @@ func (ec *executionContext) _Mark_UserId(ctx context.Context, field graphql.Coll
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UserID, nil
+		return obj.UserId, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -260,7 +260,7 @@ func (ec *executionContext) _Mark_AuthorId(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.AuthorID, nil
+		return obj.AuthorId, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -389,27 +389,27 @@ func (ec *executionContext) unmarshalInputMarkInput(ctx context.Context, obj int
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"UserID", "AuthorID", "AuthorComment", "AuthorMark"}
+	fieldsInOrder := [...]string{"UserId", "AuthorId", "AuthorComment", "AuthorMark"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "UserID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UserID"))
+		case "UserId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UserId"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.UserID = data
-		case "AuthorID":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AuthorID"))
+			it.UserId = data
+		case "AuthorId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AuthorId"))
 			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.AuthorID = data
+			it.AuthorId = data
 		case "AuthorComment":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AuthorComment"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)

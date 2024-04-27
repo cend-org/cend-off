@@ -36,7 +36,6 @@ type QueryResolver interface {
 	GetMenuList(ctx context.Context) ([]model.Message, error)
 	GetMenuItems(ctx context.Context, language int, menuNumber int) ([]model.Message, error)
 	GetUserAddress(ctx context.Context) (*model.Address, error)
-	RemoveUserAddress(ctx context.Context) (string, error)
 	GetUserPhoneNumber(ctx context.Context) (*model.PhoneNumber, error)
 	GetUserPlannings(ctx context.Context) (*model.CalendarPlanning, error)
 	GetPlanningActors(ctx context.Context, calendarID int) ([]model.User, error)
@@ -1477,54 +1476,10 @@ func (ec *executionContext) fieldContext_Query_getUserAddress(ctx context.Contex
 				return ec.fieldContext_Address_Street(ctx, field)
 			case "FullAddress":
 				return ec.fieldContext_Address_FullAddress(ctx, field)
-			case "XId":
-				return ec.fieldContext_Address_XId(ctx, field)
+			case "Xid":
+				return ec.fieldContext_Address_Xid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Address", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_removeUserAddress(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_removeUserAddress(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().RemoveUserAddress(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_removeUserAddress(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3120,28 +3075,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getUserAddress(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "removeUserAddress":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_removeUserAddress(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

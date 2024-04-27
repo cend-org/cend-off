@@ -24,7 +24,7 @@ func GetMessages() (messages []model.Message, err error) {
 func GetMessagesInLanguage(language int) (messages []model.Message, err error) {
 	query := `
 				SELECT 
-				    COALESCE(target.ID, english.ID) as 'id',
+				    COALESCE(target.Id, english.Id) as 'id',
 				    COALESCE(target.created_at, english.created_at) as 'created_at',
 				    COALESCE(target.updated_at, english.updated_at) as 'updated_at',
 				    COALESCE(target.deleted_at, english.deleted_at) as 'deleted_at',
@@ -53,7 +53,7 @@ func GetMessagesInLanguage(language int) (messages []model.Message, err error) {
 func GetMessage(resourceNumber, resourceLanguage int) (message model.Message, err error) {
 	query := `
 				SELECT 
-				    COALESCE(target.ID, english.ID) as 'id',
+				    COALESCE(target.Id, english.Id) as 'id',
 				    COALESCE(target.created_at, english.created_at) as 'created_at',
 				    COALESCE(target.updated_at, english.updated_at) as 'updated_at',
 				    COALESCE(target.deleted_at, english.deleted_at) as 'deleted_at',
@@ -89,7 +89,7 @@ func NewMessage(resourceLabel string, resourceLanguage int) (message model.Messa
 	message.ResourceLanguage = resourceLanguage
 	message.ResourceLabel = resourceLabel
 
-	message.ID, err = database.InsertOne(message)
+	message.Id, err = database.InsertOne(message)
 	if err != nil {
 		return message, err
 	}
@@ -137,7 +137,7 @@ func UpdateMessage(message model.Message) (msg model.Message, err error) {
 		return message, err
 	}
 
-	message.ID = msg.ID
+	message.Id = msg.Id
 	err = database.Update(message)
 	if err != nil {
 		return message, err
@@ -162,7 +162,7 @@ func GetMenuItems(menuNumber, menuLanguage int) (menus []model.Message, err erro
 
 	query := `
 				SELECT 
-				    COALESCE(target.ID, english.ID) as 'id',
+				    COALESCE(target.Id, english.Id) as 'id',
 				    COALESCE(target.created_at, english.created_at) as 'created_at',
 				    COALESCE(target.updated_at, english.updated_at) as 'updated_at',
 				    COALESCE(target.deleted_at, english.deleted_at) as 'deleted_at',
@@ -207,7 +207,7 @@ func NewMenu(menuName string, resourceLanguage int) (menu model.Message, err err
 
 	menu.ResourceLanguage = resourceLanguage
 
-	menu.ID, err = database.InsertOne(menu)
+	menu.Id, err = database.InsertOne(menu)
 	if err != nil {
 		return menu, err
 	}
@@ -251,7 +251,7 @@ func NewMenuItem(menuLabel string, menuNumber, resourceLanguage int) (menu model
 
 	menu.ResourceLanguage = resourceLanguage
 
-	menu.ID, err = database.InsertOne(menu)
+	menu.Id, err = database.InsertOne(menu)
 	if err != nil {
 		return menu, err
 	}

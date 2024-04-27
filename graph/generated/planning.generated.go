@@ -42,7 +42,7 @@ func (ec *executionContext) _CalendarPlanning_Id(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return obj.Id, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -215,7 +215,7 @@ func (ec *executionContext) _CalendarPlanning_AuthorizationId(ctx context.Contex
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.AuthorizationID, nil
+		return obj.AuthorizationId, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -391,7 +391,7 @@ func (ec *executionContext) _CalendarPlanningActor_Id(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.ID, nil
+		return obj.Id, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -564,7 +564,7 @@ func (ec *executionContext) _CalendarPlanningActor_AuthorizationId(ctx context.C
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.AuthorizationID, nil
+		return obj.AuthorizationId, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -608,7 +608,7 @@ func (ec *executionContext) _CalendarPlanningActor_CalendarPlanningId(ctx contex
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.CalendarPlanningID, nil
+		return obj.CalendarPlanningId, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)

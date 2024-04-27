@@ -15,13 +15,13 @@ func NewAccessToken(usr model.User) (string, error) {
 		err    error
 	)
 
-	err = database.Get(&auth, `SELECT * FROM authorization WHERE user_id = ? ORDER BY level desc limit 1`, usr.ID)
+	err = database.Get(&auth, `SELECT * FROM authorization WHERE user_id = ? ORDER BY level desc limit 1`, usr.Id)
 	if err != nil {
 		return "", err
 	}
 
 	/* fill token field */
-	tok.UserID = usr.ID
+	tok.UserId = usr.Id
 	tok.UserLevel = auth.Level
 
 	tok.ExpirationDate.Value = time.Now().Add(time.Hour * 24)

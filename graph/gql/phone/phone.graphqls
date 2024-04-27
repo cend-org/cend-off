@@ -1,5 +1,5 @@
 type PhoneNumber{
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
@@ -8,12 +8,12 @@ type PhoneNumber{
 }
 
 type UserPhoneNumber{
-    Id: ID!
+    Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: ID!
-    PhoneNumberId: ID!
+    UserId: ID! @goField(name: "UserId")
+    PhoneNumberId: ID! @goField(name: "PhoneNumberId")
 }
 
 input PhoneNumberInput{

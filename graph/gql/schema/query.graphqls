@@ -26,7 +26,6 @@ type Query {
 
     #    Address QUERIES
     getUserAddress: Address!
-    removeUserAddress: String!
 
     #    Phone QUERIES
     getUserPhoneNumber: PhoneNumber!

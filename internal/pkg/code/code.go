@@ -27,7 +27,7 @@ func SendUserEmailValidationCode(ctx context.Context) (*model.User, error) {
 func NewUserVerificationCode(userId int) (err error) {
 	var code model.Code
 	code.VerificationCode = rand.Intn(9999)
-	code.UserID = userId
+	code.UserId = userId
 
 	_, err = database.InsertOne(code)
 	if err != nil {

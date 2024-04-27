@@ -34,6 +34,7 @@ type MutationResolver interface {
 	DelMenuItem(ctx context.Context, input model.MessageInput) (*string, error)
 	NewAddress(ctx context.Context, input model.AddressInput) (*model.Address, error)
 	UpdateUserAddress(ctx context.Context, input model.AddressInput) (*model.Address, error)
+	RemoveUserAddress(ctx context.Context) (string, error)
 	NewPhoneNumber(ctx context.Context, input model.PhoneNumberInput) (*model.PhoneNumber, error)
 	UpdateUserPhoneNumber(ctx context.Context, input model.PhoneNumberInput) (*model.PhoneNumber, error)
 	CreateUserPlannings(ctx context.Context, input model.CalendarPlanningInput) (*model.CalendarPlanning, error)
@@ -1563,8 +1564,8 @@ func (ec *executionContext) fieldContext_Mutation_newAddress(ctx context.Context
 				return ec.fieldContext_Address_Street(ctx, field)
 			case "FullAddress":
 				return ec.fieldContext_Address_FullAddress(ctx, field)
-			case "XId":
-				return ec.fieldContext_Address_XId(ctx, field)
+			case "Xid":
+				return ec.fieldContext_Address_Xid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Address", field.Name)
 		},
@@ -1642,8 +1643,8 @@ func (ec *executionContext) fieldContext_Mutation_updateUserAddress(ctx context.
 				return ec.fieldContext_Address_Street(ctx, field)
 			case "FullAddress":
 				return ec.fieldContext_Address_FullAddress(ctx, field)
-			case "XId":
-				return ec.fieldContext_Address_XId(ctx, field)
+			case "Xid":
+				return ec.fieldContext_Address_Xid(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Address", field.Name)
 		},
@@ -1658,6 +1659,50 @@ func (ec *executionContext) fieldContext_Mutation_updateUserAddress(ctx context.
 	if fc.Args, err = ec.field_Mutation_updateUserAddress_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_removeUserAddress(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_removeUserAddress(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RemoveUserAddress(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_removeUserAddress(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
 	}
 	return fc, nil
 }
@@ -3084,6 +3129,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "updateUserAddress":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updateUserAddress(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "removeUserAddress":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_removeUserAddress(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

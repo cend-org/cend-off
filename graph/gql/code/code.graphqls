@@ -1,8 +1,8 @@
 type Code {
-    Id: ID!
+    Id: ID!  @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    UserId: ID!
+    UserId: ID!  @goField(name: "UserId")
     VerificationCode: Int!
 }

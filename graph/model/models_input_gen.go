@@ -61,12 +61,12 @@ func MapCalendarPlanningInputToCalendarPlanning(input CalendarPlanningInput, exi
 /* MarkInput */
 
 func MapMarkInputToMark(input MarkInput, existing Mark) Mark {
-	if input.UserID != nil {
-		existing.UserID = *input.UserID
+	if input.UserId != nil {
+		existing.UserId = *input.UserId
 	}
 
-	if input.AuthorID != nil {
-		existing.AuthorID = *input.AuthorID
+	if input.AuthorId != nil {
+		existing.AuthorId = *input.AuthorId
 	}
 
 	if input.AuthorComment != nil {
@@ -157,8 +157,8 @@ func MapSchoolSubjectInputToSchoolSubject(input SchoolSubjectInput, existing Sch
 /* SubjectInput */
 
 func MapSubjectInputToSubject(input SubjectInput, existing Subject) Subject {
-	if input.EducationLevelID != nil {
-		existing.EducationLevelID = *input.EducationLevelID
+	if input.EducationLevelId != nil {
+		existing.EducationLevelId = *input.EducationLevelId
 	}
 
 	if input.Name != nil {

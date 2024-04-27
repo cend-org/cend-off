@@ -18,7 +18,7 @@ func NewUserAuthorization(userId, authorizationLevel int) (err error) {
 		auth model.Authorization
 	)
 
-	auth.UserID = userId
+	auth.UserId = userId
 	auth.Level = authorizationLevel
 
 	_, err = database.InsertOne(auth)
@@ -91,7 +91,7 @@ func isUserHasAuthorizationLevel(userId, authorizationLevel int) (ret bool) {
 		return false
 	}
 
-	return auth.ID > state.ZERO
+	return auth.Id > state.ZERO
 }
 
 func IsUserStudent(userId int) (ret bool) {

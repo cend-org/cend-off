@@ -23,25 +23,25 @@ func SetUserEducationLevel(ctx context.Context, subjectId int) (*model.Education
 		return &userLevel, errx.UnAuthorizedError
 	}
 
-	if tok.UserID == state.ZERO {
+	if tok.UserId == state.ZERO {
 		return &userLevel, errx.UnAuthorizedError
 	}
 
-	if !authorization.IsUserStudent(tok.UserID) {
-		if !authorization.IsUserProfessor(tok.UserID) {
+	if !authorization.IsUserStudent(tok.UserId) {
+		if !authorization.IsUserProfessor(tok.UserId) {
 			return &userLevel, errx.Lambda(errors.New("not a user or a professor"))
 		}
 	}
 
-	userEducationLevelSubject.SubjectID = subjectId
-	userEducationLevelSubject.UserID = tok.UserID
+	userEducationLevelSubject.SubjectId = subjectId
+	userEducationLevelSubject.UserId = tok.UserId
 
 	_, err = database.InsertOne(userEducationLevelSubject)
 	if err != nil {
 		return &userLevel, errx.DbInsertError
 	}
 
-	userLevel, err = GetUserLevel(tok.UserID)
+	userLevel, err = GetUserLevel(tok.UserId)
 	if err != nil {
 		return &userLevel, errx.DbGetError
 	}
@@ -62,11 +62,11 @@ func UpdateUserEducationLevel(ctx context.Context, subjectId int) (*model.Educat
 	if err != nil {
 		return &userLevel, errx.UnAuthorizedError
 	}
-	if tok.UserID == state.ZERO {
+	if tok.UserId == state.ZERO {
 		return &userLevel, errx.UnAuthorizedError
 	}
 
-	if !authorization.IsUserStudent(tok.UserID) {
+	if !authorization.IsUserStudent(tok.UserId) {
 		return &userLevel, errx.Lambda(errors.New("user is not a student"))
 	}
 
@@ -76,7 +76,7 @@ func UpdateUserEducationLevel(ctx context.Context, subjectId int) (*model.Educat
 	//}
 
 	err = database.Get(&currentUserEducationLevelSubject, `SELECT user_education_level_subject.* FROM user_education_level_subject
-			WHERE user_education_level_subject.user_id = ?`, tok.UserID)
+			WHERE user_education_level_subject.user_id = ?`, tok.UserId)
 	if err != nil {
 		return &userLevel, errx.DbGetError
 	}
@@ -86,14 +86,14 @@ func UpdateUserEducationLevel(ctx context.Context, subjectId int) (*model.Educat
 		return &userLevel, errx.DbDeleteError
 	}
 
-	userEducationLevelSubject.SubjectID = subjectId
-	userEducationLevelSubject.UserID = tok.UserID
+	userEducationLevelSubject.SubjectId = subjectId
+	userEducationLevelSubject.UserId = tok.UserId
 	_, err = database.InsertOne(userEducationLevelSubject)
 	if err != nil {
 		return &userLevel, errx.DbInsertError
 	}
 
-	userLevel, err = GetUserLevel(tok.UserID)
+	userLevel, err = GetUserLevel(tok.UserId)
 	if err != nil {
 		return &userLevel, errx.DbGetError
 	}
@@ -112,24 +112,24 @@ func GetUserSubjects(ctx context.Context) ([]model.Subject, error) {
 		return subjects, errx.UnAuthorizedError
 	}
 
-	if authorization.IsUserParent(tok.UserID) || authorization.IsUserTutor(tok.UserID) {
+	if authorization.IsUserParent(tok.UserId) || authorization.IsUserTutor(tok.UserId) {
 		return subjects, errx.UnAuthorizedError
 	}
 
-	if authorization.IsUserStudent(tok.UserID) {
+	if authorization.IsUserStudent(tok.UserId) {
 		err = database.GetMany(&subjects, `SELECT subject.* 
 											FROM subject
 											WHERE subject.education_level_id = (SELECT education.id FROM education  JOIN subject ON education.id  =  subject.education_level_id JOIN user_education_level_subject ON subject.id = user_education_level_subject.subject_id
-                                   			WHERE user_education_level_subject.user_id = ?)`, tok.UserID)
+                                   			WHERE user_education_level_subject.user_id = ?)`, tok.UserId)
 		if err != nil {
 			return subjects, errx.DbGetError
 		}
 	}
 
-	if authorization.IsUserProfessor(tok.UserID) {
+	if authorization.IsUserProfessor(tok.UserId) {
 		err = database.GetMany(&subjects, `SELECT subject.* FROM subject
 			JOIN user_education_level_subject  ON subject.id = user_education_level_subject.subject_id
-			WHERE user_education_level_subject.user_id = ?`, tok.UserID)
+			WHERE user_education_level_subject.user_id = ?`, tok.UserId)
 		if err != nil {
 			return subjects, errx.DbGetError
 		}
@@ -164,7 +164,7 @@ func GetUserEducationLevel(ctx context.Context) (*model.Education, error) {
 		return &userLevel, errx.UnAuthorizedError
 	}
 
-	userLevel, err = GetUserLevel(tok.UserID)
+	userLevel, err = GetUserLevel(tok.UserId)
 	if err != nil {
 		return &userLevel, errx.DbGetError
 
@@ -214,13 +214,13 @@ func GetSchool(ctx context.Context, id int) (*model.School, error) {
 	UTILS
 */
 
-func GetUserLevel(UserID int) (educationLevel model.Education, err error) {
+func GetUserLevel(UserId int) (educationLevel model.Education, err error) {
 
 	err = database.Get(&educationLevel,
 		`SELECT education.* FROM education
 				JOIN subject ON education.id  =  subject.education_level_id
 				JOIN user_education_level_subject ON subject.id = user_education_level_subject.subject_id
-			WHERE user_education_level_subject.user_id = ?`, UserID)
+			WHERE user_education_level_subject.user_id = ?`, UserId)
 	if err != nil {
 		return educationLevel, err
 	}
