@@ -37,8 +37,6 @@ func AddParentToUser(ctx context.Context, input *model.UserInput) (*model.User, 
 		userAuthorizationLinkId int
 		err                     error
 	)
-
-	// Select User
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &currentParent, errx.UnAuthorizedError
