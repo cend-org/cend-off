@@ -12,6 +12,7 @@ import (
 	"github.com/yeqown/go-qrcode/v2"
 	"github.com/yeqown/go-qrcode/writer/standard"
 	"strconv"
+	"time"
 )
 
 func GenerateQrCode(ctx context.Context) (*string, error) {
@@ -61,28 +62,32 @@ func GenerateQrCode(ctx context.Context) (*string, error) {
 
 func LoginWithQr(ctx context.Context, xId string) (*string, error) {
 	var (
-		tok            string
-		err            error
-		QRCodeRegistry model.QRCodeRegistry
+		tok         string
+		err         error
+		qrCode      model.QRCodeRegistry
+		currentUser model.User
 	)
 
-	QRCodeRegistry, err = GetQRCodeRegistry(xId)
+	qrCode, err = GetQRCodeRegistry(xId)
 	if err != nil {
 		return &tok, errx.Lambda(err)
 
 	}
 
-	err = UpdateQRCodeRegistryFlag(QRCodeRegistry)
+	err = UpdateQRCodeRegistryFlag(qrCode)
 	if err != nil {
 		return &tok, nil
 	}
 
-	tok, err = token.GetTokenString(QRCodeRegistry.UserId)
+	currentUser, err = GetUserWithId(qrCode.UserId)
 	if err != nil {
-		return &tok, errx.Lambda(err)
-
+		return &tok, errx.UnAuthorizedError
 	}
 
+	tok, err = LoginWithEmail(currentUser.Email)
+	if err != nil {
+		return &tok, nil
+	}
 	return &tok, nil
 }
 
@@ -105,4 +110,30 @@ func UpdateQRCodeRegistryFlag(QRCodeRegistry model.QRCodeRegistry) (err error) {
 		return err
 	}
 	return
+}
+
+func GetUserWithId(id int) (user model.User, err error) {
+	time.Sleep(100)
+	err = database.Get(&user, `SELECT * FROM user WHERE id = ?`, id)
+	if err != nil {
+		return user, err
+	}
+
+	return user, err
+}
+
+func LoginWithEmail(email string) (access string, err error) {
+	var usr model.User
+
+	err = database.Get(&usr, `SELECT * FROM user WHERE email = ?`, email)
+	if err != nil {
+		return
+	}
+
+	access, err = NewAccessToken(usr)
+	if err != nil {
+		return access, err
+	}
+
+	return access, err
 }
