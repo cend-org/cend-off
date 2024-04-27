@@ -8,7 +8,6 @@ import (
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
 	"github.com/joinverse/xid"
-	"time"
 )
 
 func NewAddress(ctx context.Context, input *model.AddressInput) (*model.Address, error) {
@@ -69,6 +68,11 @@ func UpdateUserAddress(ctx context.Context, input *model.AddressInput) (*model.A
 		return &address, errx.UnAuthorizedError
 	}
 
+	address, err = GetAddressWithId(tok.UserId)
+	if err != nil {
+		return &address, errx.DbGetError
+	}
+
 	address = model.MapAddressInputToAddress(*input, address)
 
 	err = database.Update(address)
@@ -83,7 +87,6 @@ func GetUserAddress(ctx context.Context) (*model.Address, error) {
 	var (
 		tok *token.Token
 
-		userId  int
 		address model.Address
 		err     error
 	)
@@ -92,12 +95,7 @@ func GetUserAddress(ctx context.Context) (*model.Address, error) {
 		return &address, errx.UnAuthorizedError
 	}
 
-	userId = int(tok.UserId)
-
-	err = database.Get(&address, `SELECT address.*
-   FROM address JOIN user_address
-   ON address.id = user_address.address_id
-   WHERE user_address.user_id = ?`, userId)
+	address, err = GetAddressWithId(tok.UserId)
 	if err != nil {
 		return &address, errx.DbGetError
 	}
@@ -109,7 +107,6 @@ func RemoveUserAddress(ctx context.Context) (string, error) {
 	var (
 		tok *token.Token
 
-		userId      int
 		address     model.Address
 		userAddress model.UserAddress
 		err         error
@@ -119,23 +116,18 @@ func RemoveUserAddress(ctx context.Context) (string, error) {
 	if err != nil {
 		return status, errx.UnAuthorizedError
 	}
-	userId = tok.UserId
 
-	err = database.Get(&address, `SELECT address.*
-   FROM address JOIN user_address
-   ON address.id = user_address.address_id
-   WHERE user_address.user_id = ?`, userId)
+	address, err = GetAddressWithId(tok.UserId)
 	if err != nil {
 		return status, errx.DbGetError
 	}
-	time.Sleep(100)
+
 	err = database.Delete(address)
 	if err != nil {
 		return status, errx.DbDeleteError
 	}
-	// and remove user_address
 
-	err = database.Get(&userAddress, `SELECT * FROM user_address where user_id = ?`, userId)
+	userAddress, err = GetUserAddressWithId(tok.UserId)
 	if err != nil {
 		return status, errx.DbGetError
 	}
@@ -159,4 +151,15 @@ func GetUserAddressWithId(userId int) (userAddress model.UserAddress, err error)
 		return userAddress, err
 	}
 	return userAddress, err
+}
+
+func GetAddressWithId(userId int) (address model.Address, err error) {
+	err = database.Get(&address, `SELECT address.*
+   FROM address JOIN user_address
+   ON address.id = user_address.address_id
+   WHERE user_address.user_id = ?`, userId)
+	if err != nil {
+		return address, err
+	}
+	return address, err
 }
