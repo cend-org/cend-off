@@ -1,0 +1,11 @@
+type Asset {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    Description: String!
+}
+
+input AssetInput {
+    Description: String
+}

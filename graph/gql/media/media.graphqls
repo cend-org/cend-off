@@ -1,0 +1,20 @@
+type Media {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    FileName : String!
+    Extension: String!
+    Xid: String! @goField(name: "Xid")
+    ContentType: Int!
+}
+
+type UserMediaDetail {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    OwnerId : Int! @goField(name: "OwnerId")
+    DocumentType: Int!
+    DocumentXid : String! @goField(name: "DocumentXid")
+}

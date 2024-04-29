@@ -1,14 +1,16 @@
 package utils
 
 import (
-	"duval/pkg/database"
+	"fmt"
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/cend-org/duval/internal/database"
 	"github.com/disintegration/imaging"
 	"github.com/joinverse/xid"
 	"github.com/unidoc/unipdf/v3/model"
 	"github.com/unidoc/unipdf/v3/render"
 	"image"
 	"image/color"
-	"mime/multipart"
+	"io"
 	"time"
 )
 
@@ -41,13 +43,18 @@ type UserMediaDetail struct {
 /*
 CREATE THUMBNAIL FOR UPLOADED IMAGE
 */
-func CreateThumb(mediaXid string, extension string, file multipart.File) (err error) {
+
+func CreateThumb(mediaXid string, extension string, file graphql.Upload) (err error) {
 	var (
 		mediaThumb MediaThumb
 		thumbnail  image.Image
 	)
 
-	img, err := imaging.Decode(file)
+	if _, err := file.File.Seek(0, io.SeekStart); err != nil {
+		return fmt.Errorf("failed to seek file: %w", err)
+	}
+
+	img, err := imaging.Decode(file.File)
 	if err != nil {
 		return err
 	}
@@ -76,18 +83,17 @@ func CreateThumb(mediaXid string, extension string, file multipart.File) (err er
 /*
 CREATE THUMBNAIL FOR UPLOADED COVER LETTER
 */
-func CreateDocumentThumb(mediaXid string, extension string, file *multipart.FileHeader) (err error) {
+
+func CreateDocumentThumb(mediaXid string, extension string, file graphql.Upload) (err error) {
 	var (
 		mediaThumb MediaThumb
 		thumbnail  image.Image
 	)
-	openedFile, err := file.Open()
-	if err != nil {
+	if _, err := file.File.Seek(0, io.SeekStart); err != nil {
 		return err
 	}
-	defer openedFile.Close()
 
-	pdfReader, err := model.NewPdfReader(openedFile)
+	pdfReader, err := model.NewPdfReader(file.File)
 	if err != nil {
 		return err
 	}

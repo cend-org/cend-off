@@ -20,6 +20,10 @@
 # Go workspace file
 go.work
 
+*.yml
+.idea
+
+
 #public file
 public/*.jpg
 public/*.png
@@ -33,7 +37,6 @@ public/thumb/*.word
 
 public/qr/*.jpg
 
-.idea
 
 .vscode
 

@@ -3,7 +3,7 @@ package utils
 import "regexp"
 
 /*
- CHECK IF MOBILE PHONE NUMBER IS NUMERIC AND A LENGHT OF THIRTEEN
+CHECK IF MOBILE PHONE NUMBER IS NUMERIC AND A LENGHT OF THIRTEEN
 */
 func IsValidPhone(phone string) bool {
 	pattern := `^[+]+\d{12}$`

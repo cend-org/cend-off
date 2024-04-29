@@ -2,27 +2,25 @@ package mark
 
 import (
 	"context"
-	"duval/internal/authentication"
-	"duval/internal/graph/model"
-	"duval/internal/pkg/user/authorization"
-	"duval/internal/utils/errx"
-	"duval/internal/utils/state"
-	"duval/pkg/database"
 	"errors"
+	"github.com/cend-org/duval/graph/model"
+	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/pkg/user/authorization"
+	"github.com/cend-org/duval/internal/token"
+	"github.com/cend-org/duval/internal/utils/errx"
+	"github.com/cend-org/duval/internal/utils/state"
 )
 
-func RateUser(ctx *context.Context, mark *model.UserMarkInput) (*model.UserMark, error) {
+func RateUser(ctx context.Context, input *model.MarkInput) (*model.Mark, error) {
 	var (
-		tok         *authentication.Token
-		studentMark model.UserMark
+		tok         *token.Token
+		studentMark model.Mark
 		err         error
 	)
-	studentMark.UserId = mark.UserId
-	studentMark.AuthorId = mark.AuthorId
-	studentMark.AuthorMark = mark.AuthorMark
-	studentMark.AuthorComment = mark.AuthorComment
 
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	studentMark = model.MapMarkInputToMark(*input, studentMark)
+
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &studentMark, errx.UnAuthorizedError
 	}
@@ -48,11 +46,11 @@ func RateUser(ctx *context.Context, mark *model.UserMarkInput) (*model.UserMark,
 	return &studentMark, nil
 }
 
-func GetUserAverageMark(ctx *context.Context, userId int) (*int, error) {
+func GetUserAverageMark(ctx context.Context, userId int) (*int, error) {
 	var (
-		userMarks   []model.UserMark
+		userMarks   []model.Mark
 		err         error
-		totalMark   uint
+		totalMark   int
 		averageMark int
 	)
 
@@ -74,13 +72,13 @@ func GetUserAverageMark(ctx *context.Context, userId int) (*int, error) {
 	return &averageMark, nil
 }
 
-func GetUserMarkComment(ctx *context.Context) ([]*model.UserMark, error) {
+func GetUserMarkComment(ctx context.Context) ([]model.Mark, error) {
 	var (
-		tok  *authentication.Token
+		tok  *token.Token
 		err  error
-		mark []*model.UserMark
+		mark []model.Mark
 	)
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return mark, errx.UnAuthorizedError
 	}
@@ -100,12 +98,11 @@ func GetUserMarkComment(ctx *context.Context) ([]*model.UserMark, error) {
 	return mark, nil
 }
 
-//
 /*
 	UTILS
 */
 
-func SetUserMark(userMark model.UserMark) (err error) {
+func SetUserMark(userMark model.Mark) (err error) {
 	_, err = database.InsertOne(userMark)
 	if err != nil {
 		return err

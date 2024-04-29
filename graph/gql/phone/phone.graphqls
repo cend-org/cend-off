@@ -1,0 +1,24 @@
+type PhoneNumber{
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    MobilePhoneNumber: String!
+    IsUrgency: Boolean!
+}
+
+type UserPhoneNumber{
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId: ID! @goField(name: "UserId")
+    PhoneNumberId: ID! @goField(name: "PhoneNumberId")
+}
+
+input PhoneNumberInput{
+    MobilePhoneNumber: String
+    IsUrgency: Boolean
+}
+
+

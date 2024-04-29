@@ -1,0 +1,9 @@
+type QrCodeRegistry {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId : ID! @goField(name: "UserId")
+    Xid : String! @goField(name: "Xid")
+    IsUsed :Boolean!
+}

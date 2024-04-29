@@ -1,0 +1,25 @@
+type School {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    Name: String!
+}
+
+input SchoolInput {
+    Name: String
+}
+
+type SchoolSubject {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    SchoolNumber: Int!
+    Name: String!
+}
+
+input SchoolSubjectInput {
+    SchoolNumber: Int
+    Name: String
+}

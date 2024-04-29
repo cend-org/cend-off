@@ -1,9 +1,9 @@
 package errx
 
 import (
-	"duval/internal/utils/note"
 	"errors"
 	"fmt"
+	"github.com/cend-org/duval/internal/utils/note"
 )
 
 func Lambda(err error) error {
@@ -32,4 +32,8 @@ var (
 
 var (
 	NeedPasswordError = note.StatusNeedPasswordError
+)
+
+var (
+	ThumbError = note.ThumbError
 )

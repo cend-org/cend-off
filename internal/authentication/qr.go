@@ -2,27 +2,28 @@ package authentication
 
 import (
 	"context"
-	"duval/internal/configuration"
-	"duval/internal/graph/model"
-	"duval/internal/utils"
-	"duval/internal/utils/errx"
-	"duval/pkg/database"
+	"github.com/cend-org/duval/graph/model"
+	"github.com/cend-org/duval/internal/configuration"
+	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/token"
+	"github.com/cend-org/duval/internal/utils"
+	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/joinverse/xid"
 	"github.com/yeqown/go-qrcode/v2"
 	"github.com/yeqown/go-qrcode/writer/standard"
 	"strconv"
+	"time"
 )
 
-func GenerateQrCode(ctx *context.Context) (*string, error) {
+func GenerateQrCode(ctx context.Context) (*string, error) {
 	var (
-		tok            *Token
+		tok            *token.Token
 		err            error
 		networkLink    string
 		qrImageLink    string
-		qrCodeRegistry model.QrCodeRegistry
+		QRCodeRegistry model.QRCodeRegistry
 	)
-
-	tok, err = GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &qrImageLink, errx.UnAuthorizedError
 	}
@@ -34,13 +35,13 @@ func GenerateQrCode(ctx *context.Context) (*string, error) {
 		return &qrImageLink, errx.Lambda(err)
 	}
 
-	qrCodeRegistry.UserId = tok.UserId
-	qrCodeRegistry.Xid = xid.New().String()
-	qrCodeRegistry.IsUsed = false
+	QRCodeRegistry.UserId = tok.UserId
+	QRCodeRegistry.Xid = xid.New().String()
+	QRCodeRegistry.IsUsed = false
 
-	qrImageLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/api/public/qr/" + qrCodeRegistry.Xid + ".jpg"
+	qrImageLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/api/public/qr/" + QRCodeRegistry.Xid + ".jpg"
 
-	w, err := standard.New(utils.FILE_UPLOAD_DIR + utils.QR_CODE_UPLOAD_DIR + qrCodeRegistry.Xid + ".jpg")
+	w, err := standard.New(utils.FILE_UPLOAD_DIR + utils.QR_CODE_UPLOAD_DIR + QRCodeRegistry.Xid + ".jpg")
 	if err != nil {
 		return &qrImageLink, errx.Lambda(err)
 
@@ -50,7 +51,7 @@ func GenerateQrCode(ctx *context.Context) (*string, error) {
 	if err != nil {
 		return &qrImageLink, errx.Lambda(err)
 	}
-	_, err = database.InsertOne(qrCodeRegistry)
+	_, err = database.InsertOne(QRCodeRegistry)
 	if err != nil {
 		return &qrImageLink, errx.DbInsertError
 
@@ -59,30 +60,34 @@ func GenerateQrCode(ctx *context.Context) (*string, error) {
 	return &qrImageLink, nil
 }
 
-func LoginWithQr(ctx *context.Context, xId string) (*string, error) {
+func LoginWithQr(ctx context.Context, xId string) (*string, error) {
 	var (
-		tok            string
-		err            error
-		qrCodeRegistry model.QrCodeRegistry
+		tok         string
+		err         error
+		qrCode      model.QRCodeRegistry
+		currentUser model.User
 	)
 
-	qrCodeRegistry, err = GetQrCodeRegistry(xId)
+	qrCode, err = GetQRCodeRegistry(xId)
 	if err != nil {
 		return &tok, errx.Lambda(err)
 
 	}
 
-	err = UpdateQrCodeRegistryFlag(qrCodeRegistry)
+	err = UpdateQRCodeRegistryFlag(qrCode)
 	if err != nil {
 		return &tok, nil
 	}
 
-	tok, err = GetTokenString(qrCodeRegistry.UserId)
+	currentUser, err = GetUserWithId(qrCode.UserId)
 	if err != nil {
-		return &tok, errx.Lambda(err)
-
+		return &tok, errx.UnAuthorizedError
 	}
 
+	tok, err = LoginWithEmail(currentUser.Email)
+	if err != nil {
+		return &tok, nil
+	}
 	return &tok, nil
 }
 
@@ -90,19 +95,45 @@ func LoginWithQr(ctx *context.Context, xId string) (*string, error) {
 	UTILS
 */
 
-func GetQrCodeRegistry(xId string) (qrCodeRegistry model.QrCodeRegistry, err error) {
-	err = database.Get(&qrCodeRegistry, `SELECT * FROM qr_code_registry WHERE qr_code_registry.xid = ?`, xId)
+func GetQRCodeRegistry(xId string) (QRCodeRegistry model.QRCodeRegistry, err error) {
+	err = database.Get(&QRCodeRegistry, `SELECT * FROM qr_code_registry WHERE qr_code_registry.xid = ?`, xId)
 	if err != nil {
-		return qrCodeRegistry, err
+		return QRCodeRegistry, err
 	}
-	return qrCodeRegistry, nil
+	return QRCodeRegistry, nil
 }
 
-func UpdateQrCodeRegistryFlag(qrCodeRegistry model.QrCodeRegistry) (err error) {
-	qrCodeRegistry.IsUsed = true
-	err = database.Update(qrCodeRegistry)
+func UpdateQRCodeRegistryFlag(QRCodeRegistry model.QRCodeRegistry) (err error) {
+	QRCodeRegistry.IsUsed = true
+	err = database.Update(QRCodeRegistry)
 	if err != nil {
 		return err
 	}
 	return
+}
+
+func GetUserWithId(id int) (user model.User, err error) {
+	time.Sleep(100)
+	err = database.Get(&user, `SELECT * FROM user WHERE id = ?`, id)
+	if err != nil {
+		return user, err
+	}
+
+	return user, err
+}
+
+func LoginWithEmail(email string) (access string, err error) {
+	var usr model.User
+
+	err = database.Get(&usr, `SELECT * FROM user WHERE email = ?`, email)
+	if err != nil {
+		return
+	}
+
+	access, err = NewAccessToken(usr)
+	if err != nil {
+		return access, err
+	}
+
+	return access, err
 }

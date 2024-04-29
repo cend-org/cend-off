@@ -1,0 +1,64 @@
+type Mutation {
+    registerWithEmail(input: String!, as: Int!): String
+    register(input: UserInput!, as:Int!): String
+    updMyProfile(input: UserInput!): String
+
+    logIn(email: String!, password: String!): String
+
+    newPassword(password: String!): Boolean
+    delPassword(id: ID!): Boolean
+
+    newAsset(asset: AssetInput!): Asset
+
+    populateSchool: Boolean
+
+    #   Message mutations
+    newMessage(input: MessageInput!): Message!
+    updMessage(input: MessageInput!): Message!
+    delMessage(language: Int!, messageNumber :Int!) : String
+    newMenu(input: MessageInput!) : Message!
+    delMenu(menuNumber: Int!): String
+    newMenuItem(input: MessageInput!): Message!
+    delMenuItem(input: MessageInput!) : String
+
+    #    Address mutations
+    newAddress(input: AddressInput!): Address!
+    updateUserAddress(input: AddressInput!): Address!
+    removeUserAddress: String!
+
+    #    Phone mutations
+    newPhoneNumber(input: PhoneNumberInput!) : PhoneNumber!
+    updateUserPhoneNumber(input: PhoneNumberInput!) : PhoneNumber!
+
+    #    Planning mutations
+    createUserPlannings(input: CalendarPlanningInput!): CalendarPlanning!
+    addUserIntoPlanning(calendarId: ID!, selectedUserId: ID!):CalendarPlanningActor!
+    removeUserPlannings: String
+    removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): String
+
+    #   Education mutations
+    setUserEducationLevel(subjectId: Int!): Education!
+    updateUserEducationLevel(subjectId: Int!): Education!
+
+    #    Mark mutations
+    rateUser(input: MarkInput!): Mark!
+
+    #    Link Mutations
+    addParentToUser(input: UserInput!) :User!
+    removeUserParent(input: UserInput!): String
+
+    addTutorToUser(input: UserInput!) :User!
+    removeUserTutor(input: UserInput!): String
+
+    addProfessorToUser(input: UserInput!) :User!
+    removeUserProfessor(input: UserInput!): String
+
+    addStudentToLink(input: UserInput!) :User!
+    removeStudent(input: UserInput!): String
+
+    # Qr Mutations
+    loginWithQr(xId: String!) :String
+
+    #    Upload
+    singleUpload(file: Upload!): Media!
+}

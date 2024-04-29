@@ -1,10 +1,10 @@
 package resource
 
 import (
-	"duval/internal/graph/model"
-	"duval/internal/utils/state"
-	"duval/pkg/database"
 	"errors"
+	"github.com/cend-org/duval/graph/model"
+	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/utils/state"
 )
 
 const (
@@ -24,7 +24,7 @@ func GetMessages() (messages []model.Message, err error) {
 func GetMessagesInLanguage(language int) (messages []model.Message, err error) {
 	query := `
 				SELECT 
-				    COALESCE(target.id, english.id) as 'id',
+				    COALESCE(target.Id, english.Id) as 'id',
 				    COALESCE(target.created_at, english.created_at) as 'created_at',
 				    COALESCE(target.updated_at, english.updated_at) as 'updated_at',
 				    COALESCE(target.deleted_at, english.deleted_at) as 'deleted_at',
@@ -53,7 +53,7 @@ func GetMessagesInLanguage(language int) (messages []model.Message, err error) {
 func GetMessage(resourceNumber, resourceLanguage int) (message model.Message, err error) {
 	query := `
 				SELECT 
-				    COALESCE(target.id, english.id) as 'id',
+				    COALESCE(target.Id, english.Id) as 'id',
 				    COALESCE(target.created_at, english.created_at) as 'created_at',
 				    COALESCE(target.updated_at, english.updated_at) as 'updated_at',
 				    COALESCE(target.deleted_at, english.deleted_at) as 'deleted_at',
@@ -162,7 +162,7 @@ func GetMenuItems(menuNumber, menuLanguage int) (menus []model.Message, err erro
 
 	query := `
 				SELECT 
-				    COALESCE(target.id, english.id) as 'id',
+				    COALESCE(target.Id, english.Id) as 'id',
 				    COALESCE(target.created_at, english.created_at) as 'created_at',
 				    COALESCE(target.updated_at, english.updated_at) as 'updated_at',
 				    COALESCE(target.deleted_at, english.deleted_at) as 'deleted_at',

@@ -2,14 +2,14 @@ package link
 
 import (
 	"context"
-	"duval/internal/authentication"
-	"duval/internal/graph/model"
-	"duval/internal/pkg/user/authorization"
-	"duval/internal/utils"
-	"duval/internal/utils/errx"
-	"duval/internal/utils/state"
-	"duval/pkg/database"
 	"errors"
+	"github.com/cend-org/duval/graph/model"
+	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/pkg/user/authorization"
+	"github.com/cend-org/duval/internal/token"
+	"github.com/cend-org/duval/internal/utils"
+	"github.com/cend-org/duval/internal/utils/errx"
+	"github.com/cend-org/duval/internal/utils/state"
 )
 
 const (
@@ -29,17 +29,15 @@ const (
 
 // Parent Handler```
 
-func AddParentToUser(ctx *context.Context, input map[string]interface{}) (*model.User, error) {
+func AddParentToUser(ctx context.Context, input *model.UserInput) (*model.User, error) {
 	var (
-		tok                     *authentication.Token
+		tok                     *token.Token
 		parent                  model.User
 		currentParent           model.User
-		userAuthorizationLinkId uint
+		userAuthorizationLinkId int
 		err                     error
 	)
-
-	// Select User
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &currentParent, errx.UnAuthorizedError
 	}
@@ -49,10 +47,7 @@ func AddParentToUser(ctx *context.Context, input map[string]interface{}) (*model
 		return &currentParent, errx.Lambda(errors.New("user is not a student"))
 	}
 
-	err = utils.ShouldBindJSON(input, &parent)
-	if err != nil {
-		return &currentParent, errx.Lambda(err)
-	}
+	parent = model.MapUserInputToUser(*input, parent)
 
 	// Check if parent  doesn't exist in the database based on name and family name then  create a user named parent if not
 	currentParent, err = GetUserByUserName(parent)
@@ -101,76 +96,49 @@ func AddParentToUser(ctx *context.Context, input map[string]interface{}) (*model
 	return &currentParent, nil
 }
 
-func GetUserParent(ctx *context.Context) ([]*model.User, error) {
+func GetUserParent(ctx context.Context) ([]model.User, error) {
 	var (
-		tok        *authentication.Token
-		parents    []model.User
-		gqlParents []*model.User
-		err        error
+		tok     *token.Token
+		parents []model.User
+		err     error
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
-		return gqlParents, errx.ParseError
+		return parents, errx.ParseError
 	}
 
 	if tok.UserId == state.ZERO {
 		if err != nil {
-			return gqlParents, errx.UnAuthorizedError
+			return parents, errx.UnAuthorizedError
 		}
 	}
 	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
 	if err != nil {
 		if err != nil {
-			return gqlParents, errx.DbGetError
+			return parents, errx.DbGetError
 		}
 	}
 
 	parents, err = GetLink(auth.Id, ParentAuthorizationLevel, StudentParent)
 	if err != nil {
-		return gqlParents, errx.DbGetError
+		return parents, errx.DbGetError
 	}
 
-	for _, parent := range parents {
-		gqlParents = append(gqlParents, &model.User{
-			Id:                    parent.Id,
-			CreatedAt:             parent.CreatedAt,
-			UpdatedAt:             parent.UpdatedAt,
-			DeletedAt:             parent.DeletedAt,
-			Name:                  parent.Name,
-			FamilyName:            parent.FamilyName,
-			NickName:              parent.NickName,
-			Email:                 parent.Email,
-			Matricule:             parent.Matricule,
-			Age:                   parent.Age,
-			BirthDate:             parent.BirthDate,
-			Sex:                   parent.Sex,
-			Lang:                  parent.Lang,
-			Status:                parent.Status,
-			ProfileImageXid:       parent.ProfileImageXid,
-			Description:           parent.Description,
-			CoverText:             parent.CoverText,
-			Profile:               parent.Profile,
-			ExperienceDetail:      parent.ExperienceDetail,
-			AdditionalDescription: parent.AdditionalDescription,
-			AddOnTitle:            parent.AddOnTitle,
-		})
-	}
-
-	return gqlParents, nil
+	return parents, nil
 
 }
 
-func RemoveUserParent(ctx *context.Context, input map[string]interface{}) (*string, error) {
+func RemoveUserParent(ctx context.Context, input *model.UserInput) (*string, error) {
 	var (
 		parent model.User
 		actor  model.UserAuthorizationLinkActor
-		tok    *authentication.Token
+		tok    *token.Token
 		err    error
 		status string
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &status, errx.UnAuthorizedError
 	}
@@ -179,10 +147,7 @@ func RemoveUserParent(ctx *context.Context, input map[string]interface{}) (*stri
 		return &status, errx.UnAuthorizedError
 	}
 
-	err = utils.ShouldBindJSON(input, &parent)
-	if err != nil {
-		return &status, errx.Lambda(err)
-	}
+	parent = model.MapUserInputToUser(*input, parent)
 
 	actor, err = GetSelectedUserLinkActor(parent, StudentParent)
 	if err != nil {
@@ -199,17 +164,17 @@ func RemoveUserParent(ctx *context.Context, input map[string]interface{}) (*stri
 
 // Tutor Handler
 
-func AddTutorToUser(ctx *context.Context, input map[string]interface{}) (*model.User, error) {
+func AddTutorToUser(ctx context.Context, input *model.UserInput) (*model.User, error) {
 	var (
-		tok                     *authentication.Token
+		tok                     *token.Token
 		tutor                   model.User
 		currentTutor            model.User
-		userAuthorizationLinkId uint
+		userAuthorizationLinkId int
 		err                     error
 	)
 
 	// Select User
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &currentTutor, errx.UnAuthorizedError
 
@@ -220,10 +185,7 @@ func AddTutorToUser(ctx *context.Context, input map[string]interface{}) (*model.
 
 	}
 
-	err = utils.ShouldBindJSON(input, &tutor)
-	if err != nil {
-		return &currentTutor, errx.Lambda(err)
-	}
+	tutor = model.MapUserInputToUser(*input, tutor)
 
 	currentTutor, err = GetUserByUserName(tutor)
 	if currentTutor.Id == state.ZERO {
@@ -274,78 +236,51 @@ func AddTutorToUser(ctx *context.Context, input map[string]interface{}) (*model.
 	return &currentTutor, nil
 }
 
-func GetUserTutor(ctx *context.Context) ([]*model.User, error) {
+func GetUserTutor(ctx context.Context) ([]model.User, error) {
 	var (
-		tok       *authentication.Token
-		tutors    []model.User
-		gqlTutors []*model.User
-		err       error
+		tok    *token.Token
+		tutors []model.User
+		err    error
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
-		return gqlTutors, errx.ParseError
+		return tutors, errx.ParseError
 	}
 
 	if tok.UserId == state.ZERO {
 		if err != nil {
-			return gqlTutors, errx.UnAuthorizedError
+			return tutors, errx.UnAuthorizedError
 		}
 	}
 
 	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
 	if err != nil {
 		if err != nil {
-			return gqlTutors, errx.DbGetError
+			return tutors, errx.DbGetError
 
 		}
 	}
 
 	tutors, err = GetLink(auth.Id, TutorAuthorizationLevel, StudentTutor)
 	if err != nil {
-		return gqlTutors, errx.DbGetError
+		return tutors, errx.DbGetError
 
 	}
 
-	for _, tutor := range tutors {
-		gqlTutors = append(gqlTutors, &model.User{
-			Id:                    tutor.Id,
-			CreatedAt:             tutor.CreatedAt,
-			UpdatedAt:             tutor.UpdatedAt,
-			DeletedAt:             tutor.DeletedAt,
-			Name:                  tutor.Name,
-			FamilyName:            tutor.FamilyName,
-			NickName:              tutor.NickName,
-			Email:                 tutor.Email,
-			Matricule:             tutor.Matricule,
-			Age:                   tutor.Age,
-			BirthDate:             tutor.BirthDate,
-			Sex:                   tutor.Sex,
-			Lang:                  tutor.Lang,
-			Status:                tutor.Status,
-			ProfileImageXid:       tutor.ProfileImageXid,
-			Description:           tutor.Description,
-			CoverText:             tutor.CoverText,
-			Profile:               tutor.Profile,
-			ExperienceDetail:      tutor.ExperienceDetail,
-			AdditionalDescription: tutor.AdditionalDescription,
-			AddOnTitle:            tutor.AddOnTitle,
-		})
-	}
-
-	return gqlTutors, nil
+	return tutors, nil
 }
 
-func RemoveUserTutor(ctx *context.Context, input map[string]interface{}) (*string, error) {
+func RemoveUserTutor(ctx context.Context, input *model.UserInput) (*string, error) {
 	var (
 		tutor  model.User
 		actor  model.UserAuthorizationLinkActor
-		tok    *authentication.Token
+		tok    *token.Token
 		err    error
 		status string
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &status, errx.UnAuthorizedError
 	}
@@ -355,10 +290,7 @@ func RemoveUserTutor(ctx *context.Context, input map[string]interface{}) (*strin
 
 	}
 
-	err = utils.ShouldBindJSON(input, &tutor)
-	if err != nil {
-		return &status, errx.Lambda(err)
-	}
+	tutor = model.MapUserInputToUser(*input, tutor)
 
 	actor, err = GetSelectedUserLinkActor(tutor, StudentTutor)
 	if err != nil {
@@ -378,16 +310,16 @@ func RemoveUserTutor(ctx *context.Context, input map[string]interface{}) (*strin
 
 // Professor Handler
 
-func AddProfessorToUser(ctx *context.Context, input map[string]interface{}) (*model.User, error) {
+func AddProfessorToUser(ctx context.Context, input *model.UserInput) (*model.User, error) {
 	var (
-		tok                     *authentication.Token
+		tok                     *token.Token
 		professor               model.User
 		currentProfessor        model.User
-		userAuthorizationLinkId uint
+		userAuthorizationLinkId int
 		err                     error
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &currentProfessor, errx.UnAuthorizedError
 
@@ -398,10 +330,7 @@ func AddProfessorToUser(ctx *context.Context, input map[string]interface{}) (*mo
 
 	}
 
-	err = utils.ShouldBindJSON(input, &professor)
-	if err != nil {
-		return &currentProfessor, errx.Lambda(err)
-	}
+	professor = model.MapUserInputToUser(*input, professor)
 
 	currentProfessor, err = GetUserByUserName(professor)
 	if currentProfessor.Id == state.ZERO {
@@ -450,23 +379,22 @@ func AddProfessorToUser(ctx *context.Context, input map[string]interface{}) (*mo
 	return &currentProfessor, nil
 }
 
-func GetUserProfessor(ctx *context.Context) ([]*model.User, error) {
+func GetUserProfessor(ctx context.Context) ([]model.User, error) {
 	var (
-		tok           *authentication.Token
-		professors    []model.User
-		gqlProfessors []*model.User
-		err           error
+		tok        *token.Token
+		professors []model.User
+		err        error
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
-		return gqlProfessors, errx.ParseError
+		return professors, errx.ParseError
 
 	}
 
 	if tok.UserId == state.ZERO {
 		if err != nil {
-			return gqlProfessors, errx.UnAuthorizedError
+			return professors, errx.UnAuthorizedError
 
 		}
 	}
@@ -474,7 +402,7 @@ func GetUserProfessor(ctx *context.Context) ([]*model.User, error) {
 	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
 	if err != nil {
 		if err != nil {
-			return gqlProfessors, errx.DbGetError
+			return professors, errx.DbGetError
 
 		}
 	}
@@ -482,49 +410,23 @@ func GetUserProfessor(ctx *context.Context) ([]*model.User, error) {
 	professors, err = GetLink(auth.Id, ProfessorAuthorizationLevel, StudentProfessor)
 	if err != nil {
 
-		return gqlProfessors, errx.DbGetError
+		return professors, errx.DbGetError
 
 	}
 
-	for _, professor := range professors {
-		gqlProfessors = append(gqlProfessors, &model.User{
-			Id:                    professor.Id,
-			CreatedAt:             professor.CreatedAt,
-			UpdatedAt:             professor.UpdatedAt,
-			DeletedAt:             professor.DeletedAt,
-			Name:                  professor.Name,
-			FamilyName:            professor.FamilyName,
-			NickName:              professor.NickName,
-			Email:                 professor.Email,
-			Matricule:             professor.Matricule,
-			Age:                   professor.Age,
-			BirthDate:             professor.BirthDate,
-			Sex:                   professor.Sex,
-			Lang:                  professor.Lang,
-			Status:                professor.Status,
-			ProfileImageXid:       professor.ProfileImageXid,
-			Description:           professor.Description,
-			CoverText:             professor.CoverText,
-			Profile:               professor.Profile,
-			ExperienceDetail:      professor.ExperienceDetail,
-			AdditionalDescription: professor.AdditionalDescription,
-			AddOnTitle:            professor.AddOnTitle,
-		})
-	}
-
-	return gqlProfessors, nil
+	return professors, nil
 }
 
-func RemoveUserProfessor(ctx *context.Context, input map[string]interface{}) (*string, error) {
+func RemoveUserProfessor(ctx context.Context, input *model.UserInput) (*string, error) {
 	var (
 		professor model.User
 		actor     model.UserAuthorizationLinkActor
-		tok       *authentication.Token
+		tok       *token.Token
 		err       error
 		status    string
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &status, errx.UnAuthorizedError
 
@@ -535,10 +437,8 @@ func RemoveUserProfessor(ctx *context.Context, input map[string]interface{}) (*s
 
 	}
 
-	err = utils.ShouldBindJSON(input, &professor)
-	if err != nil {
-		return &status, errx.Lambda(err)
-	}
+	professor = model.MapUserInputToUser(*input, professor)
+
 	actor, err = GetSelectedUserLinkActor(professor, StudentProfessor)
 	if err != nil {
 		return &status, errx.DbGetError
@@ -557,16 +457,16 @@ func RemoveUserProfessor(ctx *context.Context, input map[string]interface{}) (*s
 
 //Student Handler
 
-func AddStudentToLink(ctx *context.Context, input map[string]interface{}) (*model.User, error) {
+func AddStudentToLink(ctx context.Context, input *model.UserInput) (*model.User, error) {
 	var (
-		tok            *authentication.Token
+		tok            *token.Token
 		err            error
 		student        model.User
 		currentStudent model.User
-		linkType       uint
+		linkType       int
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &currentStudent, errx.UnAuthorizedError
 	}
@@ -587,10 +487,7 @@ func AddStudentToLink(ctx *context.Context, input map[string]interface{}) (*mode
 		linkType = StudentProfessor
 	}
 
-	err = utils.ShouldBindJSON(input, &student)
-	if err != nil {
-		return &currentStudent, errx.Lambda(err)
-	}
+	student = model.MapUserInputToUser(*input, student)
 
 	currentStudent, err = GetUserByUserName(student)
 	if err != nil {
@@ -631,30 +528,29 @@ func AddStudentToLink(ctx *context.Context, input map[string]interface{}) (*mode
 	return &currentStudent, nil
 }
 
-func GetStudent(ctx *context.Context) ([]*model.User, error) {
+func GetStudent(ctx context.Context) ([]model.User, error) {
 	var (
-		tok         *authentication.Token
-		students    []model.User
-		gqlStudents []*model.User
-		err         error
-		linkType    uint
+		tok      *token.Token
+		students []model.User
+		err      error
+		linkType int
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
-		return gqlStudents, errx.ParseError
+		return students, errx.ParseError
 	}
 
 	if tok.UserId == state.ZERO {
 		if err != nil {
-			return gqlStudents, errx.UnAuthorizedError
+			return students, errx.UnAuthorizedError
 		}
 	}
 
 	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
 	if err != nil {
 		if err != nil {
-			return gqlStudents, errx.DbGetError
+			return students, errx.DbGetError
 		}
 	}
 
@@ -672,49 +568,23 @@ func GetStudent(ctx *context.Context) ([]*model.User, error) {
 
 	students, err = GetLink(auth.Id, StudentAuthorizationLevel, linkType)
 	if err != nil {
-		return gqlStudents, errx.DbGetError
+		return students, errx.DbGetError
 	}
 
-	for _, student := range students {
-		gqlStudents = append(gqlStudents, &model.User{
-			Id:                    student.Id,
-			CreatedAt:             student.CreatedAt,
-			UpdatedAt:             student.UpdatedAt,
-			DeletedAt:             student.DeletedAt,
-			Name:                  student.Name,
-			FamilyName:            student.FamilyName,
-			NickName:              student.NickName,
-			Email:                 student.Email,
-			Matricule:             student.Matricule,
-			Age:                   student.Age,
-			BirthDate:             student.BirthDate,
-			Sex:                   student.Sex,
-			Lang:                  student.Lang,
-			Status:                student.Status,
-			ProfileImageXid:       student.ProfileImageXid,
-			Description:           student.Description,
-			CoverText:             student.CoverText,
-			Profile:               student.Profile,
-			ExperienceDetail:      student.ExperienceDetail,
-			AdditionalDescription: student.AdditionalDescription,
-			AddOnTitle:            student.AddOnTitle,
-		})
-	}
-
-	return gqlStudents, nil
+	return students, nil
 }
 
-func RemoveStudent(ctx *context.Context, input map[string]interface{}) (*string, error) {
+func RemoveStudent(ctx context.Context, input *model.UserInput) (*string, error) {
 	var (
 		student  model.User
 		actor    model.UserAuthorizationLinkActor
-		tok      *authentication.Token
+		tok      *token.Token
 		err      error
-		linkType uint
+		linkType int
 		status   string
 	)
 
-	tok, err = authentication.GetTokenDataFromContext(*ctx)
+	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &status, errx.UnAuthorizedError
 	}
@@ -723,10 +593,7 @@ func RemoveStudent(ctx *context.Context, input map[string]interface{}) (*string,
 		return &status, errx.UnAuthorizedError
 	}
 
-	err = utils.ShouldBindJSON(input, &student)
-	if err != nil {
-		return &status, errx.Lambda(err)
-	}
+	student = model.MapUserInputToUser(*input, student)
 
 	if authorization.IsUserParent(tok.UserId) {
 		linkType = StudentParent
@@ -758,7 +625,7 @@ func RemoveStudent(ctx *context.Context, input map[string]interface{}) (*string,
 	UTILS
 */
 
-func SetUserAuthorizationLink(linkType uint, userId uint, userLevel uint) (userAuthorizationLinkId uint, err error) {
+func SetUserAuthorizationLink(linkType int, userId int, userLevel int) (userAuthorizationLinkId int, err error) {
 	var (
 		userAuthorizationLink model.UserAuthorizationLink
 	)
@@ -778,7 +645,7 @@ func SetUserAuthorizationLink(linkType uint, userId uint, userLevel uint) (userA
 	return userAuthorizationLinkId, nil
 }
 
-func SetUserAuthorizationLinkActor(linkId uint, userId uint, level uint) (err error) {
+func SetUserAuthorizationLinkActor(linkId int, userId int, level int) (err error) {
 	var userAuthorizationLinkActor model.UserAuthorizationLinkActor
 
 	auth, err := authorization.GetUserAuthorization(userId, level)
@@ -797,7 +664,7 @@ func SetUserAuthorizationLinkActor(linkId uint, userId uint, level uint) (err er
 	return nil
 }
 
-func CreateNewUser(user model.User, authLevel uint) (currentUser model.User, err error) {
+func CreateNewUser(user model.User, authLevel int) (currentUser model.User, err error) {
 	if authLevel == ParentAuthorizationLevel {
 		user.Email = "parent+1@cend.intern"
 	}
@@ -833,7 +700,7 @@ func CreateNewUser(user model.User, authLevel uint) (currentUser model.User, err
 		return user, err
 	}
 
-	_, err = authentication.GetTokenString(user.Id)
+	_, err = token.GetTokenString(user.Id)
 	if err != nil {
 		return user, err
 	}
@@ -842,15 +709,15 @@ func CreateNewUser(user model.User, authLevel uint) (currentUser model.User, err
 	return currentUser, nil
 }
 
-func GetLink(authId uint, authorizationLevel uint, linkType uint) (link []model.User, err error) {
+func GetLink(authId int, authorizationLevel int, linkType int) (link []model.User, err error) {
 	err = database.GetMany(&link, `SELECT user.* FROM user
-                       JOIN authorization ON user.id = authorization.user_id
-                       JOIN user_authorization_link_actor ON authorization.id = user_authorization_link_actor.authorization_id
-                       JOIN user_authorization_link ON user_authorization_link_actor.user_authorization_link_id = user_authorization_link.id
-WHERE user_authorization_link.id =  (
+                       JOIN authorization ON user.Id = authorization.user_id
+                       JOIN user_authorization_link_actor ON authorization.Id = user_authorization_link_actor.authorization_id
+                       JOIN user_authorization_link ON user_authorization_link_actor.user_authorization_link_id = user_authorization_link.Id
+WHERE user_authorization_link.Id =  (
     SELECT user_authorization_link_actor.user_authorization_link_id
     FROM user_authorization_link_actor
-             JOIN user_authorization_link ON user_authorization_link_actor.user_authorization_link_id = user_authorization_link.id
+             JOIN user_authorization_link ON user_authorization_link_actor.user_authorization_link_id = user_authorization_link.Id
     WHERE user_authorization_link_actor.authorization_id = ? AND user_authorization_link.link_type = ?
     )
 AND authorization.level = ?`, authId, linkType, authorizationLevel)
@@ -870,12 +737,12 @@ func GetUserByUserName(currentUser model.User) (user model.User, err error) {
 	return user, nil
 }
 
-func GetUserLink(linkType uint, authorizationId uint) (linkId uint, err error) {
+func GetUserLink(linkType int, authorizationId int) (linkId int, err error) {
 	var userLink model.UserAuthorizationLink
 
 	err = database.Get(&userLink,
 		`SELECT user_authorization_link.* FROM user_authorization_link
-                                  JOIN user_authorization_link_actor ON user_authorization_link.id = user_authorization_link_actor.user_authorization_link_id
+                                  JOIN user_authorization_link_actor ON user_authorization_link.Id = user_authorization_link_actor.user_authorization_link_id
                                   WHERE user_authorization_link.link_type = ? AND user_authorization_link_actor.authorization_id = ?`, linkType, authorizationId)
 	if err != nil {
 		return 0, err
@@ -884,13 +751,13 @@ func GetUserLink(linkType uint, authorizationId uint) (linkId uint, err error) {
 	return userLink.Id, nil
 }
 
-func GetSelectedUserLinkActor(user model.User, linkType uint) (actor model.UserAuthorizationLinkActor, err error) {
+func GetSelectedUserLinkActor(user model.User, linkType int) (actor model.UserAuthorizationLinkActor, err error) {
 	err = database.Get(&actor,
 		`SELECT user_authorization_link_actor.*
 FROM user_authorization_link_actor
-JOIN user_authorization_link ON user_authorization_link_actor.user_authorization_link_id = user_authorization_link.id
-JOIN authorization ON user_authorization_link_actor.authorization_id = authorization.id
-JOIN user ON authorization.user_id = user.id
+JOIN user_authorization_link ON user_authorization_link_actor.user_authorization_link_id = user_authorization_link.Id
+JOIN authorization ON user_authorization_link_actor.authorization_id = authorization.Id
+JOIN user ON authorization.user_id = user.Id
 WHERE user.family_name = ? AND  user.name = ? AND user_authorization_link.link_type = ?`, user.FamilyName, user.Name, linkType)
 	if err != nil {
 		return actor, err

@@ -1,0 +1,57 @@
+type Query {
+    #    PASSWORD QUERIES
+    Passwords: [Password!]
+
+    #    ASSET QUERIES
+    GetAsset(id: ID!): Asset
+    Assets: [Asset!]
+
+    #    USER QUERIES
+    userAuthorizationLink(id: ID!): UserAuthorizationLink
+    userAuthorizationLinks: [UserAuthorizationLink!]!
+    getCode: Code!
+    verifyUserEmailValidationCode(verifCode: Int!) : Int!
+    sendUserEmailValidationCode: User!
+    getPasswordHistory: [Password!]!
+    activateUser: User!
+    Users: [User!]!
+    MyProfile: User!
+
+    #    Message QUERIES
+    getMessages: [Message!]!
+    getMessagesInLanguage(language: Int!) : [Message!]!
+    getMessage(language: Int!, resourceNumber :Int!): Message!
+    getMenuList: [Message!]!
+    getMenuItems(language:Int!, menuNumber: Int!): [Message!]!
+
+    #    Address QUERIES
+    getUserAddress: Address!
+
+    #    Phone QUERIES
+    getUserPhoneNumber: PhoneNumber!
+
+    #    Calendar Planning QUERIES
+    getUserPlannings: CalendarPlanning!
+    getPlanningActors(calendarId: ID!): [User!]
+
+    #    Education QUERIES
+    getUserSubjects: [Subject!]
+    getEducation: [Education!]
+    getUserEducationLevel: Education!
+    getSchools: [School!]
+    getSubjects(id: ID!): [SchoolSubject!]
+    getSchool(id: ID!): School
+
+    #    Mark QUERIES
+    getUserAverageMark(userId: ID!): Int
+    getUserMarkComment: [Mark!]!
+
+    #    Link QUERIES
+    getUserParent :[User!]
+    getUserTutor :[User!]
+    getUserProfessor :[User!]
+    getStudent :[User!]
+
+    #    Qr QUERIES
+    generateQrCode: String
+}

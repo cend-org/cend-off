@@ -1,0 +1,33 @@
+type Address {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    Country: String!
+    City: String!
+    Latitude: Float!
+    Longitude: Float!
+    Street: String!
+    FullAddress: String!
+    Xid: String! @goField(name: "Xid")
+}
+
+
+type UserAddress {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId: ID! @goField(name: "UserId")
+    AddressId: ID! @goField(name: "AddressId")
+    AddressType: String!
+}
+
+input AddressInput {
+    Country: String
+    City: String
+    Latitude: Float
+    Longitude: Float
+    Street: String
+    FullAddress: String
+}

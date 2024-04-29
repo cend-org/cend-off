@@ -1,9 +1,9 @@
 package authorization
 
 import (
-	"duval/internal/graph/model"
-	"duval/internal/utils/state"
-	"duval/pkg/database"
+	"github.com/cend-org/duval/graph/model"
+	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/utils/state"
 )
 
 const (
@@ -13,7 +13,7 @@ const (
 	ProfessorAuthorizationLevel = 3
 )
 
-func NewUserAuthorization(userId, authorizationLevel uint) (err error) {
+func NewUserAuthorization(userId, authorizationLevel int) (err error) {
 	var (
 		auth model.Authorization
 	)
@@ -37,7 +37,7 @@ func GetUserAuthorizations(userId uint) (auth []model.Authorization, err error) 
 	return auth, err
 }
 
-func GetUserAuthorization(userId, level uint) (auth model.Authorization, err error) {
+func GetUserAuthorization(userId, level int) (auth model.Authorization, err error) {
 	err = database.Get(&auth, `SELECT * FROM authorization WHERE user_id = ? AND level = ?`, userId, level)
 	if err != nil {
 		return auth, err
@@ -46,7 +46,7 @@ func GetUserAuthorization(userId, level uint) (auth model.Authorization, err err
 	return auth, err
 }
 
-func DeleteUserAuthorization(userId, level uint) (err error) {
+func DeleteUserAuthorization(userId, level int) (err error) {
 	var (
 		auth model.Authorization
 	)
@@ -64,7 +64,7 @@ func DeleteUserAuthorization(userId, level uint) (err error) {
 	return err
 }
 
-func DeleteUserAuthorizations(userId uint) (err error) {
+func DeleteUserAuthorizations(userId int) (err error) {
 	var (
 		authorization model.Authorization
 	)
@@ -80,7 +80,7 @@ func DeleteUserAuthorizations(userId uint) (err error) {
 	return err
 }
 
-func isUserHasAuthorizationLevel(userId, authorizationLevel uint) (ret bool) {
+func isUserHasAuthorizationLevel(userId, authorizationLevel int) (ret bool) {
 	var (
 		err  error
 		auth model.Authorization
@@ -94,18 +94,18 @@ func isUserHasAuthorizationLevel(userId, authorizationLevel uint) (ret bool) {
 	return auth.Id > state.ZERO
 }
 
-func IsUserStudent(userId uint) (ret bool) {
+func IsUserStudent(userId int) (ret bool) {
 	return isUserHasAuthorizationLevel(userId, StudentAuthorizationLevel)
 }
 
-func IsUserParent(userId uint) (ret bool) {
+func IsUserParent(userId int) (ret bool) {
 	return isUserHasAuthorizationLevel(userId, ParentAuthorizationLevel)
 }
 
-func IsUserTutor(userId uint) (ret bool) {
+func IsUserTutor(userId int) (ret bool) {
 	return isUserHasAuthorizationLevel(userId, TutorAuthorizationLevel)
 }
 
-func IsUserProfessor(userId uint) (ret bool) {
+func IsUserProfessor(userId int) (ret bool) {
 	return isUserHasAuthorizationLevel(userId, ProfessorAuthorizationLevel)
 }

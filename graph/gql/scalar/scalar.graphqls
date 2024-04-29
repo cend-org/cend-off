@@ -1,0 +1,9 @@
+"The `Date` is a date in the format YYYY-MM-DD"
+scalar Date
+
+"The `DateTime` is a date in the format ISO 8601 format: `2006-01-02T15:04:05Z07:00`"
+scalar DateTime
+
+
+"The `UploadFile, // b.txt` scalar type represents a multipart file upload."
+scalar Upload
