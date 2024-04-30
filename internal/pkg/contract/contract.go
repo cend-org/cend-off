@@ -136,7 +136,28 @@ func GetContracts(ctx context.Context) ([]model.Contract, error) {
 }
 
 func GetContract(ctx context.Context, contractId int) (*model.Contract, error) {
-	panic(fmt.Errorf("not implemented: RemoveUserPlannings - removeUserPlannings"))
+	var (
+		contract model.Contract
+		err      error
+		tok      *token.Token
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return &contract, errx.UnAuthorizedError
+	}
+
+	if !authorization.IsUserParent(tok.UserId) {
+		if !authorization.IsUserTutor(tok.UserId) {
+			return &contract, errx.UnAuthorizedError
+		}
+	}
+
+	contract, err = GetContractWithId(contractId)
+	if err != nil {
+		return &contract, errx.DbGetError
+	}
+	return &contract, nil
 }
 
 func NewContractTimesheetDetail(ctx context.Context, input *model.ContractTimesheetDetailInput) (*model.ContractTimesheetDetail, error) {
