@@ -61,4 +61,12 @@ type Mutation {
 
     #    Upload
     singleUpload(file: Upload!): Media!
+
+
+    # Contract
+    newContract(input: ContractInput!): Contract!
+    updContract(input: ContractInput!, contractId: Int!): Contract!
+    removeContract(contractId: Int!): String
+
+    newContractTimesheetDetail(input: ContractTimesheetDetailInput!): ContractTimesheetDetail!
 }

@@ -1,0 +1,41 @@
+type Contract {
+    Id: ID!  @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    TutorId: Int! @goField(name: "TutorId")
+    ParentId: Int! @goField(name: "ParentId")
+    StudentId: Int! @goField(name: "StudentId")
+    StartDate: DateTime!
+    EndDate: DateTime!
+    PaymentType: Int!
+    SalaryValue: Float!
+    PaymentMethod: Int!
+}
+
+input ContractInput {
+    TutorId: Int @goField(name: "TutorId")
+    ParentId: Int @goField(name: "ParentId")
+    StudentId: Int @goField(name: "StudentId")
+    StartDate: DateTime
+    EndDate: DateTime
+    PaymentType: Int
+    SalaryValue: Float
+    PaymentMethod: Int
+}
+
+type ContractTimesheetDetail {
+    Id: ID!  @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    ContractId: Int! @goField(name: "ContractId")
+    Date: Date!
+    Hours: Time!
+}
+
+input ContractTimesheetDetailInput {
+    ContractId: Int @goField(name: "ContractId")
+    Date: Date
+    Hours: Time
+}

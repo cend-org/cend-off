@@ -7,6 +7,7 @@ package resolver
 import (
 	"context"
 	"fmt"
+	"github.com/cend-org/duval/internal/pkg/contract"
 
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
@@ -213,17 +214,22 @@ func (r *queryResolver) GenerateQRCode(ctx context.Context) (*string, error) {
 	return authentication.GenerateQrCode(ctx)
 }
 
+// GetContracts is the resolver for the getContracts field.
+func (r *queryResolver) GetContracts(ctx context.Context) ([]model.Contract, error) {
+	return contract.GetContracts(ctx)
+}
+
+// GetContract is the resolver for the getContract field.
+func (r *queryResolver) GetContract(ctx context.Context, contractID int) (*model.Contract, error) {
+	return contract.GetContract(ctx, contractID)
+}
+
+// GetContractTimesheetDetail is the resolver for the getContractTimesheetDetail field.
+func (r *queryResolver) GetContractTimesheetDetail(ctx context.Context) (*model.Contract, error) {
+	return contract.GetContractTimesheetDetail(ctx)
+}
+
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *queryResolver) RemoveUserAddress(ctx context.Context) (string, error) {
-	return address.RemoveUserAddress(ctx)
-}

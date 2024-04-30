@@ -85,6 +85,48 @@ type Code struct {
 	VerificationCode int        `json:"verification_code"`
 }
 
+type Contract struct {
+	Id            int        `json:"id"`
+	CreatedAt     time.Time  `json:"created_at"`
+	UpdatedAt     time.Time  `json:"updated_at"`
+	DeletedAt     *time.Time `json:"deleted_at"`
+	TutorId       int        `json:"tutor_id"`
+	ParentId      int        `json:"parent_id"`
+	StudentId     int        `json:"student_id"`
+	StartDate     time.Time  `json:"start_date"`
+	EndDate       time.Time  `json:"end_date"`
+	PaymentType   int        `json:"payment_type"`
+	SalaryValue   float64    `json:"salary_value"`
+	PaymentMethod int        `json:"payment_method"`
+}
+
+type ContractInput struct {
+	TutorId       *int       `json:"tutor_id"`
+	ParentId      *int       `json:"parent_id"`
+	StudentId     *int       `json:"student_id"`
+	StartDate     *time.Time `json:"start_date"`
+	EndDate       *time.Time `json:"end_date"`
+	PaymentType   *int       `json:"payment_type"`
+	SalaryValue   *float64   `json:"salary_value"`
+	PaymentMethod *int       `json:"payment_method"`
+}
+
+type ContractTimesheetDetail struct {
+	Id         int        `json:"id"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at"`
+	ContractId int        `json:"contract_id"`
+	Date       time.Time  `json:"date"`
+	Hours      time.Time  `json:"hours"`
+}
+
+type ContractTimesheetDetailInput struct {
+	ContractId *int       `json:"contract_id"`
+	Date       *time.Time `json:"date"`
+	Hours      *time.Time `json:"hours"`
+}
+
 type Education struct {
 	Id        int        `json:"id"`
 	CreatedAt time.Time  `json:"created_at"`

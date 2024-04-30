@@ -7,3 +7,5 @@ scalar DateTime
 
 "The `UploadFile, // b.txt` scalar type represents a multipart file upload."
 scalar Upload
+
+scalar Time

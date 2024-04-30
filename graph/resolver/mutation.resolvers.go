@@ -7,11 +7,12 @@ package resolver
 import (
 	"context"
 	"fmt"
-	"github.com/cend-org/duval/internal/authentication"
+	"github.com/cend-org/duval/internal/pkg/contract"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
+	"github.com/cend-org/duval/internal/authentication"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/pkg/address"
 	"github.com/cend-org/duval/internal/pkg/education"
@@ -225,6 +226,26 @@ func (r *mutationResolver) LoginWithQR(ctx context.Context, xID string) (*string
 // SingleUpload is the resolver for the singleUpload field.
 func (r *mutationResolver) SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error) {
 	return media.SingleUpload(ctx, file)
+}
+
+// NewContract is the resolver for the newContract field.
+func (r *mutationResolver) NewContract(ctx context.Context, input model.ContractInput) (*model.Contract, error) {
+	return contract.NewContract(ctx, &input)
+}
+
+// UpdContract is the resolver for the updContract field.
+func (r *mutationResolver) UpdContract(ctx context.Context, input model.ContractInput, contractID int) (*model.Contract, error) {
+	return contract.UpdContract(ctx, &input, contractID)
+}
+
+// RemoveContract is the resolver for the removeContract field.
+func (r *mutationResolver) RemoveContract(ctx context.Context, contractID int) (*string, error) {
+	return contract.RemoveContract(ctx, contractID)
+}
+
+// NewContractTimesheetDetail is the resolver for the newContractTimesheetDetail field.
+func (r *mutationResolver) NewContractTimesheetDetail(ctx context.Context, input model.ContractTimesheetDetailInput) (*model.ContractTimesheetDetail, error) {
+	return contract.NewContractTimesheetDetail(ctx, &input)
 }
 
 // Mutation returns generated.MutationResolver implementation.
