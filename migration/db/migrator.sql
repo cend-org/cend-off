@@ -556,7 +556,7 @@ create table contract_timesheet_detail
     deleted_at  datetime default '0000-00-00 00:00:00',
     contract_id int      default 0,
     date        date     default '0000-00-00',
-    hours       time     default 0
+    hours       float    default 0.0
 );
 
 alter table contract_timesheet_detail

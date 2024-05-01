@@ -7,7 +7,7 @@ package resolver
 import (
 	"context"
 	"fmt"
-	"github.com/cend-org/duval/internal/pkg/contract"
+	"time"
 
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
@@ -15,6 +15,7 @@ import (
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/pkg/address"
 	"github.com/cend-org/duval/internal/pkg/code"
+	"github.com/cend-org/duval/internal/pkg/contract"
 	"github.com/cend-org/duval/internal/pkg/education"
 	"github.com/cend-org/duval/internal/pkg/mark"
 	"github.com/cend-org/duval/internal/pkg/phone"
@@ -225,8 +226,18 @@ func (r *queryResolver) GetContract(ctx context.Context, contractID int) (*model
 }
 
 // GetContractTimesheetDetail is the resolver for the getContractTimesheetDetail field.
-func (r *queryResolver) GetContractTimesheetDetail(ctx context.Context) (*model.Contract, error) {
+func (r *queryResolver) GetContractTimesheetDetail(ctx context.Context) ([]model.ContractTimesheetDetail, error) {
 	return contract.GetContractTimesheetDetail(ctx)
+}
+
+// GetContractTimesheetDetailInfo is the resolver for the getContractTimesheetDetailInfo field.
+func (r *queryResolver) GetContractTimesheetDetailInfo(ctx context.Context, contractTimesheetID int) (*model.ContractTimesheetDetail, error) {
+	return contract.GetContractTimesheetDetailInfo(ctx, contractTimesheetID)
+}
+
+// GetTotalSalaryValue is the resolver for the getTotalSalaryValue field.
+func (r *queryResolver) GetTotalSalaryValue(ctx context.Context, studentID int, startDate time.Time, endDate time.Time) (*float64, error) {
+	return contract.GetTotalSalary(ctx, studentID, startDate, endDate)
 }
 
 // Query returns generated.QueryResolver implementation.

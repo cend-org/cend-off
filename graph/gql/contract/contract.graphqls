@@ -31,11 +31,11 @@ type ContractTimesheetDetail {
     DeletedAt: DateTime
     ContractId: Int! @goField(name: "ContractId")
     Date: Date!
-    Hours: Time!
+    Hours: Float!
 }
 
 input ContractTimesheetDetailInput {
     ContractId: Int @goField(name: "ContractId")
     Date: Date
-    Hours: Time
+    Hours: Float
 }

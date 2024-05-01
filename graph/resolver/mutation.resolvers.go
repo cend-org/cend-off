@@ -7,7 +7,6 @@ package resolver
 import (
 	"context"
 	"fmt"
-	"github.com/cend-org/duval/internal/pkg/contract"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/cend-org/duval/graph/generated"
@@ -15,6 +14,7 @@ import (
 	"github.com/cend-org/duval/internal/authentication"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/pkg/address"
+	"github.com/cend-org/duval/internal/pkg/contract"
 	"github.com/cend-org/duval/internal/pkg/education"
 	"github.com/cend-org/duval/internal/pkg/mark"
 	"github.com/cend-org/duval/internal/pkg/media"

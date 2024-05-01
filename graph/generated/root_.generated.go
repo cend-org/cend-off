@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"sync/atomic"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
@@ -241,43 +242,45 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		ActivateUser                  func(childComplexity int) int
-		Assets                        func(childComplexity int) int
-		GenerateQRCode                func(childComplexity int) int
-		GetAsset                      func(childComplexity int, id int) int
-		GetCode                       func(childComplexity int) int
-		GetContract                   func(childComplexity int, contractID int) int
-		GetContractTimesheetDetail    func(childComplexity int) int
-		GetContracts                  func(childComplexity int) int
-		GetEducation                  func(childComplexity int) int
-		GetMenuItems                  func(childComplexity int, language int, menuNumber int) int
-		GetMenuList                   func(childComplexity int) int
-		GetMessage                    func(childComplexity int, language int, resourceNumber int) int
-		GetMessages                   func(childComplexity int) int
-		GetMessagesInLanguage         func(childComplexity int, language int) int
-		GetPasswordHistory            func(childComplexity int) int
-		GetPlanningActors             func(childComplexity int, calendarID int) int
-		GetSchool                     func(childComplexity int, id int) int
-		GetSchools                    func(childComplexity int) int
-		GetStudent                    func(childComplexity int) int
-		GetSubjects                   func(childComplexity int, id int) int
-		GetUserAddress                func(childComplexity int) int
-		GetUserAverageMark            func(childComplexity int, userID int) int
-		GetUserEducationLevel         func(childComplexity int) int
-		GetUserMarkComment            func(childComplexity int) int
-		GetUserParent                 func(childComplexity int) int
-		GetUserPhoneNumber            func(childComplexity int) int
-		GetUserPlannings              func(childComplexity int) int
-		GetUserProfessor              func(childComplexity int) int
-		GetUserSubjects               func(childComplexity int) int
-		GetUserTutor                  func(childComplexity int) int
-		MyProfile                     func(childComplexity int) int
-		Passwords                     func(childComplexity int) int
-		SendUserEmailValidationCode   func(childComplexity int) int
-		UserAuthorizationLink         func(childComplexity int, id int) int
-		UserAuthorizationLinks        func(childComplexity int) int
-		Users                         func(childComplexity int) int
-		VerifyUserEmailValidationCode func(childComplexity int, verifCode int) int
+		ActivateUser                   func(childComplexity int) int
+		Assets                         func(childComplexity int) int
+		GenerateQRCode                 func(childComplexity int) int
+		GetAsset                       func(childComplexity int, id int) int
+		GetCode                        func(childComplexity int) int
+		GetContract                    func(childComplexity int, contractID int) int
+		GetContractTimesheetDetail     func(childComplexity int) int
+		GetContractTimesheetDetailInfo func(childComplexity int, contractTimesheetID int) int
+		GetContracts                   func(childComplexity int) int
+		GetEducation                   func(childComplexity int) int
+		GetMenuItems                   func(childComplexity int, language int, menuNumber int) int
+		GetMenuList                    func(childComplexity int) int
+		GetMessage                     func(childComplexity int, language int, resourceNumber int) int
+		GetMessages                    func(childComplexity int) int
+		GetMessagesInLanguage          func(childComplexity int, language int) int
+		GetPasswordHistory             func(childComplexity int) int
+		GetPlanningActors              func(childComplexity int, calendarID int) int
+		GetSchool                      func(childComplexity int, id int) int
+		GetSchools                     func(childComplexity int) int
+		GetStudent                     func(childComplexity int) int
+		GetSubjects                    func(childComplexity int, id int) int
+		GetTotalSalaryValue            func(childComplexity int, studentID int, startDate time.Time, endDate time.Time) int
+		GetUserAddress                 func(childComplexity int) int
+		GetUserAverageMark             func(childComplexity int, userID int) int
+		GetUserEducationLevel          func(childComplexity int) int
+		GetUserMarkComment             func(childComplexity int) int
+		GetUserParent                  func(childComplexity int) int
+		GetUserPhoneNumber             func(childComplexity int) int
+		GetUserPlannings               func(childComplexity int) int
+		GetUserProfessor               func(childComplexity int) int
+		GetUserSubjects                func(childComplexity int) int
+		GetUserTutor                   func(childComplexity int) int
+		MyProfile                      func(childComplexity int) int
+		Passwords                      func(childComplexity int) int
+		SendUserEmailValidationCode    func(childComplexity int) int
+		UserAuthorizationLink          func(childComplexity int, id int) int
+		UserAuthorizationLinks         func(childComplexity int) int
+		Users                          func(childComplexity int) int
+		VerifyUserEmailValidationCode  func(childComplexity int, verifCode int) int
 	}
 
 	School struct {
@@ -1711,6 +1714,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetContractTimesheetDetail(childComplexity), true
 
+	case "Query.getContractTimesheetDetailInfo":
+		if e.complexity.Query.GetContractTimesheetDetailInfo == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getContractTimesheetDetailInfo_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetContractTimesheetDetailInfo(childComplexity, args["contractTimesheetId"].(int)), true
+
 	case "Query.getContracts":
 		if e.complexity.Query.GetContracts == nil {
 			break
@@ -1831,6 +1846,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetSubjects(childComplexity, args["id"].(int)), true
+
+	case "Query.getTotalSalaryValue":
+		if e.complexity.Query.GetTotalSalaryValue == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getTotalSalaryValue_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetTotalSalaryValue(childComplexity, args["studentId"].(int), args["startDate"].(time.Time), args["endDate"].(time.Time)), true
 
 	case "Query.getUserAddress":
 		if e.complexity.Query.GetUserAddress == nil {
@@ -2710,13 +2737,13 @@ type ContractTimesheetDetail {
     DeletedAt: DateTime
     ContractId: Int! @goField(name: "ContractId")
     Date: Date!
-    Hours: Time!
+    Hours: Float!
 }
 
 input ContractTimesheetDetailInput {
     ContractId: Int @goField(name: "ContractId")
     Date: Date
-    Hours: Time
+    Hours: Float
 }
 `, BuiltIn: false},
 	{Name: "../gql/directive/directive.graphqls", Input: `directive @goModel(
@@ -2897,8 +2924,7 @@ scalar DateTime
 
 "The ` + "`" + `UploadFile, // b.txt` + "`" + ` scalar type represents a multipart file upload."
 scalar Upload
-
-scalar Time`, BuiltIn: false},
+`, BuiltIn: false},
 	{Name: "../gql/schema/mutation.graphqls", Input: `type Mutation {
     registerWithEmail(input: String!, as: Int!): String
     register(input: UserInput!, as:Int!): String
@@ -3032,7 +3058,9 @@ scalar Time`, BuiltIn: false},
     #    Contract QUERIES
     getContracts: [Contract!]!
     getContract (contractId: Int!): Contract!
-    getContractTimesheetDetail: Contract!
+    getContractTimesheetDetail: [ContractTimesheetDetail!]!
+    getContractTimesheetDetailInfo(contractTimesheetId: Int!): ContractTimesheetDetail!
+    getTotalSalaryValue(studentId: Int!, startDate: Date!, endDate:  Date!): Float
 }`, BuiltIn: false},
 	{Name: "../gql/school/school.graphqls", Input: `type School {
     Id: ID! @goField(name: "Id")

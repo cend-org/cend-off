@@ -118,13 +118,13 @@ type ContractTimesheetDetail struct {
 	DeletedAt  *time.Time `json:"deleted_at"`
 	ContractId int        `json:"contract_id"`
 	Date       time.Time  `json:"date"`
-	Hours      time.Time  `json:"hours"`
+	Hours      float64    `json:"hours"`
 }
 
 type ContractTimesheetDetailInput struct {
 	ContractId *int       `json:"contract_id"`
 	Date       *time.Time `json:"date"`
-	Hours      *time.Time `json:"hours"`
+	Hours      *float64   `json:"hours"`
 }
 
 type Education struct {
