@@ -64,7 +64,7 @@ type Mutation {
 
     #    Post
     newPost(input: PostInput!) : Post!
-    updPost(input: PostInput!) : Post!
+    updPost(input: PostInput! , postId: Int!) : Post!
     removePost(postId : Int!) : String
 
     #    Post tag

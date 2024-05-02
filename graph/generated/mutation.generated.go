@@ -55,7 +55,7 @@ type MutationResolver interface {
 	LoginWithQR(ctx context.Context, xID string) (*string, error)
 	SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error)
 	NewPost(ctx context.Context, input model.PostInput) (*model.Post, error)
-	UpdPost(ctx context.Context, input model.PostInput) (*model.Post, error)
+	UpdPost(ctx context.Context, input model.PostInput, postID int) (*model.Post, error)
 	RemovePost(ctx context.Context, postID int) (*string, error)
 	TagPost(ctx context.Context, input model.PostTagInput) (*model.Post, error)
 	UpdTagOnPost(ctx context.Context, input model.PostTagInput) (*model.Post, error)
@@ -657,6 +657,15 @@ func (ec *executionContext) field_Mutation_updPost_args(ctx context.Context, raw
 		}
 	}
 	args["input"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["postId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("postId"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["postId"] = arg1
 	return args, nil
 }
 
@@ -3197,7 +3206,7 @@ func (ec *executionContext) _Mutation_updPost(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdPost(rctx, fc.Args["input"].(model.PostInput))
+		return ec.resolvers.Mutation().UpdPost(rctx, fc.Args["input"].(model.PostInput), fc.Args["postId"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

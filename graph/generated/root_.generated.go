@@ -182,7 +182,7 @@ type ComplexityRoot struct {
 		TagPost                  func(childComplexity int, input model.PostTagInput) int
 		UpdMessage               func(childComplexity int, input model.MessageInput) int
 		UpdMyProfile             func(childComplexity int, input model.UserInput) int
-		UpdPost                  func(childComplexity int, input model.PostInput) int
+		UpdPost                  func(childComplexity int, input model.PostInput, postID int) int
 		UpdTagOnPost             func(childComplexity int, input model.PostTagInput) int
 		UpdateUserAddress        func(childComplexity int, input model.AddressInput) int
 		UpdateUserEducationLevel func(childComplexity int, subjectID int) int
@@ -1366,7 +1366,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdPost(childComplexity, args["input"].(model.PostInput)), true
+		return e.complexity.Mutation.UpdPost(childComplexity, args["input"].(model.PostInput), args["postId"].(int)), true
 
 	case "Mutation.updTagOnPost":
 		if e.complexity.Mutation.UpdTagOnPost == nil {
@@ -3006,7 +3006,7 @@ scalar Upload`, BuiltIn: false},
 
     #    Post
     newPost(input: PostInput!) : Post!
-    updPost(input: PostInput!) : Post!
+    updPost(input: PostInput! , postId: Int!) : Post!
     removePost(postId : Int!) : String
 
     #    Post tag
