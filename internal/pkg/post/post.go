@@ -147,7 +147,34 @@ func UpdTagOnPost(ctx context.Context, input *model.PostTagInput) (*model.Post, 
 }
 
 func RemoveTagOnPost(ctx context.Context, postId int) (*model.Post, error) {
-	panic(fmt.Errorf("not implemented: RemoveTagOnPost - removeTagOnPost"))
+	var (
+		post    model.Post
+		postTag model.PostTag
+		err     error
+		tok     *token.Token
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return &post, errx.UnAuthorizedError
+	}
+
+	postTag, err = GetPostSinglePostTag(postId, tok.UserId)
+	if err != nil {
+		return &post, errx.DbGetError
+	}
+
+	post, err = GetSingleUserPost(postTag.PostId, tok.UserId)
+	if err != nil {
+		return &post, errx.DbGetError
+	}
+
+	err = database.Delete(postTag)
+	if err != nil {
+		return &post, errx.DbInsertError
+	}
+
+	return &post, nil
 }
 
 func GetPosts(ctx context.Context) ([]model.Post, error) {
@@ -164,22 +191,33 @@ func GetPosts(ctx context.Context) ([]model.Post, error) {
 	return posts, nil
 }
 
-func ViewPost(ctx context.Context, postID int) (*model.Post, error) {
+func ViewPost(ctx context.Context, postId int) (*model.Post, error) {
 	var (
-		post model.Post
-		err  error
+		post     model.Post
+		postView model.PostView
+		err      error
+		tok      *token.Token
 	)
 
-	post, err = GetSinglePost(postID)
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return &post, errx.UnAuthorizedError
+	}
+
+	post, err = GetSinglePost(postId)
 	if err != nil {
 		return &post, errx.DbGetError
 	}
 
-	return &post, nil
-}
+	postView.PostId = postId
+	postView.ViewerId = tok.UserId
 
-func GetTaggedPost(ctx context.Context, postId int) ([]model.Post, error) {
-	panic(fmt.Errorf("not implemented: GetTaggedPost - getTaggedPost"))
+	_, err = database.InsertOne(postView)
+	if err != nil {
+		return &post, errx.DbInsertError
+	}
+
+	return &post, nil
 }
 
 func SearchPost(ctx context.Context, keyword string) ([]model.Post, error) {
@@ -207,6 +245,14 @@ func GetSingleUserPost(postId, publisherId int) (post model.Post, err error) {
 }
 
 func GetPostSinglePostTag(postId, userId int) (postTag model.PostTag, err error) {
-
+	err = database.Get(&postTag,
+		`SELECT post_tag.*
+			FROM post_tag
+					 JOIN post ON post_tag.post_id = post.id
+			WHERE post.id = ?
+			  AND post.publisher_id = ?`, postId, userId)
+	if err != nil {
+		return postTag, err
+	}
 	return postTag, nil
 }
