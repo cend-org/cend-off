@@ -54,8 +54,8 @@ func init() {
 			}
 		}
 
-		App.DatabaseConnexionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/?parseTime=true", App.DatabaseUserName,
-			App.DatabaseUserPassword, App.DatabaseHost, App.DatabasePort)
+		App.DatabaseConnexionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", App.DatabaseUserName,
+			App.DatabaseUserPassword, App.DatabaseHost, App.DatabasePort, App.DatabaseName)
 	} else {
 		err := fullFillAppFromConfig()
 		if err != nil {
