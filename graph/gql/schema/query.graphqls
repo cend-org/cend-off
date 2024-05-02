@@ -58,17 +58,17 @@ type Query {
     #    Media QUERIES
     #    Profile Letter
 
-    getProfileLetter: Media!
-    getProfileLetterThumb : MediaThumb!
+    getProfileLetter: String
+    getProfileLetterThumb : String
     #    Profile Cv
-    getProfileCv: Media!
-    getProfileCvThumb: MediaThumb!
+    getProfileCv: String
+    getProfileCvThumb: String
     #    Profile image
-    getProfileImage: Media!
-    getProfileImageThumb: MediaThumb!
+    getProfileImage: String
+    getProfileImageThumb: String
     #    Profile Video
-    getProfileVideo: Media!
-    getProfileVideoThumb: MediaThumb!
+    getProfileVideo: String
+    getProfileVideoThumb: String
 
 
 

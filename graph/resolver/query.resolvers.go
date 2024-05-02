@@ -221,42 +221,42 @@ func (r *queryResolver) GenerateQRCode(ctx context.Context) (*string, error) {
 }
 
 // GetProfileLetter is the resolver for the getProfileLetter field.
-func (r *queryResolver) GetProfileLetter(ctx context.Context) (*model.Media, error) {
+func (r *queryResolver) GetProfileLetter(ctx context.Context) (*string, error) {
 	return cover.GetProfileLetter(ctx)
 }
 
 // GetProfileLetterThumb is the resolver for the getProfileLetterThumb field.
-func (r *queryResolver) GetProfileLetterThumb(ctx context.Context) (*model.MediaThumb, error) {
+func (r *queryResolver) GetProfileLetterThumb(ctx context.Context) (*string, error) {
 	return cover.GetProfileLetterThumb(ctx)
 }
 
 // GetProfileCv is the resolver for the getProfileCv field.
-func (r *queryResolver) GetProfileCv(ctx context.Context) (*model.Media, error) {
+func (r *queryResolver) GetProfileCv(ctx context.Context) (*string, error) {
 	return cv.GetProfileCv(ctx)
 }
 
 // GetProfileCvThumb is the resolver for the getProfileCvThumb field.
-func (r *queryResolver) GetProfileCvThumb(ctx context.Context) (*model.MediaThumb, error) {
+func (r *queryResolver) GetProfileCvThumb(ctx context.Context) (*string, error) {
 	return cv.GetProfileCvThumb(ctx)
 }
 
 // GetProfileImage is the resolver for the getProfileImage field.
-func (r *queryResolver) GetProfileImage(ctx context.Context) (*model.Media, error) {
+func (r *queryResolver) GetProfileImage(ctx context.Context) (*string, error) {
 	return profile.GetProfileImage(ctx)
 }
 
 // GetProfileImageThumb is the resolver for the getProfileImageThumb field.
-func (r *queryResolver) GetProfileImageThumb(ctx context.Context) (*model.MediaThumb, error) {
+func (r *queryResolver) GetProfileImageThumb(ctx context.Context) (*string, error) {
 	return profile.GetProfileImageThumb(ctx)
 }
 
 // GetProfileVideo is the resolver for the getProfileVideo field.
-func (r *queryResolver) GetProfileVideo(ctx context.Context) (*model.Media, error) {
+func (r *queryResolver) GetProfileVideo(ctx context.Context) (*string, error) {
 	return video.GetProfileVideo(ctx)
 }
 
 // GetProfileVideoThumb is the resolver for the getProfileVideoThumb field.
-func (r *queryResolver) GetProfileVideoThumb(ctx context.Context) (*model.MediaThumb, error) {
+func (r *queryResolver) GetProfileVideoThumb(ctx context.Context) (*string, error) {
 	return video.GetProfileVideoThumb(ctx)
 }
 

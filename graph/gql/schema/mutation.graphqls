@@ -63,6 +63,7 @@ type Mutation {
     singleUpload(file: Upload!): Media!
 
     #    Profile Letter
+    uploadProfileLetter(file: Upload!): Media!
     updateProfileLetter(file: Upload!) : Media!
     removeProfileLetter(mediaId : Int!) : String
     #    Profile Cv

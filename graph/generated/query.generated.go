@@ -53,14 +53,14 @@ type QueryResolver interface {
 	GetUserProfessor(ctx context.Context) ([]model.User, error)
 	GetStudent(ctx context.Context) ([]model.User, error)
 	GenerateQRCode(ctx context.Context) (*string, error)
-	GetProfileLetter(ctx context.Context) (*model.Media, error)
-	GetProfileLetterThumb(ctx context.Context) (*model.MediaThumb, error)
-	GetProfileCv(ctx context.Context) (*model.Media, error)
-	GetProfileCvThumb(ctx context.Context) (*model.MediaThumb, error)
-	GetProfileImage(ctx context.Context) (*model.Media, error)
-	GetProfileImageThumb(ctx context.Context) (*model.MediaThumb, error)
-	GetProfileVideo(ctx context.Context) (*model.Media, error)
-	GetProfileVideoThumb(ctx context.Context) (*model.MediaThumb, error)
+	GetProfileLetter(ctx context.Context) (*string, error)
+	GetProfileLetterThumb(ctx context.Context) (*string, error)
+	GetProfileCv(ctx context.Context) (*string, error)
+	GetProfileCvThumb(ctx context.Context) (*string, error)
+	GetProfileImage(ctx context.Context) (*string, error)
+	GetProfileImageThumb(ctx context.Context) (*string, error)
+	GetProfileVideo(ctx context.Context) (*string, error)
+	GetProfileVideoThumb(ctx context.Context) (*string, error)
 	GetContracts(ctx context.Context) ([]model.Contract, error)
 	GetContract(ctx context.Context, contractID int) (*model.Contract, error)
 	GetContractTimesheetDetail(ctx context.Context) ([]model.ContractTimesheetDetail, error)
@@ -2691,14 +2691,11 @@ func (ec *executionContext) _Query_getProfileLetter(ctx context.Context, field g
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Media)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNMedia2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMedia(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getProfileLetter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2708,25 +2705,7 @@ func (ec *executionContext) fieldContext_Query_getProfileLetter(ctx context.Cont
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_Media_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_Media_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_Media_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_Media_DeletedAt(ctx, field)
-			case "FileName":
-				return ec.fieldContext_Media_FileName(ctx, field)
-			case "Extension":
-				return ec.fieldContext_Media_Extension(ctx, field)
-			case "Xid":
-				return ec.fieldContext_Media_Xid(ctx, field)
-			case "ContentType":
-				return ec.fieldContext_Media_ContentType(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Media", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2753,14 +2732,11 @@ func (ec *executionContext) _Query_getProfileLetterThumb(ctx context.Context, fi
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.MediaThumb)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNMediaThumb2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMediaThumb(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getProfileLetterThumb(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2770,25 +2746,7 @@ func (ec *executionContext) fieldContext_Query_getProfileLetterThumb(ctx context
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_MediaThumb_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_MediaThumb_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_MediaThumb_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_MediaThumb_DeletedAt(ctx, field)
-			case "FileName":
-				return ec.fieldContext_MediaThumb_FileName(ctx, field)
-			case "Extension":
-				return ec.fieldContext_MediaThumb_Extension(ctx, field)
-			case "MediaXid":
-				return ec.fieldContext_MediaThumb_MediaXid(ctx, field)
-			case "ContentType":
-				return ec.fieldContext_MediaThumb_ContentType(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MediaThumb", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2815,14 +2773,11 @@ func (ec *executionContext) _Query_getProfileCv(ctx context.Context, field graph
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Media)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNMedia2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMedia(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getProfileCv(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2832,25 +2787,7 @@ func (ec *executionContext) fieldContext_Query_getProfileCv(ctx context.Context,
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_Media_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_Media_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_Media_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_Media_DeletedAt(ctx, field)
-			case "FileName":
-				return ec.fieldContext_Media_FileName(ctx, field)
-			case "Extension":
-				return ec.fieldContext_Media_Extension(ctx, field)
-			case "Xid":
-				return ec.fieldContext_Media_Xid(ctx, field)
-			case "ContentType":
-				return ec.fieldContext_Media_ContentType(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Media", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2877,14 +2814,11 @@ func (ec *executionContext) _Query_getProfileCvThumb(ctx context.Context, field 
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.MediaThumb)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNMediaThumb2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMediaThumb(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getProfileCvThumb(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2894,25 +2828,7 @@ func (ec *executionContext) fieldContext_Query_getProfileCvThumb(ctx context.Con
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_MediaThumb_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_MediaThumb_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_MediaThumb_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_MediaThumb_DeletedAt(ctx, field)
-			case "FileName":
-				return ec.fieldContext_MediaThumb_FileName(ctx, field)
-			case "Extension":
-				return ec.fieldContext_MediaThumb_Extension(ctx, field)
-			case "MediaXid":
-				return ec.fieldContext_MediaThumb_MediaXid(ctx, field)
-			case "ContentType":
-				return ec.fieldContext_MediaThumb_ContentType(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MediaThumb", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2939,14 +2855,11 @@ func (ec *executionContext) _Query_getProfileImage(ctx context.Context, field gr
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Media)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNMedia2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMedia(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getProfileImage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2956,25 +2869,7 @@ func (ec *executionContext) fieldContext_Query_getProfileImage(ctx context.Conte
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_Media_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_Media_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_Media_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_Media_DeletedAt(ctx, field)
-			case "FileName":
-				return ec.fieldContext_Media_FileName(ctx, field)
-			case "Extension":
-				return ec.fieldContext_Media_Extension(ctx, field)
-			case "Xid":
-				return ec.fieldContext_Media_Xid(ctx, field)
-			case "ContentType":
-				return ec.fieldContext_Media_ContentType(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Media", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3001,14 +2896,11 @@ func (ec *executionContext) _Query_getProfileImageThumb(ctx context.Context, fie
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.MediaThumb)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNMediaThumb2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMediaThumb(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getProfileImageThumb(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3018,25 +2910,7 @@ func (ec *executionContext) fieldContext_Query_getProfileImageThumb(ctx context.
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_MediaThumb_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_MediaThumb_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_MediaThumb_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_MediaThumb_DeletedAt(ctx, field)
-			case "FileName":
-				return ec.fieldContext_MediaThumb_FileName(ctx, field)
-			case "Extension":
-				return ec.fieldContext_MediaThumb_Extension(ctx, field)
-			case "MediaXid":
-				return ec.fieldContext_MediaThumb_MediaXid(ctx, field)
-			case "ContentType":
-				return ec.fieldContext_MediaThumb_ContentType(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MediaThumb", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3063,14 +2937,11 @@ func (ec *executionContext) _Query_getProfileVideo(ctx context.Context, field gr
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.Media)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNMedia2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMedia(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getProfileVideo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3080,25 +2951,7 @@ func (ec *executionContext) fieldContext_Query_getProfileVideo(ctx context.Conte
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_Media_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_Media_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_Media_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_Media_DeletedAt(ctx, field)
-			case "FileName":
-				return ec.fieldContext_Media_FileName(ctx, field)
-			case "Extension":
-				return ec.fieldContext_Media_Extension(ctx, field)
-			case "Xid":
-				return ec.fieldContext_Media_Xid(ctx, field)
-			case "ContentType":
-				return ec.fieldContext_Media_ContentType(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type Media", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3125,14 +2978,11 @@ func (ec *executionContext) _Query_getProfileVideoThumb(ctx context.Context, fie
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(*model.MediaThumb)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalNMediaThumb2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMediaThumb(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getProfileVideoThumb(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3142,25 +2992,7 @@ func (ec *executionContext) fieldContext_Query_getProfileVideoThumb(ctx context.
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_MediaThumb_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_MediaThumb_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_MediaThumb_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_MediaThumb_DeletedAt(ctx, field)
-			case "FileName":
-				return ec.fieldContext_MediaThumb_FileName(ctx, field)
-			case "Extension":
-				return ec.fieldContext_MediaThumb_Extension(ctx, field)
-			case "MediaXid":
-				return ec.fieldContext_MediaThumb_MediaXid(ctx, field)
-			case "ContentType":
-				return ec.fieldContext_MediaThumb_ContentType(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type MediaThumb", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -4701,9 +4533,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getProfileLetter(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 
@@ -4723,9 +4552,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getProfileLetterThumb(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 
@@ -4745,9 +4571,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getProfileCv(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 
@@ -4767,9 +4590,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getProfileCvThumb(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 
@@ -4789,9 +4609,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getProfileImage(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 
@@ -4811,9 +4628,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getProfileImageThumb(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 
@@ -4833,9 +4647,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getProfileVideo(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 
@@ -4855,9 +4666,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getProfileVideoThumb(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 

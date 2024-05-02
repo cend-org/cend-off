@@ -165,14 +165,13 @@ type Media struct {
 }
 
 type MediaThumb struct {
-	Id          int        `json:"id"`
-	CreatedAt   time.Time  `json:"created_at"`
-	UpdatedAt   time.Time  `json:"updated_at"`
-	DeletedAt   *time.Time `json:"deleted_at"`
-	FileName    string     `json:"file_name"`
-	Extension   string     `json:"extension"`
-	MediaXid    string     `json:"media_xid"`
-	ContentType int        `json:"content_type"`
+	Id        int        `json:"id"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	DeletedAt *time.Time `json:"deleted_at"`
+	Extension string     `json:"extension"`
+	MediaXid  string     `json:"media_xid"`
+	Xid       string     `json:"xid"`
 }
 
 type Message struct {

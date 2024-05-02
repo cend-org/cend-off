@@ -3,42 +3,16 @@ package utils
 import (
 	"fmt"
 	"github.com/99designs/gqlgen/graphql"
+	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/disintegration/imaging"
 	"github.com/joinverse/xid"
-	"github.com/unidoc/unipdf/v3/model"
+	unipdf "github.com/unidoc/unipdf/v3/model"
 	"github.com/unidoc/unipdf/v3/render"
 	"image"
 	"image/color"
 	"io"
-	"time"
 )
-
-const (
-	CV                = 0
-	Letter            = 1
-	VideoPresentation = 2
-	UserProfileImage  = 3
-)
-
-type MediaThumb struct {
-	Id        uint       `json:"id"`
-	CreatedAt time.Time  `json:"created_at"`
-	UpdatedAt time.Time  `json:"updated_at"`
-	DeletedAt *time.Time `json:"deleted_at"`
-	Extension string     `json:"extension"`
-	MediaXid  string     `json:"media_xid"`
-	Xid       string     `json:"xid"`
-}
-
-type UserMediaDetail struct {
-	Id           uint       `json:"id"`
-	CreatedAt    time.Time  `json:"created_at"`
-	UpdatedAt    time.Time  `json:"updated_at"`
-	DeletedAt    *time.Time `json:"deleted_at"`
-	OwnerId      uint       `json:"owner_id"`
-	DocumentType uint       `json:"document_type"`
-}
 
 /*
 CREATE THUMBNAIL FOR UPLOADED IMAGE
@@ -46,7 +20,7 @@ CREATE THUMBNAIL FOR UPLOADED IMAGE
 
 func CreateThumb(mediaXid string, extension string, file graphql.Upload) (err error) {
 	var (
-		mediaThumb MediaThumb
+		mediaThumb model.MediaThumb
 		thumbnail  image.Image
 	)
 
@@ -86,14 +60,14 @@ CREATE THUMBNAIL FOR UPLOADED COVER LETTER
 
 func CreateDocumentThumb(mediaXid string, extension string, file graphql.Upload) (err error) {
 	var (
-		mediaThumb MediaThumb
+		mediaThumb model.MediaThumb
 		thumbnail  image.Image
 	)
 	if _, err := file.File.Seek(0, io.SeekStart); err != nil {
 		return err
 	}
 
-	pdfReader, err := model.NewPdfReader(file.File)
+	pdfReader, err := unipdf.NewPdfReader(file.File)
 	if err != nil {
 		return err
 	}

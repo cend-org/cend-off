@@ -233,6 +233,11 @@ func (r *mutationResolver) SingleUpload(ctx context.Context, file graphql.Upload
 	return media.SingleUpload(ctx, file)
 }
 
+// UploadProfileLetter is the resolver for the uploadProfileLetter field.
+func (r *mutationResolver) UploadProfileLetter(ctx context.Context, file graphql.Upload) (*model.Media, error) {
+	return cover.UploadProfileLetter(ctx, &file)
+}
+
 // UpdateProfileLetter is the resolver for the updateProfileLetter field.
 func (r *mutationResolver) UpdateProfileLetter(ctx context.Context, file graphql.Upload) (*model.Media, error) {
 	return cover.UpdateProfileLetter(ctx, &file)

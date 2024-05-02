@@ -158,14 +158,13 @@ type ComplexityRoot struct {
 	}
 
 	MediaThumb struct {
-		ContentType func(childComplexity int) int
-		CreatedAt   func(childComplexity int) int
-		DeletedAt   func(childComplexity int) int
-		Extension   func(childComplexity int) int
-		FileName    func(childComplexity int) int
-		Id          func(childComplexity int) int
-		MediaXid    func(childComplexity int) int
-		UpdatedAt   func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Extension func(childComplexity int) int
+		Id        func(childComplexity int) int
+		MediaXid  func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		Xid       func(childComplexity int) int
 	}
 
 	Message struct {
@@ -236,6 +235,7 @@ type ComplexityRoot struct {
 		UpdateUserAddress          func(childComplexity int, input model.AddressInput) int
 		UpdateUserEducationLevel   func(childComplexity int, subjectID int) int
 		UpdateUserPhoneNumber      func(childComplexity int, input model.PhoneNumberInput) int
+		UploadProfileLetter        func(childComplexity int, file graphql.Upload) int
 	}
 
 	Password struct {
@@ -1048,13 +1048,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Media.Xid(childComplexity), true
 
-	case "MediaThumb.ContentType":
-		if e.complexity.MediaThumb.ContentType == nil {
-			break
-		}
-
-		return e.complexity.MediaThumb.ContentType(childComplexity), true
-
 	case "MediaThumb.CreatedAt":
 		if e.complexity.MediaThumb.CreatedAt == nil {
 			break
@@ -1076,13 +1069,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.MediaThumb.Extension(childComplexity), true
 
-	case "MediaThumb.FileName":
-		if e.complexity.MediaThumb.FileName == nil {
-			break
-		}
-
-		return e.complexity.MediaThumb.FileName(childComplexity), true
-
 	case "MediaThumb.Id":
 		if e.complexity.MediaThumb.Id == nil {
 			break
@@ -1103,6 +1089,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.MediaThumb.UpdatedAt(childComplexity), true
+
+	case "MediaThumb.Xid":
+		if e.complexity.MediaThumb.Xid == nil {
+			break
+		}
+
+		return e.complexity.MediaThumb.Xid(childComplexity), true
 
 	case "Message.CreatedAt":
 		if e.complexity.Message.CreatedAt == nil {
@@ -1811,6 +1804,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateUserPhoneNumber(childComplexity, args["input"].(model.PhoneNumberInput)), true
+
+	case "Mutation.uploadProfileLetter":
+		if e.complexity.Mutation.UploadProfileLetter == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadProfileLetter_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadProfileLetter(childComplexity, args["file"].(graphql.Upload)), true
 
 	case "Password.CreatedAt":
 		if e.complexity.Password.CreatedAt == nil {
@@ -3347,10 +3352,9 @@ type MediaThumb {
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    FileName : String!
     Extension: String!
     MediaXid: String! @goField(name: "MediaXid")
-    ContentType: Int!
+    Xid: String! @goField(name: "Xid")
 }
 
 type UserMediaDetail {
@@ -3570,6 +3574,7 @@ scalar Upload
     singleUpload(file: Upload!): Media!
 
     #    Profile Letter
+    uploadProfileLetter(file: Upload!): Media!
     updateProfileLetter(file: Upload!) : Media!
     removeProfileLetter(mediaId : Int!) : String
     #    Profile Cv
@@ -3660,17 +3665,17 @@ scalar Upload
     #    Media QUERIES
     #    Profile Letter
 
-    getProfileLetter: Media!
-    getProfileLetterThumb : MediaThumb!
+    getProfileLetter: String
+    getProfileLetterThumb : String
     #    Profile Cv
-    getProfileCv: Media!
-    getProfileCvThumb: MediaThumb!
+    getProfileCv: String
+    getProfileCvThumb: String
     #    Profile image
-    getProfileImage: Media!
-    getProfileImageThumb: MediaThumb!
+    getProfileImage: String
+    getProfileImageThumb: String
     #    Profile Video
-    getProfileVideo: Media!
-    getProfileVideoThumb: MediaThumb!
+    getProfileVideo: String
+    getProfileVideoThumb: String
 
 
 

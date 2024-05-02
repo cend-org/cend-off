@@ -7,11 +7,11 @@ import (
 	"github.com/cend-org/duval/graph/model"
 )
 
-func GetProfileImage(ctx context.Context) (*model.Media, error) {
+func GetProfileImage(ctx context.Context) (*string, error) {
 	panic(fmt.Errorf("not implemented: GetProfileImage - getProfileImage"))
 }
 
-func GetProfileImageThumb(ctx context.Context) (*model.MediaThumb, error) {
+func GetProfileImageThumb(ctx context.Context) (*string, error) {
 	panic(fmt.Errorf("not implemented: GetProfileImageThumb - getProfileImageThumb"))
 }
 

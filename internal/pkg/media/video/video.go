@@ -15,10 +15,10 @@ func RemoveProfileVideo(ctx context.Context, mediaID int) (*string, error) {
 	panic(fmt.Errorf("not implemented: RemoveProfileVideo - removeProfileVideo"))
 }
 
-func GetProfileVideo(ctx context.Context) (*model.Media, error) {
+func GetProfileVideo(ctx context.Context) (*string, error) {
 	panic(fmt.Errorf("not implemented: GetProfileVideo - getProfileVideo"))
 }
 
-func GetProfileVideoThumb(ctx context.Context) (*model.MediaThumb, error) {
+func GetProfileVideoThumb(ctx context.Context) (*string, error) {
 	panic(fmt.Errorf("not implemented: GetProfileVideoThumb - getProfileVideoThumb"))
 }

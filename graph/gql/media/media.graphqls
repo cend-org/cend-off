@@ -14,10 +14,9 @@ type MediaThumb {
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
-    FileName : String!
     Extension: String!
     MediaXid: String! @goField(name: "MediaXid")
-    ContentType: Int!
+    Xid: String! @goField(name: "Xid")
 }
 
 type UserMediaDetail {
