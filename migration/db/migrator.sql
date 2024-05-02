@@ -643,3 +643,56 @@ CREATE TABLE school_subject
 ALTER TABLE school_subject
     add constraint school_fk
         foreign key (school_number) references school (id);
+
+--
+--
+--  POST
+--
+--
+
+create table post
+(
+    id              int auto_increment primary key,
+    created_at      timestamp    default CURRENT_TIMESTAMP,
+    updated_at      timestamp    default CURRENT_TIMESTAMP,
+    deleted_at      timestamp    default '0000-00-00 00:00:00',
+    publisher_id    int          default 0,
+    content         varchar(500) default '',
+    expiration_date datetime     default '0000-00-00 00:00:00'
+);
+
+alter table post
+    add constraint post_publisher_id_fk
+        foreign key (publisher_id) references user (id);
+
+create table post_tag
+(
+    id          int auto_increment primary key,
+    created_at  timestamp    default CURRENT_TIMESTAMP,
+    updated_at  timestamp    default CURRENT_TIMESTAMP,
+    deleted_at  timestamp    default '0000-00-00 00:00:00',
+    post_id     int          default 0,
+    tag_content varchar(500) default ''
+);
+
+alter table post_tag
+    add constraint post_tag_post_id_fk
+        foreign key (post_id) references post (id);
+
+create table post_view
+(
+    id         int auto_increment primary key,
+    created_at timestamp default CURRENT_TIMESTAMP,
+    updated_at timestamp default CURRENT_TIMESTAMP,
+    deleted_at timestamp default '0000-00-00 00:00:00',
+    post_id    int       default 0,
+    viewer_id  int       default 0
+);
+
+alter table post_view
+    add constraint post_view_post_id_fk
+        foreign key (post_id) references post (id);
+
+alter table post_view
+    add constraint post_view_viewer_id
+        foreign key (viewer_id) references user (id);
