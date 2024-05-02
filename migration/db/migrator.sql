@@ -1,6 +1,6 @@
-drop database if exists duval;
-create database duval;
-use duval;
+drop database if exists cend;
+create database cend;
+use cend;
 
 create table user
 (

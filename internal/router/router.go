@@ -8,6 +8,7 @@ import (
 	"github.com/99designs/gqlgen/graphql/playground"
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/resolver"
+	"github.com/cend-org/duval/internal/configuration"
 	"github.com/cend-org/duval/internal/router/cors"
 	"github.com/cend-org/duval/internal/router/middleware"
 	"github.com/gin-gonic/gin"
@@ -16,6 +17,10 @@ import (
 )
 
 func Serve() {
+	if configuration.IsDev() || configuration.IsProd() {
+		gin.SetMode(gin.ReleaseMode)
+	}
+
 	r := gin.Default()
 	r.Use(middleware.Middleware())
 	r.Use(cors.Set())
