@@ -235,6 +235,7 @@ type ComplexityRoot struct {
 		UpdateUserAddress          func(childComplexity int, input model.AddressInput) int
 		UpdateUserEducationLevel   func(childComplexity int, subjectID int) int
 		UpdateUserPhoneNumber      func(childComplexity int, input model.PhoneNumberInput) int
+		UploadProfileCv            func(childComplexity int, file graphql.Upload) int
 		UploadProfileLetter        func(childComplexity int, file graphql.Upload) int
 	}
 
@@ -1804,6 +1805,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateUserPhoneNumber(childComplexity, args["input"].(model.PhoneNumberInput)), true
+
+	case "Mutation.uploadProfileCv":
+		if e.complexity.Mutation.UploadProfileCv == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadProfileCv_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadProfileCv(childComplexity, args["file"].(graphql.Upload)), true
 
 	case "Mutation.uploadProfileLetter":
 		if e.complexity.Mutation.UploadProfileLetter == nil {
@@ -3578,6 +3591,7 @@ scalar Upload
     updateProfileLetter(file: Upload!) : Media!
     removeProfileLetter(mediaId : Int!) : String
     #    Profile Cv
+    uploadProfileCv(file: Upload!): Media!
     updateProfileCv(file: Upload!): Media!
     removeProfileCv(mediaId: Int!) : String
     #    Profile Image

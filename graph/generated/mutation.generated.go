@@ -57,6 +57,7 @@ type MutationResolver interface {
 	UploadProfileLetter(ctx context.Context, file graphql.Upload) (*model.Media, error)
 	UpdateProfileLetter(ctx context.Context, file graphql.Upload) (*model.Media, error)
 	RemoveProfileLetter(ctx context.Context, mediaID int) (*string, error)
+	UploadProfileCv(ctx context.Context, file graphql.Upload) (*model.Media, error)
 	UpdateProfileCv(ctx context.Context, file graphql.Upload) (*model.Media, error)
 	RemoveProfileCv(ctx context.Context, mediaID int) (*string, error)
 	UpdateProfileImage(ctx context.Context, file graphql.Upload) (*model.Media, error)
@@ -928,6 +929,21 @@ func (ec *executionContext) field_Mutation_updateUserPhoneNumber_args(ctx contex
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_uploadProfileCv_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 graphql.Upload
+	if tmp, ok := rawArgs["file"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("file"))
+		arg0, err = ec.unmarshalNUpload2githubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["file"] = arg0
 	return args, nil
 }
 
@@ -3536,6 +3552,79 @@ func (ec *executionContext) fieldContext_Mutation_removeProfileLetter(ctx contex
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_uploadProfileCv(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_uploadProfileCv(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UploadProfileCv(rctx, fc.Args["file"].(graphql.Upload))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Media)
+	fc.Result = res
+	return ec.marshalNMedia2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMedia(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_uploadProfileCv(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "Id":
+				return ec.fieldContext_Media_Id(ctx, field)
+			case "CreatedAt":
+				return ec.fieldContext_Media_CreatedAt(ctx, field)
+			case "UpdatedAt":
+				return ec.fieldContext_Media_UpdatedAt(ctx, field)
+			case "DeletedAt":
+				return ec.fieldContext_Media_DeletedAt(ctx, field)
+			case "FileName":
+				return ec.fieldContext_Media_FileName(ctx, field)
+			case "Extension":
+				return ec.fieldContext_Media_Extension(ctx, field)
+			case "Xid":
+				return ec.fieldContext_Media_Xid(ctx, field)
+			case "ContentType":
+				return ec.fieldContext_Media_ContentType(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Media", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_uploadProfileCv_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_updateProfileCv(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_updateProfileCv(ctx, field)
 	if err != nil {
@@ -4857,6 +4946,13 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_removeProfileLetter(ctx, field)
 			})
+		case "uploadProfileCv":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_uploadProfileCv(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "updateProfileCv":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_updateProfileCv(ctx, field)

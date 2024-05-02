@@ -248,6 +248,11 @@ func (r *mutationResolver) RemoveProfileLetter(ctx context.Context, mediaID int)
 	return cover.RemoveProfileLetter(ctx, mediaID)
 }
 
+// UploadProfileCv is the resolver for the uploadProfileCv field.
+func (r *mutationResolver) UploadProfileCv(ctx context.Context, file graphql.Upload) (*model.Media, error) {
+	return cv.UploadProfileLetter(ctx, &file)
+}
+
 // UpdateProfileCv is the resolver for the updateProfileCv field.
 func (r *mutationResolver) UpdateProfileCv(ctx context.Context, file graphql.Upload) (*model.Media, error) {
 	return cv.UpdateProfileCv(ctx, &file)
