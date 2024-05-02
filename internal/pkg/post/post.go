@@ -2,11 +2,11 @@ package post
 
 import (
 	"context"
-	"fmt"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/token"
 	"github.com/cend-org/duval/internal/utils/errx"
+	"github.com/cend-org/duval/internal/utils/state"
 )
 
 func NewPost(ctx context.Context, input *model.PostInput) (*model.Post, error) {
@@ -82,6 +82,7 @@ func RemovePost(ctx context.Context, postId int) (*string, error) {
 		return &status, errx.DbInsertError
 	}
 
+	status = "success"
 	return &status, nil
 }
 
@@ -220,8 +221,68 @@ func ViewPost(ctx context.Context, postId int) (*model.Post, error) {
 	return &post, nil
 }
 
+func GetTaggedPost(ctx context.Context, postId int) ([]model.PostTag, error) {
+	var (
+		postTag []model.PostTag
+		err     error
+	)
+
+	err = database.GetMany(&postTag,
+		`SELECT post_tag.*
+			FROM post_tag
+					 JOIN post ON post_tag.post_id = post.id
+			WHERE post_tag.post_id = ?`, postId)
+	if err != nil {
+		return postTag, errx.DbGetError
+	}
+
+	return postTag, nil
+}
+
+func GetUsePosts(ctx context.Context) ([]model.Post, error) {
+	var (
+		posts []model.Post
+		err   error
+		tok   *token.Token
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return posts, errx.UnAuthorizedError
+	}
+
+	posts, err = GetUserPost(tok.UserId)
+	if err != nil {
+		return posts, errx.DbGetError
+	}
+
+	return posts, nil
+}
 func SearchPost(ctx context.Context, keyword string) ([]model.Post, error) {
-	panic(fmt.Errorf("not implemented: SearchPost - searchPost"))
+	var (
+		posts []model.Post
+		err   error
+		tok   *token.Token
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return posts, errx.UnAuthorizedError
+	}
+
+	if tok.UserId == state.ZERO {
+		return posts, errx.UnAuthorizedError
+	}
+
+	err = database.GetMany(&posts, `
+				SELECT post.*
+				FROM post JOIN post_tag ON post.id = post_tag.post_id
+				WHERE post_tag.tag_content LIKE ?`, keyword)
+	if err != nil {
+		return posts, errx.DbGetError
+	}
+
+	return posts, nil
 }
 
 /*
@@ -255,4 +316,12 @@ func GetPostSinglePostTag(postId, userId int) (postTag model.PostTag, err error)
 		return postTag, err
 	}
 	return postTag, nil
+}
+
+func GetUserPost(userId int) (posts []model.Post, err error) {
+	err = database.GetMany(&posts, `SELECT post.*  FROM post WHERE post.publisher_id = ?`, userId)
+	if err != nil {
+		return posts, err
+	}
+	return posts, nil
 }

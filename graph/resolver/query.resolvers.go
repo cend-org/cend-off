@@ -219,19 +219,24 @@ func (r *queryResolver) GetPosts(ctx context.Context) ([]model.Post, error) {
 	return post.GetPosts(ctx)
 }
 
+// GetUsePosts is the resolver for the getUsePosts field.
+func (r *queryResolver) GetUsePosts(ctx context.Context) ([]model.Post, error) {
+	return post.GetUsePosts(ctx)
+}
+
 // ViewPost is the resolver for the viewPost field.
 func (r *queryResolver) ViewPost(ctx context.Context, postID int) (*model.Post, error) {
 	return post.ViewPost(ctx, postID)
 }
 
-// GetTaggedPost is the resolver for the getTaggedPost field.
-func (r *queryResolver) GetTaggedPost(ctx context.Context, postID int) ([]model.Post, error) {
-	return post.GetTaggedPost(ctx, postID)
-}
-
 // SearchPost is the resolver for the searchPost field.
 func (r *queryResolver) SearchPost(ctx context.Context, keyword string) ([]model.Post, error) {
 	return post.SearchPost(ctx, keyword)
+}
+
+// GetTaggedPost is the resolver for the GetTaggedPost field.
+func (r *queryResolver) GetTaggedPost(ctx context.Context, postID int) ([]model.PostTag, error) {
+	return post.GetTaggedPost(ctx, postID)
 }
 
 // Query returns generated.QueryResolver implementation.

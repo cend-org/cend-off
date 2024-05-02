@@ -265,6 +265,7 @@ type ComplexityRoot struct {
 		GetStudent                    func(childComplexity int) int
 		GetSubjects                   func(childComplexity int, id int) int
 		GetTaggedPost                 func(childComplexity int, postID int) int
+		GetUsePosts                   func(childComplexity int) int
 		GetUserAddress                func(childComplexity int) int
 		GetUserAverageMark            func(childComplexity int, userID int) int
 		GetUserEducationLevel         func(childComplexity int) int
@@ -1855,6 +1856,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetTaggedPost(childComplexity, args["postId"].(int)), true
 
+	case "Query.getUsePosts":
+		if e.complexity.Query.GetUsePosts == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUsePosts(childComplexity), true
+
 	case "Query.getUserAddress":
 		if e.complexity.Query.GetUserAddress == nil {
 			break
@@ -3075,13 +3083,14 @@ scalar Upload`, BuiltIn: false},
 
     #    Post
     getPosts : [Post!]!
+    getUsePosts : [Post!]!
 
     #   Post View
     viewPost(postId: Int!): Post!
 
     # Post Tag
-    getTaggedPost(postId: Int!): [Post!]!
     searchPost(keyword: String!): [Post!]!
+    getTaggedPost(postId: Int!): [PostTag!]!
 }`, BuiltIn: false},
 	{Name: "../gql/school/school.graphqls", Input: `type School {
     Id: ID! @goField(name: "Id")

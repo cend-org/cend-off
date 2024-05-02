@@ -57,11 +57,12 @@ type Query {
 
     #    Post
     getPosts : [Post!]!
+    getUsePosts : [Post!]!
 
     #   Post View
     viewPost(postId: Int!): Post!
 
     # Post Tag
-    getTaggedPost(postId: Int!): [Post!]!
     searchPost(keyword: String!): [Post!]!
+    getTaggedPost(postId: Int!): [PostTag!]!
 }
