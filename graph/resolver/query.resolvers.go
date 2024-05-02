@@ -7,7 +7,6 @@ package resolver
 import (
 	"context"
 	"fmt"
-	"github.com/cend-org/duval/internal/pkg/post"
 	"time"
 
 	"github.com/cend-org/duval/graph/generated"
@@ -19,8 +18,13 @@ import (
 	"github.com/cend-org/duval/internal/pkg/contract"
 	"github.com/cend-org/duval/internal/pkg/education"
 	"github.com/cend-org/duval/internal/pkg/mark"
+	"github.com/cend-org/duval/internal/pkg/media/cover"
+	"github.com/cend-org/duval/internal/pkg/media/cv"
+	"github.com/cend-org/duval/internal/pkg/media/profile"
+	"github.com/cend-org/duval/internal/pkg/media/video"
 	"github.com/cend-org/duval/internal/pkg/phone"
 	"github.com/cend-org/duval/internal/pkg/planning"
+	"github.com/cend-org/duval/internal/pkg/post"
 	"github.com/cend-org/duval/internal/pkg/translator"
 	"github.com/cend-org/duval/internal/pkg/user"
 	"github.com/cend-org/duval/internal/pkg/user/link"
@@ -214,6 +218,46 @@ func (r *queryResolver) GetStudent(ctx context.Context) ([]model.User, error) {
 // GenerateQRCode is the resolver for the generateQrCode field.
 func (r *queryResolver) GenerateQRCode(ctx context.Context) (*string, error) {
 	return authentication.GenerateQrCode(ctx)
+}
+
+// GetProfileLetter is the resolver for the getProfileLetter field.
+func (r *queryResolver) GetProfileLetter(ctx context.Context) (*model.Media, error) {
+	return cover.GetProfileLetter(ctx)
+}
+
+// GetProfileLetterThumb is the resolver for the getProfileLetterThumb field.
+func (r *queryResolver) GetProfileLetterThumb(ctx context.Context) (*model.MediaThumb, error) {
+	return cover.GetProfileLetterThumb(ctx)
+}
+
+// GetProfileCv is the resolver for the getProfileCv field.
+func (r *queryResolver) GetProfileCv(ctx context.Context) (*model.Media, error) {
+	return cv.GetProfileCv(ctx)
+}
+
+// GetProfileCvThumb is the resolver for the getProfileCvThumb field.
+func (r *queryResolver) GetProfileCvThumb(ctx context.Context) (*model.MediaThumb, error) {
+	return cv.GetProfileCvThumb(ctx)
+}
+
+// GetProfileImage is the resolver for the getProfileImage field.
+func (r *queryResolver) GetProfileImage(ctx context.Context) (*model.Media, error) {
+	return profile.GetProfileImage(ctx)
+}
+
+// GetProfileImageThumb is the resolver for the getProfileImageThumb field.
+func (r *queryResolver) GetProfileImageThumb(ctx context.Context) (*model.MediaThumb, error) {
+	return profile.GetProfileImageThumb(ctx)
+}
+
+// GetProfileVideo is the resolver for the getProfileVideo field.
+func (r *queryResolver) GetProfileVideo(ctx context.Context) (*model.Media, error) {
+	return video.GetProfileVideo(ctx)
+}
+
+// GetProfileVideoThumb is the resolver for the getProfileVideoThumb field.
+func (r *queryResolver) GetProfileVideoThumb(ctx context.Context) (*model.MediaThumb, error) {
+	return video.GetProfileVideoThumb(ctx)
 }
 
 // GetContracts is the resolver for the getContracts field.

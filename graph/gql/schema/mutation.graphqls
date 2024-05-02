@@ -62,6 +62,18 @@ type Mutation {
     #    Upload
     singleUpload(file: Upload!): Media!
 
+    #    Profile Letter
+    updateProfileLetter(file: Upload!) : Media!
+    removeProfileLetter(mediaId : Int!) : String
+    #    Profile Cv
+    updateProfileCv(file: Upload!): Media!
+    removeProfileCv(mediaId: Int!) : String
+    #    Profile Image
+    updateProfileImage(file: Upload!): Media!
+    removeProfileImage(mediaId: Int!): String
+    #    Profile Video
+    updateProfileVideo(file: Upload!): Media!
+    removeProfileVideo(mediaId: Int!): String
 
     # Contract
     newContract(input: ContractInput!): Contract!
