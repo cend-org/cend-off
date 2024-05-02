@@ -235,7 +235,7 @@ func (r *mutationResolver) NewPost(ctx context.Context, input model.PostInput) (
 
 // UpdPost is the resolver for the updPost field.
 func (r *mutationResolver) UpdPost(ctx context.Context, input model.PostInput) (*model.Post, error) {
-	return post.NewPost(ctx, &input)
+	return post.UpdPost(ctx, &input)
 }
 
 // RemovePost is the resolver for the removePost field.

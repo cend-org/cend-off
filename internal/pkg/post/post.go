@@ -10,7 +10,7 @@ func NewPost(ctx context.Context, input *model.PostInput) (*model.Post, error) {
 	panic(fmt.Errorf("not implemented: NewPost - newPost"))
 }
 
-func UpdPost(ctx context.Context, input model.PostInput) (*model.Post, error) {
+func UpdPost(ctx context.Context, input *model.PostInput) (*model.Post, error) {
 	panic(fmt.Errorf("not implemented: UpdPost - updPost"))
 }
 
