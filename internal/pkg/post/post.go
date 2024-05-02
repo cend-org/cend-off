@@ -239,7 +239,7 @@ func GetTaggedPost(ctx context.Context, postId int) ([]model.PostTag, error) {
 	return postTag, nil
 }
 
-func GetUsePosts(ctx context.Context) ([]model.Post, error) {
+func GetUserPosts(ctx context.Context) ([]model.Post, error) {
 	var (
 		posts []model.Post
 		err   error

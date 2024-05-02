@@ -265,7 +265,6 @@ type ComplexityRoot struct {
 		GetStudent                    func(childComplexity int) int
 		GetSubjects                   func(childComplexity int, id int) int
 		GetTaggedPost                 func(childComplexity int, postID int) int
-		GetUsePosts                   func(childComplexity int) int
 		GetUserAddress                func(childComplexity int) int
 		GetUserAverageMark            func(childComplexity int, userID int) int
 		GetUserEducationLevel         func(childComplexity int) int
@@ -273,6 +272,7 @@ type ComplexityRoot struct {
 		GetUserParent                 func(childComplexity int) int
 		GetUserPhoneNumber            func(childComplexity int) int
 		GetUserPlannings              func(childComplexity int) int
+		GetUserPosts                  func(childComplexity int) int
 		GetUserProfessor              func(childComplexity int) int
 		GetUserSubjects               func(childComplexity int) int
 		GetUserTutor                  func(childComplexity int) int
@@ -1856,13 +1856,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetTaggedPost(childComplexity, args["postId"].(int)), true
 
-	case "Query.getUsePosts":
-		if e.complexity.Query.GetUsePosts == nil {
-			break
-		}
-
-		return e.complexity.Query.GetUsePosts(childComplexity), true
-
 	case "Query.getUserAddress":
 		if e.complexity.Query.GetUserAddress == nil {
 			break
@@ -1916,6 +1909,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetUserPlannings(childComplexity), true
+
+	case "Query.getUserPosts":
+		if e.complexity.Query.GetUserPosts == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserPosts(childComplexity), true
 
 	case "Query.getUserProfessor":
 		if e.complexity.Query.GetUserProfessor == nil {
@@ -3083,7 +3083,7 @@ scalar Upload`, BuiltIn: false},
 
     #    Post
     getPosts : [Post!]!
-    getUsePosts : [Post!]!
+    getUserPosts : [Post!]!
 
     #   Post View
     viewPost(postId: Int!): Post!

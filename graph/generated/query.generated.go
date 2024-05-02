@@ -53,7 +53,7 @@ type QueryResolver interface {
 	GetStudent(ctx context.Context) ([]model.User, error)
 	GenerateQRCode(ctx context.Context) (*string, error)
 	GetPosts(ctx context.Context) ([]model.Post, error)
-	GetUsePosts(ctx context.Context) ([]model.Post, error)
+	GetUserPosts(ctx context.Context) ([]model.Post, error)
 	ViewPost(ctx context.Context, postID int) (*model.Post, error)
 	SearchPost(ctx context.Context, keyword string) ([]model.Post, error)
 	GetTaggedPost(ctx context.Context, postID int) ([]model.PostTag, error)
@@ -2653,8 +2653,8 @@ func (ec *executionContext) fieldContext_Query_getPosts(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_getUsePosts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_getUsePosts(ctx, field)
+func (ec *executionContext) _Query_getUserPosts(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getUserPosts(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -2667,7 +2667,7 @@ func (ec *executionContext) _Query_getUsePosts(ctx context.Context, field graphq
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetUsePosts(rctx)
+		return ec.resolvers.Query().GetUserPosts(rctx)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2684,7 +2684,7 @@ func (ec *executionContext) _Query_getUsePosts(ctx context.Context, field graphq
 	return ec.marshalNPost2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPostᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_getUsePosts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_getUserPosts(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -3806,7 +3806,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "getUsePosts":
+		case "getUserPosts":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -3815,7 +3815,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getUsePosts(ctx, field)
+				res = ec._Query_getUserPosts(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

@@ -57,7 +57,7 @@ type Query {
 
     #    Post
     getPosts : [Post!]!
-    getUsePosts : [Post!]!
+    getUserPosts : [Post!]!
 
     #   Post View
     viewPost(postId: Int!): Post!

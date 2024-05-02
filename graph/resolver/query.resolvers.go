@@ -219,9 +219,9 @@ func (r *queryResolver) GetPosts(ctx context.Context) ([]model.Post, error) {
 	return post.GetPosts(ctx)
 }
 
-// GetUsePosts is the resolver for the getUsePosts field.
-func (r *queryResolver) GetUsePosts(ctx context.Context) ([]model.Post, error) {
-	return post.GetUsePosts(ctx)
+// GetUserPosts is the resolver for the getUserPosts field.
+func (r *queryResolver) GetUserPosts(ctx context.Context) ([]model.Post, error) {
+	return post.GetUserPosts(ctx)
 }
 
 // ViewPost is the resolver for the viewPost field.
