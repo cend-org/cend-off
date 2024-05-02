@@ -7,6 +7,7 @@ package resolver
 import (
 	"context"
 	"fmt"
+	"github.com/cend-org/duval/internal/pkg/post"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/cend-org/duval/graph/generated"
@@ -246,6 +247,36 @@ func (r *mutationResolver) RemoveContract(ctx context.Context, contractID int) (
 // NewContractTimesheetDetail is the resolver for the newContractTimesheetDetail field.
 func (r *mutationResolver) NewContractTimesheetDetail(ctx context.Context, input model.ContractTimesheetDetailInput) (*model.ContractTimesheetDetail, error) {
 	return contract.NewContractTimesheetDetail(ctx, &input)
+}
+
+// NewPost is the resolver for the newPost field.
+func (r *mutationResolver) NewPost(ctx context.Context, input model.PostInput) (*model.Post, error) {
+	return post.NewPost(ctx, &input)
+}
+
+// UpdPost is the resolver for the updPost field.
+func (r *mutationResolver) UpdPost(ctx context.Context, input model.PostInput, postID int) (*model.Post, error) {
+	return post.UpdPost(ctx, &input, postID)
+}
+
+// RemovePost is the resolver for the removePost field.
+func (r *mutationResolver) RemovePost(ctx context.Context, postID int) (*string, error) {
+	return post.RemovePost(ctx, postID)
+}
+
+// TagPost is the resolver for the tagPost field.
+func (r *mutationResolver) TagPost(ctx context.Context, input model.PostTagInput) (*model.Post, error) {
+	return post.TagPost(ctx, &input)
+}
+
+// UpdTagOnPost is the resolver for the updTagOnPost field.
+func (r *mutationResolver) UpdTagOnPost(ctx context.Context, input model.PostTagInput) (*model.Post, error) {
+	return post.UpdTagOnPost(ctx, &input)
+}
+
+// RemoveTagOnPost is the resolver for the removeTagOnPost field.
+func (r *mutationResolver) RemoveTagOnPost(ctx context.Context, postID int) (*model.Post, error) {
+	return post.RemoveTagOnPost(ctx, postID)
 }
 
 // Mutation returns generated.MutationResolver implementation.

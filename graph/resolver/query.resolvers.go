@@ -7,6 +7,7 @@ package resolver
 import (
 	"context"
 	"fmt"
+	"github.com/cend-org/duval/internal/pkg/post"
 	"time"
 
 	"github.com/cend-org/duval/graph/generated"
@@ -238,6 +239,31 @@ func (r *queryResolver) GetContractTimesheetDetailInfo(ctx context.Context, cont
 // GetTotalSalaryValue is the resolver for the getTotalSalaryValue field.
 func (r *queryResolver) GetTotalSalaryValue(ctx context.Context, studentID int, startDate time.Time, endDate time.Time) (*float64, error) {
 	return contract.GetTotalSalary(ctx, studentID, startDate, endDate)
+}
+
+// GetPosts is the resolver for the getPosts field.
+func (r *queryResolver) GetPosts(ctx context.Context) ([]model.Post, error) {
+	return post.GetPosts(ctx)
+}
+
+// GetUserPosts is the resolver for the getUserPosts field.
+func (r *queryResolver) GetUserPosts(ctx context.Context) ([]model.Post, error) {
+	return post.GetUserPosts(ctx)
+}
+
+// ViewPost is the resolver for the viewPost field.
+func (r *queryResolver) ViewPost(ctx context.Context, postID int) (*model.Post, error) {
+	return post.ViewPost(ctx, postID)
+}
+
+// SearchPost is the resolver for the searchPost field.
+func (r *queryResolver) SearchPost(ctx context.Context, keyword string) ([]model.Post, error) {
+	return post.SearchPost(ctx, keyword)
+}
+
+// GetTaggedPost is the resolver for the getTaggedPost field.
+func (r *queryResolver) GetTaggedPost(ctx context.Context, postID int) ([]model.PostTag, error) {
+	return post.GetTaggedPost(ctx, postID)
 }
 
 // Query returns generated.QueryResolver implementation.
