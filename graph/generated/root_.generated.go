@@ -191,12 +191,15 @@ type ComplexityRoot struct {
 		NewMessage                 func(childComplexity int, input model.MessageInput) int
 		NewPassword                func(childComplexity int, password string) int
 		NewPhoneNumber             func(childComplexity int, input model.PhoneNumberInput) int
+		NewPost                    func(childComplexity int, input model.PostInput) int
 		PopulateSchool             func(childComplexity int) int
 		RateUser                   func(childComplexity int, input model.MarkInput) int
 		Register                   func(childComplexity int, input model.UserInput, as int) int
 		RegisterWithEmail          func(childComplexity int, input string, as int) int
 		RemoveContract             func(childComplexity int, contractID int) int
+		RemovePost                 func(childComplexity int, postID int) int
 		RemoveStudent              func(childComplexity int, input model.UserInput) int
+		RemoveTagOnPost            func(childComplexity int, postID int) int
 		RemoveUserAddress          func(childComplexity int) int
 		RemoveUserFromPlanning     func(childComplexity int, calendarPlanningID int, selectedUserID int) int
 		RemoveUserParent           func(childComplexity int, input model.UserInput) int
@@ -205,9 +208,12 @@ type ComplexityRoot struct {
 		RemoveUserTutor            func(childComplexity int, input model.UserInput) int
 		SetUserEducationLevel      func(childComplexity int, subjectID int) int
 		SingleUpload               func(childComplexity int, file graphql.Upload) int
+		TagPost                    func(childComplexity int, input model.PostTagInput) int
 		UpdContract                func(childComplexity int, input model.ContractInput, contractID int) int
 		UpdMessage                 func(childComplexity int, input model.MessageInput) int
 		UpdMyProfile               func(childComplexity int, input model.UserInput) int
+		UpdPost                    func(childComplexity int, input model.PostInput, postID int) int
+		UpdTagOnPost               func(childComplexity int, input model.PostTagInput) int
 		UpdateUserAddress          func(childComplexity int, input model.AddressInput) int
 		UpdateUserEducationLevel   func(childComplexity int, subjectID int) int
 		UpdateUserPhoneNumber      func(childComplexity int, input model.PhoneNumberInput) int
@@ -229,6 +235,34 @@ type ComplexityRoot struct {
 		IsUrgency         func(childComplexity int) int
 		MobilePhoneNumber func(childComplexity int) int
 		UpdatedAt         func(childComplexity int) int
+	}
+
+	Post struct {
+		Content        func(childComplexity int) int
+		CreatedAt      func(childComplexity int) int
+		DeletedAt      func(childComplexity int) int
+		ExpirationDate func(childComplexity int) int
+		Id             func(childComplexity int) int
+		PublisherId    func(childComplexity int) int
+		UpdatedAt      func(childComplexity int) int
+	}
+
+	PostTag struct {
+		CreatedAt  func(childComplexity int) int
+		DeletedAt  func(childComplexity int) int
+		Id         func(childComplexity int) int
+		PostId     func(childComplexity int) int
+		TagContent func(childComplexity int) int
+		UpdatedAt  func(childComplexity int) int
+	}
+
+	PostView struct {
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Id        func(childComplexity int) int
+		PostId    func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		ViewerId  func(childComplexity int) int
 	}
 
 	QrCodeRegistry struct {
@@ -259,10 +293,12 @@ type ComplexityRoot struct {
 		GetMessagesInLanguage          func(childComplexity int, language int) int
 		GetPasswordHistory             func(childComplexity int) int
 		GetPlanningActors              func(childComplexity int, calendarID int) int
+		GetPosts                       func(childComplexity int) int
 		GetSchool                      func(childComplexity int, id int) int
 		GetSchools                     func(childComplexity int) int
 		GetStudent                     func(childComplexity int) int
 		GetSubjects                    func(childComplexity int, id int) int
+		GetTaggedPost                  func(childComplexity int, postID int) int
 		GetTotalSalaryValue            func(childComplexity int, studentID int, startDate time.Time, endDate time.Time) int
 		GetUserAddress                 func(childComplexity int) int
 		GetUserAverageMark             func(childComplexity int, userID int) int
@@ -271,16 +307,19 @@ type ComplexityRoot struct {
 		GetUserParent                  func(childComplexity int) int
 		GetUserPhoneNumber             func(childComplexity int) int
 		GetUserPlannings               func(childComplexity int) int
+		GetUserPosts                   func(childComplexity int) int
 		GetUserProfessor               func(childComplexity int) int
 		GetUserSubjects                func(childComplexity int) int
 		GetUserTutor                   func(childComplexity int) int
 		MyProfile                      func(childComplexity int) int
 		Passwords                      func(childComplexity int) int
+		SearchPost                     func(childComplexity int, keyword string) int
 		SendUserEmailValidationCode    func(childComplexity int) int
 		UserAuthorizationLink          func(childComplexity int, id int) int
 		UserAuthorizationLinks         func(childComplexity int) int
 		Users                          func(childComplexity int) int
 		VerifyUserEmailValidationCode  func(childComplexity int, verifCode int) int
+		ViewPost                       func(childComplexity int, postID int) int
 	}
 
 	School struct {
@@ -1297,6 +1336,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.NewPhoneNumber(childComplexity, args["input"].(model.PhoneNumberInput)), true
 
+	case "Mutation.newPost":
+		if e.complexity.Mutation.NewPost == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_newPost_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewPost(childComplexity, args["input"].(model.PostInput)), true
+
 	case "Mutation.populateSchool":
 		if e.complexity.Mutation.PopulateSchool == nil {
 			break
@@ -1352,6 +1403,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RemoveContract(childComplexity, args["contractId"].(int)), true
 
+	case "Mutation.removePost":
+		if e.complexity.Mutation.RemovePost == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removePost_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemovePost(childComplexity, args["postId"].(int)), true
+
 	case "Mutation.removeStudent":
 		if e.complexity.Mutation.RemoveStudent == nil {
 			break
@@ -1363,6 +1426,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RemoveStudent(childComplexity, args["input"].(model.UserInput)), true
+
+	case "Mutation.removeTagOnPost":
+		if e.complexity.Mutation.RemoveTagOnPost == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeTagOnPost_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveTagOnPost(childComplexity, args["postId"].(int)), true
 
 	case "Mutation.removeUserAddress":
 		if e.complexity.Mutation.RemoveUserAddress == nil {
@@ -1450,6 +1525,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.SingleUpload(childComplexity, args["file"].(graphql.Upload)), true
 
+	case "Mutation.tagPost":
+		if e.complexity.Mutation.TagPost == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_tagPost_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.TagPost(childComplexity, args["input"].(model.PostTagInput)), true
+
 	case "Mutation.updContract":
 		if e.complexity.Mutation.UpdContract == nil {
 			break
@@ -1485,6 +1572,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdMyProfile(childComplexity, args["input"].(model.UserInput)), true
+
+	case "Mutation.updPost":
+		if e.complexity.Mutation.UpdPost == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updPost_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdPost(childComplexity, args["input"].(model.PostInput), args["postId"].(int)), true
+
+	case "Mutation.updTagOnPost":
+		if e.complexity.Mutation.UpdTagOnPost == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updTagOnPost_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdTagOnPost(childComplexity, args["input"].(model.PostTagInput)), true
 
 	case "Mutation.updateUserAddress":
 		if e.complexity.Mutation.UpdateUserAddress == nil {
@@ -1605,6 +1716,139 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.PhoneNumber.UpdatedAt(childComplexity), true
+
+	case "Post.Content":
+		if e.complexity.Post.Content == nil {
+			break
+		}
+
+		return e.complexity.Post.Content(childComplexity), true
+
+	case "Post.CreatedAt":
+		if e.complexity.Post.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Post.CreatedAt(childComplexity), true
+
+	case "Post.DeletedAt":
+		if e.complexity.Post.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Post.DeletedAt(childComplexity), true
+
+	case "Post.ExpirationDate":
+		if e.complexity.Post.ExpirationDate == nil {
+			break
+		}
+
+		return e.complexity.Post.ExpirationDate(childComplexity), true
+
+	case "Post.Id":
+		if e.complexity.Post.Id == nil {
+			break
+		}
+
+		return e.complexity.Post.Id(childComplexity), true
+
+	case "Post.PublisherId":
+		if e.complexity.Post.PublisherId == nil {
+			break
+		}
+
+		return e.complexity.Post.PublisherId(childComplexity), true
+
+	case "Post.UpdatedAt":
+		if e.complexity.Post.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Post.UpdatedAt(childComplexity), true
+
+	case "PostTag.CreatedAt":
+		if e.complexity.PostTag.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.PostTag.CreatedAt(childComplexity), true
+
+	case "PostTag.DeletedAt":
+		if e.complexity.PostTag.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.PostTag.DeletedAt(childComplexity), true
+
+	case "PostTag.Id":
+		if e.complexity.PostTag.Id == nil {
+			break
+		}
+
+		return e.complexity.PostTag.Id(childComplexity), true
+
+	case "PostTag.PostId":
+		if e.complexity.PostTag.PostId == nil {
+			break
+		}
+
+		return e.complexity.PostTag.PostId(childComplexity), true
+
+	case "PostTag.TagContent":
+		if e.complexity.PostTag.TagContent == nil {
+			break
+		}
+
+		return e.complexity.PostTag.TagContent(childComplexity), true
+
+	case "PostTag.UpdatedAt":
+		if e.complexity.PostTag.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.PostTag.UpdatedAt(childComplexity), true
+
+	case "PostView.CreatedAt":
+		if e.complexity.PostView.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.PostView.CreatedAt(childComplexity), true
+
+	case "PostView.DeletedAt":
+		if e.complexity.PostView.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.PostView.DeletedAt(childComplexity), true
+
+	case "PostView.Id":
+		if e.complexity.PostView.Id == nil {
+			break
+		}
+
+		return e.complexity.PostView.Id(childComplexity), true
+
+	case "PostView.PostId":
+		if e.complexity.PostView.PostId == nil {
+			break
+		}
+
+		return e.complexity.PostView.PostId(childComplexity), true
+
+	case "PostView.UpdatedAt":
+		if e.complexity.PostView.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.PostView.UpdatedAt(childComplexity), true
+
+	case "PostView.ViewerId":
+		if e.complexity.PostView.ViewerId == nil {
+			break
+		}
+
+		return e.complexity.PostView.ViewerId(childComplexity), true
 
 	case "QrCodeRegistry.CreatedAt":
 		if e.complexity.QrCodeRegistry.CreatedAt == nil {
@@ -1809,6 +2053,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetPlanningActors(childComplexity, args["calendarId"].(int)), true
 
+	case "Query.getPosts":
+		if e.complexity.Query.GetPosts == nil {
+			break
+		}
+
+		return e.complexity.Query.GetPosts(childComplexity), true
+
 	case "Query.getSchool":
 		if e.complexity.Query.GetSchool == nil {
 			break
@@ -1846,6 +2097,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetSubjects(childComplexity, args["id"].(int)), true
+
+	case "Query.getTaggedPost":
+		if e.complexity.Query.GetTaggedPost == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getTaggedPost_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetTaggedPost(childComplexity, args["postId"].(int)), true
 
 	case "Query.getTotalSalaryValue":
 		if e.complexity.Query.GetTotalSalaryValue == nil {
@@ -1913,6 +2176,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetUserPlannings(childComplexity), true
 
+	case "Query.getUserPosts":
+		if e.complexity.Query.GetUserPosts == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserPosts(childComplexity), true
+
 	case "Query.getUserProfessor":
 		if e.complexity.Query.GetUserProfessor == nil {
 			break
@@ -1947,6 +2217,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Passwords(childComplexity), true
+
+	case "Query.searchPost":
+		if e.complexity.Query.SearchPost == nil {
+			break
+		}
+
+		args, err := ec.field_Query_searchPost_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.SearchPost(childComplexity, args["keyword"].(string)), true
 
 	case "Query.sendUserEmailValidationCode":
 		if e.complexity.Query.SendUserEmailValidationCode == nil {
@@ -1992,6 +2274,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.VerifyUserEmailValidationCode(childComplexity, args["verifCode"].(int)), true
+
+	case "Query.viewPost":
+		if e.complexity.Query.ViewPost == nil {
+			break
+		}
+
+		args, err := ec.field_Query_viewPost_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ViewPost(childComplexity, args["postId"].(int)), true
 
 	case "School.CreatedAt":
 		if e.complexity.School.CreatedAt == nil {
@@ -2535,6 +2829,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputMessageInput,
 		ec.unmarshalInputPasswordInput,
 		ec.unmarshalInputPhoneNumberInput,
+		ec.unmarshalInputPostInput,
+		ec.unmarshalInputPostTagInput,
 		ec.unmarshalInputSchoolInput,
 		ec.unmarshalInputSchoolSubjectInput,
 		ec.unmarshalInputSubjectInput,
@@ -2905,6 +3201,44 @@ type CalendarPlanningActor {
     AuthorizationId: ID! @goField(name: "AuthorizationId")
     CalendarPlanningId: ID! @goField(name: "CalendarPlanningId")
 }`, BuiltIn: false},
+	{Name: "../gql/post/post.graphqls", Input: `type Post{
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    PublisherId:   Int! @goField(name: "PublisherId")
+    Content: String!
+    ExpirationDate: DateTime!
+}
+
+input PostInput {
+    PublisherId:   Int @goField(name: "PublisherId")
+    Content: String
+    ExpirationDate: DateTime
+}
+
+type PostTag {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    PostId:   Int! @goField(name: "PostId")
+    TagContent: String!
+}
+
+input PostTagInput {
+    PostId:   Int @goField(name: "PostId")
+    TagContent: String
+}
+
+type PostView {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    PostId:   Int! @goField(name: "PostId")
+    ViewerId:   Int! @goField(name: "ViewerId")
+}`, BuiltIn: false},
 	{Name: "../gql/qr/qr.graphqls", Input: `type QrCodeRegistry {
     Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
@@ -2996,6 +3330,16 @@ scalar Upload
     removeContract(contractId: Int!): String
 
     newContractTimesheetDetail(input: ContractTimesheetDetailInput!): ContractTimesheetDetail!
+
+    #    Post
+    newPost(input: PostInput!) : Post!
+    updPost(input: PostInput! , postId: Int!) : Post!
+    removePost(postId : Int!) : String
+
+    #    Post tag
+    tagPost(input: PostTagInput!): Post!
+    updTagOnPost(input : PostTagInput!): Post!
+    removeTagOnPost(postId: Int!): Post!
 }
 `, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {
@@ -3061,6 +3405,17 @@ scalar Upload
     getContractTimesheetDetail: [ContractTimesheetDetail!]!
     getContractTimesheetDetailInfo(contractTimesheetId: Int!): ContractTimesheetDetail!
     getTotalSalaryValue(studentId: Int!, startDate: Date!, endDate:  Date!): Float
+
+    #    Post
+    getPosts : [Post!]!
+    getUserPosts : [Post!]!
+
+    #   Post View
+    viewPost(postId: Int!): Post!
+
+    # Post Tag
+    searchPost(keyword: String!): [Post!]!
+    getTaggedPost(postId: Int!): [PostTag!]!
 }`, BuiltIn: false},
 	{Name: "../gql/school/school.graphqls", Input: `type School {
     Id: ID! @goField(name: "Id")

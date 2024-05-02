@@ -61,4 +61,15 @@ type Query {
     getContractTimesheetDetail: [ContractTimesheetDetail!]!
     getContractTimesheetDetailInfo(contractTimesheetId: Int!): ContractTimesheetDetail!
     getTotalSalaryValue(studentId: Int!, startDate: Date!, endDate:  Date!): Float
+
+    #    Post
+    getPosts : [Post!]!
+    getUserPosts : [Post!]!
+
+    #   Post View
+    viewPost(postId: Int!): Post!
+
+    # Post Tag
+    searchPost(keyword: String!): [Post!]!
+    getTaggedPost(postId: Int!): [PostTag!]!
 }

@@ -1,0 +1,38 @@
+type Post{
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    PublisherId:   Int! @goField(name: "PublisherId")
+    Content: String!
+    ExpirationDate: DateTime!
+}
+
+input PostInput {
+    PublisherId:   Int @goField(name: "PublisherId")
+    Content: String
+    ExpirationDate: DateTime
+}
+
+type PostTag {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    PostId:   Int! @goField(name: "PostId")
+    TagContent: String!
+}
+
+input PostTagInput {
+    PostId:   Int @goField(name: "PostId")
+    TagContent: String
+}
+
+type PostView {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    PostId:   Int! @goField(name: "PostId")
+    ViewerId:   Int! @goField(name: "ViewerId")
+}
