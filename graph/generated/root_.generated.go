@@ -7,6 +7,7 @@ import (
 	"context"
 	"errors"
 	"sync/atomic"
+	"time"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
@@ -101,6 +102,31 @@ type ComplexityRoot struct {
 		VerificationCode func(childComplexity int) int
 	}
 
+	Contract struct {
+		CreatedAt     func(childComplexity int) int
+		DeletedAt     func(childComplexity int) int
+		EndDate       func(childComplexity int) int
+		Id            func(childComplexity int) int
+		ParentId      func(childComplexity int) int
+		PaymentMethod func(childComplexity int) int
+		PaymentType   func(childComplexity int) int
+		SalaryValue   func(childComplexity int) int
+		StartDate     func(childComplexity int) int
+		StudentId     func(childComplexity int) int
+		TutorId       func(childComplexity int) int
+		UpdatedAt     func(childComplexity int) int
+	}
+
+	ContractTimesheetDetail struct {
+		ContractId func(childComplexity int) int
+		CreatedAt  func(childComplexity int) int
+		Date       func(childComplexity int) int
+		DeletedAt  func(childComplexity int) int
+		Hours      func(childComplexity int) int
+		Id         func(childComplexity int) int
+		UpdatedAt  func(childComplexity int) int
+	}
+
 	Education struct {
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
@@ -144,43 +170,47 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		AddParentToUser          func(childComplexity int, input model.UserInput) int
-		AddProfessorToUser       func(childComplexity int, input model.UserInput) int
-		AddStudentToLink         func(childComplexity int, input model.UserInput) int
-		AddTutorToUser           func(childComplexity int, input model.UserInput) int
-		AddUserIntoPlanning      func(childComplexity int, calendarID int, selectedUserID int) int
-		CreateUserPlannings      func(childComplexity int, input model.CalendarPlanningInput) int
-		DelMenu                  func(childComplexity int, menuNumber int) int
-		DelMenuItem              func(childComplexity int, input model.MessageInput) int
-		DelMessage               func(childComplexity int, language int, messageNumber int) int
-		DelPassword              func(childComplexity int, id int) int
-		LogIn                    func(childComplexity int, email string, password string) int
-		LoginWithQR              func(childComplexity int, xID string) int
-		NewAddress               func(childComplexity int, input model.AddressInput) int
-		NewAsset                 func(childComplexity int, asset model.AssetInput) int
-		NewMenu                  func(childComplexity int, input model.MessageInput) int
-		NewMenuItem              func(childComplexity int, input model.MessageInput) int
-		NewMessage               func(childComplexity int, input model.MessageInput) int
-		NewPassword              func(childComplexity int, password string) int
-		NewPhoneNumber           func(childComplexity int, input model.PhoneNumberInput) int
-		PopulateSchool           func(childComplexity int) int
-		RateUser                 func(childComplexity int, input model.MarkInput) int
-		Register                 func(childComplexity int, input model.UserInput, as int) int
-		RegisterWithEmail        func(childComplexity int, input string, as int) int
-		RemoveStudent            func(childComplexity int, input model.UserInput) int
-		RemoveUserAddress        func(childComplexity int) int
-		RemoveUserFromPlanning   func(childComplexity int, calendarPlanningID int, selectedUserID int) int
-		RemoveUserParent         func(childComplexity int, input model.UserInput) int
-		RemoveUserPlannings      func(childComplexity int) int
-		RemoveUserProfessor      func(childComplexity int, input model.UserInput) int
-		RemoveUserTutor          func(childComplexity int, input model.UserInput) int
-		SetUserEducationLevel    func(childComplexity int, subjectID int) int
-		SingleUpload             func(childComplexity int, file graphql.Upload) int
-		UpdMessage               func(childComplexity int, input model.MessageInput) int
-		UpdMyProfile             func(childComplexity int, input model.UserInput) int
-		UpdateUserAddress        func(childComplexity int, input model.AddressInput) int
-		UpdateUserEducationLevel func(childComplexity int, subjectID int) int
-		UpdateUserPhoneNumber    func(childComplexity int, input model.PhoneNumberInput) int
+		AddParentToUser            func(childComplexity int, input model.UserInput) int
+		AddProfessorToUser         func(childComplexity int, input model.UserInput) int
+		AddStudentToLink           func(childComplexity int, input model.UserInput) int
+		AddTutorToUser             func(childComplexity int, input model.UserInput) int
+		AddUserIntoPlanning        func(childComplexity int, calendarID int, selectedUserID int) int
+		CreateUserPlannings        func(childComplexity int, input model.CalendarPlanningInput) int
+		DelMenu                    func(childComplexity int, menuNumber int) int
+		DelMenuItem                func(childComplexity int, input model.MessageInput) int
+		DelMessage                 func(childComplexity int, language int, messageNumber int) int
+		DelPassword                func(childComplexity int, id int) int
+		LogIn                      func(childComplexity int, email string, password string) int
+		LoginWithQR                func(childComplexity int, xID string) int
+		NewAddress                 func(childComplexity int, input model.AddressInput) int
+		NewAsset                   func(childComplexity int, asset model.AssetInput) int
+		NewContract                func(childComplexity int, input model.ContractInput) int
+		NewContractTimesheetDetail func(childComplexity int, input model.ContractTimesheetDetailInput) int
+		NewMenu                    func(childComplexity int, input model.MessageInput) int
+		NewMenuItem                func(childComplexity int, input model.MessageInput) int
+		NewMessage                 func(childComplexity int, input model.MessageInput) int
+		NewPassword                func(childComplexity int, password string) int
+		NewPhoneNumber             func(childComplexity int, input model.PhoneNumberInput) int
+		PopulateSchool             func(childComplexity int) int
+		RateUser                   func(childComplexity int, input model.MarkInput) int
+		Register                   func(childComplexity int, input model.UserInput, as int) int
+		RegisterWithEmail          func(childComplexity int, input string, as int) int
+		RemoveContract             func(childComplexity int, contractID int) int
+		RemoveStudent              func(childComplexity int, input model.UserInput) int
+		RemoveUserAddress          func(childComplexity int) int
+		RemoveUserFromPlanning     func(childComplexity int, calendarPlanningID int, selectedUserID int) int
+		RemoveUserParent           func(childComplexity int, input model.UserInput) int
+		RemoveUserPlannings        func(childComplexity int) int
+		RemoveUserProfessor        func(childComplexity int, input model.UserInput) int
+		RemoveUserTutor            func(childComplexity int, input model.UserInput) int
+		SetUserEducationLevel      func(childComplexity int, subjectID int) int
+		SingleUpload               func(childComplexity int, file graphql.Upload) int
+		UpdContract                func(childComplexity int, input model.ContractInput, contractID int) int
+		UpdMessage                 func(childComplexity int, input model.MessageInput) int
+		UpdMyProfile               func(childComplexity int, input model.UserInput) int
+		UpdateUserAddress          func(childComplexity int, input model.AddressInput) int
+		UpdateUserEducationLevel   func(childComplexity int, subjectID int) int
+		UpdateUserPhoneNumber      func(childComplexity int, input model.PhoneNumberInput) int
 	}
 
 	Password struct {
@@ -212,40 +242,45 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		ActivateUser                  func(childComplexity int) int
-		Assets                        func(childComplexity int) int
-		GenerateQRCode                func(childComplexity int) int
-		GetAsset                      func(childComplexity int, id int) int
-		GetCode                       func(childComplexity int) int
-		GetEducation                  func(childComplexity int) int
-		GetMenuItems                  func(childComplexity int, language int, menuNumber int) int
-		GetMenuList                   func(childComplexity int) int
-		GetMessage                    func(childComplexity int, language int, resourceNumber int) int
-		GetMessages                   func(childComplexity int) int
-		GetMessagesInLanguage         func(childComplexity int, language int) int
-		GetPasswordHistory            func(childComplexity int) int
-		GetPlanningActors             func(childComplexity int, calendarID int) int
-		GetSchool                     func(childComplexity int, id int) int
-		GetSchools                    func(childComplexity int) int
-		GetStudent                    func(childComplexity int) int
-		GetSubjects                   func(childComplexity int, id int) int
-		GetUserAddress                func(childComplexity int) int
-		GetUserAverageMark            func(childComplexity int, userID int) int
-		GetUserEducationLevel         func(childComplexity int) int
-		GetUserMarkComment            func(childComplexity int) int
-		GetUserParent                 func(childComplexity int) int
-		GetUserPhoneNumber            func(childComplexity int) int
-		GetUserPlannings              func(childComplexity int) int
-		GetUserProfessor              func(childComplexity int) int
-		GetUserSubjects               func(childComplexity int) int
-		GetUserTutor                  func(childComplexity int) int
-		MyProfile                     func(childComplexity int) int
-		Passwords                     func(childComplexity int) int
-		SendUserEmailValidationCode   func(childComplexity int) int
-		UserAuthorizationLink         func(childComplexity int, id int) int
-		UserAuthorizationLinks        func(childComplexity int) int
-		Users                         func(childComplexity int) int
-		VerifyUserEmailValidationCode func(childComplexity int, verifCode int) int
+		ActivateUser                   func(childComplexity int) int
+		Assets                         func(childComplexity int) int
+		GenerateQRCode                 func(childComplexity int) int
+		GetAsset                       func(childComplexity int, id int) int
+		GetCode                        func(childComplexity int) int
+		GetContract                    func(childComplexity int, contractID int) int
+		GetContractTimesheetDetail     func(childComplexity int) int
+		GetContractTimesheetDetailInfo func(childComplexity int, contractTimesheetID int) int
+		GetContracts                   func(childComplexity int) int
+		GetEducation                   func(childComplexity int) int
+		GetMenuItems                   func(childComplexity int, language int, menuNumber int) int
+		GetMenuList                    func(childComplexity int) int
+		GetMessage                     func(childComplexity int, language int, resourceNumber int) int
+		GetMessages                    func(childComplexity int) int
+		GetMessagesInLanguage          func(childComplexity int, language int) int
+		GetPasswordHistory             func(childComplexity int) int
+		GetPlanningActors              func(childComplexity int, calendarID int) int
+		GetSchool                      func(childComplexity int, id int) int
+		GetSchools                     func(childComplexity int) int
+		GetStudent                     func(childComplexity int) int
+		GetSubjects                    func(childComplexity int, id int) int
+		GetTotalSalaryValue            func(childComplexity int, studentID int, startDate time.Time, endDate time.Time) int
+		GetUserAddress                 func(childComplexity int) int
+		GetUserAverageMark             func(childComplexity int, userID int) int
+		GetUserEducationLevel          func(childComplexity int) int
+		GetUserMarkComment             func(childComplexity int) int
+		GetUserParent                  func(childComplexity int) int
+		GetUserPhoneNumber             func(childComplexity int) int
+		GetUserPlannings               func(childComplexity int) int
+		GetUserProfessor               func(childComplexity int) int
+		GetUserSubjects                func(childComplexity int) int
+		GetUserTutor                   func(childComplexity int) int
+		MyProfile                      func(childComplexity int) int
+		Passwords                      func(childComplexity int) int
+		SendUserEmailValidationCode    func(childComplexity int) int
+		UserAuthorizationLink          func(childComplexity int, id int) int
+		UserAuthorizationLinks         func(childComplexity int) int
+		Users                          func(childComplexity int) int
+		VerifyUserEmailValidationCode  func(childComplexity int, verifCode int) int
 	}
 
 	School struct {
@@ -667,6 +702,139 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Code.VerificationCode(childComplexity), true
 
+	case "Contract.CreatedAt":
+		if e.complexity.Contract.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Contract.CreatedAt(childComplexity), true
+
+	case "Contract.DeletedAt":
+		if e.complexity.Contract.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Contract.DeletedAt(childComplexity), true
+
+	case "Contract.EndDate":
+		if e.complexity.Contract.EndDate == nil {
+			break
+		}
+
+		return e.complexity.Contract.EndDate(childComplexity), true
+
+	case "Contract.Id":
+		if e.complexity.Contract.Id == nil {
+			break
+		}
+
+		return e.complexity.Contract.Id(childComplexity), true
+
+	case "Contract.ParentId":
+		if e.complexity.Contract.ParentId == nil {
+			break
+		}
+
+		return e.complexity.Contract.ParentId(childComplexity), true
+
+	case "Contract.PaymentMethod":
+		if e.complexity.Contract.PaymentMethod == nil {
+			break
+		}
+
+		return e.complexity.Contract.PaymentMethod(childComplexity), true
+
+	case "Contract.PaymentType":
+		if e.complexity.Contract.PaymentType == nil {
+			break
+		}
+
+		return e.complexity.Contract.PaymentType(childComplexity), true
+
+	case "Contract.SalaryValue":
+		if e.complexity.Contract.SalaryValue == nil {
+			break
+		}
+
+		return e.complexity.Contract.SalaryValue(childComplexity), true
+
+	case "Contract.StartDate":
+		if e.complexity.Contract.StartDate == nil {
+			break
+		}
+
+		return e.complexity.Contract.StartDate(childComplexity), true
+
+	case "Contract.StudentId":
+		if e.complexity.Contract.StudentId == nil {
+			break
+		}
+
+		return e.complexity.Contract.StudentId(childComplexity), true
+
+	case "Contract.TutorId":
+		if e.complexity.Contract.TutorId == nil {
+			break
+		}
+
+		return e.complexity.Contract.TutorId(childComplexity), true
+
+	case "Contract.UpdatedAt":
+		if e.complexity.Contract.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Contract.UpdatedAt(childComplexity), true
+
+	case "ContractTimesheetDetail.ContractId":
+		if e.complexity.ContractTimesheetDetail.ContractId == nil {
+			break
+		}
+
+		return e.complexity.ContractTimesheetDetail.ContractId(childComplexity), true
+
+	case "ContractTimesheetDetail.CreatedAt":
+		if e.complexity.ContractTimesheetDetail.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.ContractTimesheetDetail.CreatedAt(childComplexity), true
+
+	case "ContractTimesheetDetail.Date":
+		if e.complexity.ContractTimesheetDetail.Date == nil {
+			break
+		}
+
+		return e.complexity.ContractTimesheetDetail.Date(childComplexity), true
+
+	case "ContractTimesheetDetail.DeletedAt":
+		if e.complexity.ContractTimesheetDetail.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.ContractTimesheetDetail.DeletedAt(childComplexity), true
+
+	case "ContractTimesheetDetail.Hours":
+		if e.complexity.ContractTimesheetDetail.Hours == nil {
+			break
+		}
+
+		return e.complexity.ContractTimesheetDetail.Hours(childComplexity), true
+
+	case "ContractTimesheetDetail.Id":
+		if e.complexity.ContractTimesheetDetail.Id == nil {
+			break
+		}
+
+		return e.complexity.ContractTimesheetDetail.Id(childComplexity), true
+
+	case "ContractTimesheetDetail.UpdatedAt":
+		if e.complexity.ContractTimesheetDetail.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.ContractTimesheetDetail.UpdatedAt(childComplexity), true
+
 	case "Education.CreatedAt":
 		if e.complexity.Education.CreatedAt == nil {
 			break
@@ -1045,6 +1213,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.NewAsset(childComplexity, args["asset"].(model.AssetInput)), true
 
+	case "Mutation.newContract":
+		if e.complexity.Mutation.NewContract == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_newContract_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewContract(childComplexity, args["input"].(model.ContractInput)), true
+
+	case "Mutation.newContractTimesheetDetail":
+		if e.complexity.Mutation.NewContractTimesheetDetail == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_newContractTimesheetDetail_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewContractTimesheetDetail(childComplexity, args["input"].(model.ContractTimesheetDetailInput)), true
+
 	case "Mutation.newMenu":
 		if e.complexity.Mutation.NewMenu == nil {
 			break
@@ -1148,6 +1340,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RegisterWithEmail(childComplexity, args["input"].(string), args["as"].(int)), true
 
+	case "Mutation.removeContract":
+		if e.complexity.Mutation.RemoveContract == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_removeContract_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveContract(childComplexity, args["contractId"].(int)), true
+
 	case "Mutation.removeStudent":
 		if e.complexity.Mutation.RemoveStudent == nil {
 			break
@@ -1245,6 +1449,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.SingleUpload(childComplexity, args["file"].(graphql.Upload)), true
+
+	case "Mutation.updContract":
+		if e.complexity.Mutation.UpdContract == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updContract_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdContract(childComplexity, args["input"].(model.ContractInput), args["contractId"].(int)), true
 
 	case "Mutation.updMessage":
 		if e.complexity.Mutation.UpdMessage == nil {
@@ -1479,6 +1695,44 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetCode(childComplexity), true
 
+	case "Query.getContract":
+		if e.complexity.Query.GetContract == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getContract_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetContract(childComplexity, args["contractId"].(int)), true
+
+	case "Query.getContractTimesheetDetail":
+		if e.complexity.Query.GetContractTimesheetDetail == nil {
+			break
+		}
+
+		return e.complexity.Query.GetContractTimesheetDetail(childComplexity), true
+
+	case "Query.getContractTimesheetDetailInfo":
+		if e.complexity.Query.GetContractTimesheetDetailInfo == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getContractTimesheetDetailInfo_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetContractTimesheetDetailInfo(childComplexity, args["contractTimesheetId"].(int)), true
+
+	case "Query.getContracts":
+		if e.complexity.Query.GetContracts == nil {
+			break
+		}
+
+		return e.complexity.Query.GetContracts(childComplexity), true
+
 	case "Query.getEducation":
 		if e.complexity.Query.GetEducation == nil {
 			break
@@ -1592,6 +1846,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetSubjects(childComplexity, args["id"].(int)), true
+
+	case "Query.getTotalSalaryValue":
+		if e.complexity.Query.GetTotalSalaryValue == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getTotalSalaryValue_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetTotalSalaryValue(childComplexity, args["studentId"].(int), args["startDate"].(time.Time), args["endDate"].(time.Time)), true
 
 	case "Query.getUserAddress":
 		if e.complexity.Query.GetUserAddress == nil {
@@ -2263,6 +2529,8 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputAddressInput,
 		ec.unmarshalInputAssetInput,
 		ec.unmarshalInputCalendarPlanningInput,
+		ec.unmarshalInputContractInput,
+		ec.unmarshalInputContractTimesheetDetailInput,
 		ec.unmarshalInputMarkInput,
 		ec.unmarshalInputMessageInput,
 		ec.unmarshalInputPasswordInput,
@@ -2434,6 +2702,48 @@ type UserAuthorizationLinkActor {
     DeletedAt: DateTime
     UserId: ID!  @goField(name: "UserId")
     VerificationCode: Int!
+}
+`, BuiltIn: false},
+	{Name: "../gql/contract/contract.graphqls", Input: `type Contract {
+    Id: ID!  @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    TutorId: Int! @goField(name: "TutorId")
+    ParentId: Int! @goField(name: "ParentId")
+    StudentId: Int! @goField(name: "StudentId")
+    StartDate: DateTime!
+    EndDate: DateTime!
+    PaymentType: Int!
+    SalaryValue: Float!
+    PaymentMethod: Int!
+}
+
+input ContractInput {
+    TutorId: Int @goField(name: "TutorId")
+    ParentId: Int @goField(name: "ParentId")
+    StudentId: Int @goField(name: "StudentId")
+    StartDate: DateTime
+    EndDate: DateTime
+    PaymentType: Int
+    SalaryValue: Float
+    PaymentMethod: Int
+}
+
+type ContractTimesheetDetail {
+    Id: ID!  @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    ContractId: Int! @goField(name: "ContractId")
+    Date: Date!
+    Hours: Float!
+}
+
+input ContractTimesheetDetailInput {
+    ContractId: Int @goField(name: "ContractId")
+    Date: Date
+    Hours: Float
 }
 `, BuiltIn: false},
 	{Name: "../gql/directive/directive.graphqls", Input: `directive @goModel(
@@ -2613,7 +2923,8 @@ scalar DateTime
 
 
 "The ` + "`" + `UploadFile, // b.txt` + "`" + ` scalar type represents a multipart file upload."
-scalar Upload`, BuiltIn: false},
+scalar Upload
+`, BuiltIn: false},
 	{Name: "../gql/schema/mutation.graphqls", Input: `type Mutation {
     registerWithEmail(input: String!, as: Int!): String
     register(input: UserInput!, as:Int!): String
@@ -2677,6 +2988,14 @@ scalar Upload`, BuiltIn: false},
 
     #    Upload
     singleUpload(file: Upload!): Media!
+
+
+    # Contract
+    newContract(input: ContractInput!): Contract!
+    updContract(input: ContractInput!, contractId: Int!): Contract!
+    removeContract(contractId: Int!): String
+
+    newContractTimesheetDetail(input: ContractTimesheetDetailInput!): ContractTimesheetDetail!
 }
 `, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {
@@ -2735,6 +3054,13 @@ scalar Upload`, BuiltIn: false},
 
     #    Qr QUERIES
     generateQrCode: String
+
+    #    Contract QUERIES
+    getContracts: [Contract!]!
+    getContract (contractId: Int!): Contract!
+    getContractTimesheetDetail: [ContractTimesheetDetail!]!
+    getContractTimesheetDetailInfo(contractTimesheetId: Int!): ContractTimesheetDetail!
+    getTotalSalaryValue(studentId: Int!, startDate: Date!, endDate:  Date!): Float
 }`, BuiltIn: false},
 	{Name: "../gql/school/school.graphqls", Input: `type School {
     Id: ID! @goField(name: "Id")

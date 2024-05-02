@@ -1,203 +1,286 @@
-package model
+package model 
 
-/* AddressInput */
 
-func MapAddressInputToAddress(input AddressInput, existing Address) Address {
-	if input.Country != nil {
-		existing.Country = *input.Country
-	}
+ /* AddressInput */ 
 
-	if input.City != nil {
-		existing.City = *input.City
-	}
 
-	if input.Latitude != nil {
-		existing.Latitude = *input.Latitude
-	}
 
-	if input.Longitude != nil {
-		existing.Longitude = *input.Longitude
-	}
-
-	if input.Street != nil {
-		existing.Street = *input.Street
-	}
-
-	if input.FullAddress != nil {
-		existing.FullAddress = *input.FullAddress
-	}
-
-	return existing
+func MapAddressInputToAddress(input AddressInput, existing Address) Address { 
+ if input.Country != nil { 
+	existing.Country = *input.Country 
+ } 
+ 
+ if input.City != nil { 
+	existing.City = *input.City 
+ } 
+ 
+ if input.Latitude != nil { 
+	existing.Latitude = *input.Latitude 
+ } 
+ 
+ if input.Longitude != nil { 
+	existing.Longitude = *input.Longitude 
+ } 
+ 
+ if input.Street != nil { 
+	existing.Street = *input.Street 
+ } 
+ 
+ if input.FullAddress != nil { 
+	existing.FullAddress = *input.FullAddress 
+ } 
+ 
+  return existing 
 }
 
-/* AssetInput */
+ /* AssetInput */ 
 
-func MapAssetInputToAsset(input AssetInput, existing Asset) Asset {
-	if input.Description != nil {
-		existing.Description = *input.Description
-	}
 
-	return existing
+
+func MapAssetInputToAsset(input AssetInput, existing Asset) Asset { 
+ if input.Description != nil { 
+	existing.Description = *input.Description 
+ } 
+ 
+  return existing 
 }
 
-/* CalendarPlanningInput */
+ /* CalendarPlanningInput */ 
 
-func MapCalendarPlanningInputToCalendarPlanning(input CalendarPlanningInput, existing CalendarPlanning) CalendarPlanning {
-	if input.StartDateTime != nil {
-		existing.StartDateTime = *input.StartDateTime
-	}
 
-	if input.EndDateTime != nil {
-		existing.EndDateTime = *input.EndDateTime
-	}
 
-	if input.Description != nil {
-		existing.Description = *input.Description
-	}
-
-	return existing
+func MapCalendarPlanningInputToCalendarPlanning(input CalendarPlanningInput, existing CalendarPlanning) CalendarPlanning { 
+ if input.StartDateTime != nil { 
+	existing.StartDateTime = *input.StartDateTime 
+ } 
+ 
+ if input.EndDateTime != nil { 
+	existing.EndDateTime = *input.EndDateTime 
+ } 
+ 
+ if input.Description != nil { 
+	existing.Description = *input.Description 
+ } 
+ 
+  return existing 
 }
 
-/* MarkInput */
+ /* ContractInput */ 
 
-func MapMarkInputToMark(input MarkInput, existing Mark) Mark {
-	if input.UserId != nil {
-		existing.UserId = *input.UserId
-	}
 
-	if input.AuthorId != nil {
-		existing.AuthorId = *input.AuthorId
-	}
 
-	if input.AuthorComment != nil {
-		existing.AuthorComment = *input.AuthorComment
-	}
-
-	if input.AuthorMark != nil {
-		existing.AuthorMark = *input.AuthorMark
-	}
-
-	return existing
+func MapContractInputToContract(input ContractInput, existing Contract) Contract { 
+ if input.TutorId != nil { 
+	existing.TutorId = *input.TutorId 
+ } 
+ 
+ if input.ParentId != nil { 
+	existing.ParentId = *input.ParentId 
+ } 
+ 
+ if input.StudentId != nil { 
+	existing.StudentId = *input.StudentId 
+ } 
+ 
+ if input.StartDate != nil { 
+	existing.StartDate = *input.StartDate 
+ } 
+ 
+ if input.EndDate != nil { 
+	existing.EndDate = *input.EndDate 
+ } 
+ 
+ if input.PaymentType != nil { 
+	existing.PaymentType = *input.PaymentType 
+ } 
+ 
+ if input.SalaryValue != nil { 
+	existing.SalaryValue = *input.SalaryValue 
+ } 
+ 
+ if input.PaymentMethod != nil { 
+	existing.PaymentMethod = *input.PaymentMethod 
+ } 
+ 
+  return existing 
 }
 
-/* MessageInput */
+ /* ContractTimesheetDetailInput */ 
 
-func MapMessageInputToMessage(input MessageInput, existing Message) Message {
-	if input.ResourceType != nil {
-		existing.ResourceType = *input.ResourceType
-	}
 
-	if input.ResourceValue != nil {
-		existing.ResourceValue = *input.ResourceValue
-	}
 
-	if input.ResourceNumber != nil {
-		existing.ResourceNumber = *input.ResourceNumber
-	}
-
-	if input.ResourceLabel != nil {
-		existing.ResourceLabel = *input.ResourceLabel
-	}
-
-	if input.ResourceLanguage != nil {
-		existing.ResourceLanguage = *input.ResourceLanguage
-	}
-
-	return existing
+func MapContractTimesheetDetailInputToContractTimesheetDetail(input ContractTimesheetDetailInput, existing ContractTimesheetDetail) ContractTimesheetDetail { 
+ if input.ContractId != nil { 
+	existing.ContractId = *input.ContractId 
+ } 
+ 
+ if input.Date != nil { 
+	existing.Date = *input.Date 
+ } 
+ 
+ if input.Hours != nil { 
+	existing.Hours = *input.Hours 
+ } 
+ 
+  return existing 
 }
 
-/* PasswordInput */
+ /* MarkInput */ 
 
-func MapPasswordInputToPassword(input PasswordInput, existing Password) Password {
-	if input.Hash != nil {
-		existing.Hash = *input.Hash
-	}
 
-	return existing
+
+func MapMarkInputToMark(input MarkInput, existing Mark) Mark { 
+ if input.UserId != nil { 
+	existing.UserId = *input.UserId 
+ } 
+ 
+ if input.AuthorId != nil { 
+	existing.AuthorId = *input.AuthorId 
+ } 
+ 
+ if input.AuthorComment != nil { 
+	existing.AuthorComment = *input.AuthorComment 
+ } 
+ 
+ if input.AuthorMark != nil { 
+	existing.AuthorMark = *input.AuthorMark 
+ } 
+ 
+  return existing 
 }
 
-/* PhoneNumberInput */
+ /* MessageInput */ 
 
-func MapPhoneNumberInputToPhoneNumber(input PhoneNumberInput, existing PhoneNumber) PhoneNumber {
-	if input.MobilePhoneNumber != nil {
-		existing.MobilePhoneNumber = *input.MobilePhoneNumber
-	}
 
-	if input.IsUrgency != nil {
-		existing.IsUrgency = *input.IsUrgency
-	}
 
-	return existing
+func MapMessageInputToMessage(input MessageInput, existing Message) Message { 
+ if input.ResourceType != nil { 
+	existing.ResourceType = *input.ResourceType 
+ } 
+ 
+ if input.ResourceValue != nil { 
+	existing.ResourceValue = *input.ResourceValue 
+ } 
+ 
+ if input.ResourceNumber != nil { 
+	existing.ResourceNumber = *input.ResourceNumber 
+ } 
+ 
+ if input.ResourceLabel != nil { 
+	existing.ResourceLabel = *input.ResourceLabel 
+ } 
+ 
+ if input.ResourceLanguage != nil { 
+	existing.ResourceLanguage = *input.ResourceLanguage 
+ } 
+ 
+  return existing 
 }
 
-/* SchoolInput */
+ /* PasswordInput */ 
 
-func MapSchoolInputToSchool(input SchoolInput, existing School) School {
-	if input.Name != nil {
-		existing.Name = *input.Name
-	}
 
-	return existing
+
+func MapPasswordInputToPassword(input PasswordInput, existing Password) Password { 
+ if input.Hash != nil { 
+	existing.Hash = *input.Hash 
+ } 
+ 
+  return existing 
 }
 
-/* SchoolSubjectInput */
+ /* PhoneNumberInput */ 
 
-func MapSchoolSubjectInputToSchoolSubject(input SchoolSubjectInput, existing SchoolSubject) SchoolSubject {
-	if input.SchoolNumber != nil {
-		existing.SchoolNumber = *input.SchoolNumber
-	}
 
-	if input.Name != nil {
-		existing.Name = *input.Name
-	}
 
-	return existing
+func MapPhoneNumberInputToPhoneNumber(input PhoneNumberInput, existing PhoneNumber) PhoneNumber { 
+ if input.MobilePhoneNumber != nil { 
+	existing.MobilePhoneNumber = *input.MobilePhoneNumber 
+ } 
+ 
+ if input.IsUrgency != nil { 
+	existing.IsUrgency = *input.IsUrgency 
+ } 
+ 
+  return existing 
 }
 
-/* SubjectInput */
+ /* SchoolInput */ 
 
-func MapSubjectInputToSubject(input SubjectInput, existing Subject) Subject {
-	if input.EducationLevelId != nil {
-		existing.EducationLevelId = *input.EducationLevelId
-	}
 
-	if input.Name != nil {
-		existing.Name = *input.Name
-	}
 
-	return existing
+func MapSchoolInputToSchool(input SchoolInput, existing School) School { 
+ if input.Name != nil { 
+	existing.Name = *input.Name 
+ } 
+ 
+  return existing 
 }
 
-/* UserInput */
+ /* SchoolSubjectInput */ 
 
-func MapUserInputToUser(input UserInput, existing User) User {
-	if input.Name != nil {
-		existing.Name = *input.Name
-	}
 
-	if input.FamilyName != nil {
-		existing.FamilyName = *input.FamilyName
-	}
 
-	if input.NickName != nil {
-		existing.NickName = *input.NickName
-	}
+func MapSchoolSubjectInputToSchoolSubject(input SchoolSubjectInput, existing SchoolSubject) SchoolSubject { 
+ if input.SchoolNumber != nil { 
+	existing.SchoolNumber = *input.SchoolNumber 
+ } 
+ 
+ if input.Name != nil { 
+	existing.Name = *input.Name 
+ } 
+ 
+  return existing 
+}
 
-	if input.Email != nil {
-		existing.Email = *input.Email
-	}
+ /* SubjectInput */ 
 
-	if input.BirthDate != nil {
-		existing.BirthDate = *input.BirthDate
-	}
 
-	if input.Sex != nil {
-		existing.Sex = *input.Sex
-	}
 
-	if input.Lang != nil {
-		existing.Lang = *input.Lang
-	}
+func MapSubjectInputToSubject(input SubjectInput, existing Subject) Subject { 
+ if input.EducationLevelId != nil { 
+	existing.EducationLevelId = *input.EducationLevelId 
+ } 
+ 
+ if input.Name != nil { 
+	existing.Name = *input.Name 
+ } 
+ 
+  return existing 
+}
 
-	return existing
+ /* UserInput */ 
+
+
+
+func MapUserInputToUser(input UserInput, existing User) User { 
+ if input.Name != nil { 
+	existing.Name = *input.Name 
+ } 
+ 
+ if input.FamilyName != nil { 
+	existing.FamilyName = *input.FamilyName 
+ } 
+ 
+ if input.NickName != nil { 
+	existing.NickName = *input.NickName 
+ } 
+ 
+ if input.Email != nil { 
+	existing.Email = *input.Email 
+ } 
+ 
+ if input.BirthDate != nil { 
+	existing.BirthDate = *input.BirthDate 
+ } 
+ 
+ if input.Sex != nil { 
+	existing.Sex = *input.Sex 
+ } 
+ 
+ if input.Lang != nil { 
+	existing.Lang = *input.Lang 
+ } 
+ 
+  return existing 
 }

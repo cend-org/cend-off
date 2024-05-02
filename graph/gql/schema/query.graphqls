@@ -54,4 +54,11 @@ type Query {
 
     #    Qr QUERIES
     generateQrCode: String
+
+    #    Contract QUERIES
+    getContracts: [Contract!]!
+    getContract (contractId: Int!): Contract!
+    getContractTimesheetDetail: [ContractTimesheetDetail!]!
+    getContractTimesheetDetailInfo(contractTimesheetId: Int!): ContractTimesheetDetail!
+    getTotalSalaryValue(studentId: Int!, startDate: Date!, endDate:  Date!): Float
 }
