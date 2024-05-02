@@ -130,6 +130,38 @@ func MapPhoneNumberInputToPhoneNumber(input PhoneNumberInput, existing PhoneNumb
 	return existing
 }
 
+/* PostInput */
+
+func MapPostInputToPost(input PostInput, existing Post) Post {
+	if input.PublisherId != nil {
+		existing.PublisherId = *input.PublisherId
+	}
+
+	if input.Content != nil {
+		existing.Content = *input.Content
+	}
+
+	if input.ExpirationDate != nil {
+		existing.ExpirationDate = *input.ExpirationDate
+	}
+
+	return existing
+}
+
+/* PostTagInput */
+
+func MapPostTagInputToPostTag(input PostTagInput, existing PostTag) PostTag {
+	if input.PostId != nil {
+		existing.PostId = *input.PostId
+	}
+
+	if input.TagContent != nil {
+		existing.TagContent = *input.TagContent
+	}
+
+	return existing
+}
+
 /* SchoolInput */
 
 func MapSchoolInputToSchool(input SchoolInput, existing School) School {

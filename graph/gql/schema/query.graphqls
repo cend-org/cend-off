@@ -54,4 +54,14 @@ type Query {
 
     #    Qr QUERIES
     generateQrCode: String
+
+    #    Post
+    getPosts : [Post!]!
+
+    #   Post View
+    viewPost(postId: Int!): Post!
+
+    # Post Tag
+    getTaggedPost(postId: Int!): [Post!]!
+    searchPost(keyword: String!): [Post!]!
 }

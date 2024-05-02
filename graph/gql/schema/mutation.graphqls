@@ -61,4 +61,15 @@ type Mutation {
 
     #    Upload
     singleUpload(file: Upload!): Media!
+
+    #    Post
+    newPost(input: PostInput!) : Post!
+    updPost(input: PostInput!) : Post!
+    removePost(postId : Int!) : String
+
+    #    Post tag
+    tagPost(input: PostTagInput!): Post!
+    updTagOnPost(input : PostTagInput!): Post!
+    removeTagOnPost(postId: Int!): Post!
+
 }

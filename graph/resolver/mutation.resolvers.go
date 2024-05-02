@@ -19,6 +19,7 @@ import (
 	"github.com/cend-org/duval/internal/pkg/media"
 	"github.com/cend-org/duval/internal/pkg/phone"
 	"github.com/cend-org/duval/internal/pkg/planning"
+	"github.com/cend-org/duval/internal/pkg/post"
 	"github.com/cend-org/duval/internal/pkg/translator"
 	usr "github.com/cend-org/duval/internal/pkg/user"
 	"github.com/cend-org/duval/internal/pkg/user/link"
@@ -225,6 +226,36 @@ func (r *mutationResolver) LoginWithQR(ctx context.Context, xID string) (*string
 // SingleUpload is the resolver for the singleUpload field.
 func (r *mutationResolver) SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error) {
 	return media.SingleUpload(ctx, file)
+}
+
+// NewPost is the resolver for the newPost field.
+func (r *mutationResolver) NewPost(ctx context.Context, input model.PostInput) (*model.Post, error) {
+	return post.NewPost(ctx, &input)
+}
+
+// UpdPost is the resolver for the updPost field.
+func (r *mutationResolver) UpdPost(ctx context.Context, input model.PostInput) (*model.Post, error) {
+	return post.NewPost(ctx, &input)
+}
+
+// RemovePost is the resolver for the removePost field.
+func (r *mutationResolver) RemovePost(ctx context.Context, postID int) (*string, error) {
+	return post.RemovePost(ctx, postID)
+}
+
+// TagPost is the resolver for the tagPost field.
+func (r *mutationResolver) TagPost(ctx context.Context, input model.PostTagInput) (*model.Post, error) {
+	return post.TagPost(ctx, &input)
+}
+
+// UpdTagOnPost is the resolver for the updTagOnPost field.
+func (r *mutationResolver) UpdTagOnPost(ctx context.Context, input model.PostTagInput) (*model.Post, error) {
+	return post.UpdTagOnPost(ctx, &input)
+}
+
+// RemoveTagOnPost is the resolver for the removeTagOnPost field.
+func (r *mutationResolver) RemoveTagOnPost(ctx context.Context, postID int) (*model.Post, error) {
+	return post.RemoveTagOnPost(ctx, postID)
 }
 
 // Mutation returns generated.MutationResolver implementation.

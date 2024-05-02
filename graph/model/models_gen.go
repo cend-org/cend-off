@@ -172,6 +172,45 @@ type PhoneNumberInput struct {
 	IsUrgency         *bool   `json:"is_urgency"`
 }
 
+type Post struct {
+	Id             int        `json:"id"`
+	CreatedAt      time.Time  `json:"created_at"`
+	UpdatedAt      time.Time  `json:"updated_at"`
+	DeletedAt      *time.Time `json:"deleted_at"`
+	PublisherId    int        `json:"publisher_id"`
+	Content        string     `json:"content"`
+	ExpirationDate time.Time  `json:"expiration_date"`
+}
+
+type PostInput struct {
+	PublisherId    *int       `json:"publisher_id"`
+	Content        *string    `json:"content"`
+	ExpirationDate *time.Time `json:"expiration_date"`
+}
+
+type PostTag struct {
+	Id         int        `json:"id"`
+	CreatedAt  time.Time  `json:"created_at"`
+	UpdatedAt  time.Time  `json:"updated_at"`
+	DeletedAt  *time.Time `json:"deleted_at"`
+	PostId     int        `json:"post_id"`
+	TagContent string     `json:"tag_content"`
+}
+
+type PostTagInput struct {
+	PostId     *int    `json:"post_id"`
+	TagContent *string `json:"tag_content"`
+}
+
+type PostView struct {
+	Id        int        `json:"id"`
+	CreatedAt time.Time  `json:"created_at"`
+	UpdatedAt time.Time  `json:"updated_at"`
+	DeletedAt *time.Time `json:"deleted_at"`
+	PostId    int        `json:"post_id"`
+	ViewerId  int        `json:"viewer_id"`
+}
+
 type QRCodeRegistry struct {
 	Id        int        `json:"id"`
 	CreatedAt time.Time  `json:"created_at"`

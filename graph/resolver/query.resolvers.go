@@ -18,6 +18,7 @@ import (
 	"github.com/cend-org/duval/internal/pkg/mark"
 	"github.com/cend-org/duval/internal/pkg/phone"
 	"github.com/cend-org/duval/internal/pkg/planning"
+	"github.com/cend-org/duval/internal/pkg/post"
 	"github.com/cend-org/duval/internal/pkg/translator"
 	"github.com/cend-org/duval/internal/pkg/user"
 	"github.com/cend-org/duval/internal/pkg/user/link"
@@ -213,17 +214,27 @@ func (r *queryResolver) GenerateQRCode(ctx context.Context) (*string, error) {
 	return authentication.GenerateQrCode(ctx)
 }
 
+// GetPosts is the resolver for the getPosts field.
+func (r *queryResolver) GetPosts(ctx context.Context) ([]model.Post, error) {
+	return post.GetPosts(ctx)
+}
+
+// ViewPost is the resolver for the viewPost field.
+func (r *queryResolver) ViewPost(ctx context.Context, postID int) (*model.Post, error) {
+	return post.ViewPost(ctx, postID)
+}
+
+// GetTaggedPost is the resolver for the getTaggedPost field.
+func (r *queryResolver) GetTaggedPost(ctx context.Context, postID int) ([]model.Post, error) {
+	return post.GetTaggedPost(ctx, postID)
+}
+
+// SearchPost is the resolver for the searchPost field.
+func (r *queryResolver) SearchPost(ctx context.Context, keyword string) ([]model.Post, error) {
+	return post.SearchPost(ctx, keyword)
+}
+
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 
 type queryResolver struct{ *Resolver }
-
-// !!! WARNING !!!
-// The code below was going to be deleted when updating resolvers. It has been copied here so you have
-// one last chance to move it out of harms way if you want. There are two reasons this happens:
-//   - When renaming or deleting a resolver the old code will be put in here. You can safely delete
-//     it when you're done.
-//   - You have helper methods in this file. Move them out to keep these resolver files clean.
-func (r *queryResolver) RemoveUserAddress(ctx context.Context) (string, error) {
-	return address.RemoveUserAddress(ctx)
-}
