@@ -209,7 +209,7 @@ type ComplexityRoot struct {
 		RemoveContract             func(childComplexity int, contractID int) int
 		RemovePost                 func(childComplexity int, postID int) int
 		RemoveProfileCv            func(childComplexity int, mediaID int) int
-		RemoveProfileImage         func(childComplexity int, mediaID int) int
+		RemoveProfileImage         func(childComplexity int) int
 		RemoveProfileLetter        func(childComplexity int, mediaID int) int
 		RemoveProfileVideo         func(childComplexity int, mediaID int) int
 		RemoveStudent              func(childComplexity int, input model.UserInput) int
@@ -236,6 +236,7 @@ type ComplexityRoot struct {
 		UpdateUserEducationLevel   func(childComplexity int, subjectID int) int
 		UpdateUserPhoneNumber      func(childComplexity int, input model.PhoneNumberInput) int
 		UploadProfileCv            func(childComplexity int, file graphql.Upload) int
+		UploadProfileImage         func(childComplexity int, file graphql.Upload) int
 		UploadProfileLetter        func(childComplexity int, file graphql.Upload) int
 	}
 
@@ -1509,12 +1510,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_Mutation_removeProfileImage_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.RemoveProfileImage(childComplexity, args["mediaId"].(int)), true
+		return e.complexity.Mutation.RemoveProfileImage(childComplexity), true
 
 	case "Mutation.removeProfileLetter":
 		if e.complexity.Mutation.RemoveProfileLetter == nil {
@@ -1817,6 +1813,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UploadProfileCv(childComplexity, args["file"].(graphql.Upload)), true
+
+	case "Mutation.uploadProfileImage":
+		if e.complexity.Mutation.UploadProfileImage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadProfileImage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadProfileImage(childComplexity, args["file"].(graphql.Upload)), true
 
 	case "Mutation.uploadProfileLetter":
 		if e.complexity.Mutation.UploadProfileLetter == nil {
@@ -3595,8 +3603,9 @@ scalar Upload
     updateProfileCv(file: Upload!): Media!
     removeProfileCv(mediaId: Int!) : String
     #    Profile Image
+    uploadProfileImage(file: Upload!): Media!
     updateProfileImage(file: Upload!): Media!
-    removeProfileImage(mediaId: Int!): String
+    removeProfileImage: String
     #    Profile Video
     updateProfileVideo(file: Upload!): Media!
     removeProfileVideo(mediaId: Int!): String

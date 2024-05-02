@@ -71,8 +71,9 @@ type Mutation {
     updateProfileCv(file: Upload!): Media!
     removeProfileCv(mediaId: Int!) : String
     #    Profile Image
+    uploadProfileImage(file: Upload!): Media!
     updateProfileImage(file: Upload!): Media!
-    removeProfileImage(mediaId: Int!): String
+    removeProfileImage: String
     #    Profile Video
     updateProfileVideo(file: Upload!): Media!
     removeProfileVideo(mediaId: Int!): String

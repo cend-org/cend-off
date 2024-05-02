@@ -263,14 +263,19 @@ func (r *mutationResolver) RemoveProfileCv(ctx context.Context, mediaID int) (*s
 	return cv.RemoveProfileCv(ctx, mediaID)
 }
 
+// UploadProfileImage is the resolver for the uploadProfileImage field.
+func (r *mutationResolver) UploadProfileImage(ctx context.Context, file graphql.Upload) (*model.Media, error) {
+	return profile.UploadProfileImage(ctx, &file)
+}
+
 // UpdateProfileImage is the resolver for the updateProfileImage field.
 func (r *mutationResolver) UpdateProfileImage(ctx context.Context, file graphql.Upload) (*model.Media, error) {
 	return profile.UpdateProfileImage(ctx, &file)
 }
 
 // RemoveProfileImage is the resolver for the removeProfileImage field.
-func (r *mutationResolver) RemoveProfileImage(ctx context.Context, mediaID int) (*string, error) {
-	return profile.RemoveProfileImage(ctx, mediaID)
+func (r *mutationResolver) RemoveProfileImage(ctx context.Context) (*string, error) {
+	return profile.RemoveProfileImage(ctx)
 }
 
 // UpdateProfileVideo is the resolver for the updateProfileVideo field.
