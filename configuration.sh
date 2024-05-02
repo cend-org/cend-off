@@ -1,14 +1,9 @@
 #!/bin/bash
 sudo apt update
-
 sudo apt install -y golang
-
 go version
-
 sudo apt install git
-
 sudo git clone https://github.com/cend-org/duval.git
-
 sudo nano /etc/systemd/system/cend.service
 sudo systemctl daemon-reload
 sudo systemctl enable cend.service
