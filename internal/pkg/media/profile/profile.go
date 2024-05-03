@@ -26,6 +26,7 @@ func UploadProfileImage(ctx context.Context, file *graphql.Upload) (*model.Media
 		tok   *token.Token
 		err   error
 	)
+
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &media, errx.UnAuthorizedError
@@ -40,7 +41,7 @@ func UploadProfileImage(ctx context.Context, file *graphql.Upload) (*model.Media
 		return &media, errx.TypeError
 
 	}
-	if !utils.IsValidFile(mType.String()) {
+	if !utils.IsValidImage(mType.String()) {
 		return &media, errx.TypeError
 	}
 
@@ -59,11 +60,9 @@ func UploadProfileImage(ctx context.Context, file *graphql.Upload) (*model.Media
 		return &media, errx.DbInsertError
 	}
 
-	if utils.IsValidImage(mType.String()) {
-		err = utils.CreateThumb(media.Xid, media.Extension, *file)
-		if err != nil {
-			return &media, errx.ThumbError
-		}
+	err = utils.CreateThumb(media.Xid, media.Extension, *file)
+	if err != nil {
+		return &media, errx.ThumbError
 	}
 
 	err = mediafile.SetUserMediaDetail(UserProfileImage, tok.UserId, media.Xid)
@@ -143,6 +142,16 @@ func UpdateProfileImage(ctx context.Context, file *graphql.Upload) (*model.Media
 
 	}
 
+	mType, err := mimetype.DetectReader(file.File)
+	if err != nil {
+		return &media, errx.TypeError
+
+	}
+
+	if !utils.IsValidImage(mType.String()) {
+		return &media, errx.TypeError
+	}
+
 	oldMedia, err := mediafile.GetMedia(tok.UserId, UserProfileImage)
 	if err != nil {
 		return &media, errx.DbGetError
@@ -168,6 +177,12 @@ func UpdateProfileImage(ctx context.Context, file *graphql.Upload) (*model.Media
 	if err != nil {
 		return &media, errx.DbInsertError
 	}
+
+	err = utils.CreateThumb(media.Xid, media.Extension, *file)
+	if err != nil {
+		return &media, errx.ThumbError
+	}
+
 	return &media, nil
 }
 

@@ -27,6 +27,8 @@ func UploadProfileLetter(ctx context.Context, file *graphql.Upload) (*model.Medi
 		err          error
 		documentType int
 	)
+	documentType = CV
+
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &media, errx.UnAuthorizedError
@@ -60,12 +62,9 @@ func UploadProfileLetter(ctx context.Context, file *graphql.Upload) (*model.Medi
 		return &media, errx.DbInsertError
 	}
 
-	if utils.IsValidDocument(mType.String()) {
-		documentType = CV
-		err = utils.CreateDocumentThumb(media.Xid, media.Extension, *file)
-		if err != nil {
-			return &media, errx.ThumbError
-		}
+	err = utils.CreateDocumentThumb(media.Xid, media.Extension, *file)
+	if err != nil {
+		return &media, errx.ThumbError
 	}
 
 	err = mediafile.SetUserMediaDetail(documentType, tok.UserId, media.Xid)
@@ -93,6 +92,16 @@ func UpdateProfileCv(ctx context.Context, file *graphql.Upload) (*model.Media, e
 
 	}
 
+	mType, err := mimetype.DetectReader(file.File)
+	if err != nil {
+		return &media, errx.TypeError
+
+	}
+
+	if !utils.IsValidDocument(mType.String()) {
+		return &media, errx.TypeError
+	}
+
 	oldMedia, err := mediafile.GetMedia(tok.UserId, CV)
 	if err != nil {
 		return &media, errx.DbGetError
@@ -118,6 +127,12 @@ func UpdateProfileCv(ctx context.Context, file *graphql.Upload) (*model.Media, e
 	if err != nil {
 		return &media, errx.DbInsertError
 	}
+
+	err = utils.CreateDocumentThumb(media.Xid, media.Extension, *file)
+	if err != nil {
+		return &media, errx.ThumbError
+	}
+
 	return &media, nil
 }
 

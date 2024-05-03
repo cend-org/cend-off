@@ -41,7 +41,7 @@ func UploadProfileVideo(ctx context.Context, file *graphql.Upload) (*model.Media
 		return &media, errx.TypeError
 
 	}
-	if !utils.IsValidFile(mType.String()) {
+	if !utils.IsValidVideo(mType.String()) {
 		return &media, errx.TypeError
 	}
 
@@ -60,11 +60,9 @@ func UploadProfileVideo(ctx context.Context, file *graphql.Upload) (*model.Media
 		return &media, errx.DbInsertError
 	}
 
-	if utils.IsValidVideo(mType.String()) {
-		err = utils.CreateThumb(media.Xid, media.Extension, *file)
-		if err != nil {
-			return &media, errx.ThumbError
-		}
+	err = utils.CreateThumb(media.Xid, media.Extension, *file)
+	if err != nil {
+		return &media, errx.ThumbError
 	}
 
 	err = mediafile.SetUserMediaDetail(UserProfileVideo, tok.UserId, media.Xid)
@@ -144,6 +142,16 @@ func UpdateProfileVideo(ctx context.Context, file *graphql.Upload) (*model.Media
 
 	}
 
+	mType, err := mimetype.DetectReader(file.File)
+	if err != nil {
+		return &media, errx.TypeError
+
+	}
+
+	if !utils.IsValidDocument(mType.String()) {
+		return &media, errx.TypeError
+	}
+
 	oldMedia, err := mediafile.GetMedia(tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &media, errx.DbGetError
@@ -169,6 +177,12 @@ func UpdateProfileVideo(ctx context.Context, file *graphql.Upload) (*model.Media
 	if err != nil {
 		return &media, errx.DbInsertError
 	}
+
+	err = utils.CreateThumb(media.Xid, media.Extension, *file)
+	if err != nil {
+		return &media, errx.ThumbError
+	}
+
 	return &media, nil
 }
 
