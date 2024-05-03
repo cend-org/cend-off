@@ -58,16 +58,17 @@ func RemoveUserMediaDetail(userMediaDetail model.UserMediaDetail) (err error) {
 }
 
 func GetMediaThumb(userId, documentType int) (media model.MediaThumb, err error) {
-	err = database.Get(&media, `SELECT media_thumb.*
+	err = database.Get(&media,
+		`SELECT media_thumb.*
 				FROM media_thumb
-						 JOIN media ON  media.xid = media_thumb.media_xid
-						 JOIN user ON user.profile_image_xid = media.xid
-						 JOIN user_media_detail ON user.id = user_media_detail.owner_id
-				WHERE user_media_detail.owner_id = ? and document_type = ?`, userId, documentType)
+						 JOIN media ON media_thumb.media_xid = media.xid
+						 JOIN user_media_detail ON user_media_detail.document_xid = media.xid
+				WHERE user_media_detail.owner_id = ?
+				  AND user_media_detail.document_type = ?`, userId, documentType)
 	if err != nil {
 		return media, err
 	}
-	return media, err
+	return media, nil
 }
 
 func RemoveMedia(media model.Media) (err error) {
@@ -76,6 +77,14 @@ func RemoveMedia(media model.Media) (err error) {
 		return err
 	}
 	return
+}
+
+func RemoveMediaThumb(mediaThumb model.MediaThumb) (err error) {
+	err = database.Delete(mediaThumb)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func SaveFile(uploadPath string, file graphql.Upload) error {

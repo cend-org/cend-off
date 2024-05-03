@@ -225,6 +225,17 @@ func RemoveProfileLetter(ctx context.Context) (*string, error) {
 	if err != nil {
 		return &status, errx.DbDeleteError
 	}
+
+	mediaThumb, err := mediafile.GetMediaThumb(tok.UserId, Letter)
+	if err != nil {
+		return &status, errx.DbGetError
+	}
+
+	err = mediafile.RemoveMediaThumb(mediaThumb)
+	if err != nil {
+		return &status, errx.DbDeleteError
+	}
+
 	status = "success"
 	return &status, nil
 
