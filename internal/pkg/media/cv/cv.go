@@ -157,24 +157,24 @@ func RemoveProfileCv(ctx context.Context) (*string, error) {
 		return &status, errx.DbGetError
 	}
 
-	err = mediafile.RemoveMedia(media)
-	if err != nil {
-		return &status, errx.DbDeleteError
-	}
-
 	mediaThumb, err := mediafile.GetMediaThumb(tok.UserId, CV)
 	if err != nil {
 		return &status, errx.DbGetError
 	}
 
-	err = mediafile.RemoveMediaThumb(mediaThumb)
+	userMediaDetail, err := mediafile.GetUserMediaDetail(tok.UserId, CV)
+	if err != nil {
+		return &status, errx.DbGetError
+	}
+
+	err = mediafile.RemoveMedia(media)
 	if err != nil {
 		return &status, errx.DbDeleteError
 	}
 
-	userMediaDetail, err := mediafile.GetUserMediaDetail(tok.UserId, CV)
+	err = mediafile.RemoveMediaThumb(mediaThumb)
 	if err != nil {
-		return &status, errx.DbGetError
+		return &status, errx.DbDeleteError
 	}
 
 	err = mediafile.RemoveUserMediaDetail(userMediaDetail)
