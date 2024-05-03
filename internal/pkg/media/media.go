@@ -49,14 +49,6 @@ WHERE user_media_detail.owner_id = ? AND user_media_detail.document_type = ?`, u
 	return media, err
 }
 
-func RemoveUserMediaDetail(userMediaDetail model.UserMediaDetail) (err error) {
-	err = database.Delete(userMediaDetail)
-	if err != nil {
-		return err
-	}
-	return
-}
-
 func GetMediaThumb(userId, documentType int) (media model.MediaThumb, err error) {
 	err = database.Get(&media,
 		`SELECT media_thumb.*
@@ -69,6 +61,14 @@ func GetMediaThumb(userId, documentType int) (media model.MediaThumb, err error)
 		return media, err
 	}
 	return media, nil
+}
+
+func RemoveUserMediaDetail(userMediaDetail model.UserMediaDetail) (err error) {
+	err = database.Delete(userMediaDetail)
+	if err != nil {
+		return err
+	}
+	return
 }
 
 func RemoveMedia(media model.Media) (err error) {
