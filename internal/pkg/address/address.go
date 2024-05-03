@@ -103,42 +103,42 @@ func GetUserAddress(ctx context.Context) (*model.Address, error) {
 	return &address, nil
 }
 
-func RemoveUserAddress(ctx context.Context) (string, error) {
+func RemoveUserAddress(ctx context.Context) (*bool, error) {
 	var (
 		tok *token.Token
 
 		address     model.Address
 		userAddress model.UserAddress
 		err         error
-		status      string
+		status      bool
 	)
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
-		return status, errx.UnAuthorizedError
+		return &status, errx.UnAuthorizedError
 	}
 
 	address, err = GetAddressWithId(tok.UserId)
 	if err != nil {
-		return status, errx.DbGetError
+		return &status, errx.DbGetError
 	}
 
 	err = database.Delete(address)
 	if err != nil {
-		return status, errx.DbDeleteError
+		return &status, errx.DbDeleteError
 	}
 
 	userAddress, err = GetUserAddressWithId(tok.UserId)
 	if err != nil {
-		return status, errx.DbGetError
+		return &status, errx.DbGetError
 	}
 
 	err = database.Delete(userAddress)
 	if err != nil {
-		return status, errx.DbDeleteError
+		return &status, errx.DbDeleteError
 	}
-	status = "Address removed successfully!"
+	status = true
 
-	return status, nil
+	return &status, nil
 }
 
 /*

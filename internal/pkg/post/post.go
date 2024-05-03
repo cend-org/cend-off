@@ -59,12 +59,12 @@ func UpdPost(ctx context.Context, input *model.PostInput, postId int) (*model.Po
 	return &post, nil
 }
 
-func RemovePost(ctx context.Context, postId int) (*string, error) {
+func RemovePost(ctx context.Context, postId int) (*bool, error) {
 	var (
 		post   model.Post
 		err    error
 		tok    *token.Token
-		status string
+		status bool
 	)
 
 	tok, err = token.GetFromContext(ctx)
@@ -82,7 +82,8 @@ func RemovePost(ctx context.Context, postId int) (*string, error) {
 		return &status, errx.DbInsertError
 	}
 
-	status = "success"
+	status = true
+
 	return &status, nil
 }
 

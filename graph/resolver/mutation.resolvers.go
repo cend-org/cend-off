@@ -98,7 +98,7 @@ func (r *mutationResolver) UpdMessage(ctx context.Context, input model.MessageIn
 }
 
 // DelMessage is the resolver for the delMessage field.
-func (r *mutationResolver) DelMessage(ctx context.Context, language int, messageNumber int) (*string, error) {
+func (r *mutationResolver) DelMessage(ctx context.Context, language int, messageNumber int) (*bool, error) {
 	return translator.DelMessage(ctx, language, messageNumber)
 }
 
@@ -108,7 +108,7 @@ func (r *mutationResolver) NewMenu(ctx context.Context, input model.MessageInput
 }
 
 // DelMenu is the resolver for the delMenu field.
-func (r *mutationResolver) DelMenu(ctx context.Context, menuNumber int) (*string, error) {
+func (r *mutationResolver) DelMenu(ctx context.Context, menuNumber int) (*bool, error) {
 	return translator.DelMenu(ctx, menuNumber)
 }
 
@@ -118,7 +118,7 @@ func (r *mutationResolver) NewMenuItem(ctx context.Context, input model.MessageI
 }
 
 // DelMenuItem is the resolver for the delMenuItem field.
-func (r *mutationResolver) DelMenuItem(ctx context.Context, input model.MessageInput) (*string, error) {
+func (r *mutationResolver) DelMenuItem(ctx context.Context, input model.MessageInput) (*bool, error) {
 	return translator.DelMenuItem(ctx, &input)
 }
 
@@ -133,7 +133,7 @@ func (r *mutationResolver) UpdateUserAddress(ctx context.Context, input model.Ad
 }
 
 // RemoveUserAddress is the resolver for the removeUserAddress field.
-func (r *mutationResolver) RemoveUserAddress(ctx context.Context) (string, error) {
+func (r *mutationResolver) RemoveUserAddress(ctx context.Context) (*bool, error) {
 	return address.RemoveUserAddress(ctx)
 }
 
@@ -158,12 +158,12 @@ func (r *mutationResolver) AddUserIntoPlanning(ctx context.Context, calendarID i
 }
 
 // RemoveUserPlannings is the resolver for the removeUserPlannings field.
-func (r *mutationResolver) RemoveUserPlannings(ctx context.Context) (*string, error) {
+func (r *mutationResolver) RemoveUserPlannings(ctx context.Context) (*bool, error) {
 	return planning.RemoveUserPlannings(ctx)
 }
 
 // RemoveUserFromPlanning is the resolver for the removeUserFromPlanning field.
-func (r *mutationResolver) RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*string, error) {
+func (r *mutationResolver) RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*bool, error) {
 	return planning.RemoveUserFromPlanning(ctx, calendarPlanningID, selectedUserID)
 }
 
@@ -188,7 +188,7 @@ func (r *mutationResolver) AddParentToUser(ctx context.Context, input model.User
 }
 
 // RemoveUserParent is the resolver for the removeUserParent field.
-func (r *mutationResolver) RemoveUserParent(ctx context.Context, input model.UserInput) (*string, error) {
+func (r *mutationResolver) RemoveUserParent(ctx context.Context, input model.UserInput) (*bool, error) {
 	return link.RemoveUserParent(ctx, &input)
 }
 
@@ -198,7 +198,7 @@ func (r *mutationResolver) AddTutorToUser(ctx context.Context, input model.UserI
 }
 
 // RemoveUserTutor is the resolver for the removeUserTutor field.
-func (r *mutationResolver) RemoveUserTutor(ctx context.Context, input model.UserInput) (*string, error) {
+func (r *mutationResolver) RemoveUserTutor(ctx context.Context, input model.UserInput) (*bool, error) {
 	return link.RemoveUserTutor(ctx, &input)
 }
 
@@ -208,7 +208,7 @@ func (r *mutationResolver) AddProfessorToUser(ctx context.Context, input model.U
 }
 
 // RemoveUserProfessor is the resolver for the removeUserProfessor field.
-func (r *mutationResolver) RemoveUserProfessor(ctx context.Context, input model.UserInput) (*string, error) {
+func (r *mutationResolver) RemoveUserProfessor(ctx context.Context, input model.UserInput) (*bool, error) {
 	return link.RemoveUserProfessor(ctx, &input)
 }
 
@@ -218,7 +218,7 @@ func (r *mutationResolver) AddStudentToLink(ctx context.Context, input model.Use
 }
 
 // RemoveStudent is the resolver for the removeStudent field.
-func (r *mutationResolver) RemoveStudent(ctx context.Context, input model.UserInput) (*string, error) {
+func (r *mutationResolver) RemoveStudent(ctx context.Context, input model.UserInput) (*bool, error) {
 	return link.RemoveStudent(ctx, &input)
 }
 
@@ -238,7 +238,7 @@ func (r *mutationResolver) UpdateProfileLetter(ctx context.Context, file graphql
 }
 
 // RemoveProfileLetter is the resolver for the removeProfileLetter field.
-func (r *mutationResolver) RemoveProfileLetter(ctx context.Context) (*string, error) {
+func (r *mutationResolver) RemoveProfileLetter(ctx context.Context) (*bool, error) {
 	return cover.RemoveProfileLetter(ctx)
 }
 
@@ -253,7 +253,7 @@ func (r *mutationResolver) UpdateProfileCv(ctx context.Context, file graphql.Upl
 }
 
 // RemoveProfileCv is the resolver for the removeProfileCv field.
-func (r *mutationResolver) RemoveProfileCv(ctx context.Context) (*string, error) {
+func (r *mutationResolver) RemoveProfileCv(ctx context.Context) (*bool, error) {
 	return cv.RemoveProfileCv(ctx)
 }
 
@@ -268,7 +268,7 @@ func (r *mutationResolver) UpdateProfileImage(ctx context.Context, file graphql.
 }
 
 // RemoveProfileImage is the resolver for the removeProfileImage field.
-func (r *mutationResolver) RemoveProfileImage(ctx context.Context) (*string, error) {
+func (r *mutationResolver) RemoveProfileImage(ctx context.Context) (*bool, error) {
 	return profile.RemoveProfileImage(ctx)
 }
 
@@ -283,7 +283,7 @@ func (r *mutationResolver) UpdateProfileVideo(ctx context.Context, file graphql.
 }
 
 // RemoveProfileVideo is the resolver for the removeProfileVideo field.
-func (r *mutationResolver) RemoveProfileVideo(ctx context.Context) (*string, error) {
+func (r *mutationResolver) RemoveProfileVideo(ctx context.Context) (*bool, error) {
 	return video.RemoveProfileVideo(ctx)
 }
 
@@ -298,7 +298,7 @@ func (r *mutationResolver) UpdContract(ctx context.Context, input model.Contract
 }
 
 // RemoveContract is the resolver for the removeContract field.
-func (r *mutationResolver) RemoveContract(ctx context.Context, contractID int) (*string, error) {
+func (r *mutationResolver) RemoveContract(ctx context.Context, contractID int) (*bool, error) {
 	return contract.RemoveContract(ctx, contractID)
 }
 
@@ -318,7 +318,7 @@ func (r *mutationResolver) UpdPost(ctx context.Context, input model.PostInput, p
 }
 
 // RemovePost is the resolver for the removePost field.
-func (r *mutationResolver) RemovePost(ctx context.Context, postID int) (*string, error) {
+func (r *mutationResolver) RemovePost(ctx context.Context, postID int) (*bool, error) {
 	return post.RemovePost(ctx, postID)
 }
 
