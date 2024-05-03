@@ -213,22 +213,22 @@ func RemoveProfileVideo(ctx context.Context) (*string, error) {
 		return &status, errx.DbDeleteError
 	}
 
-	userMediaDetail, err = mediafile.GetUserMediaDetail(tok.UserId, UserProfileVideo)
-	if err != nil {
-		return &status, errx.DbGetError
-	}
-
-	err = mediafile.RemoveUserMediaDetail(userMediaDetail)
-	if err != nil {
-		return &status, errx.DbDeleteError
-	}
-
 	mediaThumb, err := mediafile.GetMediaThumb(tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &status, errx.DbGetError
 	}
 
 	err = mediafile.RemoveMediaThumb(mediaThumb)
+	if err != nil {
+		return &status, errx.DbDeleteError
+	}
+
+	userMediaDetail, err = mediafile.GetUserMediaDetail(tok.UserId, UserProfileVideo)
+	if err != nil {
+		return &status, errx.DbGetError
+	}
+
+	err = mediafile.RemoveUserMediaDetail(userMediaDetail)
 	if err != nil {
 		return &status, errx.DbDeleteError
 	}

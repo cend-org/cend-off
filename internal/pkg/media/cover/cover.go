@@ -14,6 +14,7 @@ import (
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/joinverse/xid"
 	"path/filepath"
+	"time"
 )
 
 const (
@@ -197,6 +198,7 @@ func RemoveProfileLetter(ctx context.Context) (*string, error) {
 		err    error
 		status string
 	)
+	time.Sleep(100)
 
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
@@ -216,22 +218,22 @@ func RemoveProfileLetter(ctx context.Context) (*string, error) {
 		return &status, errx.DbDeleteError
 	}
 
-	userMediaDetail, err := mediafile.GetUserMediaDetail(tok.UserId, Letter)
-	if err != nil {
-		return &status, errx.DbGetError
-	}
-
-	err = mediafile.RemoveUserMediaDetail(userMediaDetail)
-	if err != nil {
-		return &status, errx.DbDeleteError
-	}
-
 	mediaThumb, err := mediafile.GetMediaThumb(tok.UserId, Letter)
 	if err != nil {
 		return &status, errx.DbGetError
 	}
 
 	err = mediafile.RemoveMediaThumb(mediaThumb)
+	if err != nil {
+		return &status, errx.DbDeleteError
+	}
+
+	userMediaDetail, err := mediafile.GetUserMediaDetail(tok.UserId, Letter)
+	if err != nil {
+		return &status, errx.DbGetError
+	}
+
+	err = mediafile.RemoveUserMediaDetail(userMediaDetail)
 	if err != nil {
 		return &status, errx.DbDeleteError
 	}
