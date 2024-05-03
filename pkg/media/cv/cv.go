@@ -67,7 +67,7 @@ func UploadProfileLetter(ctx context.Context, file *graphql.Upload) (*model.Medi
 		return &media, errx.ThumbError
 	}
 
-	err = mediafile.mediafile.SetUserMediaDetail(documentType, tok.UserId, media.Xid)
+	err = mediafile.SetUserMediaDetail(documentType, tok.UserId, media.Xid)
 	if err != nil {
 		return &media, errx.DbInsertError
 	}
