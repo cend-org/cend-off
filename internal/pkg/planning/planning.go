@@ -117,12 +117,12 @@ func GetPlanningActors(ctx context.Context, calendarId int) ([]model.User, error
 	return calendarPlanningActors, nil
 }
 
-func RemoveUserFromPlanning(ctx context.Context, calendarPlanningId int, selectedUserId int) (*string, error) {
+func RemoveUserFromPlanning(ctx context.Context, calendarPlanningId int, selectedUserId int) (*bool, error) {
 	var (
 		selectedCalendarPlanningActor model.CalendarPlanningActor
 		tok                           *token.Token
 		err                           error
-		status                        string
+		status                        bool
 	)
 
 	tok, err = token.GetFromContext(ctx)
@@ -144,10 +144,12 @@ func RemoveUserFromPlanning(ctx context.Context, calendarPlanningId int, selecte
 		return &status, errx.DbDeleteError
 	}
 
+	status = true
+
 	return &status, nil
 }
 
-func RemoveUserPlannings(ctx context.Context) (*string, error) {
+func RemoveUserPlannings(ctx context.Context) (*bool, error) {
 	panic(fmt.Errorf("not implemented: RemoveUserPlannings - removeUserPlannings"))
 }
 

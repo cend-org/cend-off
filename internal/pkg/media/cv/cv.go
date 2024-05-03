@@ -136,12 +136,12 @@ func UpdateProfileCv(ctx context.Context, file *graphql.Upload) (*model.Media, e
 	return &media, nil
 }
 
-func RemoveProfileCv(ctx context.Context) (*string, error) {
+func RemoveProfileCv(ctx context.Context) (*bool, error) {
 	var (
 		media  model.Media
 		tok    *token.Token
 		err    error
-		status string
+		status bool
 	)
 
 	tok, err = token.GetFromContext(ctx)
@@ -182,7 +182,8 @@ func RemoveProfileCv(ctx context.Context) (*string, error) {
 		return &status, errx.DbDeleteError
 	}
 
-	status = "success"
+	status = true
+
 	return &status, nil
 
 }

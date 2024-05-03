@@ -129,13 +129,13 @@ func GetUserParent(ctx context.Context) ([]model.User, error) {
 
 }
 
-func RemoveUserParent(ctx context.Context, input *model.UserInput) (*string, error) {
+func RemoveUserParent(ctx context.Context, input *model.UserInput) (*bool, error) {
 	var (
 		parent model.User
 		actor  model.UserAuthorizationLinkActor
 		tok    *token.Token
 		err    error
-		status string
+		status bool
 	)
 
 	tok, err = token.GetFromContext(ctx)
@@ -158,7 +158,7 @@ func RemoveUserParent(ctx context.Context, input *model.UserInput) (*string, err
 	if err != nil {
 		return &status, errx.DbDeleteError
 	}
-	status = "success"
+	status = true
 	return &status, nil
 }
 
@@ -271,13 +271,13 @@ func GetUserTutor(ctx context.Context) ([]model.User, error) {
 	return tutors, nil
 }
 
-func RemoveUserTutor(ctx context.Context, input *model.UserInput) (*string, error) {
+func RemoveUserTutor(ctx context.Context, input *model.UserInput) (*bool, error) {
 	var (
 		tutor  model.User
 		actor  model.UserAuthorizationLinkActor
 		tok    *token.Token
 		err    error
-		status string
+		status bool
 	)
 
 	tok, err = token.GetFromContext(ctx)
@@ -303,7 +303,7 @@ func RemoveUserTutor(ctx context.Context, input *model.UserInput) (*string, erro
 		return &status, errx.DbDeleteError
 
 	}
-	status = "success"
+	status = true
 	return &status, nil
 
 }
@@ -417,13 +417,13 @@ func GetUserProfessor(ctx context.Context) ([]model.User, error) {
 	return professors, nil
 }
 
-func RemoveUserProfessor(ctx context.Context, input *model.UserInput) (*string, error) {
+func RemoveUserProfessor(ctx context.Context, input *model.UserInput) (*bool, error) {
 	var (
 		professor model.User
 		actor     model.UserAuthorizationLinkActor
 		tok       *token.Token
 		err       error
-		status    string
+		status    bool
 	)
 
 	tok, err = token.GetFromContext(ctx)
@@ -450,7 +450,7 @@ func RemoveUserProfessor(ctx context.Context, input *model.UserInput) (*string, 
 		return &status, errx.DbDeleteError
 
 	}
-	status = "success"
+	status = true
 	return &status, nil
 
 }
@@ -574,14 +574,14 @@ func GetStudent(ctx context.Context) ([]model.User, error) {
 	return students, nil
 }
 
-func RemoveStudent(ctx context.Context, input *model.UserInput) (*string, error) {
+func RemoveStudent(ctx context.Context, input *model.UserInput) (*bool, error) {
 	var (
 		student  model.User
 		actor    model.UserAuthorizationLinkActor
 		tok      *token.Token
 		err      error
 		linkType int
-		status   string
+		status   bool
 	)
 
 	tok, err = token.GetFromContext(ctx)
@@ -617,7 +617,8 @@ func RemoveStudent(ctx context.Context, input *model.UserInput) (*string, error)
 		return &status, errx.DbDeleteError
 	}
 
-	status = "success"
+	status = true
+
 	return &status, nil
 }
 

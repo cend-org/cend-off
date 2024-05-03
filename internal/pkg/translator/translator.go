@@ -40,10 +40,10 @@ func UpdMessage(ctx context.Context, input *model.MessageInput) (*model.Message,
 	return &message, nil
 }
 
-func DelMessage(ctx context.Context, language int, messageNumber int) (*string, error) {
+func DelMessage(ctx context.Context, language int, messageNumber int) (*bool, error) {
 	var (
 		err    error
-		status string
+		status bool
 	)
 
 	err = resource.DeleteMessage(messageNumber, language)
@@ -51,7 +51,7 @@ func DelMessage(ctx context.Context, language int, messageNumber int) (*string, 
 		return &status, errx.Lambda(err)
 	}
 
-	status = "ok"
+	status = true
 
 	return &status, nil
 }
@@ -72,10 +72,10 @@ func NewMenu(ctx context.Context, input *model.MessageInput) (*model.Message, er
 	return &message, nil
 }
 
-func DelMenu(ctx context.Context, menuNumber int) (*string, error) {
+func DelMenu(ctx context.Context, menuNumber int) (*bool, error) {
 	var (
 		err    error
-		status string
+		status bool
 	)
 
 	err = resource.DeleteMenu(menuNumber)
@@ -83,7 +83,7 @@ func DelMenu(ctx context.Context, menuNumber int) (*string, error) {
 		return &status, errx.Lambda(err)
 	}
 
-	status = "ok"
+	status = true
 
 	return &status, nil
 }
@@ -104,11 +104,11 @@ func NewMenuItem(ctx context.Context, input *model.MessageInput) (*model.Message
 	return &menu, nil
 }
 
-func DelMenuItem(ctx context.Context, input *model.MessageInput) (*string, error) {
+func DelMenuItem(ctx context.Context, input *model.MessageInput) (*bool, error) {
 	var (
 		menu   model.Message
 		err    error
-		status string
+		status bool
 	)
 	menu = model.MapMessageInputToMessage(*input, menu)
 
@@ -117,7 +117,7 @@ func DelMenuItem(ctx context.Context, input *model.MessageInput) (*string, error
 		return &status, errx.Lambda(err)
 	}
 
-	status = "ok"
+	status = true
 	return &status, nil
 }
 

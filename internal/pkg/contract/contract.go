@@ -98,11 +98,11 @@ func UpdContract(ctx context.Context, input *model.ContractInput, contractId int
 	return &contract, nil
 }
 
-func RemoveContract(ctx context.Context, contractId int) (*string, error) {
+func RemoveContract(ctx context.Context, contractId int) (*bool, error) {
 	var (
 		tok      *token.Token
 		contract model.Contract
-		status   string
+		status   bool
 		err      error
 	)
 
@@ -124,7 +124,7 @@ func RemoveContract(ctx context.Context, contractId int) (*string, error) {
 	if err != nil {
 		return &status, errx.DbDeleteError
 	}
-	status = "success"
+	status = true
 
 	return &status, nil
 }

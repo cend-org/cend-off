@@ -27,51 +27,51 @@ type MutationResolver interface {
 	PopulateSchool(ctx context.Context) (*bool, error)
 	NewMessage(ctx context.Context, input model.MessageInput) (*model.Message, error)
 	UpdMessage(ctx context.Context, input model.MessageInput) (*model.Message, error)
-	DelMessage(ctx context.Context, language int, messageNumber int) (*string, error)
+	DelMessage(ctx context.Context, language int, messageNumber int) (*bool, error)
 	NewMenu(ctx context.Context, input model.MessageInput) (*model.Message, error)
-	DelMenu(ctx context.Context, menuNumber int) (*string, error)
+	DelMenu(ctx context.Context, menuNumber int) (*bool, error)
 	NewMenuItem(ctx context.Context, input model.MessageInput) (*model.Message, error)
-	DelMenuItem(ctx context.Context, input model.MessageInput) (*string, error)
+	DelMenuItem(ctx context.Context, input model.MessageInput) (*bool, error)
 	NewAddress(ctx context.Context, input model.AddressInput) (*model.Address, error)
 	UpdateUserAddress(ctx context.Context, input model.AddressInput) (*model.Address, error)
-	RemoveUserAddress(ctx context.Context) (string, error)
+	RemoveUserAddress(ctx context.Context) (*bool, error)
 	NewPhoneNumber(ctx context.Context, input model.PhoneNumberInput) (*model.PhoneNumber, error)
 	UpdateUserPhoneNumber(ctx context.Context, input model.PhoneNumberInput) (*model.PhoneNumber, error)
 	CreateUserPlannings(ctx context.Context, input model.CalendarPlanningInput) (*model.CalendarPlanning, error)
 	AddUserIntoPlanning(ctx context.Context, calendarID int, selectedUserID int) (*model.CalendarPlanningActor, error)
-	RemoveUserPlannings(ctx context.Context) (*string, error)
-	RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*string, error)
+	RemoveUserPlannings(ctx context.Context) (*bool, error)
+	RemoveUserFromPlanning(ctx context.Context, calendarPlanningID int, selectedUserID int) (*bool, error)
 	SetUserEducationLevel(ctx context.Context, subjectID int) (*model.Education, error)
 	UpdateUserEducationLevel(ctx context.Context, subjectID int) (*model.Education, error)
 	RateUser(ctx context.Context, input model.MarkInput) (*model.Mark, error)
 	AddParentToUser(ctx context.Context, input model.UserInput) (*model.User, error)
-	RemoveUserParent(ctx context.Context, input model.UserInput) (*string, error)
+	RemoveUserParent(ctx context.Context, input model.UserInput) (*bool, error)
 	AddTutorToUser(ctx context.Context, input model.UserInput) (*model.User, error)
-	RemoveUserTutor(ctx context.Context, input model.UserInput) (*string, error)
+	RemoveUserTutor(ctx context.Context, input model.UserInput) (*bool, error)
 	AddProfessorToUser(ctx context.Context, input model.UserInput) (*model.User, error)
-	RemoveUserProfessor(ctx context.Context, input model.UserInput) (*string, error)
+	RemoveUserProfessor(ctx context.Context, input model.UserInput) (*bool, error)
 	AddStudentToLink(ctx context.Context, input model.UserInput) (*model.User, error)
-	RemoveStudent(ctx context.Context, input model.UserInput) (*string, error)
+	RemoveStudent(ctx context.Context, input model.UserInput) (*bool, error)
 	LoginWithQR(ctx context.Context, xID string) (*string, error)
 	UploadProfileLetter(ctx context.Context, file graphql.Upload) (*model.Media, error)
 	UpdateProfileLetter(ctx context.Context, file graphql.Upload) (*model.Media, error)
-	RemoveProfileLetter(ctx context.Context) (*string, error)
+	RemoveProfileLetter(ctx context.Context) (*bool, error)
 	UploadProfileCv(ctx context.Context, file graphql.Upload) (*model.Media, error)
 	UpdateProfileCv(ctx context.Context, file graphql.Upload) (*model.Media, error)
-	RemoveProfileCv(ctx context.Context) (*string, error)
+	RemoveProfileCv(ctx context.Context) (*bool, error)
 	UploadProfileImage(ctx context.Context, file graphql.Upload) (*model.Media, error)
 	UpdateProfileImage(ctx context.Context, file graphql.Upload) (*model.Media, error)
-	RemoveProfileImage(ctx context.Context) (*string, error)
+	RemoveProfileImage(ctx context.Context) (*bool, error)
 	UploadProfileVideo(ctx context.Context, file graphql.Upload) (*model.Media, error)
 	UpdateProfileVideo(ctx context.Context, file graphql.Upload) (*model.Media, error)
-	RemoveProfileVideo(ctx context.Context) (*string, error)
+	RemoveProfileVideo(ctx context.Context) (*bool, error)
 	NewContract(ctx context.Context, input model.ContractInput) (*model.Contract, error)
 	UpdContract(ctx context.Context, input model.ContractInput, contractID int) (*model.Contract, error)
-	RemoveContract(ctx context.Context, contractID int) (*string, error)
+	RemoveContract(ctx context.Context, contractID int) (*bool, error)
 	NewContractTimesheetDetail(ctx context.Context, input model.ContractTimesheetDetailInput) (*model.ContractTimesheetDetail, error)
 	NewPost(ctx context.Context, input model.PostInput) (*model.Post, error)
 	UpdPost(ctx context.Context, input model.PostInput, postID int) (*model.Post, error)
-	RemovePost(ctx context.Context, postID int) (*string, error)
+	RemovePost(ctx context.Context, postID int) (*bool, error)
 	TagPost(ctx context.Context, input model.PostTagInput) (*model.Post, error)
 	UpdTagOnPost(ctx context.Context, input model.PostTagInput) (*model.Post, error)
 	RemoveTagOnPost(ctx context.Context, postID int) (*model.Post, error)
@@ -1516,9 +1516,9 @@ func (ec *executionContext) _Mutation_delMessage(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_delMessage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1528,7 +1528,7 @@ func (ec *executionContext) fieldContext_Mutation_delMessage(ctx context.Context
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	defer func() {
@@ -1643,9 +1643,9 @@ func (ec *executionContext) _Mutation_delMenu(ctx context.Context, field graphql
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_delMenu(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1655,7 +1655,7 @@ func (ec *executionContext) fieldContext_Mutation_delMenu(ctx context.Context, f
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	defer func() {
@@ -1770,9 +1770,9 @@ func (ec *executionContext) _Mutation_delMenuItem(ctx context.Context, field gra
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_delMenuItem(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1782,7 +1782,7 @@ func (ec *executionContext) fieldContext_Mutation_delMenuItem(ctx context.Contex
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	defer func() {
@@ -1978,14 +1978,11 @@ func (ec *executionContext) _Mutation_removeUserAddress(ctx context.Context, fie
 		return graphql.Null
 	}
 	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removeUserAddress(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1995,7 +1992,7 @@ func (ec *executionContext) fieldContext_Mutation_removeUserAddress(ctx context.
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2304,9 +2301,9 @@ func (ec *executionContext) _Mutation_removeUserPlannings(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removeUserPlannings(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2316,7 +2313,7 @@ func (ec *executionContext) fieldContext_Mutation_removeUserPlannings(ctx contex
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -2345,9 +2342,9 @@ func (ec *executionContext) _Mutation_removeUserFromPlanning(ctx context.Context
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removeUserFromPlanning(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2357,7 +2354,7 @@ func (ec *executionContext) fieldContext_Mutation_removeUserFromPlanning(ctx con
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	defer func() {
@@ -2703,9 +2700,9 @@ func (ec *executionContext) _Mutation_removeUserParent(ctx context.Context, fiel
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removeUserParent(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2715,7 +2712,7 @@ func (ec *executionContext) fieldContext_Mutation_removeUserParent(ctx context.C
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	defer func() {
@@ -2854,9 +2851,9 @@ func (ec *executionContext) _Mutation_removeUserTutor(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removeUserTutor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2866,7 +2863,7 @@ func (ec *executionContext) fieldContext_Mutation_removeUserTutor(ctx context.Co
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	defer func() {
@@ -3005,9 +3002,9 @@ func (ec *executionContext) _Mutation_removeUserProfessor(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removeUserProfessor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3017,7 +3014,7 @@ func (ec *executionContext) fieldContext_Mutation_removeUserProfessor(ctx contex
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	defer func() {
@@ -3156,9 +3153,9 @@ func (ec *executionContext) _Mutation_removeStudent(ctx context.Context, field g
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removeStudent(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3168,7 +3165,7 @@ func (ec *executionContext) fieldContext_Mutation_removeStudent(ctx context.Cont
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	defer func() {
@@ -3406,9 +3403,9 @@ func (ec *executionContext) _Mutation_removeProfileLetter(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removeProfileLetter(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3418,7 +3415,7 @@ func (ec *executionContext) fieldContext_Mutation_removeProfileLetter(ctx contex
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3593,9 +3590,9 @@ func (ec *executionContext) _Mutation_removeProfileCv(ctx context.Context, field
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removeProfileCv(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3605,7 +3602,7 @@ func (ec *executionContext) fieldContext_Mutation_removeProfileCv(ctx context.Co
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3780,9 +3777,9 @@ func (ec *executionContext) _Mutation_removeProfileImage(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removeProfileImage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3792,7 +3789,7 @@ func (ec *executionContext) fieldContext_Mutation_removeProfileImage(ctx context
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3967,9 +3964,9 @@ func (ec *executionContext) _Mutation_removeProfileVideo(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removeProfileVideo(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -3979,7 +3976,7 @@ func (ec *executionContext) fieldContext_Mutation_removeProfileVideo(ctx context
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -4170,9 +4167,9 @@ func (ec *executionContext) _Mutation_removeContract(ctx context.Context, field 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removeContract(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4182,7 +4179,7 @@ func (ec *executionContext) fieldContext_Mutation_removeContract(ctx context.Con
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	defer func() {
@@ -4435,9 +4432,9 @@ func (ec *executionContext) _Mutation_removePost(ctx context.Context, field grap
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*string)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_removePost(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -4447,7 +4444,7 @@ func (ec *executionContext) fieldContext_Mutation_removePost(ctx context.Context
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	defer func() {
@@ -4798,9 +4795,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_removeUserAddress(ctx, field)
 			})
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		case "newPhoneNumber":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_newPhoneNumber(ctx, field)

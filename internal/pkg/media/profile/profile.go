@@ -186,12 +186,12 @@ func UpdateProfileImage(ctx context.Context, file *graphql.Upload) (*model.Media
 	return &media, nil
 }
 
-func RemoveProfileImage(ctx context.Context) (*string, error) {
+func RemoveProfileImage(ctx context.Context) (*bool, error) {
 	var (
 		media           model.Media
 		tok             *token.Token
 		err             error
-		status          string
+		status          bool
 		userMediaDetail model.UserMediaDetail
 	)
 
@@ -233,7 +233,8 @@ func RemoveProfileImage(ctx context.Context) (*string, error) {
 		return &status, errx.DbDeleteError
 	}
 
-	status = "success"
+	status = true
+
 	return &status, nil
 
 }
