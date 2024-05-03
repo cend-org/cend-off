@@ -1,4 +1,4 @@
-package profile
+package video
 
 import (
 	"context"
@@ -6,21 +6,21 @@ import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/configuration"
 	"github.com/cend-org/duval/internal/database"
-	"github.com/cend-org/duval/internal/pkg/media"
 	"github.com/cend-org/duval/internal/token"
 	"github.com/cend-org/duval/internal/utils"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
+	"github.com/cend-org/duval/pkg/media"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/joinverse/xid"
 	"path/filepath"
 )
 
 const (
-	UserProfileImage = 3
+	UserProfileVideo = 2
 )
 
-func UploadProfileImage(ctx context.Context, file *graphql.Upload) (*model.Media, error) {
+func UploadProfileVideo(ctx context.Context, file *graphql.Upload) (*model.Media, error) {
 	var (
 		media model.Media
 		tok   *token.Token
@@ -41,7 +41,7 @@ func UploadProfileImage(ctx context.Context, file *graphql.Upload) (*model.Media
 		return &media, errx.TypeError
 
 	}
-	if !utils.IsValidImage(mType.String()) {
+	if !utils.IsValidVideo(mType.String()) {
 		return &media, errx.TypeError
 	}
 
@@ -65,7 +65,7 @@ func UploadProfileImage(ctx context.Context, file *graphql.Upload) (*model.Media
 		return &media, errx.ThumbError
 	}
 
-	err = mediafile.SetUserMediaDetail(UserProfileImage, tok.UserId, media.Xid)
+	err = mediafile.mediafile.SetUserMediaDetail(UserProfileVideo, tok.UserId, media.Xid)
 	if err != nil {
 		return &media, errx.DbInsertError
 	}
@@ -73,7 +73,7 @@ func UploadProfileImage(ctx context.Context, file *graphql.Upload) (*model.Media
 	return &media, nil
 }
 
-func GetProfileImage(ctx context.Context) (*string, error) {
+func GetProfileVideo(ctx context.Context) (*string, error) {
 	var (
 		tok         *token.Token
 		media       model.Media
@@ -91,7 +91,7 @@ func GetProfileImage(ctx context.Context) (*string, error) {
 			FROM media
 					 JOIN user_media_detail ON media.xid = user_media_detail.document_xid
 					 JOIN user ON user.id = user_media_detail.owner_id
-			WHERE user_media_detail.owner_id = ? AND user_media_detail.document_type = ?`, tok.UserId, UserProfileImage)
+			WHERE user_media_detail.owner_id = ? AND user_media_detail.document_type = ?`, tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &networkLink, errx.DbGetError
 	}
@@ -101,7 +101,7 @@ func GetProfileImage(ctx context.Context) (*string, error) {
 	return &networkLink, nil
 }
 
-func GetProfileImageThumb(ctx context.Context) (*string, error) {
+func GetProfileVideoThumb(ctx context.Context) (*string, error) {
 	var (
 		tok         *token.Token
 		media       model.MediaThumb
@@ -114,7 +114,7 @@ func GetProfileImageThumb(ctx context.Context) (*string, error) {
 		return &networkLink, errx.UnAuthorizedError
 	}
 
-	media, err = mediafile.GetMediaThumb(tok.UserId, UserProfileImage)
+	media, err = mediafile.GetMediaThumb(tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &networkLink, errx.DbGetError
 
@@ -125,7 +125,7 @@ func GetProfileImageThumb(ctx context.Context) (*string, error) {
 	return &networkLink, nil
 }
 
-func UpdateProfileImage(ctx context.Context, file *graphql.Upload) (*model.Media, error) {
+func UpdateProfileVideo(ctx context.Context, file *graphql.Upload) (*model.Media, error) {
 	var (
 		media model.Media
 		tok   *token.Token
@@ -148,11 +148,11 @@ func UpdateProfileImage(ctx context.Context, file *graphql.Upload) (*model.Media
 
 	}
 
-	if !utils.IsValidImage(mType.String()) {
+	if !utils.IsValidDocument(mType.String()) {
 		return &media, errx.TypeError
 	}
 
-	oldMedia, err := mediafile.GetMedia(tok.UserId, UserProfileImage)
+	oldMedia, err := mediafile.GetMedia(tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &media, errx.DbGetError
 	}
@@ -186,7 +186,7 @@ func UpdateProfileImage(ctx context.Context, file *graphql.Upload) (*model.Media
 	return &media, nil
 }
 
-func RemoveProfileImage(ctx context.Context) (*bool, error) {
+func RemoveProfileVideo(ctx context.Context) (*bool, error) {
 	var (
 		media           model.Media
 		tok             *token.Token
@@ -203,17 +203,17 @@ func RemoveProfileImage(ctx context.Context) (*bool, error) {
 	if tok.UserId == state.ZERO {
 		return &status, errx.UnAuthorizedError
 	}
-	media, err = mediafile.GetMedia(tok.UserId, UserProfileImage)
+	media, err = mediafile.GetMedia(tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &status, errx.DbGetError
 	}
 
-	mediaThumb, err := mediafile.GetMediaThumb(tok.UserId, UserProfileImage)
+	mediaThumb, err := mediafile.GetMediaThumb(tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &status, errx.DbGetError
 	}
 
-	userMediaDetail, err = mediafile.GetUserMediaDetail(tok.UserId, UserProfileImage)
+	userMediaDetail, err = mediafile.GetUserMediaDetail(tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &status, errx.DbGetError
 	}

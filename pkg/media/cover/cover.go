@@ -6,11 +6,11 @@ import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/configuration"
 	"github.com/cend-org/duval/internal/database"
-	"github.com/cend-org/duval/internal/pkg/media"
 	"github.com/cend-org/duval/internal/token"
 	"github.com/cend-org/duval/internal/utils"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
+	"github.com/cend-org/duval/pkg/media"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/joinverse/xid"
 	"path/filepath"
@@ -68,7 +68,7 @@ func UploadProfileLetter(ctx context.Context, file *graphql.Upload) (*model.Medi
 		return &media, errx.ThumbError
 	}
 
-	err = mediafile.SetUserMediaDetail(documentType, tok.UserId, media.Xid)
+	err = mediafile.mediafile.SetUserMediaDetail(documentType, tok.UserId, media.Xid)
 	if err != nil {
 		return &media, errx.DbInsertError
 	}
