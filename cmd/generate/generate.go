@@ -7,13 +7,14 @@ import (
 	"github.com/99designs/gqlgen/api"
 	"github.com/99designs/gqlgen/codegen/config"
 	"github.com/99designs/gqlgen/plugin/modelgen"
+	migrate "github.com/cend-org/duval/cmd/generate/migration"
 	"github.com/cend-org/duval/cmd/generate/mutation"
 	"os"
 )
 
 func mutateHook(b *modelgen.ModelBuild) *modelgen.ModelBuild {
 	b = mutation.MutationHook(b)
-	//b = migrate.MigrationHook(b)
+	b = migrate.MigrationHook(b)
 	return b
 }
 
