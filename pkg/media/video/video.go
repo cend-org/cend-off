@@ -1,4 +1,4 @@
-package cover
+package video
 
 import (
 	"context"
@@ -6,28 +6,26 @@ import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/configuration"
 	"github.com/cend-org/duval/internal/database"
-	"github.com/cend-org/duval/internal/pkg/media"
 	"github.com/cend-org/duval/internal/token"
 	"github.com/cend-org/duval/internal/utils"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
+	"github.com/cend-org/duval/pkg/media"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/joinverse/xid"
 	"path/filepath"
 )
 
 const (
-	Letter = 1
+	UserProfileVideo = 2
 )
 
-func UploadProfileLetter(ctx context.Context, file *graphql.Upload) (*model.Media, error) {
+func UploadProfileVideo(ctx context.Context, file *graphql.Upload) (*model.Media, error) {
 	var (
-		media        model.Media
-		tok          *token.Token
-		err          error
-		documentType int
+		media model.Media
+		tok   *token.Token
+		err   error
 	)
-	documentType = Letter
 
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
@@ -43,8 +41,7 @@ func UploadProfileLetter(ctx context.Context, file *graphql.Upload) (*model.Medi
 		return &media, errx.TypeError
 
 	}
-
-	if !utils.IsValidDocument(mType.String()) {
+	if !utils.IsValidVideo(mType.String()) {
 		return &media, errx.TypeError
 	}
 
@@ -63,12 +60,12 @@ func UploadProfileLetter(ctx context.Context, file *graphql.Upload) (*model.Medi
 		return &media, errx.DbInsertError
 	}
 
-	err = utils.CreateDocumentThumb(media.Xid, media.Extension, *file)
+	err = utils.CreateThumb(media.Xid, media.Extension, *file)
 	if err != nil {
 		return &media, errx.ThumbError
 	}
 
-	err = mediafile.SetUserMediaDetail(documentType, tok.UserId, media.Xid)
+	err = mediafile.SetUserMediaDetail(UserProfileVideo, tok.UserId, media.Xid)
 	if err != nil {
 		return &media, errx.DbInsertError
 	}
@@ -76,7 +73,7 @@ func UploadProfileLetter(ctx context.Context, file *graphql.Upload) (*model.Medi
 	return &media, nil
 }
 
-func GetProfileLetter(ctx context.Context) (*string, error) {
+func GetProfileVideo(ctx context.Context) (*string, error) {
 	var (
 		tok         *token.Token
 		media       model.Media
@@ -94,7 +91,7 @@ func GetProfileLetter(ctx context.Context) (*string, error) {
 			FROM media
 					 JOIN user_media_detail ON media.xid = user_media_detail.document_xid
 					 JOIN user ON user.id = user_media_detail.owner_id
-			WHERE user_media_detail.owner_id = ? AND user_media_detail.document_type = ?`, tok.UserId, Letter)
+			WHERE user_media_detail.owner_id = ? AND user_media_detail.document_type = ?`, tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &networkLink, errx.DbGetError
 	}
@@ -104,8 +101,7 @@ func GetProfileLetter(ctx context.Context) (*string, error) {
 	return &networkLink, nil
 }
 
-func GetProfileLetterThumb(ctx context.Context) (*string, error) {
-
+func GetProfileVideoThumb(ctx context.Context) (*string, error) {
 	var (
 		tok         *token.Token
 		media       model.MediaThumb
@@ -118,7 +114,7 @@ func GetProfileLetterThumb(ctx context.Context) (*string, error) {
 		return &networkLink, errx.UnAuthorizedError
 	}
 
-	media, err = mediafile.GetMediaThumb(tok.UserId, Letter)
+	media, err = mediafile.GetMediaThumb(tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &networkLink, errx.DbGetError
 
@@ -129,7 +125,7 @@ func GetProfileLetterThumb(ctx context.Context) (*string, error) {
 	return &networkLink, nil
 }
 
-func UpdateProfileLetter(ctx context.Context, file *graphql.Upload) (*model.Media, error) {
+func UpdateProfileVideo(ctx context.Context, file *graphql.Upload) (*model.Media, error) {
 	var (
 		media model.Media
 		tok   *token.Token
@@ -156,7 +152,7 @@ func UpdateProfileLetter(ctx context.Context, file *graphql.Upload) (*model.Medi
 		return &media, errx.TypeError
 	}
 
-	oldMedia, err := mediafile.GetMedia(tok.UserId, Letter)
+	oldMedia, err := mediafile.GetMedia(tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &media, errx.DbGetError
 	}
@@ -182,7 +178,7 @@ func UpdateProfileLetter(ctx context.Context, file *graphql.Upload) (*model.Medi
 		return &media, errx.DbInsertError
 	}
 
-	err = utils.CreateDocumentThumb(media.Xid, media.Extension, *file)
+	err = utils.CreateThumb(media.Xid, media.Extension, *file)
 	if err != nil {
 		return &media, errx.ThumbError
 	}
@@ -190,12 +186,13 @@ func UpdateProfileLetter(ctx context.Context, file *graphql.Upload) (*model.Medi
 	return &media, nil
 }
 
-func RemoveProfileLetter(ctx context.Context) (*bool, error) {
+func RemoveProfileVideo(ctx context.Context) (*bool, error) {
 	var (
-		media  model.Media
-		tok    *token.Token
-		err    error
-		status bool
+		media           model.Media
+		tok             *token.Token
+		err             error
+		status          bool
+		userMediaDetail model.UserMediaDetail
 	)
 
 	tok, err = token.GetFromContext(ctx)
@@ -206,17 +203,17 @@ func RemoveProfileLetter(ctx context.Context) (*bool, error) {
 	if tok.UserId == state.ZERO {
 		return &status, errx.UnAuthorizedError
 	}
-	media, err = mediafile.GetMedia(tok.UserId, Letter)
+	media, err = mediafile.GetMedia(tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &status, errx.DbGetError
 	}
 
-	mediaThumb, err := mediafile.GetMediaThumb(tok.UserId, Letter)
+	mediaThumb, err := mediafile.GetMediaThumb(tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &status, errx.DbGetError
 	}
 
-	userMediaDetail, err := mediafile.GetUserMediaDetail(tok.UserId, Letter)
+	userMediaDetail, err = mediafile.GetUserMediaDetail(tok.UserId, UserProfileVideo)
 	if err != nil {
 		return &status, errx.DbGetError
 	}

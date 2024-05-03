@@ -3,8 +3,8 @@ package translator
 import (
 	"context"
 	"github.com/cend-org/duval/graph/model"
-	"github.com/cend-org/duval/internal/pkg/translator/resource"
 	"github.com/cend-org/duval/internal/utils/errx"
+	"github.com/cend-org/duval/pkg/translator/resource"
 )
 
 func NewMessage(ctx context.Context, input *model.MessageInput) (*model.Message, error) {

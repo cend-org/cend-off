@@ -5,11 +5,11 @@ import (
 	"errors"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
-	"github.com/cend-org/duval/internal/pkg/user/authorization"
 	"github.com/cend-org/duval/internal/token"
 	"github.com/cend-org/duval/internal/utils"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
+	"github.com/cend-org/duval/pkg/user/authorization"
 )
 
 const (
