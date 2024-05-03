@@ -14,7 +14,6 @@ import (
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/joinverse/xid"
 	"path/filepath"
-	"time"
 )
 
 const (
@@ -198,7 +197,6 @@ func RemoveProfileLetter(ctx context.Context) (*string, error) {
 		err    error
 		status string
 	)
-	time.Sleep(100)
 
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
