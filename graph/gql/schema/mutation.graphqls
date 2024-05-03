@@ -59,9 +59,25 @@ type Mutation {
     # Qr Mutations
     loginWithQr(xId: String!) :String
 
-    #    Upload
-    singleUpload(file: Upload!): Media!
+    #    Profile Letter
+    uploadProfileLetter(file: Upload!): Media!
+    updateProfileLetter(file: Upload!) : Media!
+    removeProfileLetter : String
 
+    #    Profile Cv
+    uploadProfileCv(file: Upload!): Media!
+    updateProfileCv(file: Upload!): Media!
+    removeProfileCv : String
+
+    #    Profile Image
+    uploadProfileImage(file: Upload!): Media!
+    updateProfileImage(file: Upload!): Media!
+    removeProfileImage: String
+
+    #    Profile Video
+    uploadProfileVideo(file: Upload!): Media!
+    updateProfileVideo(file: Upload!): Media!
+    removeProfileVideo: String
 
     # Contract
     newContract(input: ContractInput!): Contract!

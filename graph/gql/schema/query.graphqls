@@ -55,6 +55,23 @@ type Query {
     #    Qr QUERIES
     generateQrCode: String
 
+    #    Media QUERIES
+    #    Profile Letter
+
+    getProfileLetter: String
+    getProfileLetterThumb : String
+    #    Profile Cv
+    getProfileCv: String
+    getProfileCvThumb: String
+    #    Profile image
+    getProfileImage: String
+    getProfileImageThumb: String
+    #    Profile Video
+    getProfileVideo: String
+    getProfileVideoThumb: String
+
+
+
     #    Contract QUERIES
     getContracts: [Contract!]!
     getContract (contractId: Int!): Contract!

@@ -157,6 +157,16 @@ type ComplexityRoot struct {
 		Xid         func(childComplexity int) int
 	}
 
+	MediaThumb struct {
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Extension func(childComplexity int) int
+		Id        func(childComplexity int) int
+		MediaXid  func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		Xid       func(childComplexity int) int
+	}
+
 	Message struct {
 		CreatedAt        func(childComplexity int) int
 		DeletedAt        func(childComplexity int) int
@@ -198,6 +208,10 @@ type ComplexityRoot struct {
 		RegisterWithEmail          func(childComplexity int, input string, as int) int
 		RemoveContract             func(childComplexity int, contractID int) int
 		RemovePost                 func(childComplexity int, postID int) int
+		RemoveProfileCv            func(childComplexity int) int
+		RemoveProfileImage         func(childComplexity int) int
+		RemoveProfileLetter        func(childComplexity int) int
+		RemoveProfileVideo         func(childComplexity int) int
 		RemoveStudent              func(childComplexity int, input model.UserInput) int
 		RemoveTagOnPost            func(childComplexity int, postID int) int
 		RemoveUserAddress          func(childComplexity int) int
@@ -207,16 +221,23 @@ type ComplexityRoot struct {
 		RemoveUserProfessor        func(childComplexity int, input model.UserInput) int
 		RemoveUserTutor            func(childComplexity int, input model.UserInput) int
 		SetUserEducationLevel      func(childComplexity int, subjectID int) int
-		SingleUpload               func(childComplexity int, file graphql.Upload) int
 		TagPost                    func(childComplexity int, input model.PostTagInput) int
 		UpdContract                func(childComplexity int, input model.ContractInput, contractID int) int
 		UpdMessage                 func(childComplexity int, input model.MessageInput) int
 		UpdMyProfile               func(childComplexity int, input model.UserInput) int
 		UpdPost                    func(childComplexity int, input model.PostInput, postID int) int
 		UpdTagOnPost               func(childComplexity int, input model.PostTagInput) int
+		UpdateProfileCv            func(childComplexity int, file graphql.Upload) int
+		UpdateProfileImage         func(childComplexity int, file graphql.Upload) int
+		UpdateProfileLetter        func(childComplexity int, file graphql.Upload) int
+		UpdateProfileVideo         func(childComplexity int, file graphql.Upload) int
 		UpdateUserAddress          func(childComplexity int, input model.AddressInput) int
 		UpdateUserEducationLevel   func(childComplexity int, subjectID int) int
 		UpdateUserPhoneNumber      func(childComplexity int, input model.PhoneNumberInput) int
+		UploadProfileCv            func(childComplexity int, file graphql.Upload) int
+		UploadProfileImage         func(childComplexity int, file graphql.Upload) int
+		UploadProfileLetter        func(childComplexity int, file graphql.Upload) int
+		UploadProfileVideo         func(childComplexity int, file graphql.Upload) int
 	}
 
 	Password struct {
@@ -294,6 +315,14 @@ type ComplexityRoot struct {
 		GetPasswordHistory             func(childComplexity int) int
 		GetPlanningActors              func(childComplexity int, calendarID int) int
 		GetPosts                       func(childComplexity int) int
+		GetProfileCv                   func(childComplexity int) int
+		GetProfileCvThumb              func(childComplexity int) int
+		GetProfileImage                func(childComplexity int) int
+		GetProfileImageThumb           func(childComplexity int) int
+		GetProfileLetter               func(childComplexity int) int
+		GetProfileLetterThumb          func(childComplexity int) int
+		GetProfileVideo                func(childComplexity int) int
+		GetProfileVideoThumb           func(childComplexity int) int
 		GetSchool                      func(childComplexity int, id int) int
 		GetSchools                     func(childComplexity int) int
 		GetStudent                     func(childComplexity int) int
@@ -1021,6 +1050,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Media.Xid(childComplexity), true
 
+	case "MediaThumb.CreatedAt":
+		if e.complexity.MediaThumb.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.MediaThumb.CreatedAt(childComplexity), true
+
+	case "MediaThumb.DeletedAt":
+		if e.complexity.MediaThumb.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.MediaThumb.DeletedAt(childComplexity), true
+
+	case "MediaThumb.Extension":
+		if e.complexity.MediaThumb.Extension == nil {
+			break
+		}
+
+		return e.complexity.MediaThumb.Extension(childComplexity), true
+
+	case "MediaThumb.Id":
+		if e.complexity.MediaThumb.Id == nil {
+			break
+		}
+
+		return e.complexity.MediaThumb.Id(childComplexity), true
+
+	case "MediaThumb.MediaXid":
+		if e.complexity.MediaThumb.MediaXid == nil {
+			break
+		}
+
+		return e.complexity.MediaThumb.MediaXid(childComplexity), true
+
+	case "MediaThumb.UpdatedAt":
+		if e.complexity.MediaThumb.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.MediaThumb.UpdatedAt(childComplexity), true
+
+	case "MediaThumb.Xid":
+		if e.complexity.MediaThumb.Xid == nil {
+			break
+		}
+
+		return e.complexity.MediaThumb.Xid(childComplexity), true
+
 	case "Message.CreatedAt":
 		if e.complexity.Message.CreatedAt == nil {
 			break
@@ -1415,6 +1493,34 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RemovePost(childComplexity, args["postId"].(int)), true
 
+	case "Mutation.removeProfileCv":
+		if e.complexity.Mutation.RemoveProfileCv == nil {
+			break
+		}
+
+		return e.complexity.Mutation.RemoveProfileCv(childComplexity), true
+
+	case "Mutation.removeProfileImage":
+		if e.complexity.Mutation.RemoveProfileImage == nil {
+			break
+		}
+
+		return e.complexity.Mutation.RemoveProfileImage(childComplexity), true
+
+	case "Mutation.removeProfileLetter":
+		if e.complexity.Mutation.RemoveProfileLetter == nil {
+			break
+		}
+
+		return e.complexity.Mutation.RemoveProfileLetter(childComplexity), true
+
+	case "Mutation.removeProfileVideo":
+		if e.complexity.Mutation.RemoveProfileVideo == nil {
+			break
+		}
+
+		return e.complexity.Mutation.RemoveProfileVideo(childComplexity), true
+
 	case "Mutation.removeStudent":
 		if e.complexity.Mutation.RemoveStudent == nil {
 			break
@@ -1513,18 +1619,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.SetUserEducationLevel(childComplexity, args["subjectId"].(int)), true
 
-	case "Mutation.singleUpload":
-		if e.complexity.Mutation.SingleUpload == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_singleUpload_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.SingleUpload(childComplexity, args["file"].(graphql.Upload)), true
-
 	case "Mutation.tagPost":
 		if e.complexity.Mutation.TagPost == nil {
 			break
@@ -1597,6 +1691,54 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdTagOnPost(childComplexity, args["input"].(model.PostTagInput)), true
 
+	case "Mutation.updateProfileCv":
+		if e.complexity.Mutation.UpdateProfileCv == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateProfileCv_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateProfileCv(childComplexity, args["file"].(graphql.Upload)), true
+
+	case "Mutation.updateProfileImage":
+		if e.complexity.Mutation.UpdateProfileImage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateProfileImage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateProfileImage(childComplexity, args["file"].(graphql.Upload)), true
+
+	case "Mutation.updateProfileLetter":
+		if e.complexity.Mutation.UpdateProfileLetter == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateProfileLetter_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateProfileLetter(childComplexity, args["file"].(graphql.Upload)), true
+
+	case "Mutation.updateProfileVideo":
+		if e.complexity.Mutation.UpdateProfileVideo == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updateProfileVideo_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateProfileVideo(childComplexity, args["file"].(graphql.Upload)), true
+
 	case "Mutation.updateUserAddress":
 		if e.complexity.Mutation.UpdateUserAddress == nil {
 			break
@@ -1632,6 +1774,54 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateUserPhoneNumber(childComplexity, args["input"].(model.PhoneNumberInput)), true
+
+	case "Mutation.uploadProfileCv":
+		if e.complexity.Mutation.UploadProfileCv == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadProfileCv_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadProfileCv(childComplexity, args["file"].(graphql.Upload)), true
+
+	case "Mutation.uploadProfileImage":
+		if e.complexity.Mutation.UploadProfileImage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadProfileImage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadProfileImage(childComplexity, args["file"].(graphql.Upload)), true
+
+	case "Mutation.uploadProfileLetter":
+		if e.complexity.Mutation.UploadProfileLetter == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadProfileLetter_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadProfileLetter(childComplexity, args["file"].(graphql.Upload)), true
+
+	case "Mutation.uploadProfileVideo":
+		if e.complexity.Mutation.UploadProfileVideo == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadProfileVideo_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadProfileVideo(childComplexity, args["file"].(graphql.Upload)), true
 
 	case "Password.CreatedAt":
 		if e.complexity.Password.CreatedAt == nil {
@@ -2059,6 +2249,62 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetPosts(childComplexity), true
+
+	case "Query.getProfileCv":
+		if e.complexity.Query.GetProfileCv == nil {
+			break
+		}
+
+		return e.complexity.Query.GetProfileCv(childComplexity), true
+
+	case "Query.getProfileCvThumb":
+		if e.complexity.Query.GetProfileCvThumb == nil {
+			break
+		}
+
+		return e.complexity.Query.GetProfileCvThumb(childComplexity), true
+
+	case "Query.getProfileImage":
+		if e.complexity.Query.GetProfileImage == nil {
+			break
+		}
+
+		return e.complexity.Query.GetProfileImage(childComplexity), true
+
+	case "Query.getProfileImageThumb":
+		if e.complexity.Query.GetProfileImageThumb == nil {
+			break
+		}
+
+		return e.complexity.Query.GetProfileImageThumb(childComplexity), true
+
+	case "Query.getProfileLetter":
+		if e.complexity.Query.GetProfileLetter == nil {
+			break
+		}
+
+		return e.complexity.Query.GetProfileLetter(childComplexity), true
+
+	case "Query.getProfileLetterThumb":
+		if e.complexity.Query.GetProfileLetterThumb == nil {
+			break
+		}
+
+		return e.complexity.Query.GetProfileLetterThumb(childComplexity), true
+
+	case "Query.getProfileVideo":
+		if e.complexity.Query.GetProfileVideo == nil {
+			break
+		}
+
+		return e.complexity.Query.GetProfileVideo(childComplexity), true
+
+	case "Query.getProfileVideoThumb":
+		if e.complexity.Query.GetProfileVideoThumb == nil {
+			break
+		}
+
+		return e.complexity.Query.GetProfileVideoThumb(childComplexity), true
 
 	case "Query.getSchool":
 		if e.complexity.Query.GetSchool == nil {
@@ -3107,6 +3353,16 @@ input MarkInput {
     ContentType: Int!
 }
 
+type MediaThumb {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    Extension: String!
+    MediaXid: String! @goField(name: "MediaXid")
+    Xid: String! @goField(name: "Xid")
+}
+
 type UserMediaDetail {
     Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
@@ -3320,9 +3576,25 @@ scalar Upload
     # Qr Mutations
     loginWithQr(xId: String!) :String
 
-    #    Upload
-    singleUpload(file: Upload!): Media!
+    #    Profile Letter
+    uploadProfileLetter(file: Upload!): Media!
+    updateProfileLetter(file: Upload!) : Media!
+    removeProfileLetter : String
 
+    #    Profile Cv
+    uploadProfileCv(file: Upload!): Media!
+    updateProfileCv(file: Upload!): Media!
+    removeProfileCv : String
+
+    #    Profile Image
+    uploadProfileImage(file: Upload!): Media!
+    updateProfileImage(file: Upload!): Media!
+    removeProfileImage: String
+
+    #    Profile Video
+    uploadProfileVideo(file: Upload!): Media!
+    updateProfileVideo(file: Upload!): Media!
+    removeProfileVideo: String
 
     # Contract
     newContract(input: ContractInput!): Contract!
@@ -3398,6 +3670,23 @@ scalar Upload
 
     #    Qr QUERIES
     generateQrCode: String
+
+    #    Media QUERIES
+    #    Profile Letter
+
+    getProfileLetter: String
+    getProfileLetterThumb : String
+    #    Profile Cv
+    getProfileCv: String
+    getProfileCvThumb: String
+    #    Profile image
+    getProfileImage: String
+    getProfileImageThumb: String
+    #    Profile Video
+    getProfileVideo: String
+    getProfileVideoThumb: String
+
+
 
     #    Contract QUERIES
     getContracts: [Contract!]!
