@@ -17,7 +17,6 @@ import (
 	"github.com/cend-org/duval/internal/pkg/contract"
 	"github.com/cend-org/duval/internal/pkg/education"
 	"github.com/cend-org/duval/internal/pkg/mark"
-	"github.com/cend-org/duval/internal/pkg/media"
 	"github.com/cend-org/duval/internal/pkg/media/cover"
 	"github.com/cend-org/duval/internal/pkg/media/cv"
 	"github.com/cend-org/duval/internal/pkg/media/profile"
@@ -160,7 +159,7 @@ func (r *mutationResolver) AddUserIntoPlanning(ctx context.Context, calendarID i
 
 // RemoveUserPlannings is the resolver for the removeUserPlannings field.
 func (r *mutationResolver) RemoveUserPlannings(ctx context.Context) (*string, error) {
-	panic(fmt.Errorf("not implemented: RemoveUserPlannings - removeUserPlannings"))
+	return planning.RemoveUserPlannings(ctx)
 }
 
 // RemoveUserFromPlanning is the resolver for the removeUserFromPlanning field.
@@ -228,11 +227,6 @@ func (r *mutationResolver) LoginWithQR(ctx context.Context, xID string) (*string
 	return authentication.LoginWithQr(ctx, xID)
 }
 
-// SingleUpload is the resolver for the singleUpload field.
-func (r *mutationResolver) SingleUpload(ctx context.Context, file graphql.Upload) (*model.Media, error) {
-	return media.SingleUpload(ctx, file)
-}
-
 // UploadProfileLetter is the resolver for the uploadProfileLetter field.
 func (r *mutationResolver) UploadProfileLetter(ctx context.Context, file graphql.Upload) (*model.Media, error) {
 	return cover.UploadProfileLetter(ctx, &file)
@@ -244,8 +238,8 @@ func (r *mutationResolver) UpdateProfileLetter(ctx context.Context, file graphql
 }
 
 // RemoveProfileLetter is the resolver for the removeProfileLetter field.
-func (r *mutationResolver) RemoveProfileLetter(ctx context.Context, mediaID int) (*string, error) {
-	return cover.RemoveProfileLetter(ctx, mediaID)
+func (r *mutationResolver) RemoveProfileLetter(ctx context.Context) (*string, error) {
+	return cover.RemoveProfileLetter(ctx)
 }
 
 // UploadProfileCv is the resolver for the uploadProfileCv field.
@@ -259,8 +253,8 @@ func (r *mutationResolver) UpdateProfileCv(ctx context.Context, file graphql.Upl
 }
 
 // RemoveProfileCv is the resolver for the removeProfileCv field.
-func (r *mutationResolver) RemoveProfileCv(ctx context.Context, mediaID int) (*string, error) {
-	return cv.RemoveProfileCv(ctx, mediaID)
+func (r *mutationResolver) RemoveProfileCv(ctx context.Context) (*string, error) {
+	return cv.RemoveProfileCv(ctx)
 }
 
 // UploadProfileImage is the resolver for the uploadProfileImage field.
@@ -278,14 +272,19 @@ func (r *mutationResolver) RemoveProfileImage(ctx context.Context) (*string, err
 	return profile.RemoveProfileImage(ctx)
 }
 
+// UploadProfileVideo is the resolver for the uploadProfileVideo field.
+func (r *mutationResolver) UploadProfileVideo(ctx context.Context, file graphql.Upload) (*model.Media, error) {
+	return video.UploadProfileVideo(ctx, &file)
+}
+
 // UpdateProfileVideo is the resolver for the updateProfileVideo field.
 func (r *mutationResolver) UpdateProfileVideo(ctx context.Context, file graphql.Upload) (*model.Media, error) {
 	return video.UpdateProfileVideo(ctx, &file)
 }
 
 // RemoveProfileVideo is the resolver for the removeProfileVideo field.
-func (r *mutationResolver) RemoveProfileVideo(ctx context.Context, mediaID int) (*string, error) {
-	return video.RemoveProfileVideo(ctx, mediaID)
+func (r *mutationResolver) RemoveProfileVideo(ctx context.Context) (*string, error) {
+	return video.RemoveProfileVideo(ctx)
 }
 
 // NewContract is the resolver for the newContract field.

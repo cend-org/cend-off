@@ -208,10 +208,10 @@ type ComplexityRoot struct {
 		RegisterWithEmail          func(childComplexity int, input string, as int) int
 		RemoveContract             func(childComplexity int, contractID int) int
 		RemovePost                 func(childComplexity int, postID int) int
-		RemoveProfileCv            func(childComplexity int, mediaID int) int
+		RemoveProfileCv            func(childComplexity int) int
 		RemoveProfileImage         func(childComplexity int) int
-		RemoveProfileLetter        func(childComplexity int, mediaID int) int
-		RemoveProfileVideo         func(childComplexity int, mediaID int) int
+		RemoveProfileLetter        func(childComplexity int) int
+		RemoveProfileVideo         func(childComplexity int) int
 		RemoveStudent              func(childComplexity int, input model.UserInput) int
 		RemoveTagOnPost            func(childComplexity int, postID int) int
 		RemoveUserAddress          func(childComplexity int) int
@@ -221,7 +221,6 @@ type ComplexityRoot struct {
 		RemoveUserProfessor        func(childComplexity int, input model.UserInput) int
 		RemoveUserTutor            func(childComplexity int, input model.UserInput) int
 		SetUserEducationLevel      func(childComplexity int, subjectID int) int
-		SingleUpload               func(childComplexity int, file graphql.Upload) int
 		TagPost                    func(childComplexity int, input model.PostTagInput) int
 		UpdContract                func(childComplexity int, input model.ContractInput, contractID int) int
 		UpdMessage                 func(childComplexity int, input model.MessageInput) int
@@ -238,6 +237,7 @@ type ComplexityRoot struct {
 		UploadProfileCv            func(childComplexity int, file graphql.Upload) int
 		UploadProfileImage         func(childComplexity int, file graphql.Upload) int
 		UploadProfileLetter        func(childComplexity int, file graphql.Upload) int
+		UploadProfileVideo         func(childComplexity int, file graphql.Upload) int
 	}
 
 	Password struct {
@@ -1498,12 +1498,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_Mutation_removeProfileCv_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.RemoveProfileCv(childComplexity, args["mediaId"].(int)), true
+		return e.complexity.Mutation.RemoveProfileCv(childComplexity), true
 
 	case "Mutation.removeProfileImage":
 		if e.complexity.Mutation.RemoveProfileImage == nil {
@@ -1517,24 +1512,14 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_Mutation_removeProfileLetter_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.RemoveProfileLetter(childComplexity, args["mediaId"].(int)), true
+		return e.complexity.Mutation.RemoveProfileLetter(childComplexity), true
 
 	case "Mutation.removeProfileVideo":
 		if e.complexity.Mutation.RemoveProfileVideo == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_removeProfileVideo_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.RemoveProfileVideo(childComplexity, args["mediaId"].(int)), true
+		return e.complexity.Mutation.RemoveProfileVideo(childComplexity), true
 
 	case "Mutation.removeStudent":
 		if e.complexity.Mutation.RemoveStudent == nil {
@@ -1633,18 +1618,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.SetUserEducationLevel(childComplexity, args["subjectId"].(int)), true
-
-	case "Mutation.singleUpload":
-		if e.complexity.Mutation.SingleUpload == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_singleUpload_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.SingleUpload(childComplexity, args["file"].(graphql.Upload)), true
 
 	case "Mutation.tagPost":
 		if e.complexity.Mutation.TagPost == nil {
@@ -1837,6 +1810,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UploadProfileLetter(childComplexity, args["file"].(graphql.Upload)), true
+
+	case "Mutation.uploadProfileVideo":
+		if e.complexity.Mutation.UploadProfileVideo == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_uploadProfileVideo_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UploadProfileVideo(childComplexity, args["file"].(graphql.Upload)), true
 
 	case "Password.CreatedAt":
 		if e.complexity.Password.CreatedAt == nil {
@@ -3591,24 +3576,25 @@ scalar Upload
     # Qr Mutations
     loginWithQr(xId: String!) :String
 
-    #    Upload
-    singleUpload(file: Upload!): Media!
-
     #    Profile Letter
     uploadProfileLetter(file: Upload!): Media!
     updateProfileLetter(file: Upload!) : Media!
-    removeProfileLetter(mediaId : Int!) : String
+    removeProfileLetter : String
+
     #    Profile Cv
     uploadProfileCv(file: Upload!): Media!
     updateProfileCv(file: Upload!): Media!
-    removeProfileCv(mediaId: Int!) : String
+    removeProfileCv : String
+
     #    Profile Image
     uploadProfileImage(file: Upload!): Media!
     updateProfileImage(file: Upload!): Media!
     removeProfileImage: String
+
     #    Profile Video
+    uploadProfileVideo(file: Upload!): Media!
     updateProfileVideo(file: Upload!): Media!
-    removeProfileVideo(mediaId: Int!): String
+    removeProfileVideo: String
 
     # Contract
     newContract(input: ContractInput!): Contract!

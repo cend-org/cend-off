@@ -1,6 +1,8 @@
 package utils
 
-import "github.com/gabriel-vasile/mimetype"
+import (
+	"github.com/gabriel-vasile/mimetype"
+)
 
 func IsValidImage(mType string) bool {
 	allowed := []string{"image/png", "image/jpeg"}

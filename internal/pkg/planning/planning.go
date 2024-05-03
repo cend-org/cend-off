@@ -2,6 +2,7 @@ package planning
 
 import (
 	"context"
+	"fmt"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/token"
@@ -144,6 +145,10 @@ func RemoveUserFromPlanning(ctx context.Context, calendarPlanningId int, selecte
 	}
 
 	return &status, nil
+}
+
+func RemoveUserPlannings(ctx context.Context) (*string, error) {
+	panic(fmt.Errorf("not implemented: RemoveUserPlannings - removeUserPlannings"))
 }
 
 /*
