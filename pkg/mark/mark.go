@@ -54,7 +54,7 @@ func GetUserAverageMark(ctx context.Context, userId int) (*int, error) {
 		averageMark int
 	)
 
-	err = database.GetMany(&userMarks, `SELECT user_mark.* FROM user_mark WHERE user_id = ?`, userId)
+	err = database.Select(&userMarks, `SELECT user_mark.* FROM user_mark WHERE user_id = ?`, userId)
 	if err != nil {
 		return &averageMark, errx.DbGetError
 	}
@@ -87,10 +87,7 @@ func GetUserMarkComment(ctx context.Context) ([]model.Mark, error) {
 		return mark, errx.UnAuthorizedError
 	}
 
-	err = database.GetMany(&mark,
-		`SELECT user_mark.* 
-			FROM user_mark
-			WHERE user_mark.author_id= ?;`, tok.UserId)
+	err = database.Select(&mark, `SELECT * FROM user_mark WHERE author_id= ?;`, tok.UserId)
 	if err != nil {
 		return mark, errx.DbGetError
 	}

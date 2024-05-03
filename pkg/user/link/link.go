@@ -42,25 +42,20 @@ func AddParentToUser(ctx context.Context, input *model.UserInput) (*model.User, 
 		return &currentParent, errx.UnAuthorizedError
 	}
 
-	//check if user is a student
 	if !authorization.IsUserStudent(tok.UserId) {
 		return &currentParent, errx.Lambda(errors.New("user is not a student"))
 	}
 
 	parent = model.MapUserInputToUser(*input, parent)
 
-	// Check if parent  doesn't exist in the database based on name and family name then  create a user named parent if not
 	currentParent, err = GetUserByUserName(parent)
 	if currentParent.Id == state.ZERO {
-		//	Create parent with email parent+1@cend.intra
 		currentParent, err = CreateNewUser(parent, ParentAuthorizationLevel)
 		if err != nil {
 			return &currentParent, errx.DbInsertError
 		}
-
 	}
 
-	//Check if link already exist if not then create new link and add creator into link actor by default
 	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
 	if err != nil {
 		return &currentParent, errx.DbGetError
@@ -68,7 +63,6 @@ func AddParentToUser(ctx context.Context, input *model.UserInput) (*model.User, 
 
 	userAuthorizationLinkId, err = GetUserLink(StudentParent, auth.Id)
 	if userAuthorizationLinkId != state.ZERO {
-		//Check if parent is already added to the user
 		currentParentAuth, err := authorization.GetUserAuthorization(currentParent.Id, ParentAuthorizationLevel)
 		if err != nil {
 			return &currentParent, errx.DbGetError
@@ -189,13 +183,11 @@ func AddTutorToUser(ctx context.Context, input *model.UserInput) (*model.User, e
 
 	currentTutor, err = GetUserByUserName(tutor)
 	if currentTutor.Id == state.ZERO {
-		//	Create tutor with email tutor+1@cend.intra
 		currentTutor, err = CreateNewUser(tutor, TutorAuthorizationLevel)
 		if err != nil {
 			return &currentTutor, errx.DbInsertError
 
 		}
-
 	}
 
 	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
@@ -206,12 +198,12 @@ func AddTutorToUser(ctx context.Context, input *model.UserInput) (*model.User, e
 
 	userAuthorizationLinkId, err = GetUserLink(StudentTutor, auth.Id)
 	if userAuthorizationLinkId != state.ZERO {
-		//Check if tutor is already added to the user
 		currentTutorAuth, err := authorization.GetUserAuthorization(currentTutor.Id, TutorAuthorizationLevel)
 		if err != nil {
 			return &currentTutor, errx.DbGetError
 
 		}
+
 		tutors, err := GetLink(currentTutorAuth.Id, TutorAuthorizationLevel, StudentTutor)
 		if len(tutors) > state.ZERO {
 			return &currentTutor, errx.DuplicateUserError
@@ -334,13 +326,11 @@ func AddProfessorToUser(ctx context.Context, input *model.UserInput) (*model.Use
 
 	currentProfessor, err = GetUserByUserName(professor)
 	if currentProfessor.Id == state.ZERO {
-		//	Create professor with email professor+1@cend.intra
 		currentProfessor, err = CreateNewUser(professor, ProfessorAuthorizationLevel)
 		if err != nil {
 			return &currentProfessor, errx.DbInsertError
 
 		}
-
 	}
 
 	auth, err := authorization.GetUserAuthorization(tok.UserId, tok.UserLevel)
@@ -351,12 +341,12 @@ func AddProfessorToUser(ctx context.Context, input *model.UserInput) (*model.Use
 
 	userAuthorizationLinkId, err = GetUserLink(StudentProfessor, auth.Id)
 	if userAuthorizationLinkId != state.ZERO {
-		//Check if tutor is already added to the user
 		currentTutorAuth, err := authorization.GetUserAuthorization(currentProfessor.Id, ProfessorAuthorizationLevel)
 		if err != nil {
 			return &currentProfessor, errx.DbGetError
 
 		}
+
 		professors, err := GetLink(currentTutorAuth.Id, ProfessorAuthorizationLevel, StudentProfessor)
 		if len(professors) > state.ZERO {
 			return &currentProfessor, errx.DuplicateUserError
@@ -501,7 +491,6 @@ func AddStudentToLink(ctx context.Context, input *model.UserInput) (*model.User,
 
 	userAuthorizationLinkId, err := GetUserLink(linkType, auth.Id)
 	if userAuthorizationLinkId != state.ZERO {
-		//Check if student is already added to the user
 		currentStudentAuth, err := authorization.GetUserAuthorization(currentStudent.Id, StudentAuthorizationLevel)
 		if err != nil {
 			return &currentStudent, errx.DbGetError
@@ -711,17 +700,17 @@ func CreateNewUser(user model.User, authLevel int) (currentUser model.User, err 
 }
 
 func GetLink(authId int, authorizationLevel int, linkType int) (link []model.User, err error) {
-	err = database.GetMany(&link, `SELECT user.* FROM user
-                       JOIN authorization ON user.Id = authorization.user_id
-                       JOIN user_authorization_link_actor ON authorization.Id = user_authorization_link_actor.authorization_id
-                       JOIN user_authorization_link ON user_authorization_link_actor.user_authorization_link_id = user_authorization_link.Id
-WHERE user_authorization_link.Id =  (
-    SELECT user_authorization_link_actor.user_authorization_link_id
-    FROM user_authorization_link_actor
-             JOIN user_authorization_link ON user_authorization_link_actor.user_authorization_link_id = user_authorization_link.Id
-    WHERE user_authorization_link_actor.authorization_id = ? AND user_authorization_link.link_type = ?
-    )
-AND authorization.level = ?`, authId, linkType, authorizationLevel)
+	err = database.Select(&link,
+		`SELECT u.*
+			FROM user  u
+					 JOIN authorization  a ON u.Id = a.user_id
+					 JOIN user_authorization_link_actor  ua_la ON a.Id = ua_la.authorization_id
+					 JOIN user_authorization_link  ua ON ua_la.user_authorization_link_id = ua.id
+					 JOIN user_authorization_link  ua2 ON ua.id = ua2.id
+					JOIN user_authorization_link_actor  ua_la2 ON ua2.id = ua_la2.user_authorization_link_id
+			WHERE ua_la2.authorization_id = ?
+			  AND ua2.link_type = ?
+			  AND a.level = ?`, authId, linkType, authorizationLevel)
 	if err != nil {
 		return link, err
 	}
@@ -742,11 +731,11 @@ func GetUserLink(linkType int, authorizationId int) (linkId int, err error) {
 	var userLink model.UserAuthorizationLink
 
 	err = database.Get(&userLink,
-		`SELECT user_authorization_link.* FROM user_authorization_link
-                                  JOIN user_authorization_link_actor ON user_authorization_link.Id = user_authorization_link_actor.user_authorization_link_id
-                                  WHERE user_authorization_link.link_type = ? AND user_authorization_link_actor.authorization_id = ?`, linkType, authorizationId)
+		`SELECT ual.* FROM user_authorization_link ual
+                                  JOIN user_authorization_link_actor ua_la ON ual.Id = ua_la.user_authorization_link_id
+                                  WHERE ual.link_type = ? AND ua_la.authorization_id = ?`, linkType, authorizationId)
 	if err != nil {
-		return 0, err
+		return state.ZERO, err
 	}
 
 	return userLink.Id, nil
@@ -754,12 +743,12 @@ func GetUserLink(linkType int, authorizationId int) (linkId int, err error) {
 
 func GetSelectedUserLinkActor(user model.User, linkType int) (actor model.UserAuthorizationLinkActor, err error) {
 	err = database.Get(&actor,
-		`SELECT user_authorization_link_actor.*
-FROM user_authorization_link_actor
-JOIN user_authorization_link ON user_authorization_link_actor.user_authorization_link_id = user_authorization_link.Id
-JOIN authorization ON user_authorization_link_actor.authorization_id = authorization.Id
-JOIN user ON authorization.user_id = user.Id
-WHERE user.family_name = ? AND  user.name = ? AND user_authorization_link.link_type = ?`, user.FamilyName, user.Name, linkType)
+		`SELECT ua_la.*
+			FROM user_authorization_link_actor  ua_la
+					 JOIN user_authorization_link   ual ON ua_la.user_authorization_link_id = ual.Id
+					 JOIN authorization  auth ON ua_la.authorization_id = auth.Id
+					 JOIN user ON auth.user_id = user.Id
+			WHERE user.family_name = ? AND  user.name = ? AND ual.link_type = ?`, user.FamilyName, user.Name, linkType)
 	if err != nil {
 		return actor, err
 	}

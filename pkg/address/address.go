@@ -28,7 +28,6 @@ func NewAddress(ctx context.Context, input *model.AddressInput) (*model.Address,
 	}
 	userId = tok.UserId
 
-	// get user address
 	isUser, err = GetUserAddressWithId(userId)
 	if isUser.AddressId > state.ZERO {
 		return &address, errx.DuplicateAddressError
@@ -40,7 +39,6 @@ func NewAddress(ctx context.Context, input *model.AddressInput) (*model.Address,
 		return &address, errx.DbInsertError
 	}
 
-	// Link new address to the current user
 	userAddress.UserId = userId
 	userAddress.AddressId = address.Id
 	_, err = database.InsertOne(userAddress)
@@ -154,10 +152,12 @@ func GetUserAddressWithId(userId int) (userAddress model.UserAddress, err error)
 }
 
 func GetAddressWithId(userId int) (address model.Address, err error) {
-	err = database.Get(&address, `SELECT address.*
-   FROM address JOIN user_address
-   ON address.id = user_address.address_id
-   WHERE user_address.user_id = ?`, userId)
+	err = database.Get(&address,
+		`SELECT address.*
+			FROM address
+					 JOIN user_address
+						  ON address.id = user_address.address_id
+			WHERE user_address.user_id = ?`, userId)
 	if err != nil {
 		return address, err
 	}
