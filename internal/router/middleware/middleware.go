@@ -55,10 +55,9 @@ func Middleware() gin.HandlerFunc {
 						"error": "token is expired",
 					})
 				}
+				ctx := context2.WithValue(context.Request.Context(), "token", *tok)
+				context.Request = context.Request.WithContext(ctx)
 			}
-
-			ctx := context2.WithValue(context.Request.Context(), "token", *tok)
-			context.Request = context.Request.WithContext(ctx)
 		}
 
 		/*
