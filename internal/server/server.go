@@ -7,7 +7,7 @@ import (
 )
 
 func Begin() {
-	defer database.Client.Close()
+	defer database.CloseConnexion()
 
 	defer recoverServer()
 

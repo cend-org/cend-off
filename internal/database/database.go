@@ -17,24 +17,28 @@ const (
 	maxConnexionLifeTime = time.Minute
 )
 
-var Client *sqlx.DB
+var client *sqlx.DB
 
 func init() {
 	var err error
-	Client, err = sqlx.Connect(defaultDriver, configuration.App.DatabaseConnexionString)
+	client, err = sqlx.Connect(defaultDriver, configuration.App.DatabaseConnexionString)
 	if err != nil {
 		panic(err)
 	}
 
-	Client.SetMaxOpenConns(maxOpenConnexion)
-	Client.SetMaxIdleConns(maxIdleConnexion)
-	Client.SetConnMaxLifetime(maxConnexionLifeTime)
-	Client.MapperFunc(strcase.ToSnake)
+	client.SetMaxOpenConns(maxOpenConnexion)
+	client.SetMaxIdleConns(maxIdleConnexion)
+	client.SetConnMaxLifetime(maxConnexionLifeTime)
+	client.MapperFunc(strcase.ToSnake)
+}
+
+func CloseConnexion() {
+	client.Close()
 }
 
 func Insert(T any) (lastId int64, err error) {
 	var result sql.Result
-	result, err = Client.Exec(db.I(T))
+	result, err = client.Exec(db.I(T))
 	if err != nil {
 		return 0, err
 	}
@@ -48,7 +52,7 @@ func Insert(T any) (lastId int64, err error) {
 }
 
 func Select(R any, Q string, A ...any) (err error) {
-	err = Client.Select(R, Q, A...)
+	err = client.Select(R, Q, A...)
 	if err != nil {
 		return err
 	}
@@ -57,7 +61,7 @@ func Select(R any, Q string, A ...any) (err error) {
 }
 
 func Get(R any, Q string, A ...any) (err error) {
-	err = Client.Get(R, Q, A...)
+	err = client.Get(R, Q, A...)
 	if err != nil {
 		return err
 	}
@@ -74,7 +78,7 @@ func InsertOne(T any) (id int, err error) {
 }
 
 func Update(T any) (err error) {
-	_, err = Client.Exec(db.U(T))
+	_, err = client.Exec(db.U(T))
 	if err != nil {
 		return err
 	}
@@ -82,7 +86,7 @@ func Update(T any) (err error) {
 }
 
 func Delete(T any) (err error) {
-	_, err = Client.Exec(db.D(T))
+	_, err = client.Exec(db.D(T))
 	if err != nil {
 		return err
 	}
@@ -91,7 +95,7 @@ func Delete(T any) (err error) {
 }
 
 func Exec(Q string, A ...any) (err error) {
-	_, err = Client.Exec(Q, A...)
+	_, err = client.Exec(Q, A...)
 	if err != nil {
 		return err
 	}
@@ -109,7 +113,7 @@ func InsertMany(T []any) (err error) {
 }
 
 func GetMany(R interface{}, Q string, A ...interface{}) (err error) {
-	err = Client.Select(R, Q, A...)
+	err = client.Select(R, Q, A...)
 	if err != nil {
 		return err
 	}

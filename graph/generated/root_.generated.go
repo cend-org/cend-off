@@ -3532,16 +3532,16 @@ scalar Upload
     #   Message mutations
     newMessage(input: MessageInput!): Message!
     updMessage(input: MessageInput!): Message!
-    delMessage(language: Int!, messageNumber :Int!) : String
+    delMessage(language: Int!, messageNumber :Int!) : Boolean
     newMenu(input: MessageInput!) : Message!
-    delMenu(menuNumber: Int!): String
+    delMenu(menuNumber: Int!): Boolean
     newMenuItem(input: MessageInput!): Message!
-    delMenuItem(input: MessageInput!) : String
+    delMenuItem(input: MessageInput!) : Boolean
 
     #    Address mutations
     newAddress(input: AddressInput!): Address!
     updateUserAddress(input: AddressInput!): Address!
-    removeUserAddress: String!
+    removeUserAddress: Boolean
 
     #    Phone mutations
     newPhoneNumber(input: PhoneNumberInput!) : PhoneNumber!
@@ -3550,8 +3550,8 @@ scalar Upload
     #    Planning mutations
     createUserPlannings(input: CalendarPlanningInput!): CalendarPlanning!
     addUserIntoPlanning(calendarId: ID!, selectedUserId: ID!):CalendarPlanningActor!
-    removeUserPlannings: String
-    removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): String
+    removeUserPlannings: Boolean
+    removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): Boolean
 
     #   Education mutations
     setUserEducationLevel(subjectId: Int!): Education!
@@ -3562,16 +3562,16 @@ scalar Upload
 
     #    Link Mutations
     addParentToUser(input: UserInput!) :User!
-    removeUserParent(input: UserInput!): String
+    removeUserParent(input: UserInput!): Boolean
 
     addTutorToUser(input: UserInput!) :User!
-    removeUserTutor(input: UserInput!): String
+    removeUserTutor(input: UserInput!): Boolean
 
     addProfessorToUser(input: UserInput!) :User!
-    removeUserProfessor(input: UserInput!): String
+    removeUserProfessor(input: UserInput!): Boolean
 
     addStudentToLink(input: UserInput!) :User!
-    removeStudent(input: UserInput!): String
+    removeStudent(input: UserInput!): Boolean
 
     # Qr Mutations
     loginWithQr(xId: String!) :String
@@ -3579,34 +3579,34 @@ scalar Upload
     #    Profile Letter
     uploadProfileLetter(file: Upload!): Media!
     updateProfileLetter(file: Upload!) : Media!
-    removeProfileLetter : String
+    removeProfileLetter : Boolean
 
     #    Profile Cv
     uploadProfileCv(file: Upload!): Media!
     updateProfileCv(file: Upload!): Media!
-    removeProfileCv : String
+    removeProfileCv : Boolean
 
     #    Profile Image
     uploadProfileImage(file: Upload!): Media!
     updateProfileImage(file: Upload!): Media!
-    removeProfileImage: String
+    removeProfileImage: Boolean
 
     #    Profile Video
     uploadProfileVideo(file: Upload!): Media!
     updateProfileVideo(file: Upload!): Media!
-    removeProfileVideo: String
+    removeProfileVideo: Boolean
 
     # Contract
     newContract(input: ContractInput!): Contract!
     updContract(input: ContractInput!, contractId: Int!): Contract!
-    removeContract(contractId: Int!): String
+    removeContract(contractId: Int!): Boolean
 
     newContractTimesheetDetail(input: ContractTimesheetDetailInput!): ContractTimesheetDetail!
 
     #    Post
     newPost(input: PostInput!) : Post!
     updPost(input: PostInput! , postId: Int!) : Post!
-    removePost(postId : Int!) : String
+    removePost(postId : Int!) : Boolean
 
     #    Post tag
     tagPost(input: PostTagInput!): Post!
