@@ -27,10 +27,8 @@ func SetUserEducationLevel(ctx context.Context, subjectId int) (*model.Education
 		return &userLevel, errx.UnAuthorizedError
 	}
 
-	if !authorization.IsUserStudent(tok.UserId) {
-		if !authorization.IsUserProfessor(tok.UserId) {
-			return &userLevel, errx.Lambda(errors.New("not a user or a professor"))
-		}
+	if authorization.IsUserParent(tok.UserId) {
+		return &userLevel, errx.Lambda(errors.New("user is not authorized"))
 	}
 
 	userEducationLevelSubject.SubjectId = subjectId
@@ -69,11 +67,6 @@ func UpdateUserEducationLevel(ctx context.Context, subjectId int) (*model.Educat
 	if !authorization.IsUserStudent(tok.UserId) {
 		return &userLevel, errx.Lambda(errors.New("user is not a student"))
 	}
-
-	//err = ctx.ShouldBindJSON(&subject)
-	//if err != nil {
-	//	return &userLevel, errx.ParseError
-	//}
 
 	err = database.Get(&currentUserEducationLevelSubject, `SELECT user_education_level_subject.* FROM user_education_level_subject
 			WHERE user_education_level_subject.user_id = ?`, tok.UserId)
