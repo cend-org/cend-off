@@ -92,4 +92,9 @@ type Mutation {
     tagPost(input: PostTagInput!): Post!
     updTagOnPost(input : PostTagInput!): Post!
     removeTagOnPost(postId: Int!): Post!
+
+    #    User Course Preference
+    setUserCoursePreference(isOnline : Boolean!): UserCoursePreference!
+    updUserCoursePreference(isOnline : Boolean!): UserCoursePreference!
+
 }

@@ -68,8 +68,6 @@ type Query {
     getProfileVideo: String
     getProfileVideoThumb: String
 
-
-
     #    Contract QUERIES
     getContracts: [Contract!]!
     getContract (contractId: Int!): Contract!
@@ -87,4 +85,7 @@ type Query {
     # Post Tag
     searchPost(keyword: String!): [Post!]!
     getTaggedPost(postId: Int!): [PostTag!]!
+
+    #    User Course Preference
+    getUserCoursePreference: UserCoursePreference!
 }
