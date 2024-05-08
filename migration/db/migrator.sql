@@ -720,3 +720,5 @@ create table user_course_preference
 alter table user_course_preference
     add constraint user_course_preference_user_id
         foreign key (user_id) references user (id);
+
+-- last production modification
