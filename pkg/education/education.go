@@ -155,7 +155,7 @@ func GetEducation(ctx context.Context) ([]model.Education, error) {
 func GetSubjects(schoolId int) (subjects []model.Subject, err error) {
 	err = database.Select(&subjects, `SELECT * FROM subject WHERE education_level_id = ?`, schoolId)
 	if err != nil {
-		return nil, errors.New("errors while trying to fetch subject list")
+		return nil, errors.New("errors while trying to fetch subject list 101")
 	}
 	return
 }
