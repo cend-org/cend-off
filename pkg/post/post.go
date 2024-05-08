@@ -194,7 +194,7 @@ func GetPosts(ctx context.Context) ([]model.Post, error) {
 		return posts, errx.UnAuthorizedError
 	}
 
-	err = database.GetMany(&posts, `SELECT post.* FROM post LIMIT 10`)
+	err = database.Select(&posts, `SELECT post.* FROM post LIMIT 10`)
 	if err != nil {
 		return posts, errx.DbGetError
 	}
@@ -246,7 +246,7 @@ func GetTaggedPost(ctx context.Context, postId int) ([]model.PostTag, error) {
 		return postTag, errx.UnAuthorizedError
 	}
 
-	err = database.GetMany(&postTag,
+	err = database.Select(&postTag,
 		`SELECT post_tag.*
 			FROM post_tag
 					 JOIN post ON post_tag.post_id = post.id
@@ -293,7 +293,7 @@ func SearchPost(ctx context.Context, keyword string) ([]model.Post, error) {
 		return posts, errx.UnAuthorizedError
 	}
 
-	err = database.GetMany(&posts, `
+	err = database.Select(&posts, `
 				SELECT post.*
 				FROM post JOIN post_tag ON post.id = post_tag.post_id
 				WHERE post_tag.tag_content LIKE ?`, keyword)
@@ -309,7 +309,7 @@ func SearchPost(ctx context.Context, keyword string) ([]model.Post, error) {
 */
 
 func GetSinglePost(postId int) (post model.Post, err error) {
-	err = database.Get(&post, `SELECT post.* FROM post WHERE post.id = ? `, postId)
+	err = database.Get(&post, `SELECT post.* FROM post WHERE id = ? `, postId)
 	if err != nil {
 		return post, err
 	}
@@ -317,7 +317,7 @@ func GetSinglePost(postId int) (post model.Post, err error) {
 }
 
 func GetSingleUserPost(postId, publisherId int) (post model.Post, err error) {
-	err = database.Get(&post, `SELECT post.* FROM post WHERE post.id = ? AND post.publisher_id = ? `, postId, publisherId)
+	err = database.Get(&post, `SELECT post.* FROM post WHERE id = ? AND publisher_id = ? `, postId, publisherId)
 	if err != nil {
 		return post, err
 	}
@@ -338,7 +338,7 @@ func GetPostSinglePostTag(postId, userId int) (postTag model.PostTag, err error)
 }
 
 func GetUserPost(userId int) (posts []model.Post, err error) {
-	err = database.GetMany(&posts, `SELECT post.*  FROM post WHERE post.publisher_id = ?`, userId)
+	err = database.Select(&posts, `SELECT post.*  FROM post WHERE post.publisher_id = ?`, userId)
 	if err != nil {
 		return posts, err
 	}

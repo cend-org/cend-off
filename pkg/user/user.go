@@ -109,7 +109,7 @@ func RegisterWithEmail(ctx context.Context, input string, as int) (*string, erro
 		return nil, err
 	}
 
-	if usr.Id == 0 {
+	if usr.Id == state.ZERO {
 		usr, err = NewUserWithEmail(input)
 		if err != nil {
 			return nil, err
@@ -164,7 +164,7 @@ func NewPassword(ctx context.Context, password string) (*bool, error) {
 		tok  *token.Token
 	)
 
-	if len(strings.TrimSpace(password)) == 0 {
+	if len(strings.TrimSpace(password)) == state.ZERO {
 		return nil, errors.New("password cannot be empty")
 	}
 
@@ -201,7 +201,7 @@ func GetPasswordHistory(ctx context.Context) ([]model.Password, error) {
 		return passwords, errx.UnAuthorizedError
 	}
 
-	err = database.GetMany(&passwords,
+	err = database.Select(&passwords,
 		`SELECT password.*
 			FROM password
 			WHERE password.user_id = ?
@@ -288,8 +288,9 @@ func UpdMyProfile(ctx context.Context, input *model.UserInput) (*string, error) 
 }
 
 /*
-UTILS
+	UTILS
 */
+
 func GetUserByEmail(email string) (usr model.User, err error) {
 	err = database.Get(&usr, `SELECT * FROM user WHERE email = ?`, email)
 	if err != nil {
@@ -370,7 +371,6 @@ func LoginWithEmailAndPassword(email, pass string) (access string, err error) {
 }
 
 func GetUserWithId(id int) (user model.User, err error) {
-	time.Sleep(100)
 	err = database.Get(&user, `SELECT * FROM user WHERE id = ?`, id)
 	if err != nil {
 		return user, err

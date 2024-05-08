@@ -26,11 +26,7 @@ func SetUserMediaDetail(documentType int, userId int, xId string) (err error) {
 }
 
 func GetUserMediaDetail(userId, documentType int) (userMediaDetail model.UserMediaDetail, err error) {
-	err = database.Get(&userMediaDetail,
-		`SELECT user_media_detail.* 
-			FROM  user_media_detail 
-			WHERE user_media_detail.owner_id =?
-			  AND user_media_detail.document_type = ?`, userId, documentType)
+	err = database.Get(&userMediaDetail, `SELECT * FROM user_media_detail WHERE owner_id = ?   AND document_type = ?`, userId, documentType)
 	if err != nil {
 		return userMediaDetail, err
 	}
@@ -38,11 +34,12 @@ func GetUserMediaDetail(userId, documentType int) (userMediaDetail model.UserMed
 }
 
 func GetMedia(userId, documentType int) (media model.Media, err error) {
-	err = database.Get(&media, `SELECT media.*
-FROM media
-         JOIN user_media_detail ON media.xid = user_media_detail.document_xid
-         JOIN user ON user.id = user_media_detail.owner_id
-WHERE user_media_detail.owner_id = ? AND user_media_detail.document_type = ?`, userId, documentType)
+	err = database.Get(&media,
+		`SELECT media.*
+			FROM media
+					 JOIN user_media_detail umd ON media.xid = umd.document_xid
+					 JOIN user ON user.id = umd.owner_id
+			WHERE umd.owner_id = ? AND umd.document_type = ?`, userId, documentType)
 	if err != nil {
 		return media, err
 	}
@@ -51,12 +48,12 @@ WHERE user_media_detail.owner_id = ? AND user_media_detail.document_type = ?`, u
 
 func GetMediaThumb(userId, documentType int) (media model.MediaThumb, err error) {
 	err = database.Get(&media,
-		`SELECT media_thumb.*
-				FROM media_thumb
-						 JOIN media ON media_thumb.media_xid = media.xid
-						 JOIN user_media_detail ON user_media_detail.document_xid = media.xid
-				WHERE user_media_detail.owner_id = ?
-				  AND user_media_detail.document_type = ?`, userId, documentType)
+		`SELECT mt.*
+			FROM media_thumb mt
+					 JOIN media ON mt.media_xid = media.xid
+					 JOIN user_media_detail umd ON umd.document_xid = media.xid
+			WHERE umd.owner_id = ?
+			  AND umd.document_type = ?`, userId, documentType)
 	if err != nil {
 		return media, err
 	}

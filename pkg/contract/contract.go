@@ -23,10 +23,8 @@ func NewContract(ctx context.Context, input *model.ContractInput) (*model.Contra
 		return &contract, errx.UnAuthorizedError
 	}
 
-	if !authorization.IsUserParent(tok.UserId) {
-		if !authorization.IsUserTutor(tok.UserId) {
-			return &contract, errx.UnAuthorizedError
-		}
+	if !authorization.IsUserParent(tok.UserId) || !authorization.IsUserTutor(tok.UserId) {
+		return &contract, errx.UnAuthorizedError
 	}
 
 	if authorization.IsUserParent(tok.UserId) {
@@ -111,7 +109,7 @@ func RemoveContract(ctx context.Context, contractId int) (*bool, error) {
 		return &status, errx.UnAuthorizedError
 	}
 
-	if tok.UserId == 0 {
+	if tok.UserId == state.ZERO {
 		return &status, errx.UnAuthorizedError
 	}
 
@@ -161,10 +159,8 @@ func GetContract(ctx context.Context, contractId int) (*model.Contract, error) {
 		return &contract, errx.UnAuthorizedError
 	}
 
-	if !authorization.IsUserParent(tok.UserId) {
-		if !authorization.IsUserTutor(tok.UserId) {
-			return &contract, errx.UnAuthorizedError
-		}
+	if !authorization.IsUserParent(tok.UserId) || !authorization.IsUserTutor(tok.UserId) {
+		return &contract, errx.UnAuthorizedError
 	}
 
 	contract, err = GetContractWithId(contractId)
@@ -297,21 +293,21 @@ func GetContractWithId(contractId int) (contract model.Contract, err error) {
 
 func GetContractsWithId(userId int) (contract []model.Contract, err error) {
 	if authorization.IsUserParent(userId) {
-		err = database.GetMany(&contract, `SELECT contract.* FROM contract where parent_id = ?`, userId)
+		err = database.Select(&contract, `SELECT contract.* FROM contract where parent_id = ?`, userId)
 		if err != nil {
 			return contract, err
 		}
 	}
 
 	if authorization.IsUserTutor(userId) {
-		err = database.GetMany(&contract, `SELECT contract.* FROM contract where tutor_id = ?`, userId)
+		err = database.Select(&contract, `SELECT contract.* FROM contract where tutor_id = ?`, userId)
 		if err != nil {
 			return contract, err
 		}
 	}
 
 	if authorization.IsUserStudent(userId) {
-		err = database.GetMany(&contract, `SELECT contract.* FROM contract where student_id = ?`, userId)
+		err = database.Select(&contract, `SELECT contract.* FROM contract where student_id = ?`, userId)
 		if err != nil {
 			return contract, err
 		}
@@ -332,7 +328,7 @@ func GetContractTimesheetDetailWithId(userId int, contractDetailId int) (contrac
 }
 
 func GetContractTimesheetDetailsWithId(userId int) (contractDetail []model.ContractTimesheetDetail, err error) {
-	err = database.GetMany(&contractDetail,
+	err = database.Select(&contractDetail,
 		`SELECT contract_timesheet_detail.* FROM contract_timesheet_detail
    			JOIN contract ON contract_timesheet_detail.contract_id = contract.id
 			WHERE tutor_id = ?`, userId)
@@ -352,7 +348,7 @@ func GetUserSalaryValue(tutorId, studentId int) (salaryValue int, err error) {
 }
 
 func GetContractDetailsWithUserId(startDate time.Time, endDate time.Time, studentId int, userId int) (timeSheetDetail []model.ContractTimesheetDetail, err error) {
-	err = database.GetMany(&timeSheetDetail,
+	err = database.Select(&timeSheetDetail,
 		`SELECT contract_timesheet_detail.*
 			FROM contract_timesheet_detail
 					 JOIN contract ON contract_timesheet_detail.contract_id = contract.id

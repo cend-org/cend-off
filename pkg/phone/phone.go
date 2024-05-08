@@ -8,6 +8,7 @@ import (
 	"github.com/cend-org/duval/internal/token"
 	"github.com/cend-org/duval/internal/utils"
 	"github.com/cend-org/duval/internal/utils/errx"
+	"github.com/cend-org/duval/internal/utils/state"
 )
 
 func NewPhoneNumber(ctx context.Context, input *model.PhoneNumberInput) (*model.PhoneNumber, error) {
@@ -32,7 +33,6 @@ func NewPhoneNumber(ctx context.Context, input *model.PhoneNumberInput) (*model.
 		return &phone, errx.Lambda(err)
 	}
 
-	// Link phone to user.
 	userPhoneNumber.UserId = tok.UserId
 	userPhoneNumber.PhoneNumberId = phone.Id
 
@@ -57,7 +57,7 @@ func UpdateUserPhoneNumber(ctx context.Context, input *model.PhoneNumberInput) (
 	}
 
 	phoneNumber, err = GetPhoneById(tok.UserId)
-	if phoneNumber.Id == 0 {
+	if phoneNumber.Id == state.ZERO {
 		return &phoneNumber, errx.Lambda(errors.New("create new phone number instead"))
 	}
 

@@ -110,7 +110,7 @@ func GetUserSubjects(ctx context.Context) ([]model.Subject, error) {
 	}
 
 	if authorization.IsUserStudent(tok.UserId) {
-		err = database.GetMany(&subjects, `SELECT subject.* 
+		err = database.Select(&subjects, `SELECT subject.* 
 											FROM subject
 											WHERE subject.education_level_id = (SELECT education.id FROM education  JOIN subject ON education.id  =  subject.education_level_id JOIN user_education_level_subject ON subject.id = user_education_level_subject.subject_id
                                    			WHERE user_education_level_subject.user_id = ?)`, tok.UserId)
@@ -120,7 +120,7 @@ func GetUserSubjects(ctx context.Context) ([]model.Subject, error) {
 	}
 
 	if authorization.IsUserProfessor(tok.UserId) {
-		err = database.GetMany(&subjects, `SELECT subject.* FROM subject
+		err = database.Select(&subjects, `SELECT subject.* FROM subject
 			JOIN user_education_level_subject  ON subject.id = user_education_level_subject.subject_id
 			WHERE user_education_level_subject.user_id = ?`, tok.UserId)
 		if err != nil {
@@ -178,8 +178,8 @@ func GetUserLevel(UserId int) (educationLevel model.Education, err error) {
 	err = database.Get(&educationLevel,
 		`SELECT education.* FROM education
 				JOIN subject ON education.id  =  subject.education_level_id
-				JOIN user_education_level_subject ON subject.id = user_education_level_subject.subject_id
-			WHERE user_education_level_subject.user_id = ?`, UserId)
+				JOIN user_education_level_subject ue_ls ON subject.id = ue_ls.subject_id
+			WHERE ue_ls.user_id = ?`, UserId)
 	if err != nil {
 		return educationLevel, err
 	}

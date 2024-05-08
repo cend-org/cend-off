@@ -43,7 +43,7 @@ func migrationString(b []*modelgen.Object) (migration string) {
 	migration += "use cend;\n\n"
 
 	for _, model := range b {
-		if strings.HasSuffix(strcase.ToSnake(model.Name), "_input") {
+		if strings.HasSuffix(strcase.ToSnake(model.Name), "_input") || strcase.ToSnake(model.Name) == "mutation" || strcase.ToSnake(model.Name) == "query" {
 			continue
 		}
 		migration += fmt.Sprintf("create table %s (\n", strcase.ToSnake(model.Name))
@@ -58,10 +58,7 @@ func migrationString(b []*modelgen.Object) (migration string) {
 			migration += "\t"
 			migration += determineDataType(field.Type.String())
 			migration += " "
-			if strcase.ToSnake(field.Name) == "created_at" {
-				migration += fmt.Sprintf("default %s", setDefaultTimeValue())
-
-			} else if strcase.ToSnake(field.Name) == "updated_at" {
+			if strcase.ToSnake(field.Name) == "created_at" || strcase.ToSnake(field.Name) == "updated_at" {
 				migration += fmt.Sprintf("default %s", setDefaultTimeValue())
 
 			} else {
@@ -145,6 +142,10 @@ func setDefaultTimeValue() string {
 
 func setRefTable(refTable string) string {
 	switch refTable {
+	case "education_level":
+		return "education"
+	case "profile_image", "document":
+		return "media"
 	case "owner", "user", "publisher", "tutor", "parent", "student", "professor", "viewer", "author":
 		return "user"
 	default:
