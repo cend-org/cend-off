@@ -13,7 +13,7 @@ func Set() gin.HandlerFunc {
 	// - Credentials share
 	// - Preflight requests cached for 12 hours
 	return cors.New(cors.Config{
-		AllowOrigins:     []string{"*"},
+		//AllowOrigins:     []string{"*"},
 		AllowMethods:     []string{"*"},
 		AllowHeaders:     []string{"*"},
 		ExposeHeaders:    []string{"*"},
@@ -21,6 +21,7 @@ func Set() gin.HandlerFunc {
 		//AllowOriginFunc: func(origin string) bool {
 		//	return origin == "https://github.com"
 		//},
-		MaxAge: 12 * time.Hour,
+		AllowAllOrigins: true,
+		MaxAge:          12 * time.Hour,
 	})
 }

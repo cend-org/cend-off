@@ -38,9 +38,7 @@ type Query {
     getUserSubjects: [Subject!]
     getEducation: [Education!]
     getUserEducationLevel: Education!
-    getSchools: [School!]
-    getSubjects(id: ID!): [SchoolSubject!]
-    getSchool(id: ID!): School
+    getSubjects(id: ID!): [Subject!]
 
     #    Mark QUERIES
     getUserAverageMark(userId: ID!): Int

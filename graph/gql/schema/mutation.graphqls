@@ -9,9 +9,6 @@ type Mutation {
     delPassword(id: ID!): Boolean
 
     newAsset(asset: AssetInput!): Asset
-
-    populateSchool: Boolean
-
     #   Message mutations
     newMessage(input: MessageInput!): Message!
     updMessage(input: MessageInput!): Message!

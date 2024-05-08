@@ -27,8 +27,8 @@ func SetUserEducationLevel(ctx context.Context, subjectId int) (*model.Education
 		return &userLevel, errx.UnAuthorizedError
 	}
 
-	if !authorization.IsUserStudent(tok.UserId) || !authorization.IsUserProfessor(tok.UserId) {
-		return &userLevel, errx.Lambda(errors.New("not a user or a professor"))
+	if authorization.IsUserParent(tok.UserId) {
+		return &userLevel, errx.Lambda(errors.New("user is not authorized"))
 	}
 
 	userEducationLevelSubject.SubjectId = subjectId
@@ -145,6 +145,14 @@ func GetEducation(ctx context.Context) ([]model.Education, error) {
 	return edus, nil
 }
 
+func GetSubjects(schoolId int) (subjects []model.Subject, err error) {
+	err = database.Select(&subjects, `SELECT * FROM subject WHERE education_level_id = ?`, schoolId)
+	if err != nil {
+		return nil, errors.New("errors while trying to fetch subject list 101")
+	}
+	return
+}
+
 func GetUserEducationLevel(ctx context.Context) (*model.Education, error) {
 	var (
 		err       error
@@ -164,48 +172,6 @@ func GetUserEducationLevel(ctx context.Context) (*model.Education, error) {
 	}
 	return &userLevel, nil
 }
-
-func GetSchools(ctx context.Context) ([]model.School, error) {
-	var schools []model.School
-	var err error
-
-	err = database.Select(&schools, `SELECT * FROM school ORDER BY created_at`)
-	if err != nil {
-		return nil, err
-	}
-
-	return schools, err
-}
-
-func GetSubjects(ctx context.Context, id int) ([]model.SchoolSubject, error) {
-	var subjects []model.SchoolSubject
-	var err error
-
-	err = database.Select(&subjects, `SELECT * FROM school_subject WHERE school_number = ?`, id)
-	if err != nil {
-		return nil, err
-	}
-
-	return subjects, err
-}
-
-func GetSchool(ctx context.Context, id int) (*model.School, error) {
-	var (
-		err    error
-		school model.School
-	)
-
-	err = database.Get(&school, `SELECT * FROM school WHERE id = ?`, id)
-	if err != nil {
-		return nil, err
-	}
-
-	return &school, err
-}
-
-/*
-	UTILS
-*/
 
 func GetUserLevel(UserId int) (educationLevel model.Education, err error) {
 
