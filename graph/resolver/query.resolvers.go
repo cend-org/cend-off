@@ -7,6 +7,7 @@ package resolver
 import (
 	"context"
 	"fmt"
+	"github.com/cend-org/duval/pkg/course"
 	"time"
 
 	"github.com/cend-org/duval/graph/generated"
@@ -298,6 +299,11 @@ func (r *queryResolver) SearchPost(ctx context.Context, keyword string) ([]model
 // GetTaggedPost is the resolver for the getTaggedPost field.
 func (r *queryResolver) GetTaggedPost(ctx context.Context, postID int) ([]model.PostTag, error) {
 	return post.GetTaggedPost(ctx, postID)
+}
+
+// GetUserCoursePreference is the resolver for the getUserCoursePreference field.
+func (r *queryResolver) GetUserCoursePreference(ctx context.Context) (*model.UserCoursePreference, error) {
+	return course.GetUserCoursePreference(ctx)
 }
 
 // Query returns generated.QueryResolver implementation.

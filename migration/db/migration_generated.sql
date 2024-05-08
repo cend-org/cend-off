@@ -213,10 +213,6 @@ create table message (
 		unique (id)
 );
 
-create table mutation (
-	id int auto_increment primary key,
-);
-
 create table password (
 	id int auto_increment primary key,
 	created_at	datetime default CURRENT_TIMESTAMP,
@@ -309,10 +305,6 @@ alter table qr_code_registry
 	add constraint qr_code_registry_user_id_fk
 		foreign key (user_id) references user (id);
 
-create table query (
-	id int auto_increment primary key,
-);
-
 create table subject (
 	id int auto_increment primary key,
 	created_at	datetime default CURRENT_TIMESTAMP,
@@ -326,7 +318,7 @@ create table subject (
 
 alter table subject
 	add constraint subject_education_level_id_fk
-		foreign key (education_level_id) references education_level (id);
+		foreign key (education_level_id) references education (id);
 
 create table user (
 	id int auto_increment primary key,
@@ -356,7 +348,7 @@ create table user (
 
 alter table user
 	add constraint user_profile_image_xid_fk
-		foreign key (profile_image_xid) references profile_image (xid);
+		foreign key (profile_image_xid) references media (xid);
 
 create table user_address (
 	id int auto_increment primary key,
@@ -407,6 +399,21 @@ alter table user_authorization_link_actor
 	add constraint user_authorization_link_actor_authorization_id_fk
 		foreign key (authorization_id) references authorization (id);
 
+create table user_course_preference (
+	id int auto_increment primary key,
+	created_at	datetime default CURRENT_TIMESTAMP,
+	updated_at	datetime default CURRENT_TIMESTAMP,
+	deleted_at	datetime default '0000-00-00 00:00:00',
+	user_id	int default 0,
+	is_online	bool default '',
+	constraint user_course_preference_pk
+		unique (id)
+);
+
+alter table user_course_preference
+	add constraint user_course_preference_user_id_fk
+		foreign key (user_id) references user (id);
+
 create table user_education_level_subject (
 	id int auto_increment primary key,
 	created_at	datetime default CURRENT_TIMESTAMP,
@@ -444,7 +451,7 @@ alter table user_media_detail
 
 alter table user_media_detail
 	add constraint user_media_detail_document_xid_fk
-		foreign key (document_xid) references document (xid);
+		foreign key (document_xid) references media (xid);
 
 create table user_phone_number (
 	id int auto_increment primary key,

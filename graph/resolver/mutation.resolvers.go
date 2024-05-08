@@ -7,6 +7,7 @@ package resolver
 import (
 	"context"
 	"fmt"
+	"github.com/cend-org/duval/pkg/course"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/cend-org/duval/graph/generated"
@@ -323,6 +324,16 @@ func (r *mutationResolver) UpdTagOnPost(ctx context.Context, input model.PostTag
 // RemoveTagOnPost is the resolver for the removeTagOnPost field.
 func (r *mutationResolver) RemoveTagOnPost(ctx context.Context, postID int) (*model.Post, error) {
 	return post.RemoveTagOnPost(ctx, postID)
+}
+
+// SetUserCoursePreference is the resolver for the setUserCoursePreference field.
+func (r *mutationResolver) SetUserCoursePreference(ctx context.Context, isOnline bool) (*model.UserCoursePreference, error) {
+	return course.SetUserCoursePreference(ctx, isOnline)
+}
+
+// UpdUserCoursePreference is the resolver for the updUserCoursePreference field.
+func (r *mutationResolver) UpdUserCoursePreference(ctx context.Context, isOnline bool) (*model.UserCoursePreference, error) {
+	return course.UpdUserCoursePreference(ctx, isOnline)
 }
 
 // Mutation returns generated.MutationResolver implementation.

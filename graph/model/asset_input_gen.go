@@ -1,14 +1,11 @@
-package model 
+package model
 
+/* AssetInput */
 
- /* AssetInput */ 
+func MapAssetInputToAsset(input AssetInput, existing Asset) Asset {
+	if input.Description != nil {
+		existing.Description = *input.Description
+	}
 
-
-
-func MapAssetInputToAsset(input AssetInput, existing Asset) Asset { 
- if input.Description != nil { 
-	existing.Description = *input.Description 
- } 
- 
-  return existing 
+	return existing
 }

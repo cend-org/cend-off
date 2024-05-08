@@ -219,6 +219,7 @@ type ComplexityRoot struct {
 		RemoveUserPlannings        func(childComplexity int) int
 		RemoveUserProfessor        func(childComplexity int, input model.UserInput) int
 		RemoveUserTutor            func(childComplexity int, input model.UserInput) int
+		SetUserCoursePreference    func(childComplexity int, isOnline bool) int
 		SetUserEducationLevel      func(childComplexity int, subjectID int) int
 		TagPost                    func(childComplexity int, input model.PostTagInput) int
 		UpdContract                func(childComplexity int, input model.ContractInput, contractID int) int
@@ -226,6 +227,7 @@ type ComplexityRoot struct {
 		UpdMyProfile               func(childComplexity int, input model.UserInput) int
 		UpdPost                    func(childComplexity int, input model.PostInput, postID int) int
 		UpdTagOnPost               func(childComplexity int, input model.PostTagInput) int
+		UpdUserCoursePreference    func(childComplexity int, isOnline bool) int
 		UpdateProfileCv            func(childComplexity int, file graphql.Upload) int
 		UpdateProfileImage         func(childComplexity int, file graphql.Upload) int
 		UpdateProfileLetter        func(childComplexity int, file graphql.Upload) int
@@ -328,6 +330,7 @@ type ComplexityRoot struct {
 		GetTotalSalaryValue            func(childComplexity int, studentID int, startDate time.Time, endDate time.Time) int
 		GetUserAddress                 func(childComplexity int) int
 		GetUserAverageMark             func(childComplexity int, userID int) int
+		GetUserCoursePreference        func(childComplexity int) int
 		GetUserEducationLevel          func(childComplexity int) int
 		GetUserMarkComment             func(childComplexity int) int
 		GetUserParent                  func(childComplexity int) int
@@ -406,6 +409,15 @@ type ComplexityRoot struct {
 		Id                      func(childComplexity int) int
 		UpdatedAt               func(childComplexity int) int
 		UserAuthorizationLinkId func(childComplexity int) int
+	}
+
+	UserCoursePreference struct {
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Id        func(childComplexity int) int
+		IsOnline  func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UserId    func(childComplexity int) int
 	}
 
 	UserEducationLevelSubject struct {
@@ -1580,6 +1592,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.RemoveUserTutor(childComplexity, args["input"].(model.UserInput)), true
 
+	case "Mutation.setUserCoursePreference":
+		if e.complexity.Mutation.SetUserCoursePreference == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_setUserCoursePreference_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SetUserCoursePreference(childComplexity, args["isOnline"].(bool)), true
+
 	case "Mutation.setUserEducationLevel":
 		if e.complexity.Mutation.SetUserEducationLevel == nil {
 			break
@@ -1663,6 +1687,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdTagOnPost(childComplexity, args["input"].(model.PostTagInput)), true
+
+	case "Mutation.updUserCoursePreference":
+		if e.complexity.Mutation.UpdUserCoursePreference == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_updUserCoursePreference_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdUserCoursePreference(childComplexity, args["isOnline"].(bool)), true
 
 	case "Mutation.updateProfileCv":
 		if e.complexity.Mutation.UpdateProfileCv == nil {
@@ -2341,6 +2377,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetUserAverageMark(childComplexity, args["userId"].(int)), true
 
+	case "Query.getUserCoursePreference":
+		if e.complexity.Query.GetUserCoursePreference == nil {
+			break
+		}
+
+		return e.complexity.Query.GetUserCoursePreference(childComplexity), true
+
 	case "Query.getUserEducationLevel":
 		if e.complexity.Query.GetUserEducationLevel == nil {
 			break
@@ -2802,6 +2845,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserAuthorizationLinkActor.UserAuthorizationLinkId(childComplexity), true
 
+	case "UserCoursePreference.CreatedAt":
+		if e.complexity.UserCoursePreference.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserCoursePreference.CreatedAt(childComplexity), true
+
+	case "UserCoursePreference.DeletedAt":
+		if e.complexity.UserCoursePreference.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.UserCoursePreference.DeletedAt(childComplexity), true
+
+	case "UserCoursePreference.Id":
+		if e.complexity.UserCoursePreference.Id == nil {
+			break
+		}
+
+		return e.complexity.UserCoursePreference.Id(childComplexity), true
+
+	case "UserCoursePreference.IsOnline":
+		if e.complexity.UserCoursePreference.IsOnline == nil {
+			break
+		}
+
+		return e.complexity.UserCoursePreference.IsOnline(childComplexity), true
+
+	case "UserCoursePreference.UpdatedAt":
+		if e.complexity.UserCoursePreference.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserCoursePreference.UpdatedAt(childComplexity), true
+
+	case "UserCoursePreference.UserId":
+		if e.complexity.UserCoursePreference.UserId == nil {
+			break
+		}
+
+		return e.complexity.UserCoursePreference.UserId(childComplexity), true
+
 	case "UserEducationLevelSubject.CreatedAt":
 		if e.complexity.UserEducationLevelSubject.CreatedAt == nil {
 			break
@@ -3163,6 +3248,14 @@ input ContractTimesheetDetailInput {
     Hours: Float
 }
 `, BuiltIn: false},
+	{Name: "../gql/course/course.graphqls", Input: `type UserCoursePreference {
+    Id: ID!  @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId: Int! @goField(name: "UserId")
+    IsOnline: Boolean!
+}`, BuiltIn: false},
 	{Name: "../gql/directive/directive.graphqls", Input: `directive @goModel(
     model: String
     models: [String!]
@@ -3484,6 +3577,11 @@ scalar Upload
     tagPost(input: PostTagInput!): Post!
     updTagOnPost(input : PostTagInput!): Post!
     removeTagOnPost(postId: Int!): Post!
+
+    #    User Course Preference
+    setUserCoursePreference(isOnline : Boolean!): UserCoursePreference!
+    updUserCoursePreference(isOnline : Boolean!): UserCoursePreference!
+
 }
 `, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {
@@ -3556,8 +3654,6 @@ scalar Upload
     getProfileVideo: String
     getProfileVideoThumb: String
 
-
-
     #    Contract QUERIES
     getContracts: [Contract!]!
     getContract (contractId: Int!): Contract!
@@ -3575,6 +3671,9 @@ scalar Upload
     # Post Tag
     searchPost(keyword: String!): [Post!]!
     getTaggedPost(postId: Int!): [PostTag!]!
+
+    #    User Course Preference
+    getUserCoursePreference: UserCoursePreference!
 }`, BuiltIn: false},
 	{Name: "../gql/subject/subject.graphqls", Input: `type Subject {
     Id: ID! @goField(name: "Id")

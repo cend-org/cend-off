@@ -341,6 +341,15 @@ type UserAuthorizationLinkActor struct {
 	AuthorizationId         int        `json:"AuthorizationId"`
 }
 
+type UserCoursePreference struct {
+	Id        int        `json:"Id"`
+	CreatedAt time.Time  `json:"CreatedAt"`
+	UpdatedAt time.Time  `json:"UpdatedAt"`
+	DeletedAt *time.Time `json:"DeletedAt,omitempty"`
+	UserId    int        `json:"UserId"`
+	IsOnline  bool       `json:"IsOnline"`
+}
+
 type UserEducationLevelSubject struct {
 	Id        int        `json:"Id"`
 	CreatedAt time.Time  `json:"CreatedAt"`

@@ -74,6 +74,8 @@ type MutationResolver interface {
 	TagPost(ctx context.Context, input model.PostTagInput) (*model.Post, error)
 	UpdTagOnPost(ctx context.Context, input model.PostTagInput) (*model.Post, error)
 	RemoveTagOnPost(ctx context.Context, postID int) (*model.Post, error)
+	SetUserCoursePreference(ctx context.Context, isOnline bool) (*model.UserCoursePreference, error)
+	UpdUserCoursePreference(ctx context.Context, isOnline bool) (*model.UserCoursePreference, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -629,6 +631,21 @@ func (ec *executionContext) field_Mutation_removeUserTutor_args(ctx context.Cont
 	return args, nil
 }
 
+func (ec *executionContext) field_Mutation_setUserCoursePreference_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["isOnline"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isOnline"))
+		arg0, err = ec.unmarshalNBoolean2bool(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["isOnline"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Mutation_setUserEducationLevel_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -749,6 +766,21 @@ func (ec *executionContext) field_Mutation_updTagOnPost_args(ctx context.Context
 		}
 	}
 	args["input"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_updUserCoursePreference_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 bool
+	if tmp, ok := rawArgs["isOnline"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("isOnline"))
+		arg0, err = ec.unmarshalNBoolean2bool(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["isOnline"] = arg0
 	return args, nil
 }
 
@@ -4632,6 +4664,144 @@ func (ec *executionContext) fieldContext_Mutation_removeTagOnPost(ctx context.Co
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_setUserCoursePreference(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_setUserCoursePreference(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().SetUserCoursePreference(rctx, fc.Args["isOnline"].(bool))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.UserCoursePreference)
+	fc.Result = res
+	return ec.marshalNUserCoursePreference2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserCoursePreference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_setUserCoursePreference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "Id":
+				return ec.fieldContext_UserCoursePreference_Id(ctx, field)
+			case "CreatedAt":
+				return ec.fieldContext_UserCoursePreference_CreatedAt(ctx, field)
+			case "UpdatedAt":
+				return ec.fieldContext_UserCoursePreference_UpdatedAt(ctx, field)
+			case "DeletedAt":
+				return ec.fieldContext_UserCoursePreference_DeletedAt(ctx, field)
+			case "UserId":
+				return ec.fieldContext_UserCoursePreference_UserId(ctx, field)
+			case "IsOnline":
+				return ec.fieldContext_UserCoursePreference_IsOnline(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserCoursePreference", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_setUserCoursePreference_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_updUserCoursePreference(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_updUserCoursePreference(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().UpdUserCoursePreference(rctx, fc.Args["isOnline"].(bool))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.UserCoursePreference)
+	fc.Result = res
+	return ec.marshalNUserCoursePreference2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserCoursePreference(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_updUserCoursePreference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "Id":
+				return ec.fieldContext_UserCoursePreference_Id(ctx, field)
+			case "CreatedAt":
+				return ec.fieldContext_UserCoursePreference_CreatedAt(ctx, field)
+			case "UpdatedAt":
+				return ec.fieldContext_UserCoursePreference_UpdatedAt(ctx, field)
+			case "DeletedAt":
+				return ec.fieldContext_UserCoursePreference_DeletedAt(ctx, field)
+			case "UserId":
+				return ec.fieldContext_UserCoursePreference_UserId(ctx, field)
+			case "IsOnline":
+				return ec.fieldContext_UserCoursePreference_IsOnline(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserCoursePreference", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_updUserCoursePreference_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
@@ -4986,6 +5156,20 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "removeTagOnPost":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_removeTagOnPost(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "setUserCoursePreference":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_setUserCoursePreference(ctx, field)
+			})
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "updUserCoursePreference":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_updUserCoursePreference(ctx, field)
 			})
 			if out.Values[i] == graphql.Null {
 				out.Invalids++

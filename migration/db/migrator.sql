@@ -701,3 +701,22 @@ alter table post_view
 --
 DROP TABLE school_subject;
 DROP TABLE school;
+
+--
+--
+--  COURSE
+--
+--
+create table user_course_preference
+(
+    id         int auto_increment primary key,
+    created_at timestamp default CURRENT_TIMESTAMP,
+    updated_at timestamp default CURRENT_TIMESTAMP,
+    deleted_at timestamp default '0000-00-00 00:00:00',
+    user_id int default 0,
+    is_online boolean
+);
+
+alter table user_course_preference
+    add constraint user_course_preference_user_id
+        foreign key (user_id) references user (id);
