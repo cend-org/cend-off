@@ -7,6 +7,12 @@ package resolver
 import (
 	"context"
 	"fmt"
+
+	"github.com/99designs/gqlgen/graphql"
+	"github.com/cend-org/duval/graph/generated"
+	"github.com/cend-org/duval/graph/model"
+	"github.com/cend-org/duval/internal/authentication"
+	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/pkg/address"
 	"github.com/cend-org/duval/pkg/contract"
 	"github.com/cend-org/duval/pkg/education"
@@ -21,13 +27,6 @@ import (
 	"github.com/cend-org/duval/pkg/translator"
 	usr "github.com/cend-org/duval/pkg/user"
 	"github.com/cend-org/duval/pkg/user/link"
-
-	"github.com/99designs/gqlgen/graphql"
-	"github.com/cend-org/duval/graph/generated"
-	"github.com/cend-org/duval/graph/model"
-	"github.com/cend-org/duval/internal/authentication"
-	"github.com/cend-org/duval/internal/database"
-	"github.com/cend-org/duval/internal/school"
 )
 
 // RegisterWithEmail is the resolver for the RegisterWithEmail field.
@@ -74,17 +73,6 @@ func (r *mutationResolver) NewAsset(ctx context.Context, asset model.AssetInput)
 	}
 
 	return &as, err
-}
-
-// PopulateSchool is the resolver for the PopulateSchool field.
-func (r *mutationResolver) PopulateSchool(ctx context.Context) (*bool, error) {
-	err := school.Populate()
-	if err != nil {
-		return nil, err
-	}
-
-	done := true
-	return &done, err
 }
 
 // NewMessage is the resolver for the newMessage field.

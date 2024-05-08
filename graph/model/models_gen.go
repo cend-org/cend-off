@@ -276,32 +276,6 @@ type QRCodeRegistry struct {
 type Query struct {
 }
 
-type School struct {
-	Id        int        `json:"Id"`
-	CreatedAt time.Time  `json:"CreatedAt"`
-	UpdatedAt time.Time  `json:"UpdatedAt"`
-	DeletedAt *time.Time `json:"DeletedAt,omitempty"`
-	Name      string     `json:"Name"`
-}
-
-type SchoolInput struct {
-	Name *string `json:"name"`
-}
-
-type SchoolSubject struct {
-	Id           int        `json:"Id"`
-	CreatedAt    time.Time  `json:"CreatedAt"`
-	UpdatedAt    time.Time  `json:"UpdatedAt"`
-	DeletedAt    *time.Time `json:"DeletedAt,omitempty"`
-	SchoolNumber int        `json:"SchoolNumber"`
-	Name         string     `json:"Name"`
-}
-
-type SchoolSubjectInput struct {
-	SchoolNumber *int    `json:"school_number"`
-	Name         *string `json:"name"`
-}
-
 type Subject struct {
 	Id               int        `json:"Id"`
 	CreatedAt        time.Time  `json:"CreatedAt"`

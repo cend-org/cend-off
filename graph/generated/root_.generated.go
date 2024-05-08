@@ -202,7 +202,6 @@ type ComplexityRoot struct {
 		NewPassword                func(childComplexity int, password string) int
 		NewPhoneNumber             func(childComplexity int, input model.PhoneNumberInput) int
 		NewPost                    func(childComplexity int, input model.PostInput) int
-		PopulateSchool             func(childComplexity int) int
 		RateUser                   func(childComplexity int, input model.MarkInput) int
 		Register                   func(childComplexity int, input model.UserInput, as int) int
 		RegisterWithEmail          func(childComplexity int, input string, as int) int
@@ -323,8 +322,6 @@ type ComplexityRoot struct {
 		GetProfileLetterThumb          func(childComplexity int) int
 		GetProfileVideo                func(childComplexity int) int
 		GetProfileVideoThumb           func(childComplexity int) int
-		GetSchool                      func(childComplexity int, id int) int
-		GetSchools                     func(childComplexity int) int
 		GetStudent                     func(childComplexity int) int
 		GetSubjects                    func(childComplexity int, id int) int
 		GetTaggedPost                  func(childComplexity int, postID int) int
@@ -349,23 +346,6 @@ type ComplexityRoot struct {
 		Users                          func(childComplexity int) int
 		VerifyUserEmailValidationCode  func(childComplexity int, verifCode int) int
 		ViewPost                       func(childComplexity int, postID int) int
-	}
-
-	School struct {
-		CreatedAt func(childComplexity int) int
-		DeletedAt func(childComplexity int) int
-		Id        func(childComplexity int) int
-		Name      func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
-	}
-
-	SchoolSubject struct {
-		CreatedAt    func(childComplexity int) int
-		DeletedAt    func(childComplexity int) int
-		Id           func(childComplexity int) int
-		Name         func(childComplexity int) int
-		SchoolNumber func(childComplexity int) int
-		UpdatedAt    func(childComplexity int) int
 	}
 
 	Subject struct {
@@ -1426,13 +1406,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.NewPost(childComplexity, args["input"].(model.PostInput)), true
 
-	case "Mutation.populateSchool":
-		if e.complexity.Mutation.PopulateSchool == nil {
-			break
-		}
-
-		return e.complexity.Mutation.PopulateSchool(childComplexity), true
-
 	case "Mutation.rateUser":
 		if e.complexity.Mutation.RateUser == nil {
 			break
@@ -2306,25 +2279,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetProfileVideoThumb(childComplexity), true
 
-	case "Query.getSchool":
-		if e.complexity.Query.GetSchool == nil {
-			break
-		}
-
-		args, err := ec.field_Query_getSchool_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.GetSchool(childComplexity, args["id"].(int)), true
-
-	case "Query.getSchools":
-		if e.complexity.Query.GetSchools == nil {
-			break
-		}
-
-		return e.complexity.Query.GetSchools(childComplexity), true
-
 	case "Query.getStudent":
 		if e.complexity.Query.GetStudent == nil {
 			break
@@ -2532,83 +2486,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.ViewPost(childComplexity, args["postId"].(int)), true
-
-	case "School.CreatedAt":
-		if e.complexity.School.CreatedAt == nil {
-			break
-		}
-
-		return e.complexity.School.CreatedAt(childComplexity), true
-
-	case "School.DeletedAt":
-		if e.complexity.School.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.School.DeletedAt(childComplexity), true
-
-	case "School.Id":
-		if e.complexity.School.Id == nil {
-			break
-		}
-
-		return e.complexity.School.Id(childComplexity), true
-
-	case "School.Name":
-		if e.complexity.School.Name == nil {
-			break
-		}
-
-		return e.complexity.School.Name(childComplexity), true
-
-	case "School.UpdatedAt":
-		if e.complexity.School.UpdatedAt == nil {
-			break
-		}
-
-		return e.complexity.School.UpdatedAt(childComplexity), true
-
-	case "SchoolSubject.CreatedAt":
-		if e.complexity.SchoolSubject.CreatedAt == nil {
-			break
-		}
-
-		return e.complexity.SchoolSubject.CreatedAt(childComplexity), true
-
-	case "SchoolSubject.DeletedAt":
-		if e.complexity.SchoolSubject.DeletedAt == nil {
-			break
-		}
-
-		return e.complexity.SchoolSubject.DeletedAt(childComplexity), true
-
-	case "SchoolSubject.Id":
-		if e.complexity.SchoolSubject.Id == nil {
-			break
-		}
-
-		return e.complexity.SchoolSubject.Id(childComplexity), true
-
-	case "SchoolSubject.Name":
-		if e.complexity.SchoolSubject.Name == nil {
-			break
-		}
-
-		return e.complexity.SchoolSubject.Name(childComplexity), true
-
-	case "SchoolSubject.SchoolNumber":
-		if e.complexity.SchoolSubject.SchoolNumber == nil {
-			break
-		}
-
-		return e.complexity.SchoolSubject.SchoolNumber(childComplexity), true
-
-	case "SchoolSubject.UpdatedAt":
-		if e.complexity.SchoolSubject.UpdatedAt == nil {
-			break
-		}
-
-		return e.complexity.SchoolSubject.UpdatedAt(childComplexity), true
 
 	case "Subject.CreatedAt":
 		if e.complexity.Subject.CreatedAt == nil {
@@ -3077,8 +2954,6 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 		ec.unmarshalInputPhoneNumberInput,
 		ec.unmarshalInputPostInput,
 		ec.unmarshalInputPostTagInput,
-		ec.unmarshalInputSchoolInput,
-		ec.unmarshalInputSchoolSubjectInput,
 		ec.unmarshalInputSubjectInput,
 		ec.unmarshalInputUserInput,
 	)
@@ -3526,9 +3401,6 @@ scalar Upload
     delPassword(id: ID!): Boolean
 
     newAsset(asset: AssetInput!): Asset
-
-    populateSchool: Boolean
-
     #   Message mutations
     newMessage(input: MessageInput!): Message!
     updMessage(input: MessageInput!): Message!
@@ -3654,9 +3526,7 @@ scalar Upload
     getUserSubjects: [Subject!]
     getEducation: [Education!]
     getUserEducationLevel: Education!
-    getSchools: [School!]
-    getSubjects(id: ID!): [SchoolSubject!]
-    getSchool(id: ID!): School
+    getSubjects(id: ID!): [Subject!]
 
     #    Mark QUERIES
     getUserAverageMark(userId: ID!): Int
@@ -3705,31 +3575,6 @@ scalar Upload
     # Post Tag
     searchPost(keyword: String!): [Post!]!
     getTaggedPost(postId: Int!): [PostTag!]!
-}`, BuiltIn: false},
-	{Name: "../gql/school/school.graphqls", Input: `type School {
-    Id: ID! @goField(name: "Id")
-    CreatedAt: DateTime!
-    UpdatedAt: DateTime!
-    DeletedAt: DateTime
-    Name: String!
-}
-
-input SchoolInput {
-    Name: String
-}
-
-type SchoolSubject {
-    Id: ID! @goField(name: "Id")
-    CreatedAt: DateTime!
-    UpdatedAt: DateTime!
-    DeletedAt: DateTime
-    SchoolNumber: Int!
-    Name: String!
-}
-
-input SchoolSubjectInput {
-    SchoolNumber: Int
-    Name: String
 }`, BuiltIn: false},
 	{Name: "../gql/subject/subject.graphqls", Input: `type Subject {
     Id: ID! @goField(name: "Id")

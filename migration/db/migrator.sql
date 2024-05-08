@@ -697,3 +697,7 @@ alter table post_view
 alter table post_view
     add constraint post_view_viewer_id
         foreign key (viewer_id) references user (id);
+
+--
+DROP TABLE school_subject;
+DROP TABLE school;

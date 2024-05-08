@@ -7,6 +7,12 @@ package resolver
 import (
 	"context"
 	"fmt"
+	"time"
+
+	"github.com/cend-org/duval/graph/generated"
+	"github.com/cend-org/duval/graph/model"
+	"github.com/cend-org/duval/internal/authentication"
+	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/pkg/address"
 	"github.com/cend-org/duval/pkg/code"
 	"github.com/cend-org/duval/pkg/contract"
@@ -22,12 +28,6 @@ import (
 	"github.com/cend-org/duval/pkg/translator"
 	"github.com/cend-org/duval/pkg/user"
 	"github.com/cend-org/duval/pkg/user/link"
-	"time"
-
-	"github.com/cend-org/duval/graph/generated"
-	"github.com/cend-org/duval/graph/model"
-	"github.com/cend-org/duval/internal/authentication"
-	"github.com/cend-org/duval/internal/database"
 )
 
 // Passwords is the resolver for the Passwords field.
@@ -170,19 +170,9 @@ func (r *queryResolver) GetUserEducationLevel(ctx context.Context) (*model.Educa
 	return education.GetUserEducationLevel(ctx)
 }
 
-// GetSchools is the resolver for the getSchools field.
-func (r *queryResolver) GetSchools(ctx context.Context) ([]model.School, error) {
-	return education.GetSchools(ctx)
-}
-
 // GetSubjects is the resolver for the getSubjects field.
-func (r *queryResolver) GetSubjects(ctx context.Context, id int) ([]model.SchoolSubject, error) {
-	return education.GetSubjects(ctx, id)
-}
-
-// GetSchool is the resolver for the getSchool field.
-func (r *queryResolver) GetSchool(ctx context.Context, id int) (*model.School, error) {
-	return education.GetSchool(ctx, id)
+func (r *queryResolver) GetSubjects(ctx context.Context, id int) ([]model.Subject, error) {
+	return education.GetSubjects(id)
 }
 
 // GetUserAverageMark is the resolver for the getUserAverageMark field.

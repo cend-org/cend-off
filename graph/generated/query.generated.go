@@ -43,9 +43,7 @@ type QueryResolver interface {
 	GetUserSubjects(ctx context.Context) ([]model.Subject, error)
 	GetEducation(ctx context.Context) ([]model.Education, error)
 	GetUserEducationLevel(ctx context.Context) (*model.Education, error)
-	GetSchools(ctx context.Context) ([]model.School, error)
-	GetSubjects(ctx context.Context, id int) ([]model.SchoolSubject, error)
-	GetSchool(ctx context.Context, id int) (*model.School, error)
+	GetSubjects(ctx context.Context, id int) ([]model.Subject, error)
 	GetUserAverageMark(ctx context.Context, userID int) (*int, error)
 	GetUserMarkComment(ctx context.Context) ([]model.Mark, error)
 	GetUserParent(ctx context.Context) ([]model.User, error)
@@ -212,21 +210,6 @@ func (ec *executionContext) field_Query_getPlanningActors_args(ctx context.Conte
 		}
 	}
 	args["calendarId"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_getSchool_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
 	return args, nil
 }
 
@@ -1992,59 +1975,6 @@ func (ec *executionContext) fieldContext_Query_getUserEducationLevel(ctx context
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_getSchools(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_getSchools(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetSchools(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]model.School)
-	fc.Result = res
-	return ec.marshalOSchool2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐSchoolᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_getSchools(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_School_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_School_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_School_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_School_DeletedAt(ctx, field)
-			case "Name":
-				return ec.fieldContext_School_Name(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type School", field.Name)
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Query_getSubjects(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query_getSubjects(ctx, field)
 	if err != nil {
@@ -2068,9 +1998,9 @@ func (ec *executionContext) _Query_getSubjects(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]model.SchoolSubject)
+	res := resTmp.([]model.Subject)
 	fc.Result = res
-	return ec.marshalOSchoolSubject2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐSchoolSubjectᚄ(ctx, field.Selections, res)
+	return ec.marshalOSubject2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐSubjectᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_getSubjects(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2082,19 +2012,19 @@ func (ec *executionContext) fieldContext_Query_getSubjects(ctx context.Context, 
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
 			case "Id":
-				return ec.fieldContext_SchoolSubject_Id(ctx, field)
+				return ec.fieldContext_Subject_Id(ctx, field)
 			case "CreatedAt":
-				return ec.fieldContext_SchoolSubject_CreatedAt(ctx, field)
+				return ec.fieldContext_Subject_CreatedAt(ctx, field)
 			case "UpdatedAt":
-				return ec.fieldContext_SchoolSubject_UpdatedAt(ctx, field)
+				return ec.fieldContext_Subject_UpdatedAt(ctx, field)
 			case "DeletedAt":
-				return ec.fieldContext_SchoolSubject_DeletedAt(ctx, field)
-			case "SchoolNumber":
-				return ec.fieldContext_SchoolSubject_SchoolNumber(ctx, field)
+				return ec.fieldContext_Subject_DeletedAt(ctx, field)
+			case "EducationLevelId":
+				return ec.fieldContext_Subject_EducationLevelId(ctx, field)
 			case "Name":
-				return ec.fieldContext_SchoolSubject_Name(ctx, field)
+				return ec.fieldContext_Subject_Name(ctx, field)
 			}
-			return nil, fmt.Errorf("no field named %q was found under type SchoolSubject", field.Name)
+			return nil, fmt.Errorf("no field named %q was found under type Subject", field.Name)
 		},
 	}
 	defer func() {
@@ -2105,70 +2035,6 @@ func (ec *executionContext) fieldContext_Query_getSubjects(ctx context.Context, 
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_getSubjects_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_getSchool(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_getSchool(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetSchool(rctx, fc.Args["id"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*model.School)
-	fc.Result = res
-	return ec.marshalOSchool2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐSchool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_getSchool(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_School_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_School_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_School_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_School_DeletedAt(ctx, field)
-			case "Name":
-				return ec.fieldContext_School_Name(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type School", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_getSchool_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -4330,25 +4196,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "getSchools":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_getSchools(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
 		case "getSubjects":
 			field := field
 
@@ -4359,25 +4206,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_getSubjects(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "getSchool":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_getSchool(ctx, field)
 				return res
 			}
 
