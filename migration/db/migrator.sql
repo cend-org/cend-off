@@ -713,8 +713,8 @@ create table user_course_preference
     created_at timestamp default CURRENT_TIMESTAMP,
     updated_at timestamp default CURRENT_TIMESTAMP,
     deleted_at timestamp default '0000-00-00 00:00:00',
-    user_id int default 0,
-    is_online boolean
+    user_id    int       default 0,
+    is_online  boolean
 );
 
 alter table user_course_preference
@@ -722,3 +722,12 @@ alter table user_course_preference
         foreign key (user_id) references user (id);
 
 -- last production modification
+
+--
+--
+--  USER EDUCATION LEVEL SUBJECT MODIFICATION
+--
+--
+
+alter table user_education_level_subject
+    drop index subject_id ;
