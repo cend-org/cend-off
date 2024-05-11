@@ -100,7 +100,7 @@ func Upload(ctx *gin.Context) {
 		err = RemoveUserMediaDetail(userMediaDetail)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: "error while trying to delete data from database",
+				Message: "error while trying to delete data from database ",
 			})
 			return
 		}
