@@ -6,7 +6,6 @@ import (
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/token"
 	"github.com/cend-org/duval/internal/utils"
-	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/gin-gonic/gin"
@@ -37,14 +36,14 @@ func Upload(ctx *gin.Context) {
 	tok, err = authentication.GinContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
+			Message: "UnAuthorized",
 		})
 		return
 	}
 
 	if tok.UserId == state.ZERO {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.UnAuthorizedError,
+			Message: "UnAuthorized",
 		})
 		return
 	}
@@ -52,7 +51,7 @@ func Upload(ctx *gin.Context) {
 	err = ctx.ShouldBind(&uploadFile)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.ParseError,
+			Message: "failed to parse body",
 		})
 		return
 	}
@@ -61,7 +60,7 @@ func Upload(ctx *gin.Context) {
 	documentType, err = strconv.Atoi(uploadFile.DocumentType)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.Lambda(err),
+			Message: "failed to convert string to int",
 		})
 		return
 	}
@@ -71,7 +70,7 @@ func Upload(ctx *gin.Context) {
 		mediaThumb, err := GetMediaThumb(tok.UserId, documentType)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.Lambda(err),
+				Message: "error while trying to get data from database",
 			})
 			return
 		}
@@ -79,7 +78,7 @@ func Upload(ctx *gin.Context) {
 		userMediaDetail, err := GetUserMediaDetail(tok.UserId, documentType)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.Lambda(err),
+				Message: "error while trying to get data from database",
 			})
 			return
 		}
@@ -87,21 +86,21 @@ func Upload(ctx *gin.Context) {
 		err = RemoveMedia(media)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.DbDeleteError,
+				Message: "error while trying to delete data from database",
 			})
 			return
 		}
 		err = RemoveMediaThumb(mediaThumb)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.DbDeleteError,
+				Message: "error while trying to delete data from database",
 			})
 			return
 		}
 		err = RemoveUserMediaDetail(userMediaDetail)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.DbDeleteError,
+				Message: "error while trying to delete data from database",
 			})
 			return
 		}
@@ -115,14 +114,14 @@ func Upload(ctx *gin.Context) {
 	mType, err := DetectMimeType(file)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.TypeError,
+			Message: "invalid type of file",
 		})
 		return
 	}
 
 	if !utils.IsValidFile(mType.String()) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.TypeError,
+			Message: "invalid type of file",
 		})
 		return
 	}
@@ -130,7 +129,7 @@ func Upload(ctx *gin.Context) {
 	if utils.IsValidDocument(mType.String()) {
 		if documentType != utils.CV && documentType != utils.Letter {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.TypeError,
+				Message: "invalid type of file",
 			})
 			return
 		}
@@ -138,7 +137,7 @@ func Upload(ctx *gin.Context) {
 		err = utils.CreateDocumentThumb(media.Xid, media.Extension, file)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.Lambda(err),
+				Message: "failed to create thumb",
 			})
 			return
 		}
@@ -147,7 +146,7 @@ func Upload(ctx *gin.Context) {
 	if utils.IsValidVideo(mType.String()) {
 		if documentType != utils.VideoPresentation {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.TypeError,
+				Message: "invalid type of file",
 			})
 			return
 		}
@@ -155,7 +154,7 @@ func Upload(ctx *gin.Context) {
 		err = utils.CreateVideoThumb(media.Xid, media.Extension, file)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.Lambda(err),
+				Message: "failed to create thumb",
 			})
 			return
 		}
@@ -164,7 +163,7 @@ func Upload(ctx *gin.Context) {
 	if utils.IsValidImage(mType.String()) {
 		if documentType != utils.UserProfileImage {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.Lambda(err),
+				Message: "invalid type of file",
 			})
 			return
 		}
@@ -172,7 +171,7 @@ func Upload(ctx *gin.Context) {
 		err = utils.CreateThumb(media.Xid, media.Extension, file)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: errx.Lambda(err),
+				Message: "failed to create thumb",
 			})
 			return
 		}
@@ -181,7 +180,7 @@ func Upload(ctx *gin.Context) {
 	err = ctx.SaveUploadedFile(file, utils.FILE_UPLOAD_DIR+media.Xid+media.Extension)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: err,
+			Message: "failed to save file into server",
 		})
 		return
 	}
@@ -189,7 +188,7 @@ func Upload(ctx *gin.Context) {
 	media.Id, err = database.InsertOne(media)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbInsertError,
+			Message: "error while trying to insert data into database",
 		})
 		return
 	}
@@ -197,7 +196,7 @@ func Upload(ctx *gin.Context) {
 	err = SetUserMediaDetail(documentType, tok.UserId, media.Xid)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.DbInsertError,
+			Message: "error while trying to insert data into database",
 		})
 		return
 	}

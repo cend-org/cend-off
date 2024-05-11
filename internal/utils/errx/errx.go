@@ -35,5 +35,6 @@ var (
 )
 
 var (
-	ThumbError = note.ThumbError
+	ThumbError  = note.ThumbError
+	SavingError = note.SavingError
 )
