@@ -4,15 +4,21 @@ import (
 	"github.com/gabriel-vasile/mimetype"
 )
 
-func IsValidImage(mType string) bool {
-	allowed := []string{"image/png", "image/jpeg"}
-	return mimetype.EqualsAny(mType, allowed...)
-}
+const (
+	CV                = 0
+	Letter            = 1
+	VideoPresentation = 2
+	UserProfileImage  = 3
+)
 
 func IsValidDocument(mType string) bool {
 	allowed := []string{"application/msword", "application/pdf"}
 	return mimetype.EqualsAny(mType, allowed...)
+}
 
+func IsValidImage(mType string) bool {
+	allowed := []string{"image/png", "image/jpeg"}
+	return mimetype.EqualsAny(mType, allowed...)
 }
 
 func IsValidVideo(mType string) bool {

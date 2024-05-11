@@ -1,9 +1,12 @@
 package authentication
 
 import (
+	"errors"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/token"
+	"github.com/gin-gonic/gin"
+	"strings"
 	"time"
 )
 
@@ -35,4 +38,18 @@ func NewAccessToken(usr model.User) (string, error) {
 	time.Sleep(time.Second * 2)
 
 	return access, err
+}
+
+func GinContext(ctx *gin.Context) (tok *token.Token, err error) {
+	tokenString := ctx.GetHeader("Authorization")
+	if len(strings.TrimSpace(tokenString)) == 0 {
+		return nil, errors.New("bad header value given")
+	}
+
+	bearer := strings.Split(tokenString, " ")
+	if len(bearer) != 2 {
+		return nil, errors.New("incorrectly formatted authorization header")
+	}
+
+	return token.Parse(bearer[1]), err
 }

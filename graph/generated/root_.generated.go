@@ -228,17 +228,9 @@ type ComplexityRoot struct {
 		UpdPost                    func(childComplexity int, input model.PostInput, postID int) int
 		UpdTagOnPost               func(childComplexity int, input model.PostTagInput) int
 		UpdUserCoursePreference    func(childComplexity int, isOnline bool) int
-		UpdateProfileCv            func(childComplexity int, file graphql.Upload) int
-		UpdateProfileImage         func(childComplexity int, file graphql.Upload) int
-		UpdateProfileLetter        func(childComplexity int, file graphql.Upload) int
-		UpdateProfileVideo         func(childComplexity int, file graphql.Upload) int
 		UpdateUserAddress          func(childComplexity int, input model.AddressInput) int
 		UpdateUserEducationLevel   func(childComplexity int, subjectID int) int
 		UpdateUserPhoneNumber      func(childComplexity int, input model.PhoneNumberInput) int
-		UploadProfileCv            func(childComplexity int, file graphql.Upload) int
-		UploadProfileImage         func(childComplexity int, file graphql.Upload) int
-		UploadProfileLetter        func(childComplexity int, file graphql.Upload) int
-		UploadProfileVideo         func(childComplexity int, file graphql.Upload) int
 	}
 
 	Password struct {
@@ -1700,54 +1692,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdUserCoursePreference(childComplexity, args["isOnline"].(bool)), true
 
-	case "Mutation.updateProfileCv":
-		if e.complexity.Mutation.UpdateProfileCv == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_updateProfileCv_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UpdateProfileCv(childComplexity, args["file"].(graphql.Upload)), true
-
-	case "Mutation.updateProfileImage":
-		if e.complexity.Mutation.UpdateProfileImage == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_updateProfileImage_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UpdateProfileImage(childComplexity, args["file"].(graphql.Upload)), true
-
-	case "Mutation.updateProfileLetter":
-		if e.complexity.Mutation.UpdateProfileLetter == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_updateProfileLetter_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UpdateProfileLetter(childComplexity, args["file"].(graphql.Upload)), true
-
-	case "Mutation.updateProfileVideo":
-		if e.complexity.Mutation.UpdateProfileVideo == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_updateProfileVideo_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UpdateProfileVideo(childComplexity, args["file"].(graphql.Upload)), true
-
 	case "Mutation.updateUserAddress":
 		if e.complexity.Mutation.UpdateUserAddress == nil {
 			break
@@ -1783,54 +1727,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateUserPhoneNumber(childComplexity, args["input"].(model.PhoneNumberInput)), true
-
-	case "Mutation.uploadProfileCv":
-		if e.complexity.Mutation.UploadProfileCv == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_uploadProfileCv_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UploadProfileCv(childComplexity, args["file"].(graphql.Upload)), true
-
-	case "Mutation.uploadProfileImage":
-		if e.complexity.Mutation.UploadProfileImage == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_uploadProfileImage_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UploadProfileImage(childComplexity, args["file"].(graphql.Upload)), true
-
-	case "Mutation.uploadProfileLetter":
-		if e.complexity.Mutation.UploadProfileLetter == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_uploadProfileLetter_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UploadProfileLetter(childComplexity, args["file"].(graphql.Upload)), true
-
-	case "Mutation.uploadProfileVideo":
-		if e.complexity.Mutation.UploadProfileVideo == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_uploadProfileVideo_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.UploadProfileVideo(childComplexity, args["file"].(graphql.Upload)), true
 
 	case "Password.CreatedAt":
 		if e.complexity.Password.CreatedAt == nil {
@@ -3542,23 +3438,15 @@ scalar Upload
     loginWithQr(xId: String!) :String
 
     #    Profile Letter
-    uploadProfileLetter(file: Upload!): Media!
-    updateProfileLetter(file: Upload!) : Media!
     removeProfileLetter : Boolean
 
     #    Profile Cv
-    uploadProfileCv(file: Upload!): Media!
-    updateProfileCv(file: Upload!): Media!
     removeProfileCv : Boolean
 
     #    Profile Image
-    uploadProfileImage(file: Upload!): Media!
-    updateProfileImage(file: Upload!): Media!
     removeProfileImage: Boolean
 
     #    Profile Video
-    uploadProfileVideo(file: Upload!): Media!
-    updateProfileVideo(file: Upload!): Media!
     removeProfileVideo: Boolean
 
     # Contract

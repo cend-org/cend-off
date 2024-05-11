@@ -7,7 +7,6 @@ package resolver
 import (
 	"context"
 	"fmt"
-	"github.com/cend-org/duval/pkg/course"
 	"time"
 
 	"github.com/cend-org/duval/graph/generated"
@@ -17,6 +16,7 @@ import (
 	"github.com/cend-org/duval/pkg/address"
 	"github.com/cend-org/duval/pkg/code"
 	"github.com/cend-org/duval/pkg/contract"
+	"github.com/cend-org/duval/pkg/course"
 	"github.com/cend-org/duval/pkg/education"
 	"github.com/cend-org/duval/pkg/mark"
 	"github.com/cend-org/duval/pkg/media/cover"

@@ -57,23 +57,15 @@ type Mutation {
     loginWithQr(xId: String!) :String
 
     #    Profile Letter
-    uploadProfileLetter(file: Upload!): Media!
-    updateProfileLetter(file: Upload!) : Media!
     removeProfileLetter : Boolean
 
     #    Profile Cv
-    uploadProfileCv(file: Upload!): Media!
-    updateProfileCv(file: Upload!): Media!
     removeProfileCv : Boolean
 
     #    Profile Image
-    uploadProfileImage(file: Upload!): Media!
-    updateProfileImage(file: Upload!): Media!
     removeProfileImage: Boolean
 
     #    Profile Video
-    uploadProfileVideo(file: Upload!): Media!
-    updateProfileVideo(file: Upload!): Media!
     removeProfileVideo: Boolean
 
     # Contract
