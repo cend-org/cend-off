@@ -159,6 +159,7 @@ func Upload(ctx *gin.Context) {
 	}
 
 	ctx.AbortWithStatusJSON(http.StatusOK, media)
+
 }
 
 func DetectMimeType(file *multipart.FileHeader) (mType *mimetype.MIME, err error) {
