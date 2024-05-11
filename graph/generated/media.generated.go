@@ -1206,18 +1206,4 @@ func (ec *executionContext) _UserMediaDetail(ctx context.Context, sel ast.Select
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNMedia2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMedia(ctx context.Context, sel ast.SelectionSet, v model.Media) graphql.Marshaler {
-	return ec._Media(ctx, sel, &v)
-}
-
-func (ec *executionContext) marshalNMedia2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐMedia(ctx context.Context, sel ast.SelectionSet, v *model.Media) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
-	}
-	return ec._Media(ctx, sel, v)
-}
-
 // endregion ***************************** type.gotpl *****************************

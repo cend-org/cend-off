@@ -7,15 +7,14 @@ package resolver
 import (
 	"context"
 	"fmt"
-	"github.com/cend-org/duval/pkg/course"
 
-	"github.com/99designs/gqlgen/graphql"
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/authentication"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/pkg/address"
 	"github.com/cend-org/duval/pkg/contract"
+	"github.com/cend-org/duval/pkg/course"
 	"github.com/cend-org/duval/pkg/education"
 	"github.com/cend-org/duval/pkg/mark"
 	"github.com/cend-org/duval/pkg/media/cover"
@@ -216,29 +215,9 @@ func (r *mutationResolver) LoginWithQR(ctx context.Context, xID string) (*string
 	return authentication.LoginWithQr(ctx, xID)
 }
 
-// UploadProfileLetter is the resolver for the uploadProfileLetter field.
-func (r *mutationResolver) UploadProfileLetter(ctx context.Context, file graphql.Upload) (*model.Media, error) {
-	return cover.UploadProfileLetter(ctx, &file)
-}
-
-// UpdateProfileLetter is the resolver for the updateProfileLetter field.
-func (r *mutationResolver) UpdateProfileLetter(ctx context.Context, file graphql.Upload) (*model.Media, error) {
-	return cover.UpdateProfileLetter(ctx, &file)
-}
-
 // RemoveProfileLetter is the resolver for the removeProfileLetter field.
 func (r *mutationResolver) RemoveProfileLetter(ctx context.Context) (*bool, error) {
 	return cover.RemoveProfileLetter(ctx)
-}
-
-// UploadProfileCv is the resolver for the uploadProfileCv field.
-func (r *mutationResolver) UploadProfileCv(ctx context.Context, file graphql.Upload) (*model.Media, error) {
-	return cv.UploadProfileLetter(ctx, &file)
-}
-
-// UpdateProfileCv is the resolver for the updateProfileCv field.
-func (r *mutationResolver) UpdateProfileCv(ctx context.Context, file graphql.Upload) (*model.Media, error) {
-	return cv.UpdateProfileCv(ctx, &file)
 }
 
 // RemoveProfileCv is the resolver for the removeProfileCv field.
@@ -246,29 +225,9 @@ func (r *mutationResolver) RemoveProfileCv(ctx context.Context) (*bool, error) {
 	return cv.RemoveProfileCv(ctx)
 }
 
-// UploadProfileImage is the resolver for the uploadProfileImage field.
-func (r *mutationResolver) UploadProfileImage(ctx context.Context, file graphql.Upload) (*model.Media, error) {
-	return profile.UploadProfileImage(ctx, &file)
-}
-
-// UpdateProfileImage is the resolver for the updateProfileImage field.
-func (r *mutationResolver) UpdateProfileImage(ctx context.Context, file graphql.Upload) (*model.Media, error) {
-	return profile.UpdateProfileImage(ctx, &file)
-}
-
 // RemoveProfileImage is the resolver for the removeProfileImage field.
 func (r *mutationResolver) RemoveProfileImage(ctx context.Context) (*bool, error) {
 	return profile.RemoveProfileImage(ctx)
-}
-
-// UploadProfileVideo is the resolver for the uploadProfileVideo field.
-func (r *mutationResolver) UploadProfileVideo(ctx context.Context, file graphql.Upload) (*model.Media, error) {
-	return video.UploadProfileVideo(ctx, &file)
-}
-
-// UpdateProfileVideo is the resolver for the updateProfileVideo field.
-func (r *mutationResolver) UpdateProfileVideo(ctx context.Context, file graphql.Upload) (*model.Media, error) {
-	return video.UpdateProfileVideo(ctx, &file)
 }
 
 // RemoveProfileVideo is the resolver for the removeProfileVideo field.

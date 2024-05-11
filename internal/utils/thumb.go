@@ -1,34 +1,33 @@
 package utils
 
 import (
-	"fmt"
-	"github.com/99designs/gqlgen/graphql"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/disintegration/imaging"
 	"github.com/joinverse/xid"
-	unipdf "github.com/unidoc/unipdf/v3/model"
+	mod "github.com/unidoc/unipdf/v3/model"
 	"github.com/unidoc/unipdf/v3/render"
 	"image"
 	"image/color"
-	"io"
+	"mime/multipart"
 )
 
 /*
 CREATE THUMBNAIL FOR UPLOADED IMAGE
 */
-
-func CreateThumb(mediaXid string, extension string, file graphql.Upload) (err error) {
+func CreateThumb(mediaXid string, extension string, file *multipart.FileHeader) (err error) {
 	var (
 		mediaThumb model.MediaThumb
 		thumbnail  image.Image
 	)
 
-	if _, err := file.File.Seek(0, io.SeekStart); err != nil {
-		return fmt.Errorf("failed to seek file: %w", err)
+	openedFile, err := file.Open()
+	if err != nil {
+		return err
 	}
+	defer openedFile.Close()
 
-	img, err := imaging.Decode(file.File)
+	img, err := imaging.Decode(openedFile)
 	if err != nil {
 		return err
 	}
@@ -57,17 +56,18 @@ func CreateThumb(mediaXid string, extension string, file graphql.Upload) (err er
 /*
 CREATE THUMBNAIL FOR UPLOADED COVER LETTER
 */
-
-func CreateDocumentThumb(mediaXid string, extension string, file graphql.Upload) (err error) {
+func CreateDocumentThumb(mediaXid string, extension string, file *multipart.FileHeader) (err error) {
 	var (
 		mediaThumb model.MediaThumb
 		thumbnail  image.Image
 	)
-	if _, err := file.File.Seek(0, io.SeekStart); err != nil {
+	openedFile, err := file.Open()
+	if err != nil {
 		return err
 	}
+	defer openedFile.Close()
 
-	pdfReader, err := unipdf.NewPdfReader(file.File)
+	pdfReader, err := mod.NewPdfReader(openedFile)
 	if err != nil {
 		return err
 	}
@@ -110,3 +110,7 @@ func CreateDocumentThumb(mediaXid string, extension string, file graphql.Upload)
 /*
 CREATE THUMBNAIL FOR UPLOADED Video
 */
+
+func CreateVideoThumb(mediaXid string, extension string, file *multipart.FileHeader) (err error) {
+	return
+}
