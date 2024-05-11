@@ -15,6 +15,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
+	"time"
 )
 
 type MediaFile struct {
@@ -32,6 +33,7 @@ func Upload(ctx *gin.Context) {
 		file         *multipart.FileHeader
 	)
 
+	time.Sleep(100)
 	tok, err = authentication.GinContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -64,9 +66,51 @@ func Upload(ctx *gin.Context) {
 		return
 	}
 
-	media.FileName = file.Filename
+	media, err = GetMedia(tok.UserId, documentType)
+	if err == nil && media.Xid != state.EMPTY {
+		mediaThumb, err := GetMediaThumb(tok.UserId, documentType)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.Lambda(err),
+			})
+			return
+		}
+
+		userMediaDetail, err := GetUserMediaDetail(tok.UserId, documentType)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.Lambda(err),
+			})
+			return
+		}
+
+		err = RemoveMedia(media)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.DbDeleteError,
+			})
+			return
+		}
+		err = RemoveMediaThumb(mediaThumb)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.DbDeleteError,
+			})
+			return
+		}
+		err = RemoveUserMediaDetail(userMediaDetail)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.DbDeleteError,
+			})
+			return
+		}
+
+	}
+
 	media.Extension = filepath.Ext(file.Filename)
 	media.Xid = xid.New().String()
+	media.FileName = media.Xid + media.Extension
 
 	mType, err := DetectMimeType(file)
 	if err != nil {
@@ -84,20 +128,20 @@ func Upload(ctx *gin.Context) {
 	}
 
 	if utils.IsValidDocument(mType.String()) {
-		if documentType == utils.CV || documentType == utils.Letter {
-			err = utils.CreateDocumentThumb(media.Xid, media.Extension, file)
-			if err != nil {
-				ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-					Message: errx.Lambda(err),
-				})
-				return
-			}
+		if documentType != utils.CV && documentType != utils.Letter {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.TypeError,
+			})
+			return
 		}
 
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: errx.TypeError,
-		})
-		return
+		err = utils.CreateDocumentThumb(media.Xid, media.Extension, file)
+		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+				Message: errx.Lambda(err),
+			})
+			return
+		}
 	}
 
 	if utils.IsValidVideo(mType.String()) {
