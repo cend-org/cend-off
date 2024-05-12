@@ -1,16 +1,16 @@
 package utils
 
 import (
-	"fmt"
+	"image"
+	"image/color"
+	"mime/multipart"
+
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/disintegration/imaging"
 	"github.com/joinverse/xid"
 	mod "github.com/unidoc/unipdf/v3/model"
 	"github.com/unidoc/unipdf/v3/render"
-	"image"
-	"image/color"
-	"mime/multipart"
 )
 
 /*
@@ -37,7 +37,7 @@ func CreateThumb(mediaXid string, extension string, file *multipart.FileHeader) 
 
 	dst := imaging.New(200, 200, color.NRGBA{0, 0, 0, 0})
 	dst = imaging.Paste(dst, thumbnail, image.Pt(0, 0))
-	err = imaging.Save(dst, FILE_UPLOAD_DIR+THUMB_FILE_UPLOAD_DIR+mediaXid+extension)
+	err = imaging.Save(dst, FILE_UPLOAD_DIR+THUMB_FILE_UPLOAD_DIR+mediaXid+".jpg")
 	if err != nil {
 		return
 	}
@@ -62,8 +62,6 @@ func CreateDocumentThumb(mediaXid string, extension string, file *multipart.File
 		mediaThumb model.MediaThumb
 		thumbnail  image.Image
 	)
-
-	thumbPath := fmt.Sprintf("../%s%s%s.jpg", FILE_UPLOAD_DIR, THUMB_FILE_UPLOAD_DIR, mediaXid)
 
 	openedFile, err := file.Open()
 	if err != nil {
@@ -95,7 +93,7 @@ func CreateDocumentThumb(mediaXid string, extension string, file *multipart.File
 
 	dst := imaging.New(800, 1100, color.NRGBA{0, 0, 0, 0})
 	dst = imaging.Paste(dst, thumbnail, image.Pt(0, 0))
-	err = imaging.Save(dst, thumbPath)
+	err = imaging.Save(dst, FILE_UPLOAD_DIR+THUMB_FILE_UPLOAD_DIR+mediaXid+".jpg")
 	if err != nil {
 		return err
 	}
