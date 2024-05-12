@@ -47,7 +47,7 @@ func Register(ctx context.Context, input *model.UserInput, as int) (*string, err
 
 	_, err = GetUserByEmail(user.Email)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		return &tokenStr, errx.Lambda(err)
+		return &tokenStr, errx.DbGetError
 	}
 
 	if user.Id > state.ZERO {
@@ -56,7 +56,7 @@ func Register(ctx context.Context, input *model.UserInput, as int) (*string, err
 
 	user.Matricule, err = utils.GenerateMatricule()
 	if err != nil {
-		return &tokenStr, errx.Lambda(err)
+		return &tokenStr, errx.GenerateMatriculeError
 	}
 
 	if user.Name == state.EMPTY {
@@ -80,7 +80,7 @@ func Register(ctx context.Context, input *model.UserInput, as int) (*string, err
 
 	err = authorization.NewUserAuthorization(user.Id, authorizationLevel)
 	if err != nil {
-		return &tokenStr, errx.Lambda(err)
+		return &tokenStr, errx.AuthorizationError
 	}
 
 	tokenStr, err = LoginWithEmail(user.Email)
@@ -90,7 +90,7 @@ func Register(ctx context.Context, input *model.UserInput, as int) (*string, err
 
 	err = code.NewUserVerificationCode(user.Id)
 	if err != nil {
-		return &tokenStr, errx.Lambda(err)
+		return &tokenStr, errx.VerificationError
 	}
 
 	return &tokenStr, nil
@@ -221,16 +221,16 @@ func ActivateUser(ctx context.Context) (*model.User, error) {
 	)
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
-		return &usr, errx.Lambda(err)
+		return &usr, errx.UnAuthorizedError
 	}
 
 	usr, err = GetUserWithId(tok.UserId)
 	if err != nil {
-		return &usr, errx.Lambda(err)
+		return &usr, errx.DbGetError
 	}
 
 	if usr.Status <= StatusNeedPassword {
-		return &usr, errx.Lambda(err)
+		return &usr, errx.NeedPasswordError
 	}
 
 	usr.Status = StatusActive
@@ -247,12 +247,12 @@ func MyProfile(ctx context.Context) (*model.User, error) {
 
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
-		return &user, errx.Lambda(err)
+		return &user, errx.UnAuthorizedError
 	}
 
 	user, err = GetUserWithId(tok.UserId)
 	if err != nil {
-		return &user, errx.Lambda(err)
+		return &user, errx.DbGetError
 	}
 
 	return &user, nil
@@ -280,7 +280,7 @@ func UpdMyProfile(ctx context.Context, input *model.UserInput) (*string, error) 
 	//To do
 	err = database.Update(usr)
 	if err != nil {
-		return &done, errx.Lambda(err)
+		return &done, errx.DbUpdateError
 	}
 
 	done = "success"

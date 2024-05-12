@@ -32,7 +32,7 @@ func GenerateQrCode(ctx context.Context) (*string, error) {
 
 	qrc, err := qrcode.New(networkLink)
 	if err != nil {
-		return &qrImageLink, errx.Lambda(err)
+		return &qrImageLink, errx.QrError
 	}
 
 	QRCodeRegistry.UserId = tok.UserId
@@ -43,13 +43,13 @@ func GenerateQrCode(ctx context.Context) (*string, error) {
 
 	w, err := standard.New(utils.FILE_UPLOAD_DIR + utils.QR_CODE_UPLOAD_DIR + QRCodeRegistry.Xid + ".jpg")
 	if err != nil {
-		return &qrImageLink, errx.Lambda(err)
+		return &qrImageLink, errx.SavingError
 
 	}
 	// save file
 	err = qrc.Save(w)
 	if err != nil {
-		return &qrImageLink, errx.Lambda(err)
+		return &qrImageLink, errx.SavingError
 	}
 	_, err = database.InsertOne(QRCodeRegistry)
 	if err != nil {
@@ -70,7 +70,7 @@ func LoginWithQr(ctx context.Context, xId string) (*string, error) {
 
 	qrCode, err = GetQRCodeRegistry(xId)
 	if err != nil {
-		return &tok, errx.Lambda(err)
+		return &tok, errx.DbGetError
 
 	}
 

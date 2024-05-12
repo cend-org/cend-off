@@ -26,6 +26,14 @@ var (
 var StatusNeedPasswordError = errors.New("user need at least a password and an email for login")
 
 var (
-	ThumbError  = errors.New("failed to create thumb")
-	SavingError = errors.New("failed to save file into server")
+	ThumbError             = errors.New("error while trying to create thumb")
+	SavingError            = errors.New("error while trying to save file into server")
+	QrError                = errors.New("error while trying to create qr code")
+	ComputeError           = errors.New("error while trying to compute salary value")
+	MessageError           = errors.New("error while trying to create message")
+	MenuItemError          = errors.New("error while trying to create menu item")
+	MenuError              = errors.New("error while trying to create menu ")
+	VerificationError      = errors.New("error while trying to create verification code ")
+	AuthorizationError     = errors.New("error while trying to create authorization  ")
+	GenerateMatriculeError = errors.New("error while trying to generate matricule  ")
 )

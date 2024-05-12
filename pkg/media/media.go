@@ -126,6 +126,7 @@ func Upload(ctx *gin.Context) {
 		return
 	}
 
+	time.Sleep(100)
 	if utils.IsValidDocument(mType.String()) {
 		if documentType != utils.CV && documentType != utils.Letter {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{

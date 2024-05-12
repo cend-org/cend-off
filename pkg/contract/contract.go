@@ -259,12 +259,12 @@ func GetTotalSalary(ctx context.Context, studentId int, startDate time.Time, end
 
 	salaryValue, err = GetUserSalaryValue(tok.UserId, studentId)
 	if err != nil {
-		return &totalSalaryValue, errx.Lambda(err)
+		return &totalSalaryValue, errx.DbGetError
 	}
 
 	timeSheetDetails, err = GetContractDetailsWithUserId(startDate, endDate, studentId, tok.UserId)
 	if err != nil {
-		return &totalSalaryValue, errx.Lambda(err)
+		return &totalSalaryValue, errx.DbGetError
 	}
 
 	for _, timesheetDetail := range timeSheetDetails {
@@ -273,7 +273,7 @@ func GetTotalSalary(ctx context.Context, studentId int, startDate time.Time, end
 
 	totalSalaryValue, err = ComputeTotalSalaryValue(salaryValue, hours)
 	if err != nil {
-		return &totalSalaryValue, errx.Lambda(err)
+		return &totalSalaryValue, errx.ComputeError
 	}
 	return &totalSalaryValue, nil
 }

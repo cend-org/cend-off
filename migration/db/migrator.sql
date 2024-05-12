@@ -728,6 +728,13 @@ alter table user_course_preference
 --  USER EDUCATION LEVEL SUBJECT MODIFICATION
 --
 --
+alter table user_education_level_subject
+    drop constraint user_education_level_subject_subject_id_fk ;
+
 
 alter table user_education_level_subject
     drop index subject_id ;
+
+alter table user_education_level_subject
+    add constraint user_education_level_subject_subject_id_fk
+        foreign key (subject_id) references subject (id);

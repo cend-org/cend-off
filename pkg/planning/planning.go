@@ -22,12 +22,12 @@ func CreateUserPlannings(ctx context.Context, input *model.CalendarPlanningInput
 
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
-		return &calendarPlanning, errx.Lambda(err)
+		return &calendarPlanning, errx.UnAuthorizedError
 	}
 
 	calendarPlanning.AuthorizationId, err = GetUserAuthorizationId(tok.UserId)
 	if err != nil {
-		return &calendarPlanning, errx.Lambda(err)
+		return &calendarPlanning, errx.DbGetError
 	}
 
 	calendarId, err := database.InsertOne(calendarPlanning)
@@ -64,7 +64,7 @@ func AddUserIntoPlanning(ctx context.Context, calendarId int, selectedUserId int
 
 	authorizationId, err := GetUserAuthorizationId(selectedUserId)
 	if err != nil {
-		return &calendarPlanningActor, errx.Lambda(err)
+		return &calendarPlanningActor, errx.DbGetError
 	}
 
 	calendarPlanningActor.AuthorizationId = authorizationId
@@ -88,17 +88,17 @@ func GetUserPlannings(ctx context.Context) (*model.CalendarPlanning, error) {
 
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
-		return &calendarPlanning, errx.Lambda(err)
+		return &calendarPlanning, errx.UnAuthorizedError
 	}
 
 	authorizationId, err = GetUserAuthorizationId(tok.UserId)
 	if err != nil {
-		return &calendarPlanning, errx.Lambda(err)
+		return &calendarPlanning, errx.DbGetError
 	}
 
 	calendarPlanning, err = GetPlanningById(authorizationId)
 	if err != nil {
-		return &calendarPlanning, errx.Lambda(err)
+		return &calendarPlanning, errx.DbGetError
 	}
 
 	return &calendarPlanning, nil

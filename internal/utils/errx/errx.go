@@ -35,6 +35,14 @@ var (
 )
 
 var (
-	ThumbError  = note.ThumbError
-	SavingError = note.SavingError
+	ThumbError             = note.ThumbError
+	SavingError            = note.SavingError
+	QrError                = note.QrError
+	ComputeError           = note.ComputeError
+	MessageError           = note.MessageError
+	MenuItemError          = note.MenuItemError
+	MenuError              = note.MenuError
+	VerificationError      = note.VerificationError
+	AuthorizationError     = note.AuthorizationError
+	GenerateMatriculeError = note.GenerateMatriculeError
 )
