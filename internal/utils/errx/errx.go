@@ -45,4 +45,5 @@ var (
 	VerificationError      = note.VerificationError
 	AuthorizationError     = note.AuthorizationError
 	GenerateMatriculeError = note.GenerateMatriculeError
+	AuthError              = note.AuthError
 )

@@ -24,6 +24,7 @@ var (
 )
 
 var StatusNeedPasswordError = errors.New("user need at least a password and an email for login")
+var AuthError = errors.New(" email or password incorrect  ")
 
 var (
 	ThumbError             = errors.New("error while trying to create thumb")

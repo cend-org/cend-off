@@ -142,10 +142,10 @@ func LogIn(ctx context.Context, email string, password string) (*string, error) 
 
 	access, err = LoginWithEmailAndPassword(email, password)
 	if err != nil {
-		return nil, err
+		return nil, errx.AuthError
 	}
 
-	return &access, err
+	return &access, nil
 }
 
 func GetUserAuthorizationLink(ctx context.Context, id int) (*model.UserAuthorizationLink, error) {
