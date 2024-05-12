@@ -30,7 +30,7 @@ func NewPhoneNumber(ctx context.Context, input *model.PhoneNumberInput) (*model.
 
 	phone.Id, err = database.InsertOne(phone)
 	if err != nil {
-		return &phone, errx.Lambda(err)
+		return &phone, errx.DbInsertError
 	}
 
 	userPhoneNumber.UserId = tok.UserId

@@ -139,7 +139,7 @@ func GetEducation(ctx context.Context) ([]model.Education, error) {
 
 	err = database.Select(&edus, `SELECT * FROM education WHERE id > 0 ORDER BY  created_at`)
 	if err != nil {
-		return edus, errx.Lambda(err)
+		return edus, errx.DbGetError
 	}
 
 	return edus, nil
