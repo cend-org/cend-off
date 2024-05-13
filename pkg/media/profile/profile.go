@@ -4,7 +4,6 @@ import (
 	"context"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/configuration"
-	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/token"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
@@ -28,17 +27,12 @@ func GetProfileImage(ctx context.Context) (*string, error) {
 		return &networkLink, errx.UnAuthorizedError
 	}
 
-	err = database.Get(&media,
-		`SELECT media.*
-			FROM media
-					 JOIN user_media_detail ON media.xid = user_media_detail.document_xid
-					 JOIN user ON user.id = user_media_detail.owner_id
-			WHERE user_media_detail.owner_id = ? AND user_media_detail.document_type = ?`, tok.UserId, UserProfileImage)
+	media, err = mediafile.GetMedia(tok.UserId, UserProfileImage)
 	if err != nil {
 		return &networkLink, errx.DbGetError
 	}
 
-	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/api/public/" + media.Xid + media.Extension
+	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/public/" + media.Xid + media.Extension
 
 	return &networkLink, nil
 }
@@ -62,7 +56,7 @@ func GetProfileImageThumb(ctx context.Context) (*string, error) {
 
 	}
 
-	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/api/public/" + media.Xid + media.Extension
+	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/public/thumb/" + media.Xid + media.Extension
 
 	return &networkLink, nil
 }

@@ -33,18 +33,18 @@ func CreateThumb(mediaXid string, extension string, file *multipart.FileHeader) 
 		return err
 	}
 
+	mediaThumb.Extension = extension
+	mediaThumb.MediaXid = mediaXid
+	mediaThumb.Xid = "T_" + xid.New().String()
+
 	thumbnail = imaging.Thumbnail(img, 200, 200, imaging.CatmullRom)
 
 	dst := imaging.New(200, 200, color.NRGBA{0, 0, 0, 0})
 	dst = imaging.Paste(dst, thumbnail, image.Pt(0, 0))
-	err = imaging.Save(dst, FILE_UPLOAD_DIR+THUMB_FILE_UPLOAD_DIR+mediaXid+".jpg")
+	err = imaging.Save(dst, FILE_UPLOAD_DIR+THUMB_FILE_UPLOAD_DIR+mediaThumb.Xid+".jpg")
 	if err != nil {
 		return
 	}
-
-	mediaThumb.Extension = extension
-	mediaThumb.MediaXid = mediaXid
-	mediaThumb.Xid = "T_" + xid.New().String()
 
 	_, err = database.InsertOne(mediaThumb)
 	if err != nil {
@@ -89,18 +89,19 @@ func CreateDocumentThumb(mediaXid string, extension string, file *multipart.File
 	if err != nil {
 		return err
 	}
-	thumbnail = imaging.Thumbnail(img, 800, 1100, imaging.CatmullRom)
-
-	dst := imaging.New(800, 1100, color.NRGBA{0, 0, 0, 0})
-	dst = imaging.Paste(dst, thumbnail, image.Pt(0, 0))
-	err = imaging.Save(dst, FILE_UPLOAD_DIR+THUMB_FILE_UPLOAD_DIR+mediaXid+".jpg")
-	if err != nil {
-		return err
-	}
 
 	mediaThumb.Extension = ".jpg"
 	mediaThumb.MediaXid = mediaXid
 	mediaThumb.Xid = "T_" + xid.New().String()
+
+	thumbnail = imaging.Thumbnail(img, 800, 1100, imaging.CatmullRom)
+
+	dst := imaging.New(800, 1100, color.NRGBA{0, 0, 0, 0})
+	dst = imaging.Paste(dst, thumbnail, image.Pt(0, 0))
+	err = imaging.Save(dst, FILE_UPLOAD_DIR+THUMB_FILE_UPLOAD_DIR+mediaThumb.Xid+".jpg")
+	if err != nil {
+		return err
+	}
 
 	_, err = database.InsertOne(mediaThumb)
 	if err != nil {
