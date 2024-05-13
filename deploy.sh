@@ -4,7 +4,7 @@ echo "Updating code from Git..."
 cd /usr/workspace/duval && sudo git fetch origin && sudo git reset --hard origin/master
 
 echo "building..."
-cd /usr/workspace/duval/cmd/app && go build -buildvcs=false
+cd /usr/workspace/duval && go build -buildvcs=false
 
 echo "Reloading systemd..."
 sudo systemctl daemon-reload
