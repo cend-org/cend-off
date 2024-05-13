@@ -1,6 +1,7 @@
 package mediafile
 
 import (
+	"fmt"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/authentication"
 	"github.com/cend-org/duval/internal/database"
@@ -133,6 +134,7 @@ func Upload(ctx *gin.Context) {
 
 		err = utils.CreateDocumentThumb(media.Xid, media.Extension, file)
 		if err != nil {
+			fmt.Println("error here: ", err)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 				Message: "failed to create thumb",
 			})
