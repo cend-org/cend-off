@@ -30,4 +30,10 @@ input UserInput {
     BirthDate: DateTime
     Sex: Int
     Lang: Int
+    Description: String
+    CoverText: String
+    Profile: String
+    ExperienceDetail: String
+    AdditionalDescription: String
+    AddOnTitle: String
 }

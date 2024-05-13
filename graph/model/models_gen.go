@@ -360,13 +360,19 @@ type UserEducationLevelSubject struct {
 }
 
 type UserInput struct {
-	Name       *string    `json:"name"`
-	FamilyName *string    `json:"family_name"`
-	NickName   *string    `json:"nick_name"`
-	Email      *string    `json:"email"`
-	BirthDate  *time.Time `json:"birth_date"`
-	Sex        *int       `json:"sex"`
-	Lang       *int       `json:"lang"`
+	Name                  *string    `json:"name"`
+	FamilyName            *string    `json:"family_name"`
+	NickName              *string    `json:"nick_name"`
+	Email                 *string    `json:"email"`
+	BirthDate             *time.Time `json:"birth_date"`
+	Sex                   *int       `json:"sex"`
+	Lang                  *int       `json:"lang"`
+	Description           *string    `json:"description"`
+	CoverText             *string    `json:"cover_text"`
+	Profile               *string    `json:"profile"`
+	ExperienceDetail      *string    `json:"experience_detail"`
+	AdditionalDescription *string    `json:"additional_description"`
+	AddOnTitle            *string    `json:"add_on_title"`
 }
 
 type UserMediaDetail struct {
