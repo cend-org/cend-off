@@ -1,19 +1,14 @@
 package model
 
-/* ContractTimesheetDetailInput */
-
-func MapContractTimesheetDetailInputToContractTimesheetDetail(input ContractTimesheetDetailInput, existing ContractTimesheetDetail) ContractTimesheetDetail {
-	if input.ContractId != nil {
-		existing.ContractId = *input.ContractId
-	}
-
-	if input.Date != nil {
-		existing.Date = *input.Date
-	}
-
-	if input.Hours != nil {
-		existing.Hours = *input.Hours
-	}
-
-	return existing
+func MapContractTimesheetDetailInputToContractTimesheetDetail(a ContractTimesheetDetailInput, e ContractTimesheetDetail) ContractTimesheetDetail { 
+ if a.ContractId != nil { 
+	e.ContractId = *a.ContractId 
+ }
+ if a.Date != nil { 
+	e.Date = *a.Date 
+ }
+ if a.Hours != nil { 
+	e.Hours = *a.Hours 
+ }
+  return e
 }

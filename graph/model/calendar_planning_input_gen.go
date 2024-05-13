@@ -1,19 +1,14 @@
 package model
 
-/* CalendarPlanningInput */
-
-func MapCalendarPlanningInputToCalendarPlanning(input CalendarPlanningInput, existing CalendarPlanning) CalendarPlanning {
-	if input.StartDateTime != nil {
-		existing.StartDateTime = *input.StartDateTime
-	}
-
-	if input.EndDateTime != nil {
-		existing.EndDateTime = *input.EndDateTime
-	}
-
-	if input.Description != nil {
-		existing.Description = *input.Description
-	}
-
-	return existing
+func MapCalendarPlanningInputToCalendarPlanning(a CalendarPlanningInput, e CalendarPlanning) CalendarPlanning { 
+ if a.StartDateTime != nil { 
+	e.StartDateTime = *a.StartDateTime 
+ }
+ if a.EndDateTime != nil { 
+	e.EndDateTime = *a.EndDateTime 
+ }
+ if a.Description != nil { 
+	e.Description = *a.Description 
+ }
+  return e
 }

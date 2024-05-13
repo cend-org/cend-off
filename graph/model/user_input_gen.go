@@ -1,59 +1,44 @@
 package model
 
-/* UserInput */
-
-func MapUserInputToUser(input UserInput, existing User) User {
-	if input.Name != nil {
-		existing.Name = *input.Name
-	}
-
-	if input.FamilyName != nil {
-		existing.FamilyName = *input.FamilyName
-	}
-
-	if input.NickName != nil {
-		existing.NickName = *input.NickName
-	}
-
-	if input.Email != nil {
-		existing.Email = *input.Email
-	}
-
-	if input.BirthDate != nil {
-		existing.BirthDate = *input.BirthDate
-	}
-
-	if input.Sex != nil {
-		existing.Sex = *input.Sex
-	}
-
-	if input.Lang != nil {
-		existing.Lang = *input.Lang
-	}
-
-	if input.Description != nil {
-		existing.Description = *input.Description
-	}
-
-	if input.CoverText != nil {
-		existing.CoverText = *input.CoverText
-	}
-
-	if input.Profile != nil {
-		existing.Profile = *input.Profile
-	}
-
-	if input.ExperienceDetail != nil {
-		existing.ExperienceDetail = *input.ExperienceDetail
-	}
-
-	if input.AdditionalDescription != nil {
-		existing.AdditionalDescription = *input.AdditionalDescription
-	}
-
-	if input.AddOnTitle != nil {
-		existing.AddOnTitle = *input.AddOnTitle
-	}
-
-	return existing
+func MapUserInputToUser(a UserInput, e User) User { 
+ if a.Name != nil { 
+	e.Name = *a.Name 
+ }
+ if a.FamilyName != nil { 
+	e.FamilyName = *a.FamilyName 
+ }
+ if a.NickName != nil { 
+	e.NickName = *a.NickName 
+ }
+ if a.Email != nil { 
+	e.Email = *a.Email 
+ }
+ if a.BirthDate != nil { 
+	e.BirthDate = *a.BirthDate 
+ }
+ if a.Sex != nil { 
+	e.Sex = *a.Sex 
+ }
+ if a.Lang != nil { 
+	e.Lang = *a.Lang 
+ }
+ if a.Description != nil { 
+	e.Description = *a.Description 
+ }
+ if a.CoverText != nil { 
+	e.CoverText = *a.CoverText 
+ }
+ if a.Profile != nil { 
+	e.Profile = *a.Profile 
+ }
+ if a.ExperienceDetail != nil { 
+	e.ExperienceDetail = *a.ExperienceDetail 
+ }
+ if a.AdditionalDescription != nil { 
+	e.AdditionalDescription = *a.AdditionalDescription 
+ }
+ if a.AddOnTitle != nil { 
+	e.AddOnTitle = *a.AddOnTitle 
+ }
+  return e
 }

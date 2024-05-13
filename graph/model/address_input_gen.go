@@ -1,31 +1,23 @@
 package model
 
-/* AddressInput */
-
-func MapAddressInputToAddress(input AddressInput, existing Address) Address {
-	if input.Country != nil {
-		existing.Country = *input.Country
-	}
-
-	if input.City != nil {
-		existing.City = *input.City
-	}
-
-	if input.Latitude != nil {
-		existing.Latitude = *input.Latitude
-	}
-
-	if input.Longitude != nil {
-		existing.Longitude = *input.Longitude
-	}
-
-	if input.Street != nil {
-		existing.Street = *input.Street
-	}
-
-	if input.FullAddress != nil {
-		existing.FullAddress = *input.FullAddress
-	}
-
-	return existing
+func MapAddressInputToAddress(a AddressInput, e Address) Address { 
+ if a.Country != nil { 
+	e.Country = *a.Country 
+ }
+ if a.City != nil { 
+	e.City = *a.City 
+ }
+ if a.Latitude != nil { 
+	e.Latitude = *a.Latitude 
+ }
+ if a.Longitude != nil { 
+	e.Longitude = *a.Longitude 
+ }
+ if a.Street != nil { 
+	e.Street = *a.Street 
+ }
+ if a.FullAddress != nil { 
+	e.FullAddress = *a.FullAddress 
+ }
+  return e
 }

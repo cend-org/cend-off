@@ -39,7 +39,6 @@ type ResolverRoot interface {
 }
 
 type DirectiveRoot struct {
-	ExtraTag func(ctx context.Context, obj interface{}, next graphql.Resolver) (res interface{}, err error)
 }
 
 type ComplexityRoot struct {
@@ -3159,20 +3158,16 @@ input ContractTimesheetDetailInput {
     forceGenerate: Boolean
 ) on OBJECT | INPUT_OBJECT | SCALAR | ENUM | INTERFACE | UNION
 
-
 directive @goField(
     forceResolver: Boolean
     name: String
     omittable: Boolean
 ) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
 
-
 directive @goTag(
     key: String!
     value: String
-) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
-
-directive @extraTag on INPUT_FIELD_DEFINITION | FIELD_DEFINITION`, BuiltIn: false},
+) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION`, BuiltIn: false},
 	{Name: "../gql/education/education.graphqls", Input: `type Education {
     Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!

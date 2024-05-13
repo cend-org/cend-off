@@ -15,9 +15,15 @@ func MutationHook(b *modelgen.ModelBuild) *modelgen.ModelBuild {
 		inputPath string
 	)
 	for _, model := range b.Models {
+		for _, field := range model.Fields {
+			snakeCaseName := strcase.ToLowerCamel(field.Name)
+			field.Tag = `json:"` + snakeCaseName + `"`
+		}
+
 		if !strings.Contains(model.Name, "Input") {
 			continue
 		}
+
 		inputPath = fmt.Sprintf("./graph/model/%s_gen.go", strcase.ToSnake(model.Name))
 
 		f, err := os.Create(inputPath)
@@ -38,44 +44,27 @@ func MutationHook(b *modelgen.ModelBuild) *modelgen.ModelBuild {
 		if err != nil {
 			panic(err)
 		}
-
-		for _, field := range model.Fields {
-			snakeCaseName := strcase.ToSnake(field.Name)
-			field.Tag = `json:"` + snakeCaseName + `"`
-		}
 	}
 
 	return b
 }
 
 func inputString(model *modelgen.Object) (input string) {
-
-	input += fmt.Sprintf("package model \n")
-
 	fmt.Println("- generating ", model.Name, " mapping func ...")
 
-	input += fmt.Sprintf("\n\n /* %s */ \n\n", model.Name)
-
+	input += fmt.Sprintf("package model\n")
 	modelTypeName := strings.ReplaceAll(model.Name, "Input", "")
-
-	input += fmt.Sprintf("\n\n")
-
-	input += fmt.Sprintf("func Map%sTo%s(input %s, existing %s) %s { \n", model.Name, modelTypeName, model.Name, modelTypeName, modelTypeName)
-
+	input += fmt.Sprintf("\n")
+	input += fmt.Sprintf("func Map%sTo%s(a %s, e %s) %s { \n", model.Name, modelTypeName, model.Name, modelTypeName, modelTypeName)
 	for _, field := range model.Fields {
 		if strings.Contains(field.Tag, "gql") {
 			continue
 		}
-
-		input += fmt.Sprintf(" if input.%s != nil { \n", field.Name)
-		input += fmt.Sprintf("	existing.%s = *input.%s \n", field.Name, field.Name)
-		input += fmt.Sprintf(" } \n \n")
-
+		input += fmt.Sprintf(" if a.%s != nil { \n", field.Name)
+		input += fmt.Sprintf("	e.%s = *a.%s \n", field.Name, field.Name)
+		input += fmt.Sprintf(" }\n")
 	}
-
-	input += fmt.Sprintf("  return existing \n")
-
-	input += fmt.Sprintf("}")
-
+	input += fmt.Sprintf("  return e\n")
+	input += fmt.Sprintf("}\n")
 	return input
 }

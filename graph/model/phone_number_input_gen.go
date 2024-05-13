@@ -1,15 +1,11 @@
 package model
 
-/* PhoneNumberInput */
-
-func MapPhoneNumberInputToPhoneNumber(input PhoneNumberInput, existing PhoneNumber) PhoneNumber {
-	if input.MobilePhoneNumber != nil {
-		existing.MobilePhoneNumber = *input.MobilePhoneNumber
-	}
-
-	if input.IsUrgency != nil {
-		existing.IsUrgency = *input.IsUrgency
-	}
-
-	return existing
+func MapPhoneNumberInputToPhoneNumber(a PhoneNumberInput, e PhoneNumber) PhoneNumber { 
+ if a.MobilePhoneNumber != nil { 
+	e.MobilePhoneNumber = *a.MobilePhoneNumber 
+ }
+ if a.IsUrgency != nil { 
+	e.IsUrgency = *a.IsUrgency 
+ }
+  return e
 }

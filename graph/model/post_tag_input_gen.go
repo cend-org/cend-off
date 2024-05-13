@@ -1,15 +1,11 @@
 package model
 
-/* PostTagInput */
-
-func MapPostTagInputToPostTag(input PostTagInput, existing PostTag) PostTag {
-	if input.PostId != nil {
-		existing.PostId = *input.PostId
-	}
-
-	if input.TagContent != nil {
-		existing.TagContent = *input.TagContent
-	}
-
-	return existing
+func MapPostTagInputToPostTag(a PostTagInput, e PostTag) PostTag { 
+ if a.PostId != nil { 
+	e.PostId = *a.PostId 
+ }
+ if a.TagContent != nil { 
+	e.TagContent = *a.TagContent 
+ }
+  return e
 }

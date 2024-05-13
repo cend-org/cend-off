@@ -1,19 +1,14 @@
 package model
 
-/* PostInput */
-
-func MapPostInputToPost(input PostInput, existing Post) Post {
-	if input.PublisherId != nil {
-		existing.PublisherId = *input.PublisherId
-	}
-
-	if input.Content != nil {
-		existing.Content = *input.Content
-	}
-
-	if input.ExpirationDate != nil {
-		existing.ExpirationDate = *input.ExpirationDate
-	}
-
-	return existing
+func MapPostInputToPost(a PostInput, e Post) Post { 
+ if a.PublisherId != nil { 
+	e.PublisherId = *a.PublisherId 
+ }
+ if a.Content != nil { 
+	e.Content = *a.Content 
+ }
+ if a.ExpirationDate != nil { 
+	e.ExpirationDate = *a.ExpirationDate 
+ }
+  return e
 }

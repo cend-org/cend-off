@@ -1,23 +1,17 @@
 package model
 
-/* MarkInput */
-
-func MapMarkInputToMark(input MarkInput, existing Mark) Mark {
-	if input.UserId != nil {
-		existing.UserId = *input.UserId
-	}
-
-	if input.AuthorId != nil {
-		existing.AuthorId = *input.AuthorId
-	}
-
-	if input.AuthorComment != nil {
-		existing.AuthorComment = *input.AuthorComment
-	}
-
-	if input.AuthorMark != nil {
-		existing.AuthorMark = *input.AuthorMark
-	}
-
-	return existing
+func MapMarkInputToMark(a MarkInput, e Mark) Mark { 
+ if a.UserId != nil { 
+	e.UserId = *a.UserId 
+ }
+ if a.AuthorId != nil { 
+	e.AuthorId = *a.AuthorId 
+ }
+ if a.AuthorComment != nil { 
+	e.AuthorComment = *a.AuthorComment 
+ }
+ if a.AuthorMark != nil { 
+	e.AuthorMark = *a.AuthorMark 
+ }
+  return e
 }

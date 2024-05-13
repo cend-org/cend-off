@@ -1,39 +1,29 @@
 package model
 
-/* ContractInput */
-
-func MapContractInputToContract(input ContractInput, existing Contract) Contract {
-	if input.TutorId != nil {
-		existing.TutorId = *input.TutorId
-	}
-
-	if input.ParentId != nil {
-		existing.ParentId = *input.ParentId
-	}
-
-	if input.StudentId != nil {
-		existing.StudentId = *input.StudentId
-	}
-
-	if input.StartDate != nil {
-		existing.StartDate = *input.StartDate
-	}
-
-	if input.EndDate != nil {
-		existing.EndDate = *input.EndDate
-	}
-
-	if input.PaymentType != nil {
-		existing.PaymentType = *input.PaymentType
-	}
-
-	if input.SalaryValue != nil {
-		existing.SalaryValue = *input.SalaryValue
-	}
-
-	if input.PaymentMethod != nil {
-		existing.PaymentMethod = *input.PaymentMethod
-	}
-
-	return existing
+func MapContractInputToContract(a ContractInput, e Contract) Contract { 
+ if a.TutorId != nil { 
+	e.TutorId = *a.TutorId 
+ }
+ if a.ParentId != nil { 
+	e.ParentId = *a.ParentId 
+ }
+ if a.StudentId != nil { 
+	e.StudentId = *a.StudentId 
+ }
+ if a.StartDate != nil { 
+	e.StartDate = *a.StartDate 
+ }
+ if a.EndDate != nil { 
+	e.EndDate = *a.EndDate 
+ }
+ if a.PaymentType != nil { 
+	e.PaymentType = *a.PaymentType 
+ }
+ if a.SalaryValue != nil { 
+	e.SalaryValue = *a.SalaryValue 
+ }
+ if a.PaymentMethod != nil { 
+	e.PaymentMethod = *a.PaymentMethod 
+ }
+  return e
 }
