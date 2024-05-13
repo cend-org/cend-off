@@ -65,7 +65,10 @@ func Upload(ctx *gin.Context) {
 
 	media, err = GetMedia(tok.UserId, documentType)
 	if err == nil && media.Xid != state.EMPTY {
-		mediaThumb, err := GetMediaThumb(tok.UserId, documentType)
+		var userMediaDetail model.UserMediaDetail
+		var mediaThumb model.MediaThumb
+
+		mediaThumb, err = GetMediaThumb(tok.UserId, documentType)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 				Message: "error while trying to get data from database",
@@ -73,7 +76,7 @@ func Upload(ctx *gin.Context) {
 			return
 		}
 
-		userMediaDetail, err := GetUserMediaDetail(tok.UserId, documentType)
+		userMediaDetail, err = GetUserMediaDetail(tok.UserId, documentType)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 				Message: "error while trying to get data from database",
@@ -152,6 +155,7 @@ func Upload(ctx *gin.Context) {
 
 		err = utils.CreateVideoThumb(media.Xid, media.Extension, file)
 		if err != nil {
+			fmt.Println("error here: ", err)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 				Message: "failed to create thumb",
 			})
@@ -169,6 +173,7 @@ func Upload(ctx *gin.Context) {
 
 		err = utils.CreateThumb(media.Xid, media.Extension, file)
 		if err != nil {
+			fmt.Println("error here: ", err)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 				Message: "failed to create thumb",
 			})
