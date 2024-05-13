@@ -90,7 +90,7 @@ func GetProfileCv(ctx context.Context) (*string, error) {
 		return &networkLink, errx.DbGetError
 	}
 
-	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/api/public/" + media.Xid + media.Extension
+	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/public/" + media.Xid + media.Extension
 
 	return &networkLink, nil
 }
@@ -114,7 +114,7 @@ func GetProfileCvThumb(ctx context.Context) (*string, error) {
 
 	}
 
-	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/api/public/" + media.Xid + media.Extension
+	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/public/thumb/" + media.Xid + media.Extension
 
 	return &networkLink, nil
 }

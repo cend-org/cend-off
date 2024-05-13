@@ -30,10 +30,15 @@ func Serve() {
 		})
 	})
 
-	ExtendRoute(r)
+	err := ExtendRoute(r)
+	if err != nil {
+		panic(err)
+	}
+
 	r.POST("/query", graphqlHandler())
 	r.GET("/playground", playgroundHandler())
-	err := r.Run(":8087")
+
+	err = r.Run(":8087")
 	if err != nil {
 		panic(err)
 	}

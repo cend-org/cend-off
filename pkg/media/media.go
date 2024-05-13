@@ -14,7 +14,6 @@ import (
 	"net/http"
 	"path/filepath"
 	"strconv"
-	"time"
 )
 
 type MediaFile struct {
@@ -32,7 +31,6 @@ func Upload(ctx *gin.Context) {
 		file         *multipart.FileHeader
 	)
 
-	time.Sleep(100)
 	tok, err = authentication.GinContext(ctx)
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -126,7 +124,6 @@ func Upload(ctx *gin.Context) {
 		return
 	}
 
-	time.Sleep(100)
 	if utils.IsValidDocument(mType.String()) {
 		if documentType != utils.CV && documentType != utils.Letter {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
