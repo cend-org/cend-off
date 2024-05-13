@@ -39,6 +39,7 @@ type ResolverRoot interface {
 }
 
 type DirectiveRoot struct {
+	ExtraTag func(ctx context.Context, obj interface{}, next graphql.Resolver) (res interface{}, err error)
 }
 
 type ComplexityRoot struct {
@@ -3170,7 +3171,8 @@ directive @goTag(
     key: String!
     value: String
 ) on INPUT_FIELD_DEFINITION | FIELD_DEFINITION
-`, BuiltIn: false},
+
+directive @extraTag on INPUT_FIELD_DEFINITION | FIELD_DEFINITION`, BuiltIn: false},
 	{Name: "../gql/education/education.graphqls", Input: `type Education {
     Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
@@ -3578,7 +3580,7 @@ input SubjectInput {
 }`, BuiltIn: false},
 	{Name: "../gql/user/user.graphqls", Input: `type User {
     Id: ID! @goField(name: "Id")
-    CreatedAt: DateTime!
+    CreatedAt: DateTime! @extraTag
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     Name: String!

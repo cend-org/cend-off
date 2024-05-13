@@ -23,8 +23,8 @@ type MediaFile struct {
 
 func Upload(ctx *gin.Context) {
 	var (
-		media        model.Media
-		uploadFile   MediaFile
+		media model.Media
+		//uploadFile   MediaFile
 		documentType int
 		tok          *token.Token
 		err          error
@@ -46,16 +46,15 @@ func Upload(ctx *gin.Context) {
 		return
 	}
 
-	err = ctx.ShouldBind(&uploadFile)
+	file, err = ctx.FormFile("file")
 	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "failed to parse body",
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"message": "cannot parse the form file upload given",
 		})
 		return
 	}
 
-	file = uploadFile.File
-	documentType, err = strconv.Atoi(uploadFile.DocumentType)
+	documentType, err = strconv.Atoi(ctx.PostForm("documentType"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
 			Message: "failed to convert string to int",
@@ -200,7 +199,6 @@ func Upload(ctx *gin.Context) {
 	}
 
 	ctx.AbortWithStatusJSON(http.StatusOK, media)
-
 }
 
 func DetectMimeType(file *multipart.FileHeader) (mType *mimetype.MIME, err error) {

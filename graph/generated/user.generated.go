@@ -5,6 +5,7 @@ package generated
 import (
 	"context"
 	"errors"
+	"fmt"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -86,8 +87,28 @@ func (ec *executionContext) _User_CreatedAt(ctx context.Context, field graphql.C
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.CreatedAt, nil
+		directive0 := func(rctx context.Context) (interface{}, error) {
+			ctx = rctx // use context from middleware stack in children
+			return obj.CreatedAt, nil
+		}
+		directive1 := func(ctx context.Context) (interface{}, error) {
+			if ec.directives.ExtraTag == nil {
+				return nil, errors.New("directive extraTag is not implemented")
+			}
+			return ec.directives.ExtraTag(ctx, obj, directive0)
+		}
+
+		tmp, err := directive1(rctx)
+		if err != nil {
+			return nil, graphql.ErrorOnPath(ctx, err)
+		}
+		if tmp == nil {
+			return nil, nil
+		}
+		if data, ok := tmp.(time.Time); ok {
+			return data, nil
+		}
+		return nil, fmt.Errorf(`unexpected type %T from directive, should be time.Time`, tmp)
 	})
 	if err != nil {
 		ec.Error(ctx, err)
