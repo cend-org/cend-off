@@ -1,42 +1,62 @@
-//go:generate go run generate.go
-
 package main
 
 import (
-	"fmt"
 	"github.com/99designs/gqlgen/api"
 	"github.com/99designs/gqlgen/codegen/config"
 	"github.com/99designs/gqlgen/plugin/modelgen"
 	migrate "github.com/cend-org/duval/cmd/generate/migration"
 	"github.com/cend-org/duval/cmd/generate/mutation"
-	"os"
+	"github.com/iancoleman/strcase"
 )
 
-func mutateHook(b *modelgen.ModelBuild) *modelgen.ModelBuild {
-	b = mutation.MutationHook(b)
-	b = migrate.MigrationHook(b)
-	return b
+type iMutator struct {
+	hooks    []func(b *modelgen.ModelBuild) *modelgen.ModelBuild
+	mutate   func(b *modelgen.ModelBuild) *modelgen.ModelBuild
+	generate func()
 }
 
-func main() {
-	fmt.Println("Generating...")
-	cfg, err := config.LoadConfigFromDefaultLocations()
-	if err != nil {
-		fmt.Fprintln(os.Stderr, "failed to load config", err.Error())
-		os.Exit(2)
+var dummy = iMutator{}
+
+func init() {
+	dummy.hooks = []func(b *modelgen.ModelBuild) *modelgen.ModelBuild{
+		func(b *modelgen.ModelBuild) *modelgen.ModelBuild {
+			for _, model := range b.Models {
+				for _, field := range model.Fields {
+					snakeCaseName := strcase.ToLowerCamel(field.Name)
+					field.Tag = `json:"` + snakeCaseName + `"`
+				}
+			}
+			return b
+		},
+		mutation.Hook,
+		migrate.MigrationHook,
 	}
 
-	p := modelgen.Plugin{
-		MutateHook: mutateHook,
+	dummy.mutate = func(b *modelgen.ModelBuild) *modelgen.ModelBuild {
+		for i := 0; i < len(dummy.hooks); i++ {
+			b = dummy.hooks[i](b)
+		}
+		return b
 	}
 
-	err = api.Generate(cfg,
-		api.ReplacePlugin(&p),
-	)
+	dummy.generate = func() {
+		cfg, err := config.LoadConfigFromDefaultLocations()
+		if err != nil {
+			panic(err)
+		}
 
-	if err != nil {
-		fmt.Fprintln(os.Stderr, err.Error())
-		os.Exit(3)
+		p := modelgen.Plugin{
+			MutateHook: dummy.mutate,
+		}
+
+		err = api.Generate(cfg,
+			api.ReplacePlugin(&p),
+		)
+
+		if err != nil {
+			panic(err)
+		}
 	}
-
 }
+
+func main() { dummy.generate() }

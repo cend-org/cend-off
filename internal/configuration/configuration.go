@@ -3,6 +3,8 @@ package configuration
 import (
 	"fmt"
 	"github.com/BurntSushi/toml"
+	"os"
+	"strconv"
 )
 
 const (
@@ -12,7 +14,6 @@ const (
 )
 
 type Config struct {
-	Version                 string `toml:"version"`
 	Port                    string `toml:"port"`
 	Host                    string `toml:"host"`
 	TokenSecret             string `toml:"token_secret"`
@@ -37,6 +38,8 @@ func init() {
 		App.DatabaseUserPassword, App.DatabaseHost, App.DatabasePort,
 		App.DatabaseName)
 
+	verifyAppConfiguration()
+
 	/*
 		APP.MODE is set to test mode by default
 	*/
@@ -55,6 +58,43 @@ func fullFillAppFromConfig() (err error) {
 	fmt.Sprintln(App)
 
 	return err
+}
+
+func verifyAppConfiguration() {
+	if value, err := strconv.Atoi(App.Port); len(App.Port) == 0 || err != nil || value == 0 {
+		fmt.Println("❌ PORT value must be provided")
+		os.Exit(1)
+	} else {
+		fmt.Println("✔️ PORT SET ON :", App.Port)
+	}
+
+	if len(App.TokenSecret) == 0 {
+		fmt.Println("❌ TOKEN SECRET is not defined !")
+		os.Exit(1)
+	} else {
+		fmt.Println("✔️ TOKEN SECRET  :", App.TokenSecret)
+	}
+
+	if len(App.DatabaseUserName) == 0 {
+		fmt.Println("❌ DB USER NAME must be provided !")
+		os.Exit(1)
+	} else {
+		fmt.Println("✔️ DB USER NAME  :", App.DatabaseUserName)
+	}
+
+	if len(App.DatabasePort) == 0 {
+		fmt.Println("❌ DB PORT must be provided !")
+		os.Exit(1)
+	} else {
+		fmt.Println("✔️ DB PORT :", App.DatabasePort)
+	}
+
+	if len(App.DatabaseUserPassword) == 0 {
+		fmt.Println("❌ DB USER PASSWORD must be provided !")
+		os.Exit(1)
+	} else {
+		fmt.Println("✔️ DB PASSWORD :", App.DatabaseUserPassword)
+	}
 }
 
 func IsDev() bool {

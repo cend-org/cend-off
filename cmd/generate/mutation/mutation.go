@@ -10,16 +10,12 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-func MutationHook(b *modelgen.ModelBuild) *modelgen.ModelBuild {
+func Hook(b *modelgen.ModelBuild) *modelgen.ModelBuild {
 	var (
 		inputPath string
 	)
-	for _, model := range b.Models {
-		for _, field := range model.Fields {
-			snakeCaseName := strcase.ToLowerCamel(field.Name)
-			field.Tag = `json:"` + snakeCaseName + `"`
-		}
 
+	for _, model := range b.Models {
 		if !strings.Contains(model.Name, "Input") {
 			continue
 		}

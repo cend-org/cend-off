@@ -3575,7 +3575,7 @@ input SubjectInput {
 }`, BuiltIn: false},
 	{Name: "../gql/user/user.graphqls", Input: `type User {
     Id: ID! @goField(name: "Id")
-    CreatedAt: DateTime!
+    CreatedAt: DateTime! @goTag(key: "name",value: "-")
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     Name: String!

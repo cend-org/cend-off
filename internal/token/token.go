@@ -4,12 +4,17 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/cend-org/duval/internal/configuration"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/golang-jwt/jwt/v5"
 	"time"
 )
 
-const SecretKey = "Secret_key"
+var SecretKey string
+
+func init() {
+	SecretKey = configuration.App.TokenSecret
+}
 
 type Token struct {
 	UserId         int  `json:"user_id,omitempty"`
