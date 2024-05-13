@@ -5,7 +5,6 @@ package generated
 import (
 	"context"
 	"errors"
-	"fmt"
 	"strconv"
 	"sync"
 	"sync/atomic"
@@ -87,28 +86,8 @@ func (ec *executionContext) _User_CreatedAt(ctx context.Context, field graphql.C
 		}
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		directive0 := func(rctx context.Context) (interface{}, error) {
-			ctx = rctx // use context from middleware stack in children
-			return obj.CreatedAt, nil
-		}
-		directive1 := func(ctx context.Context) (interface{}, error) {
-			if ec.directives.ExtraTag == nil {
-				return nil, errors.New("directive extraTag is not implemented")
-			}
-			return ec.directives.ExtraTag(ctx, obj, directive0)
-		}
-
-		tmp, err := directive1(rctx)
-		if err != nil {
-			return nil, graphql.ErrorOnPath(ctx, err)
-		}
-		if tmp == nil {
-			return nil, nil
-		}
-		if data, ok := tmp.(time.Time); ok {
-			return data, nil
-		}
-		return nil, fmt.Errorf(`unexpected type %T from directive, should be time.Time`, tmp)
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -982,7 +961,7 @@ func (ec *executionContext) unmarshalInputUserInput(ctx context.Context, obj int
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"Name", "FamilyName", "NickName", "Email", "BirthDate", "Sex", "Lang"}
+	fieldsInOrder := [...]string{"Name", "FamilyName", "NickName", "Email", "BirthDate", "Sex", "Lang", "Description", "CoverText", "Profile", "ExperienceDetail", "AdditionalDescription", "AddOnTitle"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -1038,6 +1017,48 @@ func (ec *executionContext) unmarshalInputUserInput(ctx context.Context, obj int
 				return it, err
 			}
 			it.Lang = data
+		case "Description":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Description"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Description = data
+		case "CoverText":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CoverText"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CoverText = data
+		case "Profile":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Profile"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.Profile = data
+		case "ExperienceDetail":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ExperienceDetail"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ExperienceDetail = data
+		case "AdditionalDescription":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AdditionalDescription"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AdditionalDescription = data
+		case "AddOnTitle":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("AddOnTitle"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.AddOnTitle = data
 		}
 	}
 

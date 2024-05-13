@@ -3580,7 +3580,7 @@ input SubjectInput {
 }`, BuiltIn: false},
 	{Name: "../gql/user/user.graphqls", Input: `type User {
     Id: ID! @goField(name: "Id")
-    CreatedAt: DateTime! @extraTag
+    CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     Name: String!
@@ -3610,6 +3610,12 @@ input UserInput {
     BirthDate: DateTime
     Sex: Int
     Lang: Int
+    Description: String
+    CoverText: String
+    Profile: String
+    ExperienceDetail: String
+    AdditionalDescription: String
+    AddOnTitle: String
 }`, BuiltIn: false},
 	{Name: "../gql/utils/utils.graphqls", Input: `type Asset {
     Id: ID! @goField(name: "Id")
