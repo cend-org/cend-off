@@ -3,7 +3,6 @@ package configuration
 import (
 	"fmt"
 	"github.com/BurntSushi/toml"
-	"os"
 )
 
 const (
@@ -29,43 +28,14 @@ type Config struct {
 var App Config
 
 func init() {
-	if len(os.Args) > 1 {
-		switch os.Args[1] {
-		case DEV_MODE:
-			/*
-				The dev mod is used for dev release. If You are using the app on localhost, please use the test mode.
-			*/
-			App = Config{
-				Version:              "",
-				Port:                 "8087",
-				Host:                 "",
-				TokenSecret:          "a new token secret",
-				DatabaseUserName:     "root",
-				DatabaseUserPassword: "UnderAll4",
-				DatabaseName:         "cend",
-				DatabaseHost:         "cend.ctw4aeiceahd.eu-north-1.rds.amazonaws.com",
-				DatabasePort:         "3306",
-				Mode:                 DEV_MODE,
-			}
-		default:
-			err := fullFillAppFromConfig()
-			if err != nil {
-				panic(err)
-			}
-		}
-
-		App.DatabaseConnexionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", App.DatabaseUserName,
-			App.DatabaseUserPassword, App.DatabaseHost, App.DatabasePort, App.DatabaseName)
-	} else {
-		err := fullFillAppFromConfig()
-		if err != nil {
-			panic(err)
-		}
-
-		App.DatabaseConnexionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", App.DatabaseUserName,
-			App.DatabaseUserPassword, App.DatabaseHost, App.DatabasePort,
-			App.DatabaseName)
+	err := fullFillAppFromConfig()
+	if err != nil {
+		panic(err)
 	}
+
+	App.DatabaseConnexionString = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true", App.DatabaseUserName,
+		App.DatabaseUserPassword, App.DatabaseHost, App.DatabasePort,
+		App.DatabaseName)
 
 	/*
 		APP.MODE is set to test mode by default
@@ -80,6 +50,10 @@ func fullFillAppFromConfig() (err error) {
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Sprintln("App is starting with :")
+	fmt.Sprintln(App)
+
 	return err
 }
 
