@@ -43,6 +43,13 @@ alter table authorization
 	add constraint authorization_user_id_fk
 		foreign key (user_id) references user (id);
 
+create table bearer_token (
+	id int auto_increment primary key,
+	t	varchar(255) default '',
+	constraint bearer_token_pk
+		unique (t)
+);
+
 create table calendar_planning (
 	id int auto_increment primary key,
 	created_at	datetime default CURRENT_TIMESTAMP,

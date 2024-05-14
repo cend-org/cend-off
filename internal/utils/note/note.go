@@ -3,6 +3,10 @@ package note
 import "errors"
 
 var (
+	DummyError = "something went wrong please contact support."
+)
+
+var (
 	UnAuthorizedError = errors.New("unauthorized")
 	ParamsError       = errors.New("failed to parse params")
 )

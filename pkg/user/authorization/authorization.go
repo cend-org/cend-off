@@ -7,10 +7,10 @@ import (
 )
 
 const (
-	StudentAuthorizationLevel   = 0
-	ParentAuthorizationLevel    = 1
-	TutorAuthorizationLevel     = 2
-	ProfessorAuthorizationLevel = 3
+	STUDENT = 0
+	PARENT  = 1
+	TUTOR   = 2
+	PROF    = 3
 )
 
 func NewUserAuthorization(userId, authorizationLevel int) (err error) {
@@ -95,17 +95,17 @@ func isUserHasAuthorizationLevel(userId, authorizationLevel int) (ret bool) {
 }
 
 func IsUserStudent(userId int) (ret bool) {
-	return isUserHasAuthorizationLevel(userId, StudentAuthorizationLevel)
+	return isUserHasAuthorizationLevel(userId, STUDENT)
 }
 
 func IsUserParent(userId int) (ret bool) {
-	return isUserHasAuthorizationLevel(userId, ParentAuthorizationLevel)
+	return isUserHasAuthorizationLevel(userId, PARENT)
 }
 
 func IsUserTutor(userId int) (ret bool) {
-	return isUserHasAuthorizationLevel(userId, TutorAuthorizationLevel)
+	return isUserHasAuthorizationLevel(userId, TUTOR)
 }
 
 func IsUserProfessor(userId int) (ret bool) {
-	return isUserHasAuthorizationLevel(userId, ProfessorAuthorizationLevel)
+	return isUserHasAuthorizationLevel(userId, PROF)
 }

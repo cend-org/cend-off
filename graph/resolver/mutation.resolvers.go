@@ -295,6 +295,26 @@ func (r *mutationResolver) UpdUserCoursePreference(ctx context.Context, isOnline
 	return course.UpdUserCoursePreference(ctx, isOnline)
 }
 
+// NewStudent is the resolver for the NewStudent field.
+func (r *mutationResolver) NewStudent(ctx context.Context, email string) (*model.BearerToken, error) {
+	return usr.NewStudent(email)
+}
+
+// NewParent is the resolver for the NewParent field.
+func (r *mutationResolver) NewParent(ctx context.Context, email string) (*model.BearerToken, error) {
+	return usr.NewParent(email)
+}
+
+// NewTutor is the resolver for the NewTutor field.
+func (r *mutationResolver) NewTutor(ctx context.Context, email string) (*model.BearerToken, error) {
+	return usr.NewTutor(email)
+}
+
+// NewProfessor is the resolver for the NewProfessor field.
+func (r *mutationResolver) NewProfessor(ctx context.Context, email string) (*model.BearerToken, error) {
+	return usr.NewProfessor(email)
+}
+
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
 

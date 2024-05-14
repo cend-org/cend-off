@@ -73,6 +73,10 @@ type ComplexityRoot struct {
 		UserId    func(childComplexity int) int
 	}
 
+	BearerToken struct {
+		T func(childComplexity int) int
+	}
+
 	CalendarPlanning struct {
 		AuthorizationId func(childComplexity int) int
 		CreatedAt       func(childComplexity int) int
@@ -199,9 +203,13 @@ type ComplexityRoot struct {
 		NewMenu                    func(childComplexity int, input model.MessageInput) int
 		NewMenuItem                func(childComplexity int, input model.MessageInput) int
 		NewMessage                 func(childComplexity int, input model.MessageInput) int
+		NewParent                  func(childComplexity int, email string) int
 		NewPassword                func(childComplexity int, password string) int
 		NewPhoneNumber             func(childComplexity int, input model.PhoneNumberInput) int
 		NewPost                    func(childComplexity int, input model.PostInput) int
+		NewProfessor               func(childComplexity int, email string) int
+		NewStudent                 func(childComplexity int, email string) int
+		NewTutor                   func(childComplexity int, email string) int
 		RateUser                   func(childComplexity int, input model.MarkInput) int
 		Register                   func(childComplexity int, input model.UserInput, as int) int
 		RegisterWithEmail          func(childComplexity int, input string, as int) int
@@ -613,6 +621,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Authorization.UserId(childComplexity), true
+
+	case "BearerToken.T":
+		if e.complexity.BearerToken.T == nil {
+			break
+		}
+
+		return e.complexity.BearerToken.T(childComplexity), true
 
 	case "CalendarPlanning.AuthorizationId":
 		if e.complexity.CalendarPlanning.AuthorizationId == nil {
@@ -1374,6 +1389,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.NewMessage(childComplexity, args["input"].(model.MessageInput)), true
 
+	case "Mutation.NewParent":
+		if e.complexity.Mutation.NewParent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewParent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewParent(childComplexity, args["email"].(string)), true
+
 	case "Mutation.newPassword":
 		if e.complexity.Mutation.NewPassword == nil {
 			break
@@ -1409,6 +1436,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.NewPost(childComplexity, args["input"].(model.PostInput)), true
+
+	case "Mutation.NewProfessor":
+		if e.complexity.Mutation.NewProfessor == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewProfessor_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewProfessor(childComplexity, args["email"].(string)), true
+
+	case "Mutation.NewStudent":
+		if e.complexity.Mutation.NewStudent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewStudent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewStudent(childComplexity, args["email"].(string)), true
+
+	case "Mutation.NewTutor":
+		if e.complexity.Mutation.NewTutor == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewTutor_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewTutor(childComplexity, args["email"].(string)), true
 
 	case "Mutation.rateUser":
 		if e.complexity.Mutation.RateUser == nil {
@@ -3467,6 +3530,11 @@ scalar Upload
     setUserCoursePreference(isOnline : Boolean!): UserCoursePreference!
     updUserCoursePreference(isOnline : Boolean!): UserCoursePreference!
 
+    #The following endpoint are new and not match the old ones
+    NewStudent(email: String!): BearerToken
+    NewParent(email: String!): BearerToken
+    NewTutor(email: String!): BearerToken
+    NewProfessor(email: String!): BearerToken
 }
 `, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {
@@ -3572,6 +3640,9 @@ scalar Upload
 input SubjectInput {
     EducationLevelId: Int @goField(name: "EducationLevelId")
     Name: String
+}`, BuiltIn: false},
+	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {
+    T: String!
 }`, BuiltIn: false},
 	{Name: "../gql/user/user.graphqls", Input: `type User {
     Id: ID! @goField(name: "Id")

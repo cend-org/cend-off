@@ -89,4 +89,9 @@ type Mutation {
     setUserCoursePreference(isOnline : Boolean!): UserCoursePreference!
     updUserCoursePreference(isOnline : Boolean!): UserCoursePreference!
 
+    #The following endpoint are new and not match the old ones
+    NewStudent(email: String!): BearerToken
+    NewParent(email: String!): BearerToken
+    NewTutor(email: String!): BearerToken
+    NewProfessor(email: String!): BearerToken
 }

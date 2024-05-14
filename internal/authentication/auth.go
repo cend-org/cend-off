@@ -35,8 +35,6 @@ func NewAccessToken(usr model.User) (string, error) {
 		return access, err
 	}
 
-	time.Sleep(time.Second * 2)
-
 	return access, err
 }
 

@@ -1,5 +1,80 @@
 package model
 
+import (
+		"github.com/cend-org/duval/internal/database"
+		"time"
+)
+
+type UserCollector struct {} 
+func (c *UserCollector) Name(a *string) (r User, err error) { 
+		err = database.Get(&r, `SELECT * FROM user WHERE name = ? ORDER BY created_at DESC LIMIT 1`, a)
+  return r, err
+}
+
+func (c *UserCollector) FamilyName(a *string) (r User, err error) { 
+		err = database.Get(&r, `SELECT * FROM user WHERE family_name = ? ORDER BY created_at DESC LIMIT 1`, a)
+  return r, err
+}
+
+func (c *UserCollector) NickName(a *string) (r User, err error) { 
+		err = database.Get(&r, `SELECT * FROM user WHERE nick_name = ? ORDER BY created_at DESC LIMIT 1`, a)
+  return r, err
+}
+
+func (c *UserCollector) Email(a *string) (r User, err error) { 
+		err = database.Get(&r, `SELECT * FROM user WHERE email = ? ORDER BY created_at DESC LIMIT 1`, a)
+  return r, err
+}
+
+func (c *UserCollector) BirthDate(a *time.Time) (r User, err error) { 
+		err = database.Get(&r, `SELECT * FROM user WHERE birth_date = ? ORDER BY created_at DESC LIMIT 1`, a)
+  return r, err
+}
+
+func (c *UserCollector) Sex(a *int) (r User, err error) { 
+		err = database.Get(&r, `SELECT * FROM user WHERE sex = ? ORDER BY created_at DESC LIMIT 1`, a)
+  return r, err
+}
+
+func (c *UserCollector) Lang(a *int) (r User, err error) { 
+		err = database.Get(&r, `SELECT * FROM user WHERE lang = ? ORDER BY created_at DESC LIMIT 1`, a)
+  return r, err
+}
+
+func (c *UserCollector) Description(a *string) (r User, err error) { 
+		err = database.Get(&r, `SELECT * FROM user WHERE description = ? ORDER BY created_at DESC LIMIT 1`, a)
+  return r, err
+}
+
+func (c *UserCollector) CoverText(a *string) (r User, err error) { 
+		err = database.Get(&r, `SELECT * FROM user WHERE cover_text = ? ORDER BY created_at DESC LIMIT 1`, a)
+  return r, err
+}
+
+func (c *UserCollector) Profile(a *string) (r User, err error) { 
+		err = database.Get(&r, `SELECT * FROM user WHERE profile = ? ORDER BY created_at DESC LIMIT 1`, a)
+  return r, err
+}
+
+func (c *UserCollector) ExperienceDetail(a *string) (r User, err error) { 
+		err = database.Get(&r, `SELECT * FROM user WHERE experience_detail = ? ORDER BY created_at DESC LIMIT 1`, a)
+  return r, err
+}
+
+func (c *UserCollector) AdditionalDescription(a *string) (r User, err error) { 
+		err = database.Get(&r, `SELECT * FROM user WHERE additional_description = ? ORDER BY created_at DESC LIMIT 1`, a)
+  return r, err
+}
+
+func (c *UserCollector) AddOnTitle(a *string) (r User, err error) { 
+		err = database.Get(&r, `SELECT * FROM user WHERE add_on_title = ? ORDER BY created_at DESC LIMIT 1`, a)
+  return r, err
+}
+
+func (c *UserCollector) _b(){ 
+		_ = time.Now()
+}
+
 func MapUserInputToUser(a UserInput, e User) User { 
  if a.Name != nil { 
 	e.Name = *a.Name 

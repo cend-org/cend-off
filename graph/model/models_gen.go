@@ -50,6 +50,10 @@ type Authorization struct {
 	Level     int        `json:"level"`
 }
 
+type BearerToken struct {
+	T string `json:"t"`
+}
+
 type CalendarPlanning struct {
 	Id              int        `json:"id"`
 	CreatedAt       time.Time  `json:"createdAt"`
