@@ -9,7 +9,7 @@ import (
 
 import _ "github.com/go-sql-driver/mysql"
 
-const version string = "0.0.1 - dev"
+const version string = "0.0.2 - dev"
 
 func main() {
 	fmt.Println("\nApp running version ", version)
