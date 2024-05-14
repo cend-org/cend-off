@@ -47,5 +47,5 @@ func CheckPasswordHash(password, hash string) bool {
 }
 
 func PasswordHasValidLength(password string) bool {
-	return len(password)*4 > 72
+	return len(password) >= 4
 }

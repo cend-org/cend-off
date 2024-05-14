@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"github.com/cend-org/duval/graph/model"
+	"github.com/cend-org/duval/internal/authentication"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/utils"
 	"github.com/cend-org/duval/internal/utils/errx"
@@ -35,7 +36,7 @@ func register(email string, userType int) (bearer *model.BearerToken, err error)
 		return nil, errors.New("the given email is not valid")
 	}
 
-	user, err = GetUserByEmail(email)
+	user, err = getUserByEmail(email)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return nil, errors.New("something went wrong please contact support")
 	}
@@ -49,6 +50,8 @@ func register(email string, userType int) (bearer *model.BearerToken, err error)
 		return nil, errx.GenerateMatriculeError
 	}
 
+	user.Email = email
+
 	user.Id, err = database.InsertOne(user)
 	if err != nil {
 		return nil, errx.DuplicateUserError
@@ -59,7 +62,7 @@ func register(email string, userType int) (bearer *model.BearerToken, err error)
 		return nil, errx.AuthorizationError
 	}
 
-	T, err = LoginWithEmail(user.Email)
+	T, err = authentication.NewAccessToken(user)
 	if err != nil {
 		return nil, err
 	}

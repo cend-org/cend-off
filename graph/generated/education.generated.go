@@ -29,8 +29,8 @@ import (
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Education_Id(ctx context.Context, field graphql.CollectedField, obj *model.Education) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Education_Id(ctx, field)
+func (ec *executionContext) _AcademicCourse_Id(ctx context.Context, field graphql.CollectedField, obj *model.AcademicCourse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicCourse_Id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -60,9 +60,9 @@ func (ec *executionContext) _Education_Id(ctx context.Context, field graphql.Col
 	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Education_Id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AcademicCourse_Id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Education",
+		Object:     "AcademicCourse",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -73,8 +73,8 @@ func (ec *executionContext) fieldContext_Education_Id(ctx context.Context, field
 	return fc, nil
 }
 
-func (ec *executionContext) _Education_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Education) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Education_CreatedAt(ctx, field)
+func (ec *executionContext) _AcademicCourse_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.AcademicCourse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicCourse_CreatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -104,9 +104,9 @@ func (ec *executionContext) _Education_CreatedAt(ctx context.Context, field grap
 	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Education_CreatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AcademicCourse_CreatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Education",
+		Object:     "AcademicCourse",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -117,8 +117,8 @@ func (ec *executionContext) fieldContext_Education_CreatedAt(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Education_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.Education) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Education_UpdatedAt(ctx, field)
+func (ec *executionContext) _AcademicCourse_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.AcademicCourse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicCourse_UpdatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -148,9 +148,9 @@ func (ec *executionContext) _Education_UpdatedAt(ctx context.Context, field grap
 	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Education_UpdatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AcademicCourse_UpdatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Education",
+		Object:     "AcademicCourse",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -161,8 +161,8 @@ func (ec *executionContext) fieldContext_Education_UpdatedAt(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Education_DeletedAt(ctx context.Context, field graphql.CollectedField, obj *model.Education) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Education_DeletedAt(ctx, field)
+func (ec *executionContext) _AcademicCourse_DeletedAt(ctx context.Context, field graphql.CollectedField, obj *model.AcademicCourse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicCourse_DeletedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -189,9 +189,9 @@ func (ec *executionContext) _Education_DeletedAt(ctx context.Context, field grap
 	return ec.marshalODateTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Education_DeletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AcademicCourse_DeletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Education",
+		Object:     "AcademicCourse",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -202,8 +202,52 @@ func (ec *executionContext) fieldContext_Education_DeletedAt(ctx context.Context
 	return fc, nil
 }
 
-func (ec *executionContext) _Education_Name(ctx context.Context, field graphql.CollectedField, obj *model.Education) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Education_Name(ctx, field)
+func (ec *executionContext) _AcademicCourse_AcademicLevelId(ctx context.Context, field graphql.CollectedField, obj *model.AcademicCourse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicCourse_AcademicLevelId(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.AcademicLevelId, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AcademicCourse_AcademicLevelId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AcademicCourse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _AcademicCourse_Name(ctx context.Context, field graphql.CollectedField, obj *model.AcademicCourse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicCourse_Name(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -233,9 +277,9 @@ func (ec *executionContext) _Education_Name(ctx context.Context, field graphql.C
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Education_Name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AcademicCourse_Name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "Education",
+		Object:     "AcademicCourse",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -246,8 +290,8 @@ func (ec *executionContext) fieldContext_Education_Name(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _UserEducationLevelSubject_Id(ctx context.Context, field graphql.CollectedField, obj *model.UserEducationLevelSubject) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserEducationLevelSubject_Id(ctx, field)
+func (ec *executionContext) _AcademicLevel_Id(ctx context.Context, field graphql.CollectedField, obj *model.AcademicLevel) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicLevel_Id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -277,9 +321,9 @@ func (ec *executionContext) _UserEducationLevelSubject_Id(ctx context.Context, f
 	return ec.marshalNID2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_UserEducationLevelSubject_Id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AcademicLevel_Id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "UserEducationLevelSubject",
+		Object:     "AcademicLevel",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -290,8 +334,8 @@ func (ec *executionContext) fieldContext_UserEducationLevelSubject_Id(ctx contex
 	return fc, nil
 }
 
-func (ec *executionContext) _UserEducationLevelSubject_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.UserEducationLevelSubject) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserEducationLevelSubject_CreatedAt(ctx, field)
+func (ec *executionContext) _AcademicLevel_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.AcademicLevel) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicLevel_CreatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -321,9 +365,9 @@ func (ec *executionContext) _UserEducationLevelSubject_CreatedAt(ctx context.Con
 	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_UserEducationLevelSubject_CreatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AcademicLevel_CreatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "UserEducationLevelSubject",
+		Object:     "AcademicLevel",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -334,8 +378,8 @@ func (ec *executionContext) fieldContext_UserEducationLevelSubject_CreatedAt(ctx
 	return fc, nil
 }
 
-func (ec *executionContext) _UserEducationLevelSubject_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.UserEducationLevelSubject) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserEducationLevelSubject_UpdatedAt(ctx, field)
+func (ec *executionContext) _AcademicLevel_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.AcademicLevel) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicLevel_UpdatedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -365,9 +409,9 @@ func (ec *executionContext) _UserEducationLevelSubject_UpdatedAt(ctx context.Con
 	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_UserEducationLevelSubject_UpdatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AcademicLevel_UpdatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "UserEducationLevelSubject",
+		Object:     "AcademicLevel",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -378,8 +422,8 @@ func (ec *executionContext) fieldContext_UserEducationLevelSubject_UpdatedAt(ctx
 	return fc, nil
 }
 
-func (ec *executionContext) _UserEducationLevelSubject_DeletedAt(ctx context.Context, field graphql.CollectedField, obj *model.UserEducationLevelSubject) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserEducationLevelSubject_DeletedAt(ctx, field)
+func (ec *executionContext) _AcademicLevel_DeletedAt(ctx context.Context, field graphql.CollectedField, obj *model.AcademicLevel) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicLevel_DeletedAt(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -406,9 +450,9 @@ func (ec *executionContext) _UserEducationLevelSubject_DeletedAt(ctx context.Con
 	return ec.marshalODateTime2ᚖtimeᚐTime(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_UserEducationLevelSubject_DeletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_AcademicLevel_DeletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "UserEducationLevelSubject",
+		Object:     "AcademicLevel",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -419,8 +463,225 @@ func (ec *executionContext) fieldContext_UserEducationLevelSubject_DeletedAt(ctx
 	return fc, nil
 }
 
-func (ec *executionContext) _UserEducationLevelSubject_UserId(ctx context.Context, field graphql.CollectedField, obj *model.UserEducationLevelSubject) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserEducationLevelSubject_UserId(ctx, field)
+func (ec *executionContext) _AcademicLevel_Name(ctx context.Context, field graphql.CollectedField, obj *model.AcademicLevel) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_AcademicLevel_Name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_AcademicLevel_Name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "AcademicLevel",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserAcademicCourse_Id(ctx context.Context, field graphql.CollectedField, obj *model.UserAcademicCourse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserAcademicCourse_Id(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Id, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(int)
+	fc.Result = res
+	return ec.marshalNID2int(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserAcademicCourse_Id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserAcademicCourse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserAcademicCourse_CreatedAt(ctx context.Context, field graphql.CollectedField, obj *model.UserAcademicCourse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserAcademicCourse_CreatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CreatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserAcademicCourse_CreatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserAcademicCourse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type DateTime does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserAcademicCourse_UpdatedAt(ctx context.Context, field graphql.CollectedField, obj *model.UserAcademicCourse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserAcademicCourse_UpdatedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.UpdatedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(time.Time)
+	fc.Result = res
+	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserAcademicCourse_UpdatedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserAcademicCourse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type DateTime does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserAcademicCourse_DeletedAt(ctx context.Context, field graphql.CollectedField, obj *model.UserAcademicCourse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserAcademicCourse_DeletedAt(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.DeletedAt, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*time.Time)
+	fc.Result = res
+	return ec.marshalODateTime2ᚖtimeᚐTime(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_UserAcademicCourse_DeletedAt(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "UserAcademicCourse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type DateTime does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _UserAcademicCourse_UserId(ctx context.Context, field graphql.CollectedField, obj *model.UserAcademicCourse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserAcademicCourse_UserId(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -450,9 +711,9 @@ func (ec *executionContext) _UserEducationLevelSubject_UserId(ctx context.Contex
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_UserEducationLevelSubject_UserId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_UserAcademicCourse_UserId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "UserEducationLevelSubject",
+		Object:     "UserAcademicCourse",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -463,8 +724,8 @@ func (ec *executionContext) fieldContext_UserEducationLevelSubject_UserId(ctx co
 	return fc, nil
 }
 
-func (ec *executionContext) _UserEducationLevelSubject_SubjectId(ctx context.Context, field graphql.CollectedField, obj *model.UserEducationLevelSubject) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserEducationLevelSubject_SubjectId(ctx, field)
+func (ec *executionContext) _UserAcademicCourse_CourseId(ctx context.Context, field graphql.CollectedField, obj *model.UserAcademicCourse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserAcademicCourse_CourseId(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -477,7 +738,7 @@ func (ec *executionContext) _UserEducationLevelSubject_SubjectId(ctx context.Con
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.SubjectId, nil
+		return obj.CourseId, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -494,9 +755,9 @@ func (ec *executionContext) _UserEducationLevelSubject_SubjectId(ctx context.Con
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_UserEducationLevelSubject_SubjectId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_UserAcademicCourse_CourseId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
-		Object:     "UserEducationLevelSubject",
+		Object:     "UserAcademicCourse",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
@@ -511,6 +772,33 @@ func (ec *executionContext) fieldContext_UserEducationLevelSubject_SubjectId(ctx
 
 // region    **************************** input.gotpl *****************************
 
+func (ec *executionContext) unmarshalInputUserAcademicCourseInput(ctx context.Context, obj interface{}) (model.UserAcademicCourseInput, error) {
+	var it model.UserAcademicCourseInput
+	asMap := map[string]interface{}{}
+	for k, v := range obj.(map[string]interface{}) {
+		asMap[k] = v
+	}
+
+	fieldsInOrder := [...]string{"CourseId"}
+	for _, k := range fieldsInOrder {
+		v, ok := asMap[k]
+		if !ok {
+			continue
+		}
+		switch k {
+		case "CourseId":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("CourseId"))
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CourseId = data
+		}
+	}
+
+	return it, nil
+}
+
 // endregion **************************** input.gotpl *****************************
 
 // region    ************************** interface.gotpl ***************************
@@ -519,36 +807,41 @@ func (ec *executionContext) fieldContext_UserEducationLevelSubject_SubjectId(ctx
 
 // region    **************************** object.gotpl ****************************
 
-var educationImplementors = []string{"Education"}
+var academicCourseImplementors = []string{"AcademicCourse"}
 
-func (ec *executionContext) _Education(ctx context.Context, sel ast.SelectionSet, obj *model.Education) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, educationImplementors)
+func (ec *executionContext) _AcademicCourse(ctx context.Context, sel ast.SelectionSet, obj *model.AcademicCourse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, academicCourseImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	deferred := make(map[string]*graphql.FieldSet)
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("Education")
+			out.Values[i] = graphql.MarshalString("AcademicCourse")
 		case "Id":
-			out.Values[i] = ec._Education_Id(ctx, field, obj)
+			out.Values[i] = ec._AcademicCourse_Id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "CreatedAt":
-			out.Values[i] = ec._Education_CreatedAt(ctx, field, obj)
+			out.Values[i] = ec._AcademicCourse_CreatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "UpdatedAt":
-			out.Values[i] = ec._Education_UpdatedAt(ctx, field, obj)
+			out.Values[i] = ec._AcademicCourse_UpdatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "DeletedAt":
-			out.Values[i] = ec._Education_DeletedAt(ctx, field, obj)
+			out.Values[i] = ec._AcademicCourse_DeletedAt(ctx, field, obj)
+		case "AcademicLevelId":
+			out.Values[i] = ec._AcademicCourse_AcademicLevelId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
 		case "Name":
-			out.Values[i] = ec._Education_Name(ctx, field, obj)
+			out.Values[i] = ec._AcademicCourse_Name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -575,41 +868,97 @@ func (ec *executionContext) _Education(ctx context.Context, sel ast.SelectionSet
 	return out
 }
 
-var userEducationLevelSubjectImplementors = []string{"UserEducationLevelSubject"}
+var academicLevelImplementors = []string{"AcademicLevel"}
 
-func (ec *executionContext) _UserEducationLevelSubject(ctx context.Context, sel ast.SelectionSet, obj *model.UserEducationLevelSubject) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, userEducationLevelSubjectImplementors)
+func (ec *executionContext) _AcademicLevel(ctx context.Context, sel ast.SelectionSet, obj *model.AcademicLevel) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, academicLevelImplementors)
 
 	out := graphql.NewFieldSet(fields)
 	deferred := make(map[string]*graphql.FieldSet)
 	for i, field := range fields {
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("UserEducationLevelSubject")
+			out.Values[i] = graphql.MarshalString("AcademicLevel")
 		case "Id":
-			out.Values[i] = ec._UserEducationLevelSubject_Id(ctx, field, obj)
+			out.Values[i] = ec._AcademicLevel_Id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "CreatedAt":
-			out.Values[i] = ec._UserEducationLevelSubject_CreatedAt(ctx, field, obj)
+			out.Values[i] = ec._AcademicLevel_CreatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "UpdatedAt":
-			out.Values[i] = ec._UserEducationLevelSubject_UpdatedAt(ctx, field, obj)
+			out.Values[i] = ec._AcademicLevel_UpdatedAt(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "DeletedAt":
-			out.Values[i] = ec._UserEducationLevelSubject_DeletedAt(ctx, field, obj)
-		case "UserId":
-			out.Values[i] = ec._UserEducationLevelSubject_UserId(ctx, field, obj)
+			out.Values[i] = ec._AcademicLevel_DeletedAt(ctx, field, obj)
+		case "Name":
+			out.Values[i] = ec._AcademicLevel_Name(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "SubjectId":
-			out.Values[i] = ec._UserEducationLevelSubject_SubjectId(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
+var userAcademicCourseImplementors = []string{"UserAcademicCourse"}
+
+func (ec *executionContext) _UserAcademicCourse(ctx context.Context, sel ast.SelectionSet, obj *model.UserAcademicCourse) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, userAcademicCourseImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("UserAcademicCourse")
+		case "Id":
+			out.Values[i] = ec._UserAcademicCourse_Id(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "CreatedAt":
+			out.Values[i] = ec._UserAcademicCourse_CreatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "UpdatedAt":
+			out.Values[i] = ec._UserAcademicCourse_UpdatedAt(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "DeletedAt":
+			out.Values[i] = ec._UserAcademicCourse_DeletedAt(ctx, field, obj)
+		case "UserId":
+			out.Values[i] = ec._UserAcademicCourse_UserId(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "CourseId":
+			out.Values[i] = ec._UserAcademicCourse_CourseId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -640,21 +989,32 @@ func (ec *executionContext) _UserEducationLevelSubject(ctx context.Context, sel 
 
 // region    ***************************** type.gotpl *****************************
 
-func (ec *executionContext) marshalNEducation2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐEducation(ctx context.Context, sel ast.SelectionSet, v model.Education) graphql.Marshaler {
-	return ec._Education(ctx, sel, &v)
+func (ec *executionContext) marshalNAcademicCourse2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAcademicCourse(ctx context.Context, sel ast.SelectionSet, v model.AcademicCourse) graphql.Marshaler {
+	return ec._AcademicCourse(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNEducation2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐEducation(ctx context.Context, sel ast.SelectionSet, v *model.Education) graphql.Marshaler {
-	if v == nil {
-		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
-			ec.Errorf(ctx, "the requested element is null which the schema does not allow")
-		}
-		return graphql.Null
+func (ec *executionContext) marshalNAcademicLevel2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAcademicLevel(ctx context.Context, sel ast.SelectionSet, v model.AcademicLevel) graphql.Marshaler {
+	return ec._AcademicLevel(ctx, sel, &v)
+}
+
+func (ec *executionContext) unmarshalNUserAcademicCourseInput2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCourseInput(ctx context.Context, v interface{}) ([]*model.UserAcademicCourseInput, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
 	}
-	return ec._Education(ctx, sel, v)
+	var err error
+	res := make([]*model.UserAcademicCourseInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOUserAcademicCourseInput2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCourseInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
 }
 
-func (ec *executionContext) marshalOEducation2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐEducationᚄ(ctx context.Context, sel ast.SelectionSet, v []model.Education) graphql.Marshaler {
+func (ec *executionContext) marshalOAcademicCourse2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAcademicCourseᚄ(ctx context.Context, sel ast.SelectionSet, v []model.AcademicCourse) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -681,7 +1041,7 @@ func (ec *executionContext) marshalOEducation2ᚕgithubᚗcomᚋcendᚑorgᚋduv
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNEducation2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐEducation(ctx, sel, v[i])
+			ret[i] = ec.marshalNAcademicCourse2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAcademicCourse(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -699,6 +1059,61 @@ func (ec *executionContext) marshalOEducation2ᚕgithubᚗcomᚋcendᚑorgᚋduv
 	}
 
 	return ret
+}
+
+func (ec *executionContext) marshalOAcademicLevel2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAcademicLevelᚄ(ctx context.Context, sel ast.SelectionSet, v []model.AcademicLevel) graphql.Marshaler {
+	if v == nil {
+		return graphql.Null
+	}
+	ret := make(graphql.Array, len(v))
+	var wg sync.WaitGroup
+	isLen1 := len(v) == 1
+	if !isLen1 {
+		wg.Add(len(v))
+	}
+	for i := range v {
+		i := i
+		fc := &graphql.FieldContext{
+			Index:  &i,
+			Result: &v[i],
+		}
+		ctx := graphql.WithFieldContext(ctx, fc)
+		f := func(i int) {
+			defer func() {
+				if r := recover(); r != nil {
+					ec.Error(ctx, ec.Recover(ctx, r))
+					ret = nil
+				}
+			}()
+			if !isLen1 {
+				defer wg.Done()
+			}
+			ret[i] = ec.marshalNAcademicLevel2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAcademicLevel(ctx, sel, v[i])
+		}
+		if isLen1 {
+			f(i)
+		} else {
+			go f(i)
+		}
+
+	}
+	wg.Wait()
+
+	for _, e := range ret {
+		if e == graphql.Null {
+			return graphql.Null
+		}
+	}
+
+	return ret
+}
+
+func (ec *executionContext) unmarshalOUserAcademicCourseInput2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCourseInput(ctx context.Context, v interface{}) (*model.UserAcademicCourseInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputUserAcademicCourseInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 // endregion ***************************** type.gotpl *****************************

@@ -1,97 +1,10 @@
 type Mutation {
-    registerWithEmail(input: String!, as: Int!): String
-    register(input: UserInput!, as:Int!): String
-    updMyProfile(input: UserInput!): String
-
-    logIn(email: String!, password: String!): String
-
-    newPassword(password: String!): Boolean
-    delPassword(id: ID!): Boolean
-
-    newAsset(asset: AssetInput!): Asset
-    #   Message mutations
-    newMessage(input: MessageInput!): Message!
-    updMessage(input: MessageInput!): Message!
-    delMessage(language: Int!, messageNumber :Int!) : Boolean
-    newMenu(input: MessageInput!) : Message!
-    delMenu(menuNumber: Int!): Boolean
-    newMenuItem(input: MessageInput!): Message!
-    delMenuItem(input: MessageInput!) : Boolean
-
-    #    Address mutations
-    newAddress(input: AddressInput!): Address!
-    updateUserAddress(input: AddressInput!): Address!
-    removeUserAddress: Boolean
-
-    #    Phone mutations
-    newPhoneNumber(input: PhoneNumberInput!) : PhoneNumber!
-    updateUserPhoneNumber(input: PhoneNumberInput!) : PhoneNumber!
-
-    #    Planning mutations
-    createUserPlannings(input: CalendarPlanningInput!): CalendarPlanning!
-    addUserIntoPlanning(calendarId: ID!, selectedUserId: ID!):CalendarPlanningActor!
-    removeUserPlannings: Boolean
-    removeUserFromPlanning(calendarPlanningId: ID!, selectedUserId: ID!): Boolean
-
-    #   Education mutations
-    setUserEducationLevel(subjectId: Int!): Education!
-    updateUserEducationLevel(subjectId: Int!): Education!
-
-    #    Mark mutations
-    rateUser(input: MarkInput!): Mark!
-
-    #    Link Mutations
-    addParentToUser(input: UserInput!) :User!
-    removeUserParent(input: UserInput!): Boolean
-
-    addTutorToUser(input: UserInput!) :User!
-    removeUserTutor(input: UserInput!): Boolean
-
-    addProfessorToUser(input: UserInput!) :User!
-    removeUserProfessor(input: UserInput!): Boolean
-
-    addStudentToLink(input: UserInput!) :User!
-    removeStudent(input: UserInput!): Boolean
-
-    # Qr Mutations
-    loginWithQr(xId: String!) :String
-
-    #    Profile Letter
-    removeProfileLetter : Boolean
-
-    #    Profile Cv
-    removeProfileCv : Boolean
-
-    #    Profile Image
-    removeProfileImage: Boolean
-
-    #    Profile Video
-    removeProfileVideo: Boolean
-
-    # Contract
-    newContract(input: ContractInput!): Contract!
-    updContract(input: ContractInput!, contractId: Int!): Contract!
-    removeContract(contractId: Int!): Boolean
-
-    newContractTimesheetDetail(input: ContractTimesheetDetailInput!): ContractTimesheetDetail!
-
-    #    Post
-    newPost(input: PostInput!) : Post!
-    updPost(input: PostInput! , postId: Int!) : Post!
-    removePost(postId : Int!) : Boolean
-
-    #    Post tag
-    tagPost(input: PostTagInput!): Post!
-    updTagOnPost(input : PostTagInput!): Post!
-    removeTagOnPost(postId: Int!): Post!
-
-    #    User Course Preference
-    setUserCoursePreference(isOnline : Boolean!): UserCoursePreference!
-    updUserCoursePreference(isOnline : Boolean!): UserCoursePreference!
-
-    #The following endpoint are new and not match the old ones
     NewStudent(email: String!): BearerToken
     NewParent(email: String!): BearerToken
     NewTutor(email: String!): BearerToken
     NewProfessor(email: String!): BearerToken
+    NewPassword(password: PasswordInput!): Boolean
+    Login(email: String!, password: String!): BearerToken
+    UpdateMyProfile(profile: UserInput!): User
+    NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean
 }

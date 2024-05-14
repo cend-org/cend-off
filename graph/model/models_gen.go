@@ -6,39 +6,21 @@ import (
 	"time"
 )
 
-type Address struct {
-	Id          int        `json:"id"`
-	CreatedAt   time.Time  `json:"createdAt"`
-	UpdatedAt   time.Time  `json:"updatedAt"`
-	DeletedAt   *time.Time `json:"deletedAt"`
-	Country     string     `json:"country"`
-	City        string     `json:"city"`
-	Latitude    float64    `json:"latitude"`
-	Longitude   float64    `json:"longitude"`
-	Street      string     `json:"street"`
-	FullAddress string     `json:"fullAddress"`
-	Xid         string     `json:"xid"`
+type AcademicCourse struct {
+	Id              int        `json:"id"`
+	CreatedAt       time.Time  `json:"createdAt"`
+	UpdatedAt       time.Time  `json:"updatedAt"`
+	DeletedAt       *time.Time `json:"deletedAt"`
+	AcademicLevelId int        `json:"academicLevelId"`
+	Name            string     `json:"name"`
 }
 
-type AddressInput struct {
-	Country     *string  `json:"country"`
-	City        *string  `json:"city"`
-	Latitude    *float64 `json:"latitude"`
-	Longitude   *float64 `json:"longitude"`
-	Street      *string  `json:"street"`
-	FullAddress *string  `json:"fullAddress"`
-}
-
-type Asset struct {
-	Id          int        `json:"id"`
-	CreatedAt   time.Time  `json:"createdAt"`
-	UpdatedAt   time.Time  `json:"updatedAt"`
-	DeletedAt   *time.Time `json:"deletedAt"`
-	Description string     `json:"description"`
-}
-
-type AssetInput struct {
-	Description *string `json:"description"`
+type AcademicLevel struct {
+	Id        int        `json:"id"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	DeletedAt *time.Time `json:"deletedAt"`
+	Name      string     `json:"name"`
 }
 
 type Authorization struct {
@@ -52,109 +34,6 @@ type Authorization struct {
 
 type BearerToken struct {
 	T string `json:"t"`
-}
-
-type CalendarPlanning struct {
-	Id              int        `json:"id"`
-	CreatedAt       time.Time  `json:"createdAt"`
-	UpdatedAt       time.Time  `json:"updatedAt"`
-	DeletedAt       *time.Time `json:"deletedAt"`
-	AuthorizationId int        `json:"authorizationId"`
-	StartDateTime   time.Time  `json:"startDateTime"`
-	EndDateTime     time.Time  `json:"endDateTime"`
-	Description     string     `json:"description"`
-}
-
-type CalendarPlanningActor struct {
-	Id                 int        `json:"id"`
-	CreatedAt          time.Time  `json:"createdAt"`
-	UpdatedAt          time.Time  `json:"updatedAt"`
-	DeletedAt          *time.Time `json:"deletedAt"`
-	AuthorizationId    int        `json:"authorizationId"`
-	CalendarPlanningId int        `json:"calendarPlanningId"`
-}
-
-type CalendarPlanningInput struct {
-	StartDateTime *time.Time `json:"startDateTime"`
-	EndDateTime   *time.Time `json:"endDateTime"`
-	Description   *string    `json:"description"`
-}
-
-type Code struct {
-	Id               int        `json:"id"`
-	CreatedAt        time.Time  `json:"createdAt"`
-	UpdatedAt        time.Time  `json:"updatedAt"`
-	DeletedAt        *time.Time `json:"deletedAt"`
-	UserId           int        `json:"userId"`
-	VerificationCode int        `json:"verificationCode"`
-}
-
-type Contract struct {
-	Id            int        `json:"id"`
-	CreatedAt     time.Time  `json:"createdAt"`
-	UpdatedAt     time.Time  `json:"updatedAt"`
-	DeletedAt     *time.Time `json:"deletedAt"`
-	TutorId       int        `json:"tutorId"`
-	ParentId      int        `json:"parentId"`
-	StudentId     int        `json:"studentId"`
-	StartDate     time.Time  `json:"startDate"`
-	EndDate       time.Time  `json:"endDate"`
-	PaymentType   int        `json:"paymentType"`
-	SalaryValue   float64    `json:"salaryValue"`
-	PaymentMethod int        `json:"paymentMethod"`
-}
-
-type ContractInput struct {
-	TutorId       *int       `json:"tutorId"`
-	ParentId      *int       `json:"parentId"`
-	StudentId     *int       `json:"studentId"`
-	StartDate     *time.Time `json:"startDate"`
-	EndDate       *time.Time `json:"endDate"`
-	PaymentType   *int       `json:"paymentType"`
-	SalaryValue   *float64   `json:"salaryValue"`
-	PaymentMethod *int       `json:"paymentMethod"`
-}
-
-type ContractTimesheetDetail struct {
-	Id         int        `json:"id"`
-	CreatedAt  time.Time  `json:"createdAt"`
-	UpdatedAt  time.Time  `json:"updatedAt"`
-	DeletedAt  *time.Time `json:"deletedAt"`
-	ContractId int        `json:"contractId"`
-	Date       time.Time  `json:"date"`
-	Hours      float64    `json:"hours"`
-}
-
-type ContractTimesheetDetailInput struct {
-	ContractId *int       `json:"contractId"`
-	Date       *time.Time `json:"date"`
-	Hours      *float64   `json:"hours"`
-}
-
-type Education struct {
-	Id        int        `json:"id"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `json:"deletedAt"`
-	Name      string     `json:"name"`
-}
-
-type Mark struct {
-	Id            int        `json:"id"`
-	CreatedAt     time.Time  `json:"createdAt"`
-	UpdatedAt     time.Time  `json:"updatedAt"`
-	DeletedAt     *time.Time `json:"deletedAt"`
-	UserId        int        `json:"userId"`
-	AuthorId      int        `json:"authorId"`
-	AuthorComment string     `json:"authorComment"`
-	AuthorMark    int        `json:"authorMark"`
-}
-
-type MarkInput struct {
-	UserId        *int    `json:"userId"`
-	AuthorId      *int    `json:"authorId"`
-	AuthorComment *string `json:"authorComment"`
-	AuthorMark    *int    `json:"authorMark"`
 }
 
 type Media struct {
@@ -178,26 +57,6 @@ type MediaThumb struct {
 	Xid       string     `json:"xid"`
 }
 
-type Message struct {
-	Id               int        `json:"id"`
-	CreatedAt        time.Time  `json:"createdAt"`
-	UpdatedAt        time.Time  `json:"updatedAt"`
-	DeletedAt        *time.Time `json:"deletedAt"`
-	ResourceType     int        `json:"resourceType"`
-	ResourceNumber   int        `json:"resourceNumber"`
-	ResourceValue    int        `json:"resourceValue"`
-	ResourceLabel    string     `json:"resourceLabel"`
-	ResourceLanguage int        `json:"resourceLanguage"`
-}
-
-type MessageInput struct {
-	ResourceType     *int    `json:"resourceType"`
-	ResourceValue    *int    `json:"resourceValue"`
-	ResourceNumber   *int    `json:"resourceNumber"`
-	ResourceLabel    *string `json:"resourceLabel"`
-	ResourceLanguage *int    `json:"resourceLanguage"`
-}
-
 type Mutation struct {
 }
 
@@ -214,84 +73,7 @@ type PasswordInput struct {
 	Hash *string `json:"hash"`
 }
 
-type PhoneNumber struct {
-	Id                int        `json:"id"`
-	CreatedAt         time.Time  `json:"createdAt"`
-	UpdatedAt         time.Time  `json:"updatedAt"`
-	DeletedAt         *time.Time `json:"deletedAt"`
-	MobilePhoneNumber string     `json:"mobilePhoneNumber"`
-	IsUrgency         bool       `json:"isUrgency"`
-}
-
-type PhoneNumberInput struct {
-	MobilePhoneNumber *string `json:"mobilePhoneNumber"`
-	IsUrgency         *bool   `json:"isUrgency"`
-}
-
-type Post struct {
-	Id             int        `json:"id"`
-	CreatedAt      time.Time  `json:"createdAt"`
-	UpdatedAt      time.Time  `json:"updatedAt"`
-	DeletedAt      *time.Time `json:"deletedAt"`
-	PublisherId    int        `json:"publisherId"`
-	Content        string     `json:"content"`
-	ExpirationDate time.Time  `json:"expirationDate"`
-}
-
-type PostInput struct {
-	PublisherId    *int       `json:"publisherId"`
-	Content        *string    `json:"content"`
-	ExpirationDate *time.Time `json:"expirationDate"`
-}
-
-type PostTag struct {
-	Id         int        `json:"id"`
-	CreatedAt  time.Time  `json:"createdAt"`
-	UpdatedAt  time.Time  `json:"updatedAt"`
-	DeletedAt  *time.Time `json:"deletedAt"`
-	PostId     int        `json:"postId"`
-	TagContent string     `json:"tagContent"`
-}
-
-type PostTagInput struct {
-	PostId     *int    `json:"postId"`
-	TagContent *string `json:"tagContent"`
-}
-
-type PostView struct {
-	Id        int        `json:"id"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `json:"deletedAt"`
-	PostId    int        `json:"postId"`
-	ViewerId  int        `json:"viewerId"`
-}
-
-type QRCodeRegistry struct {
-	Id        int        `json:"id"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `json:"deletedAt"`
-	UserId    int        `json:"userId"`
-	Xid       string     `json:"xid"`
-	IsUsed    bool       `json:"isUsed"`
-}
-
 type Query struct {
-}
-
-type Subject struct {
-	Id               int        `json:"id"`
-	CreatedAt        time.Time  `json:"createdAt"`
-	UpdatedAt        time.Time  `json:"updatedAt"`
-	DeletedAt        *time.Time `json:"deletedAt"`
-	EducationLevelId int        `json:"educationLevelId"`
-	Name             string     `json:"name"`
-}
-
-type SubjectInput struct {
-	EducationLevelId *int    `json:"educationLevelId"`
-	Name             *string `json:"name"`
 }
 
 type User struct {
@@ -318,49 +100,17 @@ type User struct {
 	AddOnTitle            string     `json:"addOnTitle"`
 }
 
-type UserAddress struct {
-	Id          int        `json:"id"`
-	CreatedAt   time.Time  `json:"createdAt"`
-	UpdatedAt   time.Time  `json:"updatedAt"`
-	DeletedAt   *time.Time `json:"deletedAt"`
-	UserId      int        `json:"userId"`
-	AddressId   int        `json:"addressId"`
-	AddressType string     `json:"addressType"`
-}
-
-type UserAuthorizationLink struct {
-	Id        int        `json:"id"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `json:"deletedAt"`
-	LinkType  int        `json:"linkType"`
-}
-
-type UserAuthorizationLinkActor struct {
-	Id                      int        `json:"id"`
-	CreatedAt               time.Time  `json:"createdAt"`
-	UpdatedAt               time.Time  `json:"updatedAt"`
-	DeletedAt               *time.Time `json:"deletedAt"`
-	UserAuthorizationLinkId int        `json:"userAuthorizationLinkId"`
-	AuthorizationId         int        `json:"authorizationId"`
-}
-
-type UserCoursePreference struct {
+type UserAcademicCourse struct {
 	Id        int        `json:"id"`
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
 	DeletedAt *time.Time `json:"deletedAt"`
 	UserId    int        `json:"userId"`
-	IsOnline  bool       `json:"isOnline"`
+	CourseId  int        `json:"courseId"`
 }
 
-type UserEducationLevelSubject struct {
-	Id        int        `json:"id"`
-	CreatedAt time.Time  `json:"createdAt"`
-	UpdatedAt time.Time  `json:"updatedAt"`
-	DeletedAt *time.Time `json:"deletedAt"`
-	UserId    int        `json:"userId"`
-	SubjectId int        `json:"subjectId"`
+type UserAcademicCourseInput struct {
+	CourseId *int `json:"courseId"`
 }
 
 type UserInput struct {
@@ -387,13 +137,4 @@ type UserMediaDetail struct {
 	OwnerId      int        `json:"ownerId"`
 	DocumentType int        `json:"documentType"`
 	DocumentXid  string     `json:"documentXid"`
-}
-
-type UserPhoneNumber struct {
-	Id            int        `json:"id"`
-	CreatedAt     time.Time  `json:"createdAt"`
-	UpdatedAt     time.Time  `json:"updatedAt"`
-	DeletedAt     *time.Time `json:"deletedAt"`
-	UserId        int        `json:"userId"`
-	PhoneNumberId int        `json:"phoneNumberId"`
 }

@@ -1,4 +1,4 @@
-type Education {
+type AcademicLevel {
     Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
@@ -6,11 +6,24 @@ type Education {
     Name: String!
 }
 
-type UserEducationLevelSubject {
+type AcademicCourse {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    AcademicLevelId: ID! @goField(name: "AcademicLevelId")
+    Name: String!
+}
+
+type UserAcademicCourse {
     Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     UserId: Int! @goField(name: "UserId")
-    SubjectId :Int! @goField(name: "SubjectId")
+    CourseId :Int! @goField(name: "CourseId")
+}
+
+input UserAcademicCourseInput {
+    CourseId :Int @goField(name: "CourseId")
 }
