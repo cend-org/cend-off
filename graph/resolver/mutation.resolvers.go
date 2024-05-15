@@ -67,8 +67,10 @@ func (r *mutationResolver) UpdateMyProfile(ctx context.Context, profile model.Us
 
 // UpdateProfileAndPassword is the resolver for the UpdateProfileAndPassword field.
 func (r *mutationResolver) UpdateProfileAndPassword(ctx context.Context, profile model.UserInput, password model.PasswordInput) (*model.User, error) {
-	var tok *token.Token
-	var err error
+	var (
+		tok *token.Token
+		err error
+	)
 
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
