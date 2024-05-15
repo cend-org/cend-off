@@ -5,7 +5,7 @@ import (
 	"github.com/cend-org/duval/internal/database"
 )
 
-func NewProfile(userId int, new model.UserInput, newPass model.PasswordInput) (usr *model.User, err error) {
+func UpdateProfileAndPassword(userId int, new model.UserInput, newPass model.PasswordInput) (usr *model.User, err error) {
 	var user model.User
 
 	err = database.Get(&user, `SELECT * FROM user WHERE id = ?`, userId)
