@@ -28,6 +28,7 @@ var (
 )
 
 var StatusNeedPasswordError = errors.New("user need at least a password and an email for login")
+var SupportError = errors.New("something went wrong please contact support")
 var AuthError = errors.New(" email or password incorrect  ")
 
 var (

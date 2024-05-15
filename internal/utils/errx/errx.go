@@ -32,6 +32,7 @@ var (
 
 var (
 	NeedPasswordError = note.StatusNeedPasswordError
+	SupportError      = note.SupportError
 )
 
 var (

@@ -33,12 +33,12 @@ func register(email string, userType int) (bearer *model.BearerToken, err error)
 	var T string
 
 	if isValid := utils.IsValidEmail(email); !isValid {
-		return nil, errors.New("the given email is not valid")
+		return nil, errx.InvalidEmailError
 	}
 
 	user, err = getUserByEmail(email)
 	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		return nil, errors.New("something went wrong please contact support")
+		return nil, errx.SupportError
 	}
 
 	if user.Id > state.ZERO {
