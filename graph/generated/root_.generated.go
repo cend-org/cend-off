@@ -97,6 +97,7 @@ type ComplexityRoot struct {
 		NewParent              func(childComplexity int, email string) int
 		NewPassword            func(childComplexity int, password model.PasswordInput) int
 		NewProfessor           func(childComplexity int, email string) int
+		NewProfile             func(childComplexity int, profile model.UserInput, password model.PasswordInput) int
 		NewStudent             func(childComplexity int, email string) int
 		NewTutor               func(childComplexity int, email string) int
 		NewUserAcademicCourses func(childComplexity int, courses []*model.UserAcademicCourseInput) int
@@ -459,6 +460,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.NewProfessor(childComplexity, args["email"].(string)), true
+
+	case "Mutation.NewProfile":
+		if e.complexity.Mutation.NewProfile == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewProfile_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewProfile(childComplexity, args["profile"].(model.UserInput), args["password"].(model.PasswordInput)), true
 
 	case "Mutation.NewStudent":
 		if e.complexity.Mutation.NewStudent == nil {
@@ -1037,6 +1050,7 @@ scalar Upload
     NewPassword(password: PasswordInput!): Boolean
     Login(email: String!, password: String!): BearerToken
     UpdateMyProfile(profile: UserInput!): User
+    NewProfile(profile: UserInput! , password: PasswordInput!): User
     NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean
 }`, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {

@@ -7,11 +7,11 @@ package resolver
 import (
 	"context"
 	"errors"
-	"github.com/cend-org/duval/pkg/academic"
 
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
+	"github.com/cend-org/duval/pkg/academic"
 	usr "github.com/cend-org/duval/pkg/user"
 )
 

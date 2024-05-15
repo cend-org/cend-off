@@ -17,15 +17,9 @@ import (
 	"strconv"
 )
 
-type MediaFile struct {
-	File         *multipart.FileHeader `form:"file"`
-	DocumentType string                `form:"documentType"`
-}
-
 func Upload(ctx *gin.Context) {
 	var (
-		media model.Media
-		//uploadFile   MediaFile
+		media        model.Media
 		documentType int
 		tok          *token.Token
 		err          error
