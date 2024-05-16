@@ -24,7 +24,7 @@ type MutationResolver interface {
 	NewPassword(ctx context.Context, password model.PasswordInput) (*bool, error)
 	Login(ctx context.Context, email string, password string) (*model.BearerToken, error)
 	UpdateMyProfile(ctx context.Context, profile model.UserInput) (*model.User, error)
-	NewProfile(ctx context.Context, profile model.UserInput, password model.PasswordInput) (*model.User, error)
+	UpdateProfileAndPassword(ctx context.Context, profile model.UserInput, password model.PasswordInput) (*model.User, error)
 	NewUserAcademicCourses(ctx context.Context, courses []*model.UserAcademicCourseInput) (*bool, error)
 }
 
@@ -101,30 +101,6 @@ func (ec *executionContext) field_Mutation_NewProfessor_args(ctx context.Context
 	return args, nil
 }
 
-func (ec *executionContext) field_Mutation_NewProfile_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 model.UserInput
-	if tmp, ok := rawArgs["profile"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profile"))
-		arg0, err = ec.unmarshalNUserInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["profile"] = arg0
-	var arg1 model.PasswordInput
-	if tmp, ok := rawArgs["password"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
-		arg1, err = ec.unmarshalNPasswordInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPasswordInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["password"] = arg1
-	return args, nil
-}
-
 func (ec *executionContext) field_Mutation_NewStudent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -182,6 +158,30 @@ func (ec *executionContext) field_Mutation_UpdateMyProfile_args(ctx context.Cont
 		}
 	}
 	args["profile"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_UpdateProfileAndPassword_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.UserInput
+	if tmp, ok := rawArgs["profile"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profile"))
+		arg0, err = ec.unmarshalNUserInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["profile"] = arg0
+	var arg1 model.PasswordInput
+	if tmp, ok := rawArgs["password"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+		arg1, err = ec.unmarshalNPasswordInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPasswordInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["password"] = arg1
 	return args, nil
 }
 
@@ -621,8 +621,8 @@ func (ec *executionContext) fieldContext_Mutation_UpdateMyProfile(ctx context.Co
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_NewProfile(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_NewProfile(ctx, field)
+func (ec *executionContext) _Mutation_UpdateProfileAndPassword(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_UpdateProfileAndPassword(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -635,7 +635,7 @@ func (ec *executionContext) _Mutation_NewProfile(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().NewProfile(rctx, fc.Args["profile"].(model.UserInput), fc.Args["password"].(model.PasswordInput))
+		return ec.resolvers.Mutation().UpdateProfileAndPassword(rctx, fc.Args["profile"].(model.UserInput), fc.Args["password"].(model.PasswordInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -649,7 +649,7 @@ func (ec *executionContext) _Mutation_NewProfile(ctx context.Context, field grap
 	return ec.marshalOUser2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_NewProfile(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_UpdateProfileAndPassword(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -710,7 +710,7 @@ func (ec *executionContext) fieldContext_Mutation_NewProfile(ctx context.Context
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_NewProfile_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_UpdateProfileAndPassword_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -828,9 +828,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_UpdateMyProfile(ctx, field)
 			})
-		case "NewProfile":
+		case "UpdateProfileAndPassword":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_NewProfile(ctx, field)
+				return ec._Mutation_UpdateProfileAndPassword(ctx, field)
 			})
 		case "NewUserAcademicCourses":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {

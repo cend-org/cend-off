@@ -6,6 +6,6 @@ type Mutation {
     NewPassword(password: PasswordInput!): Boolean
     Login(email: String!, password: String!): BearerToken
     UpdateMyProfile(profile: UserInput!): User
-    NewProfile(profile: UserInput! , password: PasswordInput!): User
+    UpdateProfileAndPassword(profile: UserInput! , password: PasswordInput!): User
     NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean
 }

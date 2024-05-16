@@ -65,17 +65,19 @@ func (r *mutationResolver) UpdateMyProfile(ctx context.Context, profile model.Us
 	return usr.UpdMyProfile(tok.UserId, profile)
 }
 
-// NewProfile is the resolver for the NewProfile field.
-func (r *mutationResolver) NewProfile(ctx context.Context, profile model.UserInput, password model.PasswordInput) (*model.User, error) {
-	var tok *token.Token
-	var err error
+// UpdateProfileAndPassword is the resolver for the UpdateProfileAndPassword field.
+func (r *mutationResolver) UpdateProfileAndPassword(ctx context.Context, profile model.UserInput, password model.PasswordInput) (*model.User, error) {
+	var (
+		tok *token.Token
+		err error
+	)
 
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return nil, errors.New("unAuthorized")
 	}
 
-	return usr.NewProfile(tok.UserId, profile, password)
+	return usr.UpdateProfileAndPassword(tok.UserId, profile, password)
 }
 
 // NewUserAcademicCourses is the resolver for the NewUserAcademicCourses field.
