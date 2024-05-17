@@ -115,7 +115,6 @@ type ComplexityRoot struct {
 		UpdateMyProfile                             func(childComplexity int, profile model.UserInput) int
 		UpdateProfileAndPassword                    func(childComplexity int, profile model.UserInput, password model.PasswordInput) int
 		UpdateStudentProfileByParent                func(childComplexity int, profile model.UserInput, studentID int) int
-		Upload                                      func(childComplexity int) int
 	}
 
 	Password struct {
@@ -130,16 +129,22 @@ type ComplexityRoot struct {
 	Query struct {
 		AcademicCourses       func(childComplexity int, academicLevelID int) int
 		AcademicLevels        func(childComplexity int) int
-		CoverLetter           func(childComplexity int, userID int) int
-		Cv                    func(childComplexity int, userID int) int
+		CoverLetter           func(childComplexity int) int
+		CoverLetterThumb      func(childComplexity int) int
+		Cv                    func(childComplexity int) int
+		CvThumb               func(childComplexity int) int
 		MyProfile             func(childComplexity int) int
-		ProfileImage          func(childComplexity int, userID int) int
+		ProfileImage          func(childComplexity int) int
+		ProfileImageThumb     func(childComplexity int) int
 		SuggestTutor          func(childComplexity int, studentID int) int
 		UserCoverLetter       func(childComplexity int, userID int) int
+		UserCoverLetterThumb  func(childComplexity int, userID int) int
 		UserCv                func(childComplexity int, userID int) int
+		UserCvThumb           func(childComplexity int, userID int) int
 		UserProfileImage      func(childComplexity int, userID int) int
+		UserProfileImageThumb func(childComplexity int, userID int) int
 		UserVideoPresentation func(childComplexity int, userID int) int
-		VideoPresentation     func(childComplexity int, userID int) int
+		VideoPresentation     func(childComplexity int) int
 	}
 
 	User struct {
@@ -707,13 +712,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.UpdateStudentProfileByParent(childComplexity, args["profile"].(model.UserInput), args["studentId"].(int)), true
 
-	case "Mutation.Upload":
-		if e.complexity.Mutation.Upload == nil {
-			break
-		}
-
-		return e.complexity.Mutation.Upload(childComplexity), true
-
 	case "Password.CreatedAt":
 		if e.complexity.Password.CreatedAt == nil {
 			break
@@ -780,24 +778,28 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_Query_CoverLetter_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
+		return e.complexity.Query.CoverLetter(childComplexity), true
+
+	case "Query.CoverLetterThumb":
+		if e.complexity.Query.CoverLetterThumb == nil {
+			break
 		}
 
-		return e.complexity.Query.CoverLetter(childComplexity, args["userId"].(int)), true
+		return e.complexity.Query.CoverLetterThumb(childComplexity), true
 
 	case "Query.Cv":
 		if e.complexity.Query.Cv == nil {
 			break
 		}
 
-		args, err := ec.field_Query_Cv_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
+		return e.complexity.Query.Cv(childComplexity), true
+
+	case "Query.CvThumb":
+		if e.complexity.Query.CvThumb == nil {
+			break
 		}
 
-		return e.complexity.Query.Cv(childComplexity, args["userId"].(int)), true
+		return e.complexity.Query.CvThumb(childComplexity), true
 
 	case "Query.MyProfile":
 		if e.complexity.Query.MyProfile == nil {
@@ -811,12 +813,14 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_Query_ProfileImage_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
+		return e.complexity.Query.ProfileImage(childComplexity), true
+
+	case "Query.ProfileImageThumb":
+		if e.complexity.Query.ProfileImageThumb == nil {
+			break
 		}
 
-		return e.complexity.Query.ProfileImage(childComplexity, args["userId"].(int)), true
+		return e.complexity.Query.ProfileImageThumb(childComplexity), true
 
 	case "Query.SuggestTutor":
 		if e.complexity.Query.SuggestTutor == nil {
@@ -842,6 +846,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.UserCoverLetter(childComplexity, args["userId"].(int)), true
 
+	case "Query.UserCoverLetterThumb":
+		if e.complexity.Query.UserCoverLetterThumb == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserCoverLetterThumb_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserCoverLetterThumb(childComplexity, args["userId"].(int)), true
+
 	case "Query.UserCv":
 		if e.complexity.Query.UserCv == nil {
 			break
@@ -854,6 +870,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.UserCv(childComplexity, args["userId"].(int)), true
 
+	case "Query.UserCvThumb":
+		if e.complexity.Query.UserCvThumb == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserCvThumb_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserCvThumb(childComplexity, args["userId"].(int)), true
+
 	case "Query.UserProfileImage":
 		if e.complexity.Query.UserProfileImage == nil {
 			break
@@ -865,6 +893,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.UserProfileImage(childComplexity, args["userId"].(int)), true
+
+	case "Query.UserProfileImageThumb":
+		if e.complexity.Query.UserProfileImageThumb == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserProfileImageThumb_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserProfileImageThumb(childComplexity, args["userId"].(int)), true
 
 	case "Query.UserVideoPresentation":
 		if e.complexity.Query.UserVideoPresentation == nil {
@@ -883,12 +923,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			break
 		}
 
-		args, err := ec.field_Query_VideoPresentation_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Query.VideoPresentation(childComplexity, args["userId"].(int)), true
+		return e.complexity.Query.VideoPresentation(childComplexity), true
 
 	case "User.AddOnTitle":
 		if e.complexity.User.AddOnTitle == nil {
@@ -1523,7 +1558,6 @@ scalar Upload
     NewUserAcademicLevel(levels: [Int]!): Boolean
 
     #    User Media
-    Upload: String
     RemoveCoverLetter: Boolean
     RemoveCv: Boolean
     RemoveProfileImage: Boolean
@@ -1546,16 +1580,26 @@ scalar Upload
     SuggestTutor(studentId: Int! ): User!
 
     #    Media
-    CoverLetter(userId: Int!): String
-    Cv(userId: Int!): String
-    ProfileImage(userId: Int!): String
-    VideoPresentation(userId: Int!): String
+    CoverLetter : String
+    Cv : String
+    ProfileImage: String
+    VideoPresentation: String
+
+    #    Media Thumb
+    CoverLetterThumb : String
+    CvThumb : String
+    ProfileImageThumb: String
 
     #  Current User  Media
     UserCoverLetter(userId: Int!): String
     UserCv(userId: Int!): String
     UserProfileImage(userId: Int!): String
     UserVideoPresentation(userId: Int!): String
+
+    #  User  Media Thumb
+    UserCoverLetterThumb(userId: Int!): String
+    UserCvThumb(userId: Int!): String
+    UserProfileImageThumb(userId: Int!): String
 }`, BuiltIn: false},
 	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {
     T: String!

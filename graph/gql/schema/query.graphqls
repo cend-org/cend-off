@@ -5,14 +5,24 @@ type Query {
     SuggestTutor(studentId: Int! ): User!
 
     #    Media
-    CoverLetter(userId: Int!): String
-    Cv(userId: Int!): String
-    ProfileImage(userId: Int!): String
-    VideoPresentation(userId: Int!): String
+    CoverLetter : String
+    Cv : String
+    ProfileImage: String
+    VideoPresentation: String
+
+    #    Media Thumb
+    CoverLetterThumb : String
+    CvThumb : String
+    ProfileImageThumb: String
 
     #  Current User  Media
     UserCoverLetter(userId: Int!): String
     UserCv(userId: Int!): String
     UserProfileImage(userId: Int!): String
     UserVideoPresentation(userId: Int!): String
+
+    #  User  Media Thumb
+    UserCoverLetterThumb(userId: Int!): String
+    UserCvThumb(userId: Int!): String
+    UserProfileImageThumb(userId: Int!): String
 }

@@ -29,7 +29,6 @@ type MutationResolver interface {
 	SetUserAcademicLevel(ctx context.Context, academicLevelID int) (*model.AcademicLevel, error)
 	NewAcademicCoursePreference(ctx context.Context, preferences []model.UserAcademicCoursePreferenceInput) (*model.UserAcademicCoursePreference, error)
 	NewUserAcademicLevel(ctx context.Context, levels []*int) (*bool, error)
-	Upload(ctx context.Context) (*string, error)
 	RemoveCoverLetter(ctx context.Context) (*bool, error)
 	RemoveCv(ctx context.Context) (*bool, error)
 	RemoveProfileImage(ctx context.Context) (*bool, error)
@@ -1138,47 +1137,6 @@ func (ec *executionContext) fieldContext_Mutation_NewUserAcademicLevel(ctx conte
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_Upload(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_Upload(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().Upload(rctx)
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Mutation_Upload(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Mutation",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _Mutation_RemoveCoverLetter(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_RemoveCoverLetter(ctx, field)
 	if err != nil {
@@ -1733,10 +1691,6 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "NewUserAcademicLevel":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_NewUserAcademicLevel(ctx, field)
-			})
-		case "Upload":
-			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_Upload(ctx, field)
 			})
 		case "RemoveCoverLetter":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {

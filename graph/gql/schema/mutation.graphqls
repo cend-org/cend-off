@@ -17,7 +17,6 @@ type Mutation {
     NewUserAcademicLevel(levels: [Int]!): Boolean
 
     #    User Media
-    Upload: String
     RemoveCoverLetter: Boolean
     RemoveCv: Boolean
     RemoveProfileImage: Boolean

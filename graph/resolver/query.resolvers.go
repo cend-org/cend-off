@@ -7,12 +7,16 @@ package resolver
 import (
 	"context"
 	"errors"
-	"fmt"
-
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
+	"github.com/cend-org/duval/internal/utils/errx"
+	"github.com/cend-org/duval/internal/utils/state"
 	"github.com/cend-org/duval/pkg/academic"
+	"github.com/cend-org/duval/pkg/media/cover"
+	"github.com/cend-org/duval/pkg/media/cv"
+	"github.com/cend-org/duval/pkg/media/profile"
+	"github.com/cend-org/duval/pkg/media/video"
 	usr "github.com/cend-org/duval/pkg/user"
 )
 
@@ -61,43 +65,290 @@ func (r *queryResolver) SuggestTutor(ctx context.Context, studentID int) (*model
 }
 
 // CoverLetter is the resolver for the CoverLetter field.
-func (r *queryResolver) CoverLetter(ctx context.Context, userID int) (*string, error) {
-	panic(fmt.Errorf("not implemented: CoverLetter - CoverLetter"))
+func (r *queryResolver) CoverLetter(ctx context.Context) (*string, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	networkLink, err := cover.GetProfileLetter(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
 }
 
 // Cv is the resolver for the Cv field.
-func (r *queryResolver) Cv(ctx context.Context, userID int) (*string, error) {
-	panic(fmt.Errorf("not implemented: Cv - Cv"))
+func (r *queryResolver) Cv(ctx context.Context) (*string, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	networkLink, err := cv.GetProfileCv(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
 }
 
 // ProfileImage is the resolver for the ProfileImage field.
-func (r *queryResolver) ProfileImage(ctx context.Context, userID int) (*string, error) {
-	panic(fmt.Errorf("not implemented: ProfileImage - ProfileImage"))
+func (r *queryResolver) ProfileImage(ctx context.Context) (*string, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	networkLink, err := profile.GetProfileImage(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
 }
 
 // VideoPresentation is the resolver for the VideoPresentation field.
-func (r *queryResolver) VideoPresentation(ctx context.Context, userID int) (*string, error) {
-	panic(fmt.Errorf("not implemented: VideoPresentation - VideoPresentation"))
+func (r *queryResolver) VideoPresentation(ctx context.Context) (*string, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	networkLink, err := video.GetProfileVideo(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
+}
+
+// CoverLetterThumb is the resolver for the CoverLetterThumb field.
+func (r *queryResolver) CoverLetterThumb(ctx context.Context) (*string, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	networkLink, err := cover.GetProfileLetterThumb(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
+}
+
+// CvThumb is the resolver for the CvThumb field.
+func (r *queryResolver) CvThumb(ctx context.Context) (*string, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	networkLink, err := cv.GetProfileCvThumb(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
+}
+
+// ProfileImageThumb is the resolver for the ProfileImageThumb field.
+func (r *queryResolver) ProfileImageThumb(ctx context.Context) (*string, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	networkLink, err := profile.GetProfileImageThumb(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
 }
 
 // UserCoverLetter is the resolver for the UserCoverLetter field.
 func (r *queryResolver) UserCoverLetter(ctx context.Context, userID int) (*string, error) {
-	panic(fmt.Errorf("not implemented: UserCoverLetter - UserCoverLetter"))
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if tok.UserId == state.ZERO {
+		return nil, errx.UnAuthorizedError
+	}
+	networkLink, err := cover.GetProfileLetter(userID)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
 }
 
 // UserCv is the resolver for the UserCv field.
 func (r *queryResolver) UserCv(ctx context.Context, userID int) (*string, error) {
-	panic(fmt.Errorf("not implemented: UserCv - UserCv"))
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if tok.UserId == state.ZERO {
+		return nil, errx.UnAuthorizedError
+	}
+	networkLink, err := cv.GetProfileCv(userID)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
 }
 
 // UserProfileImage is the resolver for the UserProfileImage field.
 func (r *queryResolver) UserProfileImage(ctx context.Context, userID int) (*string, error) {
-	panic(fmt.Errorf("not implemented: UserProfileImage - UserProfileImage"))
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if tok.UserId == state.ZERO {
+		return nil, errx.UnAuthorizedError
+	}
+	networkLink, err := profile.GetProfileImage(userID)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
 }
 
 // UserVideoPresentation is the resolver for the UserVideoPresentation field.
 func (r *queryResolver) UserVideoPresentation(ctx context.Context, userID int) (*string, error) {
-	panic(fmt.Errorf("not implemented: UserVideoPresentation - UserVideoPresentation"))
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if tok.UserId == state.ZERO {
+		return nil, errx.UnAuthorizedError
+	}
+	networkLink, err := video.GetProfileVideo(userID)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
+}
+
+// UserCoverLetterThumb is the resolver for the UserCoverLetterThumb field.
+func (r *queryResolver) UserCoverLetterThumb(ctx context.Context, userID int) (*string, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if tok.UserId == state.ZERO {
+		return nil, errx.UnAuthorizedError
+	}
+	networkLink, err := cover.GetProfileLetterThumb(userID)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
+}
+
+// UserCvThumb is the resolver for the UserCvThumb field.
+func (r *queryResolver) UserCvThumb(ctx context.Context, userID int) (*string, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if tok.UserId == state.ZERO {
+		return nil, errx.UnAuthorizedError
+	}
+	networkLink, err := cv.GetProfileCvThumb(userID)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
+}
+
+// UserProfileImageThumb is the resolver for the UserProfileImageThumb field.
+func (r *queryResolver) UserProfileImageThumb(ctx context.Context, userID int) (*string, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if tok.UserId == state.ZERO {
+		return nil, errx.UnAuthorizedError
+	}
+	networkLink, err := profile.GetProfileImageThumb(userID)
+	if err != nil {
+		return nil, err
+	}
+	return &networkLink, nil
 }
 
 // Query returns generated.QueryResolver implementation.

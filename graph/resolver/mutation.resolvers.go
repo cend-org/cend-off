@@ -14,6 +14,10 @@ import (
 	"github.com/cend-org/duval/internal/token"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/pkg/academic"
+	"github.com/cend-org/duval/pkg/media/cover"
+	"github.com/cend-org/duval/pkg/media/cv"
+	"github.com/cend-org/duval/pkg/media/profile"
+	"github.com/cend-org/duval/pkg/media/video"
 	usr "github.com/cend-org/duval/pkg/user"
 	"github.com/cend-org/duval/pkg/user/link"
 )
@@ -91,7 +95,7 @@ func (r *mutationResolver) NewUserAcademicCourses(ctx context.Context, courses [
 
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
-		return nil, errors.New("unAuthorized")
+		return nil, errx.UnAuthorizedError
 	}
 
 	return academic.NewUserAcademicCourses(tok.UserId, courses)
@@ -112,29 +116,76 @@ func (r *mutationResolver) NewUserAcademicLevel(ctx context.Context, levels []*i
 	panic(fmt.Errorf("not implemented: NewUserAcademicLevel - NewUserAcademicLevel"))
 }
 
-// Upload is the resolver for the Upload field.
-func (r *mutationResolver) Upload(ctx context.Context) (*string, error) {
-	panic(fmt.Errorf("not implemented: Upload - Upload"))
-}
-
 // RemoveCoverLetter is the resolver for the RemoveCoverLetter field.
 func (r *mutationResolver) RemoveCoverLetter(ctx context.Context) (*bool, error) {
-	panic(fmt.Errorf("not implemented: RemoveCoverLetter - RemoveCoverLetter"))
+	var tok *token.Token
+	var err error
+	var status bool
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+	status, err = cover.RemoveProfileLetter(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &status, nil
 }
 
 // RemoveCv is the resolver for the RemoveCv field.
 func (r *mutationResolver) RemoveCv(ctx context.Context) (*bool, error) {
-	panic(fmt.Errorf("not implemented: RemoveCv - RemoveCv"))
+	var tok *token.Token
+	var err error
+	var status bool
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+	status, err = cv.RemoveProfileCv(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &status, nil
 }
 
 // RemoveProfileImage is the resolver for the RemoveProfileImage field.
 func (r *mutationResolver) RemoveProfileImage(ctx context.Context) (*bool, error) {
-	panic(fmt.Errorf("not implemented: RemoveProfileImage - RemoveProfileImage"))
+	var tok *token.Token
+	var err error
+	var status bool
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+	status, err = profile.RemoveProfileImage(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &status, nil
 }
 
 // RemoveVideoPresentation is the resolver for the RemoveVideoPresentation field.
 func (r *mutationResolver) RemoveVideoPresentation(ctx context.Context) (*bool, error) {
-	panic(fmt.Errorf("not implemented: RemoveVideoPresentation - RemoveVideoPresentation"))
+	var tok *token.Token
+	var err error
+	var status bool
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+	status, err = video.RemoveProfileVideo(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &status, nil
 }
 
 // NewStudentByParent is the resolver for the NewStudentByParent field.
