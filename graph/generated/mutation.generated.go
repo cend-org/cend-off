@@ -38,8 +38,8 @@ type MutationResolver interface {
 	RemoveStudentByParent(ctx context.Context, studentID int) (*bool, error)
 	UpdateStudentProfileByParent(ctx context.Context, profile model.UserInput, studentID int) (*bool, error)
 	SetStudentAcademicLevelByParent(ctx context.Context, academicLevelID int, studentID int) (*bool, error)
-	NewStudentAcademicCoursesByParent(ctx context.Context, courses []*model.UserAcademicCourseInput) (*bool, error)
-	NewStudentAcademicCoursesPreferenceByParent(ctx context.Context, courses []*model.UserAcademicCourseInput) (*bool, error)
+	NewStudentAcademicCoursesByParent(ctx context.Context, courses []*model.UserAcademicCourseInput, studentID int) (*bool, error)
+	NewStudentAcademicCoursesPreferenceByParent(ctx context.Context, coursesPreferences []*model.UserAcademicCoursePreferenceInput, studentID int) (*bool, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -142,21 +142,39 @@ func (ec *executionContext) field_Mutation_NewStudentAcademicCoursesByParent_arg
 		}
 	}
 	args["courses"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["studentId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("studentId"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["studentId"] = arg1
 	return args, nil
 }
 
 func (ec *executionContext) field_Mutation_NewStudentAcademicCoursesPreferenceByParent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []*model.UserAcademicCourseInput
-	if tmp, ok := rawArgs["courses"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("courses"))
-		arg0, err = ec.unmarshalNUserAcademicCourseInput2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCourseInput(ctx, tmp)
+	var arg0 []*model.UserAcademicCoursePreferenceInput
+	if tmp, ok := rawArgs["coursesPreferences"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("coursesPreferences"))
+		arg0, err = ec.unmarshalNUserAcademicCoursePreferenceInput2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["courses"] = arg0
+	args["coursesPreferences"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["studentId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("studentId"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["studentId"] = arg1
 	return args, nil
 }
 
@@ -1547,7 +1565,7 @@ func (ec *executionContext) _Mutation_NewStudentAcademicCoursesByParent(ctx cont
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().NewStudentAcademicCoursesByParent(rctx, fc.Args["courses"].([]*model.UserAcademicCourseInput))
+		return ec.resolvers.Mutation().NewStudentAcademicCoursesByParent(rctx, fc.Args["courses"].([]*model.UserAcademicCourseInput), fc.Args["studentId"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1599,7 +1617,7 @@ func (ec *executionContext) _Mutation_NewStudentAcademicCoursesPreferenceByParen
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().NewStudentAcademicCoursesPreferenceByParent(rctx, fc.Args["courses"].([]*model.UserAcademicCourseInput))
+		return ec.resolvers.Mutation().NewStudentAcademicCoursesPreferenceByParent(rctx, fc.Args["coursesPreferences"].([]*model.UserAcademicCoursePreferenceInput), fc.Args["studentId"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

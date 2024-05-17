@@ -8,6 +8,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
@@ -215,13 +216,31 @@ func (r *mutationResolver) SetStudentAcademicLevelByParent(ctx context.Context, 
 }
 
 // NewStudentAcademicCoursesByParent is the resolver for the NewStudentAcademicCoursesByParent field.
-func (r *mutationResolver) NewStudentAcademicCoursesByParent(ctx context.Context, courses []*model.UserAcademicCourseInput) (*bool, error) {
+func (r *mutationResolver) NewStudentAcademicCoursesByParent(ctx context.Context, courses []*model.UserAcademicCourseInput, studentID int) (*bool, error) {
 	panic(fmt.Errorf("not implemented: NewStudentAcademicCoursesByParent - NewStudentAcademicCoursesByParent"))
 }
 
 // NewStudentAcademicCoursesPreferenceByParent is the resolver for the NewStudentAcademicCoursesPreferenceByParent field.
-func (r *mutationResolver) NewStudentAcademicCoursesPreferenceByParent(ctx context.Context, courses []*model.UserAcademicCourseInput) (*bool, error) {
-	panic(fmt.Errorf("not implemented: NewStudentAcademicCoursesPreferenceByParent - NewStudentAcademicCoursesPreferenceByParent"))
+func (r *mutationResolver) NewStudentAcademicCoursesPreferenceByParent(ctx context.Context, coursesPreferences []*model.UserAcademicCoursePreferenceInput, studentID int) (*bool, error) {
+	var tok *token.Token
+	var err error
+	var status bool
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if !link.IsStudentParentLinked(tok.UserId, studentID) {
+		return nil, errx.ParentLinkUserError
+	}
+	_, err = link.NewStudentAcademicCoursesPreferenceByParent(studentID, coursesPreferences)
+	if err != nil {
+		return nil, errx.Lambda(err)
+	}
+	status = true
+
+	return &status, nil
 }
 
 // Mutation returns generated.MutationResolver implementation.

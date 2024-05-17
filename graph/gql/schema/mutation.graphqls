@@ -28,7 +28,7 @@ type Mutation {
     RemoveStudentByParent(studentId: Int!): Boolean
     UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
     SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
-    NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!) : Boolean
-    NewStudentAcademicCoursesPreferenceByParent(courses: [UserAcademicCourseInput]!) : Boolean
+    NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean
+    NewStudentAcademicCoursesPreferenceByParent(coursesPreferences: [UserAcademicCoursePreferenceInput]! , studentId: Int!) : Boolean
 
 }

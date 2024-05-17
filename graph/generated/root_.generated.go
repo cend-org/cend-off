@@ -99,8 +99,8 @@ type ComplexityRoot struct {
 		NewPassword                                 func(childComplexity int, password model.PasswordInput) int
 		NewProfessor                                func(childComplexity int, email string) int
 		NewStudent                                  func(childComplexity int, email string) int
-		NewStudentAcademicCoursesByParent           func(childComplexity int, courses []*model.UserAcademicCourseInput) int
-		NewStudentAcademicCoursesPreferenceByParent func(childComplexity int, courses []*model.UserAcademicCourseInput) int
+		NewStudentAcademicCoursesByParent           func(childComplexity int, courses []*model.UserAcademicCourseInput, studentID int) int
+		NewStudentAcademicCoursesPreferenceByParent func(childComplexity int, coursesPreferences []*model.UserAcademicCoursePreferenceInput, studentID int) int
 		NewStudentByParent                          func(childComplexity int, email string) int
 		NewTutor                                    func(childComplexity int, email string) int
 		NewUserAcademicCourses                      func(childComplexity int, courses []*model.UserAcademicCourseInput) int
@@ -545,7 +545,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.NewStudentAcademicCoursesByParent(childComplexity, args["courses"].([]*model.UserAcademicCourseInput)), true
+		return e.complexity.Mutation.NewStudentAcademicCoursesByParent(childComplexity, args["courses"].([]*model.UserAcademicCourseInput), args["studentId"].(int)), true
 
 	case "Mutation.NewStudentAcademicCoursesPreferenceByParent":
 		if e.complexity.Mutation.NewStudentAcademicCoursesPreferenceByParent == nil {
@@ -557,7 +557,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.NewStudentAcademicCoursesPreferenceByParent(childComplexity, args["courses"].([]*model.UserAcademicCourseInput)), true
+		return e.complexity.Mutation.NewStudentAcademicCoursesPreferenceByParent(childComplexity, args["coursesPreferences"].([]*model.UserAcademicCoursePreferenceInput), args["studentId"].(int)), true
 
 	case "Mutation.NewStudentByParent":
 		if e.complexity.Mutation.NewStudentByParent == nil {
@@ -1534,8 +1534,8 @@ scalar Upload
     RemoveStudentByParent(studentId: Int!): Boolean
     UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
     SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
-    NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!) : Boolean
-    NewStudentAcademicCoursesPreferenceByParent(courses: [UserAcademicCourseInput]!) : Boolean
+    NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean
+    NewStudentAcademicCoursesPreferenceByParent(coursesPreferences: [UserAcademicCoursePreferenceInput]! , studentId: Int!) : Boolean
 
 }
 `, BuiltIn: false},

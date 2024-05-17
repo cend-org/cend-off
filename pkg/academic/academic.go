@@ -49,7 +49,7 @@ func NewUserAcademicCourses(userId int, new []*model.UserAcademicCourseInput) (r
 
 func GetTutorWithPreferredCourse(studentId int) (user model.User, err error) {
 	var (
-		course model.AcademicCourse
+		course []model.AcademicCourse
 	)
 
 	course, err = GetUserPreferredCourse(studentId)
@@ -57,7 +57,7 @@ func GetTutorWithPreferredCourse(studentId int) (user model.User, err error) {
 		return user, err
 	}
 
-	user, err = GetTutorByCourseId(course.Id)
+	user, err = GetTutorByCourse(course)
 	if err != nil {
 		return user, err
 	}
@@ -95,14 +95,14 @@ func SetUserAcademicLevel(parentId, studentId, academicLevelId int) (err error) 
 UTILS
 */
 
-func GetUserPreferredCourse(userId int) (course model.AcademicCourse, err error) {
-	err = database.Get(&course, `SELECT ac.* FROM academic_course ac 
+func GetUserPreferredCourse(userId int) (course []model.AcademicCourse, err error) {
+	err = database.Select(&course, `SELECT ac.* FROM academic_course ac 
     	JOIN  user_academic_course uac ON ac.id = uac.course_id
     	WHERE  uac.user_id = ?`, userId)
 	return course, nil
 }
 
-func GetTutorByCourseId(courseId int) (user model.User, err error) {
+func GetTutorByCourse(courseId []model.AcademicCourse) (user model.User, err error) {
 	err = database.Get(&user, `SELECT u.* FROM user u JOIN user_academic_course uac ON u.id = uac.user_id WHERE uac.course_id = ? `, courseId)
 	return user, nil
 }

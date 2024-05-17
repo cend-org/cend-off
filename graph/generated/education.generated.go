@@ -1431,6 +1431,23 @@ func (ec *executionContext) unmarshalNUserAcademicCoursePreferenceInput2github�
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
+func (ec *executionContext) unmarshalNUserAcademicCoursePreferenceInput2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInput(ctx context.Context, v interface{}) ([]*model.UserAcademicCoursePreferenceInput, error) {
+	var vSlice []interface{}
+	if v != nil {
+		vSlice = graphql.CoerceList(v)
+	}
+	var err error
+	res := make([]*model.UserAcademicCoursePreferenceInput, len(vSlice))
+	for i := range vSlice {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
+		res[i], err = ec.unmarshalOUserAcademicCoursePreferenceInput2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInput(ctx, vSlice[i])
+		if err != nil {
+			return nil, err
+		}
+	}
+	return res, nil
+}
+
 func (ec *executionContext) marshalOAcademicCourse2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAcademicCourseᚄ(ctx context.Context, sel ast.SelectionSet, v []model.AcademicCourse) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
@@ -1565,6 +1582,14 @@ func (ec *executionContext) unmarshalOUserAcademicCoursePreferenceInput2ᚕgithu
 		}
 	}
 	return res, nil
+}
+
+func (ec *executionContext) unmarshalOUserAcademicCoursePreferenceInput2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInput(ctx context.Context, v interface{}) (*model.UserAcademicCoursePreferenceInput, error) {
+	if v == nil {
+		return nil, nil
+	}
+	res, err := ec.unmarshalInputUserAcademicCoursePreferenceInput(ctx, v)
+	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
 // endregion ***************************** type.gotpl *****************************
