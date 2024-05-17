@@ -2,35 +2,61 @@ use cend;
 
 create table academic_level
 (
-    id          int auto_increment
+    id         int auto_increment
         primary key,
-    created_at  datetime     default CURRENT_TIMESTAMP     not null,
-    updated_at  datetime     default CURRENT_TIMESTAMP     not null,
-    deleted_at  datetime     default '0000-00-00 00:00:00' null,
-    name        varchar(500) default ''                    null
+    created_at datetime     default CURRENT_TIMESTAMP     not null,
+    updated_at datetime     default CURRENT_TIMESTAMP     not null,
+    deleted_at datetime     default '0000-00-00 00:00:00' null,
+    name       varchar(500) default ''                    null
 );
 
 create table academic_course
 (
-    id          int auto_increment
+    id                int auto_increment
         primary key,
-    created_at  datetime     default CURRENT_TIMESTAMP     not null,
-    updated_at  datetime     default CURRENT_TIMESTAMP     not null,
-    deleted_at  datetime     default '0000-00-00 00:00:00' null,
-    academic_level_id int default 0 null,
-    name        varchar(500) default ''                    null
+    created_at        datetime     default CURRENT_TIMESTAMP     not null,
+    updated_at        datetime     default CURRENT_TIMESTAMP     not null,
+    deleted_at        datetime     default '0000-00-00 00:00:00' null,
+    academic_level_id int          default 0                     null,
+    name              varchar(500) default ''                    null
 );
 
 create table user_academic_course
 (
-    id          int auto_increment
+    id         int auto_increment
         primary key,
-    created_at  datetime     default CURRENT_TIMESTAMP     not null,
-    updated_at  datetime     default CURRENT_TIMESTAMP     not null,
-    deleted_at  datetime     default '0000-00-00 00:00:00' null,
-    user_id int default 0 null,
-    course_id int default 0   null
+    created_at datetime default CURRENT_TIMESTAMP     not null,
+    updated_at datetime default CURRENT_TIMESTAMP     not null,
+    deleted_at datetime default '0000-00-00 00:00:00' null,
+    user_id    int      default 0                     null,
+    course_id  int      default 0                     null
 );
+
+alter table user_academic_course
+    add constraint user_academic_course_user_id_fk
+        foreign key (user_id) references user (id);
+
+alter table user_academic_course
+    add constraint user_academic_course_course_id_fk
+        foreign key (course_id) references academic_course (id);
+
+
+
+create table user_academic_course_preference
+(
+    id             int auto_increment primary key,
+    created_at     timestamp default CURRENT_TIMESTAMP,
+    updated_at     timestamp default CURRENT_TIMESTAMP,
+    deleted_at     timestamp default '0000-00-00 00:00:00',
+    user_academic_course_id int default 0,
+    is_online      boolean,
+    availability datetime
+);
+
+alter table user_academic_course_preference
+    add constraint user_course_preference_user_academic_course_id_fk
+        foreign key (user_academic_course_id) references user_academic_course_preference (id);
+
 
 
 insert into academic_level (name)
@@ -61,7 +87,8 @@ values ((select academic_level.id from academic_level where name = 'primaire 1')
        ((select academic_level.id from academic_level where name = 'primaire 1'), 'Science et technologie'),
        ((select academic_level.id from academic_level where name = 'primaire 1'), 'Histoire / Géographie'),
        ((select academic_level.id from academic_level where name = 'primaire 1'), 'Éthique  et culture religieuse'),
-       ((select academic_level.id from academic_level where name = 'primaire 1'), 'Culture et citoyenneté québécoise (CCQ)');
+       ((select academic_level.id from academic_level where name = 'primaire 1'),
+        'Culture et citoyenneté québécoise (CCQ)');
 
 -- Primaire 2
 insert into academic_course(academic_level_id, name)
@@ -71,7 +98,8 @@ values ((select academic_level.id from academic_level where name = 'primaire 2')
        ((select academic_level.id from academic_level where name = 'primaire 2'), 'Science et technologie'),
        ((select academic_level.id from academic_level where name = 'primaire 2'), 'Histoire / Géographie'),
        ((select academic_level.id from academic_level where name = 'primaire 2'), 'Éthique  et culture religieuse'),
-       ((select academic_level.id from academic_level where name = 'primaire 2'), 'Culture et citoyenneté québécoise (CCQ)');
+       ((select academic_level.id from academic_level where name = 'primaire 2'),
+        'Culture et citoyenneté québécoise (CCQ)');
 
 -- Primaire 3
 insert into academic_course(academic_level_id, name)
@@ -81,7 +109,8 @@ values ((select academic_level.id from academic_level where name = 'primaire 3')
        ((select academic_level.id from academic_level where name = 'primaire 3'), 'Science et technologie'),
        ((select academic_level.id from academic_level where name = 'primaire 3'), 'Histoire / Géographie'),
        ((select academic_level.id from academic_level where name = 'primaire 3'), 'Éthique  et culture religieuse'),
-       ((select academic_level.id from academic_level where name = 'primaire 3'), 'Culture et citoyenneté québécoise (CCQ)');
+       ((select academic_level.id from academic_level where name = 'primaire 3'),
+        'Culture et citoyenneté québécoise (CCQ)');
 
 -- Primaire 4
 insert into academic_course(academic_level_id, name)
@@ -91,7 +120,8 @@ values ((select academic_level.id from academic_level where name = 'primaire 4')
        ((select academic_level.id from academic_level where name = 'primaire 4'), 'Science et technologie'),
        ((select academic_level.id from academic_level where name = 'primaire 4'), 'Histoire / Géographie'),
        ((select academic_level.id from academic_level where name = 'primaire 4'), 'Éthique  et culture religieuse'),
-       ((select academic_level.id from academic_level where name = 'primaire 4'), 'Culture et citoyenneté québécoise (CCQ)');
+       ((select academic_level.id from academic_level where name = 'primaire 4'),
+        'Culture et citoyenneté québécoise (CCQ)');
 
 -- Primaire 5
 insert into academic_course(academic_level_id, name)
@@ -101,7 +131,8 @@ values ((select academic_level.id from academic_level where name = 'primaire 5')
        ((select academic_level.id from academic_level where name = 'primaire 5'), 'Science et technologie'),
        ((select academic_level.id from academic_level where name = 'primaire 5'), 'Histoire / Géographie'),
        ((select academic_level.id from academic_level where name = 'primaire 5'), 'Éthique  et culture religieuse'),
-       ((select academic_level.id from academic_level where name = 'primaire 5'), 'Culture et citoyenneté québécoise (CCQ)');
+       ((select academic_level.id from academic_level where name = 'primaire 5'),
+        'Culture et citoyenneté québécoise (CCQ)');
 
 -- Primaire 6
 insert into academic_course(academic_level_id, name)
@@ -111,7 +142,8 @@ values ((select academic_level.id from academic_level where name = 'primaire 6')
        ((select academic_level.id from academic_level where name = 'primaire 6'), 'Science et technologie'),
        ((select academic_level.id from academic_level where name = 'primaire 6'), 'Histoire / Géographie'),
        ((select academic_level.id from academic_level where name = 'primaire 6'), 'Éthique  et culture religieuse'),
-       ((select academic_level.id from academic_level where name = 'primaire 6'), 'Culture et citoyenneté québécoise (CCQ)');
+       ((select academic_level.id from academic_level where name = 'primaire 6'),
+        'Culture et citoyenneté québécoise (CCQ)');
 
 -- Secondaire 1
 insert into academic_course(academic_level_id, name)

@@ -72,14 +72,13 @@ type ComplexityRoot struct {
 	}
 
 	Media struct {
-		ContentType func(childComplexity int) int
-		CreatedAt   func(childComplexity int) int
-		DeletedAt   func(childComplexity int) int
-		Extension   func(childComplexity int) int
-		FileName    func(childComplexity int) int
-		Id          func(childComplexity int) int
-		UpdatedAt   func(childComplexity int) int
-		Xid         func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Extension func(childComplexity int) int
+		FileName  func(childComplexity int) int
+		Id        func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		Xid       func(childComplexity int) int
 	}
 
 	MediaThumb struct {
@@ -93,15 +92,28 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
-		Login                    func(childComplexity int, email string, password string) int
-		NewParent                func(childComplexity int, email string) int
-		NewPassword              func(childComplexity int, password model.PasswordInput) int
-		NewProfessor             func(childComplexity int, email string) int
-		NewStudent               func(childComplexity int, email string) int
-		NewTutor                 func(childComplexity int, email string) int
-		NewUserAcademicCourses   func(childComplexity int, courses []*model.UserAcademicCourseInput) int
-		UpdateMyProfile          func(childComplexity int, profile model.UserInput) int
-		UpdateProfileAndPassword func(childComplexity int, profile model.UserInput, password model.PasswordInput) int
+		Login                                       func(childComplexity int, email string, password string) int
+		NewAcademicCoursePreference                 func(childComplexity int, preferences []model.UserAcademicCoursePreferenceInput) int
+		NewParent                                   func(childComplexity int, email string) int
+		NewPassword                                 func(childComplexity int, password model.PasswordInput) int
+		NewProfessor                                func(childComplexity int, email string) int
+		NewStudent                                  func(childComplexity int, email string) int
+		NewStudentAcademicCoursesByParent           func(childComplexity int, courses []*model.UserAcademicCourseInput, studentID int) int
+		NewStudentAcademicCoursesPreferenceByParent func(childComplexity int, coursesPreferences []*model.UserAcademicCoursePreferenceInput, studentID int) int
+		NewStudentByParent                          func(childComplexity int, email string) int
+		NewTutor                                    func(childComplexity int, email string) int
+		NewUserAcademicCourses                      func(childComplexity int, courses []*model.UserAcademicCourseInput) int
+		NewUserAcademicLevel                        func(childComplexity int, levels []*int) int
+		RemoveCoverLetter                           func(childComplexity int) int
+		RemoveCv                                    func(childComplexity int) int
+		RemoveProfileImage                          func(childComplexity int) int
+		RemoveStudentByParent                       func(childComplexity int, studentID int) int
+		RemoveVideoPresentation                     func(childComplexity int) int
+		SetStudentAcademicLevelByParent             func(childComplexity int, academicLevelID int, studentID int) int
+		SetUserAcademicLevel                        func(childComplexity int, academicLevelID int) int
+		UpdateMyProfile                             func(childComplexity int, profile model.UserInput) int
+		UpdateProfileAndPassword                    func(childComplexity int, profile model.UserInput, password model.PasswordInput) int
+		UpdateStudentProfileByParent                func(childComplexity int, profile model.UserInput, studentID int) int
 	}
 
 	Password struct {
@@ -114,9 +126,24 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		AcademicCourses func(childComplexity int, academicLevelID int) int
-		AcademicLevels  func(childComplexity int) int
-		MyProfile       func(childComplexity int) int
+		AcademicCourses       func(childComplexity int, academicLevelID int) int
+		AcademicLevels        func(childComplexity int) int
+		CoverLetter           func(childComplexity int) int
+		CoverLetterThumb      func(childComplexity int) int
+		Cv                    func(childComplexity int) int
+		CvThumb               func(childComplexity int) int
+		MyProfile             func(childComplexity int) int
+		ProfileImage          func(childComplexity int) int
+		ProfileImageThumb     func(childComplexity int) int
+		SuggestTutor          func(childComplexity int, studentID int) int
+		UserCoverLetter       func(childComplexity int, userID int) int
+		UserCoverLetterThumb  func(childComplexity int, userID int) int
+		UserCv                func(childComplexity int, userID int) int
+		UserCvThumb           func(childComplexity int, userID int) int
+		UserProfileImage      func(childComplexity int, userID int) int
+		UserProfileImageThumb func(childComplexity int, userID int) int
+		UserVideoPresentation func(childComplexity int, userID int) int
+		VideoPresentation     func(childComplexity int) int
 	}
 
 	User struct {
@@ -150,6 +177,33 @@ type ComplexityRoot struct {
 		Id        func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		UserId    func(childComplexity int) int
+	}
+
+	UserAcademicCoursePreference struct {
+		Availability         func(childComplexity int) int
+		CreatedAt            func(childComplexity int) int
+		DeletedAt            func(childComplexity int) int
+		Id                   func(childComplexity int) int
+		IsOnline             func(childComplexity int) int
+		UpdatedAt            func(childComplexity int) int
+		UserAcademicCourseId func(childComplexity int) int
+	}
+
+	UserAuthorizationLink struct {
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Id        func(childComplexity int) int
+		LinkType  func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+	}
+
+	UserAuthorizationLinkActor struct {
+		AuthorizationId         func(childComplexity int) int
+		CreatedAt               func(childComplexity int) int
+		DeletedAt               func(childComplexity int) int
+		Id                      func(childComplexity int) int
+		UpdatedAt               func(childComplexity int) int
+		UserAuthorizationLinkId func(childComplexity int) int
 	}
 
 	UserMediaDetail struct {
@@ -308,13 +362,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BearerToken.T(childComplexity), true
 
-	case "Media.ContentType":
-		if e.complexity.Media.ContentType == nil {
-			break
-		}
-
-		return e.complexity.Media.ContentType(childComplexity), true
-
 	case "Media.CreatedAt":
 		if e.complexity.Media.CreatedAt == nil {
 			break
@@ -425,6 +472,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.Login(childComplexity, args["email"].(string), args["password"].(string)), true
 
+	case "Mutation.NewAcademicCoursePreference":
+		if e.complexity.Mutation.NewAcademicCoursePreference == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewAcademicCoursePreference_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewAcademicCoursePreference(childComplexity, args["preferences"].([]model.UserAcademicCoursePreferenceInput)), true
+
 	case "Mutation.NewParent":
 		if e.complexity.Mutation.NewParent == nil {
 			break
@@ -473,6 +532,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.NewStudent(childComplexity, args["email"].(string)), true
 
+	case "Mutation.NewStudentAcademicCoursesByParent":
+		if e.complexity.Mutation.NewStudentAcademicCoursesByParent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewStudentAcademicCoursesByParent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewStudentAcademicCoursesByParent(childComplexity, args["courses"].([]*model.UserAcademicCourseInput), args["studentId"].(int)), true
+
+	case "Mutation.NewStudentAcademicCoursesPreferenceByParent":
+		if e.complexity.Mutation.NewStudentAcademicCoursesPreferenceByParent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewStudentAcademicCoursesPreferenceByParent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewStudentAcademicCoursesPreferenceByParent(childComplexity, args["coursesPreferences"].([]*model.UserAcademicCoursePreferenceInput), args["studentId"].(int)), true
+
+	case "Mutation.NewStudentByParent":
+		if e.complexity.Mutation.NewStudentByParent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewStudentByParent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewStudentByParent(childComplexity, args["email"].(string)), true
+
 	case "Mutation.NewTutor":
 		if e.complexity.Mutation.NewTutor == nil {
 			break
@@ -497,6 +592,82 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.NewUserAcademicCourses(childComplexity, args["courses"].([]*model.UserAcademicCourseInput)), true
 
+	case "Mutation.NewUserAcademicLevel":
+		if e.complexity.Mutation.NewUserAcademicLevel == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewUserAcademicLevel_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewUserAcademicLevel(childComplexity, args["levels"].([]*int)), true
+
+	case "Mutation.RemoveCoverLetter":
+		if e.complexity.Mutation.RemoveCoverLetter == nil {
+			break
+		}
+
+		return e.complexity.Mutation.RemoveCoverLetter(childComplexity), true
+
+	case "Mutation.RemoveCv":
+		if e.complexity.Mutation.RemoveCv == nil {
+			break
+		}
+
+		return e.complexity.Mutation.RemoveCv(childComplexity), true
+
+	case "Mutation.RemoveProfileImage":
+		if e.complexity.Mutation.RemoveProfileImage == nil {
+			break
+		}
+
+		return e.complexity.Mutation.RemoveProfileImage(childComplexity), true
+
+	case "Mutation.RemoveStudentByParent":
+		if e.complexity.Mutation.RemoveStudentByParent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_RemoveStudentByParent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveStudentByParent(childComplexity, args["studentId"].(int)), true
+
+	case "Mutation.RemoveVideoPresentation":
+		if e.complexity.Mutation.RemoveVideoPresentation == nil {
+			break
+		}
+
+		return e.complexity.Mutation.RemoveVideoPresentation(childComplexity), true
+
+	case "Mutation.SetStudentAcademicLevelByParent":
+		if e.complexity.Mutation.SetStudentAcademicLevelByParent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_SetStudentAcademicLevelByParent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SetStudentAcademicLevelByParent(childComplexity, args["AcademicLevelId"].(int), args["studentId"].(int)), true
+
+	case "Mutation.SetUserAcademicLevel":
+		if e.complexity.Mutation.SetUserAcademicLevel == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_SetUserAcademicLevel_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.SetUserAcademicLevel(childComplexity, args["AcademicLevelId"].(int)), true
+
 	case "Mutation.UpdateMyProfile":
 		if e.complexity.Mutation.UpdateMyProfile == nil {
 			break
@@ -520,6 +691,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateProfileAndPassword(childComplexity, args["profile"].(model.UserInput), args["password"].(model.PasswordInput)), true
+
+	case "Mutation.UpdateStudentProfileByParent":
+		if e.complexity.Mutation.UpdateStudentProfileByParent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_UpdateStudentProfileByParent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateStudentProfileByParent(childComplexity, args["profile"].(model.UserInput), args["studentId"].(int)), true
 
 	case "Password.CreatedAt":
 		if e.complexity.Password.CreatedAt == nil {
@@ -582,12 +765,157 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AcademicLevels(childComplexity), true
 
+	case "Query.CoverLetter":
+		if e.complexity.Query.CoverLetter == nil {
+			break
+		}
+
+		return e.complexity.Query.CoverLetter(childComplexity), true
+
+	case "Query.CoverLetterThumb":
+		if e.complexity.Query.CoverLetterThumb == nil {
+			break
+		}
+
+		return e.complexity.Query.CoverLetterThumb(childComplexity), true
+
+	case "Query.Cv":
+		if e.complexity.Query.Cv == nil {
+			break
+		}
+
+		return e.complexity.Query.Cv(childComplexity), true
+
+	case "Query.CvThumb":
+		if e.complexity.Query.CvThumb == nil {
+			break
+		}
+
+		return e.complexity.Query.CvThumb(childComplexity), true
+
 	case "Query.MyProfile":
 		if e.complexity.Query.MyProfile == nil {
 			break
 		}
 
 		return e.complexity.Query.MyProfile(childComplexity), true
+
+	case "Query.ProfileImage":
+		if e.complexity.Query.ProfileImage == nil {
+			break
+		}
+
+		return e.complexity.Query.ProfileImage(childComplexity), true
+
+	case "Query.ProfileImageThumb":
+		if e.complexity.Query.ProfileImageThumb == nil {
+			break
+		}
+
+		return e.complexity.Query.ProfileImageThumb(childComplexity), true
+
+	case "Query.SuggestTutor":
+		if e.complexity.Query.SuggestTutor == nil {
+			break
+		}
+
+		args, err := ec.field_Query_SuggestTutor_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.SuggestTutor(childComplexity, args["studentId"].(int)), true
+
+	case "Query.UserCoverLetter":
+		if e.complexity.Query.UserCoverLetter == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserCoverLetter_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserCoverLetter(childComplexity, args["userId"].(int)), true
+
+	case "Query.UserCoverLetterThumb":
+		if e.complexity.Query.UserCoverLetterThumb == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserCoverLetterThumb_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserCoverLetterThumb(childComplexity, args["userId"].(int)), true
+
+	case "Query.UserCv":
+		if e.complexity.Query.UserCv == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserCv_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserCv(childComplexity, args["userId"].(int)), true
+
+	case "Query.UserCvThumb":
+		if e.complexity.Query.UserCvThumb == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserCvThumb_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserCvThumb(childComplexity, args["userId"].(int)), true
+
+	case "Query.UserProfileImage":
+		if e.complexity.Query.UserProfileImage == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserProfileImage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserProfileImage(childComplexity, args["userId"].(int)), true
+
+	case "Query.UserProfileImageThumb":
+		if e.complexity.Query.UserProfileImageThumb == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserProfileImageThumb_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserProfileImageThumb(childComplexity, args["userId"].(int)), true
+
+	case "Query.UserVideoPresentation":
+		if e.complexity.Query.UserVideoPresentation == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserVideoPresentation_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserVideoPresentation(childComplexity, args["userId"].(int)), true
+
+	case "Query.VideoPresentation":
+		if e.complexity.Query.VideoPresentation == nil {
+			break
+		}
+
+		return e.complexity.Query.VideoPresentation(childComplexity), true
 
 	case "User.AddOnTitle":
 		if e.complexity.User.AddOnTitle == nil {
@@ -778,6 +1106,132 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserAcademicCourse.UserId(childComplexity), true
 
+	case "UserAcademicCoursePreference.Availability":
+		if e.complexity.UserAcademicCoursePreference.Availability == nil {
+			break
+		}
+
+		return e.complexity.UserAcademicCoursePreference.Availability(childComplexity), true
+
+	case "UserAcademicCoursePreference.CreatedAt":
+		if e.complexity.UserAcademicCoursePreference.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAcademicCoursePreference.CreatedAt(childComplexity), true
+
+	case "UserAcademicCoursePreference.DeletedAt":
+		if e.complexity.UserAcademicCoursePreference.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAcademicCoursePreference.DeletedAt(childComplexity), true
+
+	case "UserAcademicCoursePreference.Id":
+		if e.complexity.UserAcademicCoursePreference.Id == nil {
+			break
+		}
+
+		return e.complexity.UserAcademicCoursePreference.Id(childComplexity), true
+
+	case "UserAcademicCoursePreference.IsOnline":
+		if e.complexity.UserAcademicCoursePreference.IsOnline == nil {
+			break
+		}
+
+		return e.complexity.UserAcademicCoursePreference.IsOnline(childComplexity), true
+
+	case "UserAcademicCoursePreference.UpdatedAt":
+		if e.complexity.UserAcademicCoursePreference.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAcademicCoursePreference.UpdatedAt(childComplexity), true
+
+	case "UserAcademicCoursePreference.UserAcademicCourseId":
+		if e.complexity.UserAcademicCoursePreference.UserAcademicCourseId == nil {
+			break
+		}
+
+		return e.complexity.UserAcademicCoursePreference.UserAcademicCourseId(childComplexity), true
+
+	case "UserAuthorizationLink.CreatedAt":
+		if e.complexity.UserAuthorizationLink.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLink.CreatedAt(childComplexity), true
+
+	case "UserAuthorizationLink.DeletedAt":
+		if e.complexity.UserAuthorizationLink.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLink.DeletedAt(childComplexity), true
+
+	case "UserAuthorizationLink.Id":
+		if e.complexity.UserAuthorizationLink.Id == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLink.Id(childComplexity), true
+
+	case "UserAuthorizationLink.LinkType":
+		if e.complexity.UserAuthorizationLink.LinkType == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLink.LinkType(childComplexity), true
+
+	case "UserAuthorizationLink.UpdatedAt":
+		if e.complexity.UserAuthorizationLink.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLink.UpdatedAt(childComplexity), true
+
+	case "UserAuthorizationLinkActor.AuthorizationId":
+		if e.complexity.UserAuthorizationLinkActor.AuthorizationId == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLinkActor.AuthorizationId(childComplexity), true
+
+	case "UserAuthorizationLinkActor.CreatedAt":
+		if e.complexity.UserAuthorizationLinkActor.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLinkActor.CreatedAt(childComplexity), true
+
+	case "UserAuthorizationLinkActor.DeletedAt":
+		if e.complexity.UserAuthorizationLinkActor.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLinkActor.DeletedAt(childComplexity), true
+
+	case "UserAuthorizationLinkActor.Id":
+		if e.complexity.UserAuthorizationLinkActor.Id == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLinkActor.Id(childComplexity), true
+
+	case "UserAuthorizationLinkActor.UpdatedAt":
+		if e.complexity.UserAuthorizationLinkActor.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLinkActor.UpdatedAt(childComplexity), true
+
+	case "UserAuthorizationLinkActor.UserAuthorizationLinkId":
+		if e.complexity.UserAuthorizationLinkActor.UserAuthorizationLinkId == nil {
+			break
+		}
+
+		return e.complexity.UserAuthorizationLinkActor.UserAuthorizationLinkId(childComplexity), true
+
 	case "UserMediaDetail.CreatedAt":
 		if e.complexity.UserMediaDetail.CreatedAt == nil {
 			break
@@ -837,6 +1291,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputPasswordInput,
 		ec.unmarshalInputUserAcademicCourseInput,
+		ec.unmarshalInputUserAcademicCoursePreferenceInput,
 		ec.unmarshalInputUserInput,
 	)
 	first := true
@@ -942,6 +1397,23 @@ var sources = []*ast.Source{
     DeletedAt: DateTime
     UserId: ID! @goField(name: "UserId")
     Level: Int!
+}
+
+type UserAuthorizationLink {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    LinkType: Int!
+}
+
+type UserAuthorizationLinkActor {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserAuthorizationLinkId: Int! @goField(name: "UserAuthorizationLinkId")
+    AuthorizationId: Int! @goField(name: "AuthorizationId")
 }`, BuiltIn: false},
 	{Name: "../gql/directive/directive.graphqls", Input: `directive @goModel(
     model: String
@@ -988,6 +1460,23 @@ type UserAcademicCourse {
 input UserAcademicCourseInput {
     CourseId :Int @goField(name: "CourseId")
 }
+
+type UserAcademicCoursePreference {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserAcademicCourseId : Int!  @goField(name: "UserAcademicCourseId")
+    IsOnline : Boolean!,
+    Availability: DateTime!
+}
+
+input UserAcademicCoursePreferenceInput {
+    UserAcademicCourseId : Int  @goField(name: "UserAcademicCourseId")
+    IsOnline : Boolean,
+    Availability: DateTime
+}
+
 `, BuiltIn: false},
 	{Name: "../gql/media/media.graphqls", Input: `type Media {
     Id: ID! @goField(name: "Id")
@@ -997,7 +1486,6 @@ input UserAcademicCourseInput {
     FileName : String!
     Extension: String!
     Xid: String! @goField(name: "Xid")
-    ContentType: Int!
 }
 
 type MediaThumb {
@@ -1052,11 +1540,57 @@ scalar Upload
     UpdateMyProfile(profile: UserInput!): User
     UpdateProfileAndPassword(profile: UserInput! , password: PasswordInput!): User
     NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean
-}`, BuiltIn: false},
+
+
+
+    #    Education
+    SetUserAcademicLevel(AcademicLevelId: Int!):AcademicLevel
+    NewAcademicCoursePreference(preferences: [UserAcademicCoursePreferenceInput!]): UserAcademicCoursePreference
+    NewUserAcademicLevel(levels: [Int]!): Boolean
+
+    #    User Media
+    RemoveCoverLetter: Boolean
+    RemoveCv: Boolean
+    RemoveProfileImage: Boolean
+    RemoveVideoPresentation: Boolean
+
+    #    Student - parent
+    NewStudentByParent(email: String!): Boolean
+    RemoveStudentByParent(studentId: Int!): Boolean
+    UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
+    SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
+    NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean
+    NewStudentAcademicCoursesPreferenceByParent(coursesPreferences: [UserAcademicCoursePreferenceInput]! , studentId: Int!) : Boolean
+
+}
+`, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {
     MyProfile : User
     AcademicLevels : [AcademicLevel!]
     AcademicCourses(AcademicLevelId: Int!) : [AcademicCourse!]
+    SuggestTutor(studentId: Int! ): User!
+
+    #    Media
+    CoverLetter : String
+    Cv : String
+    ProfileImage: String
+    VideoPresentation: String
+
+    #    Media Thumb
+    CoverLetterThumb : String
+    CvThumb : String
+    ProfileImageThumb: String
+
+    #  Current User  Media
+    UserCoverLetter(userId: Int!): String
+    UserCv(userId: Int!): String
+    UserProfileImage(userId: Int!): String
+    UserVideoPresentation(userId: Int!): String
+
+    #  User  Media Thumb
+    UserCoverLetterThumb(userId: Int!): String
+    UserCvThumb(userId: Int!): String
+    UserProfileImageThumb(userId: Int!): String
 }`, BuiltIn: false},
 	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {
     T: String!

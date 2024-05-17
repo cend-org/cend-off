@@ -6,7 +6,6 @@ type Media {
     FileName : String!
     Extension: String!
     Xid: String! @goField(name: "Xid")
-    ContentType: Int!
 }
 
 type MediaThumb {

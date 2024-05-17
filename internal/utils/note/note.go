@@ -20,6 +20,8 @@ var (
 	DuplicateAddressError = errors.New("user address already exists")
 )
 
+var ParentUserLinkError = errors.New("users are not linked ")
+
 var (
 	DatabaseInsertOperationError = errors.New("error while trying to insert data into database")
 	DatabaseDeleteOperationError = errors.New("error while trying to delete data from database")

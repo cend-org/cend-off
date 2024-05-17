@@ -37,14 +37,13 @@ type BearerToken struct {
 }
 
 type Media struct {
-	Id          int        `json:"id"`
-	CreatedAt   time.Time  `json:"createdAt"`
-	UpdatedAt   time.Time  `json:"updatedAt"`
-	DeletedAt   *time.Time `json:"deletedAt"`
-	FileName    string     `json:"fileName"`
-	Extension   string     `json:"extension"`
-	Xid         string     `json:"xid"`
-	ContentType int        `json:"contentType"`
+	Id        int        `json:"id"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	DeletedAt *time.Time `json:"deletedAt"`
+	FileName  string     `json:"fileName"`
+	Extension string     `json:"extension"`
+	Xid       string     `json:"xid"`
 }
 
 type MediaThumb struct {
@@ -111,6 +110,39 @@ type UserAcademicCourse struct {
 
 type UserAcademicCourseInput struct {
 	CourseId *int `json:"courseId"`
+}
+
+type UserAcademicCoursePreference struct {
+	Id                   int        `json:"id"`
+	CreatedAt            time.Time  `json:"createdAt"`
+	UpdatedAt            time.Time  `json:"updatedAt"`
+	DeletedAt            *time.Time `json:"deletedAt"`
+	UserAcademicCourseId int        `json:"userAcademicCourseId"`
+	IsOnline             bool       `json:"isOnline"`
+	Availability         time.Time  `json:"availability"`
+}
+
+type UserAcademicCoursePreferenceInput struct {
+	UserAcademicCourseId *int       `json:"userAcademicCourseId"`
+	IsOnline             *bool      `json:"isOnline"`
+	Availability         *time.Time `json:"availability"`
+}
+
+type UserAuthorizationLink struct {
+	Id        int        `json:"id"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	DeletedAt *time.Time `json:"deletedAt"`
+	LinkType  int        `json:"linkType"`
+}
+
+type UserAuthorizationLinkActor struct {
+	Id                      int        `json:"id"`
+	CreatedAt               time.Time  `json:"createdAt"`
+	UpdatedAt               time.Time  `json:"updatedAt"`
+	DeletedAt               *time.Time `json:"deletedAt"`
+	UserAuthorizationLinkId int        `json:"userAuthorizationLinkId"`
+	AuthorizationId         int        `json:"authorizationId"`
 }
 
 type UserInput struct {
