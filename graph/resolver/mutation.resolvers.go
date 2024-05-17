@@ -8,7 +8,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"

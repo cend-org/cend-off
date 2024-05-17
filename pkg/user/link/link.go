@@ -53,7 +53,8 @@ func AddStudent(parentId int, email string) (err error) {
 	}
 
 	if userAuthorizationLinkId == state.ZERO {
-		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentParent, student.Id, ParentAuthorizationLevel)
+
+		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentParent, student.Id, StudentAuthorizationLevel)
 		if err != nil {
 			return errx.DbInsertError
 		}
