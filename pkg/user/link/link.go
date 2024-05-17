@@ -68,12 +68,40 @@ func AddStudent(parentId int, email string) (err error) {
 	return nil
 }
 
+func UpdateStudent(studentId int, profile model.UserInput) (err error) {
+	var (
+		user model.User
+	)
+
+	user, err = GetUserWithId(studentId)
+	if err != nil {
+		return errx.DbGetError
+	}
+
+	user = model.MapUserInputToUser(profile, user)
+
+	err = database.Update(user)
+	if err != nil {
+		return errx.DbUpdateError
+	}
+
+	return nil
+}
+
 /*
  UTILS
 */
 
 func GetUserWithEmail(email string) (user model.User, err error) {
 	err = database.Get(&user, `SELECT * FROM user WHERE email = ?`, email)
+	if err != nil {
+		return user, err
+	}
+	return user, nil
+}
+
+func GetUserWithId(userId int) (user model.User, err error) {
+	err = database.Get(&user, `SELECT * FROM user WHERE id = ?`, userId)
 	if err != nil {
 		return user, err
 	}
@@ -150,4 +178,8 @@ func GetUserLink(linkType int, authorizationId int) (linkId int, err error) {
 	}
 
 	return userLink.Id, nil
+}
+
+func IsStudentParentLinked(parentId, userId int) bool {
+	return true
 }

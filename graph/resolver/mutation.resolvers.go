@@ -170,7 +170,24 @@ func (r *mutationResolver) RemoveStudentByParent(ctx context.Context, studentID 
 
 // UpdateStudentProfileByParent is the resolver for the UpdateStudentProfileByParent field.
 func (r *mutationResolver) UpdateStudentProfileByParent(ctx context.Context, profile model.UserInput, studentID int) (*bool, error) {
-	panic(fmt.Errorf("not implemented: UpdateStudentProfileByParent - UpdateStudentProfileByParent"))
+	var tok *token.Token
+	var err error
+	var status bool
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return &status, errx.UnAuthorizedError
+	}
+
+	if !link.IsStudentParentLinked(tok.UserId, studentID) {
+		return &status, errx.ParentLinkUserError
+	}
+
+	err = link.UpdateStudent(studentID, profile)
+	if err != nil {
+		return &status, err
+	}
+	return &status, nil
 }
 
 // SetStudentAcademicLevelByParent is the resolver for the SetStudentAcademicLevelByParent field.
@@ -182,6 +199,10 @@ func (r *mutationResolver) SetStudentAcademicLevelByParent(ctx context.Context, 
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return nil, errx.UnAuthorizedError
+	}
+
+	if !link.IsStudentParentLinked(tok.UserId, studentID) {
+		return &status, errx.ParentLinkUserError
 	}
 
 	err = academic.SetUserAcademicLevel(tok.UserId, studentID, academicLevelID)

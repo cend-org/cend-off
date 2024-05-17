@@ -22,6 +22,9 @@ var (
 	LinkUserError         = note.LinkUserError
 	DuplicateAddressError = note.DuplicateAddressError
 )
+var (
+	ParentLinkUserError = note.ParentUserLinkError
+)
 
 var (
 	DbInsertError = note.DatabaseInsertOperationError
