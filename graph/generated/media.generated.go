@@ -333,50 +333,6 @@ func (ec *executionContext) fieldContext_Media_Xid(ctx context.Context, field gr
 	return fc, nil
 }
 
-func (ec *executionContext) _Media_ContentType(ctx context.Context, field graphql.CollectedField, obj *model.Media) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Media_ContentType(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ContentType, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(int)
-	fc.Result = res
-	return ec.marshalNInt2int(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Media_ContentType(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Media",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Int does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _MediaThumb_Id(ctx context.Context, field graphql.CollectedField, obj *model.MediaThumb) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_MediaThumb_Id(ctx, field)
 	if err != nil {
@@ -1039,11 +995,6 @@ func (ec *executionContext) _Media(ctx context.Context, sel ast.SelectionSet, ob
 			}
 		case "Xid":
 			out.Values[i] = ec._Media_Xid(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "ContentType":
-			out.Values[i] = ec._Media_ContentType(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}

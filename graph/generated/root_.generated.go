@@ -72,14 +72,13 @@ type ComplexityRoot struct {
 	}
 
 	Media struct {
-		ContentType func(childComplexity int) int
-		CreatedAt   func(childComplexity int) int
-		DeletedAt   func(childComplexity int) int
-		Extension   func(childComplexity int) int
-		FileName    func(childComplexity int) int
-		Id          func(childComplexity int) int
-		UpdatedAt   func(childComplexity int) int
-		Xid         func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Extension func(childComplexity int) int
+		FileName  func(childComplexity int) int
+		Id        func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		Xid       func(childComplexity int) int
 	}
 
 	MediaThumb struct {
@@ -362,13 +361,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.BearerToken.T(childComplexity), true
-
-	case "Media.ContentType":
-		if e.complexity.Media.ContentType == nil {
-			break
-		}
-
-		return e.complexity.Media.ContentType(childComplexity), true
 
 	case "Media.CreatedAt":
 		if e.complexity.Media.CreatedAt == nil {
@@ -1494,7 +1486,6 @@ input UserAcademicCoursePreferenceInput {
     FileName : String!
     Extension: String!
     Xid: String! @goField(name: "Xid")
-    ContentType: Int!
 }
 
 type MediaThumb {

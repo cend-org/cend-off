@@ -57,7 +57,6 @@ create table media (
 	file_name	varchar(255) default '',
 	extension	varchar(255) default '',
 	xid	varchar(255) default '',
-	content_type	int default 0,
 	constraint media_pk
 		unique (id)
 );
@@ -140,7 +139,7 @@ alter table user_academic_course
 
 alter table user_academic_course
 	add constraint user_academic_course_course_id_fk
-		foreign key (course_id) references course (id);
+		foreign key (course_id) references academic_course (id);
 
 create table user_academic_course_preference (
 	id int auto_increment primary key,

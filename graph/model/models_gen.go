@@ -37,14 +37,13 @@ type BearerToken struct {
 }
 
 type Media struct {
-	Id          int        `json:"id"`
-	CreatedAt   time.Time  `json:"createdAt"`
-	UpdatedAt   time.Time  `json:"updatedAt"`
-	DeletedAt   *time.Time `json:"deletedAt"`
-	FileName    string     `json:"fileName"`
-	Extension   string     `json:"extension"`
-	Xid         string     `json:"xid"`
-	ContentType int        `json:"contentType"`
+	Id        int        `json:"id"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	DeletedAt *time.Time `json:"deletedAt"`
+	FileName  string     `json:"fileName"`
+	Extension string     `json:"extension"`
+	Xid       string     `json:"xid"`
 }
 
 type MediaThumb struct {
