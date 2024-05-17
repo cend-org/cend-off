@@ -26,3 +26,12 @@ func NewUserAuthorization(userId, authorizationLevel int) (err error) {
 	}
 	return err
 }
+
+func GetUserAuthorization(userId, level int) (auth model.Authorization, err error) {
+	err = database.Get(&auth, `SELECT * FROM authorization WHERE user_id = ? AND level = ?`, userId, level)
+	if err != nil {
+		return auth, err
+	}
+
+	return auth, err
+}

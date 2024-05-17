@@ -7,11 +7,15 @@ package resolver
 import (
 	"context"
 	"errors"
+	"fmt"
+
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
+	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/pkg/academic"
 	usr "github.com/cend-org/duval/pkg/user"
+	"github.com/cend-org/duval/pkg/user/link"
 )
 
 // NewStudent is the resolver for the NewStudent field.
@@ -91,6 +95,98 @@ func (r *mutationResolver) NewUserAcademicCourses(ctx context.Context, courses [
 	}
 
 	return academic.NewUserAcademicCourses(tok.UserId, courses)
+}
+
+// SetUserAcademicLevel is the resolver for the SetUserAcademicLevel field.
+func (r *mutationResolver) SetUserAcademicLevel(ctx context.Context, academicLevelID int) (*model.AcademicLevel, error) {
+	panic(fmt.Errorf("not implemented: SetUserAcademicLevel - SetUserAcademicLevel"))
+}
+
+// NewAcademicCoursePreference is the resolver for the NewAcademicCoursePreference field.
+func (r *mutationResolver) NewAcademicCoursePreference(ctx context.Context, preferences []model.UserAcademicCoursePreferenceInput) (*model.UserAcademicCoursePreference, error) {
+	panic(fmt.Errorf("not implemented: NewAcademicCoursePreference - NewAcademicCoursePreference"))
+}
+
+// NewUserAcademicLevel is the resolver for the NewUserAcademicLevel field.
+func (r *mutationResolver) NewUserAcademicLevel(ctx context.Context, levels []*int) (*bool, error) {
+	panic(fmt.Errorf("not implemented: NewUserAcademicLevel - NewUserAcademicLevel"))
+}
+
+// Upload is the resolver for the Upload field.
+func (r *mutationResolver) Upload(ctx context.Context) (*string, error) {
+	panic(fmt.Errorf("not implemented: Upload - Upload"))
+}
+
+// RemoveCoverLetter is the resolver for the RemoveCoverLetter field.
+func (r *mutationResolver) RemoveCoverLetter(ctx context.Context) (*bool, error) {
+	panic(fmt.Errorf("not implemented: RemoveCoverLetter - RemoveCoverLetter"))
+}
+
+// RemoveCv is the resolver for the RemoveCv field.
+func (r *mutationResolver) RemoveCv(ctx context.Context) (*bool, error) {
+	panic(fmt.Errorf("not implemented: RemoveCv - RemoveCv"))
+}
+
+// RemoveProfileImage is the resolver for the RemoveProfileImage field.
+func (r *mutationResolver) RemoveProfileImage(ctx context.Context) (*bool, error) {
+	panic(fmt.Errorf("not implemented: RemoveProfileImage - RemoveProfileImage"))
+}
+
+// RemoveVideoPresentation is the resolver for the RemoveVideoPresentation field.
+func (r *mutationResolver) RemoveVideoPresentation(ctx context.Context) (*bool, error) {
+	panic(fmt.Errorf("not implemented: RemoveVideoPresentation - RemoveVideoPresentation"))
+}
+
+// NewStudentByParent is the resolver for the NewStudentByParent field.
+func (r *mutationResolver) NewStudentByParent(ctx context.Context, email string) (*bool, error) {
+	var (
+		tok    *token.Token
+		err    error
+		status bool
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = usr.NewStudent(email)
+	if err != nil {
+		return nil, errx.SupportError
+	}
+
+	err = link.AddStudent(tok.UserId, email)
+	if err != nil {
+		return nil, err
+	}
+
+	status = true
+	return &status, nil
+}
+
+// RemoveStudentByParent is the resolver for the RemoveStudentByParent field.
+func (r *mutationResolver) RemoveStudentByParent(ctx context.Context, studentID int) (*bool, error) {
+	panic(fmt.Errorf("not implemented: RemoveStudentByParent - RemoveStudentByParent"))
+}
+
+// UpdateStudentProfileByParent is the resolver for the UpdateStudentProfileByParent field.
+func (r *mutationResolver) UpdateStudentProfileByParent(ctx context.Context, profile model.UserInput, studentID int) (*bool, error) {
+	panic(fmt.Errorf("not implemented: UpdateStudentProfileByParent - UpdateStudentProfileByParent"))
+}
+
+// SetStudentAcademicLevelByParent is the resolver for the SetStudentAcademicLevelByParent field.
+func (r *mutationResolver) SetStudentAcademicLevelByParent(ctx context.Context, academicLevelID int, studentID int) (*bool, error) {
+	panic(fmt.Errorf("not implemented: SetStudentAcademicLevelByParent - SetStudentAcademicLevelByParent"))
+}
+
+// NewStudentAcademicCoursesByParent is the resolver for the NewStudentAcademicCoursesByParent field.
+func (r *mutationResolver) NewStudentAcademicCoursesByParent(ctx context.Context, courses []*model.UserAcademicCourseInput) (*bool, error) {
+	panic(fmt.Errorf("not implemented: NewStudentAcademicCoursesByParent - NewStudentAcademicCoursesByParent"))
+}
+
+// NewStudentAcademicCoursesPreferenceByParent is the resolver for the NewStudentAcademicCoursesPreferenceByParent field.
+func (r *mutationResolver) NewStudentAcademicCoursesPreferenceByParent(ctx context.Context, courses []*model.UserAcademicCourseInput) (*bool, error) {
+	panic(fmt.Errorf("not implemented: NewStudentAcademicCoursesPreferenceByParent - NewStudentAcademicCoursesPreferenceByParent"))
 }
 
 // Mutation returns generated.MutationResolver implementation.

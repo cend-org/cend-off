@@ -27,3 +27,20 @@ type UserAcademicCourse {
 input UserAcademicCourseInput {
     CourseId :Int @goField(name: "CourseId")
 }
+
+type UserAcademicCoursePreference {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserAcademicCourseId : Int!  @goField(name: "UserAcademicCourseId")
+    IsOnline : Boolean!,
+    Availability: DateTime!
+}
+
+input UserAcademicCoursePreferenceInput {
+    UserAcademicCourseId : Int  @goField(name: "UserAcademicCourseId")
+    IsOnline : Boolean,
+    Availability: DateTime
+}
+

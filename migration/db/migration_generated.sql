@@ -142,6 +142,51 @@ alter table user_academic_course
 	add constraint user_academic_course_course_id_fk
 		foreign key (course_id) references course (id);
 
+create table user_academic_course_preference (
+	id int auto_increment primary key,
+	created_at	datetime default CURRENT_TIMESTAMP,
+	updated_at	datetime default CURRENT_TIMESTAMP,
+	deleted_at	datetime default '0000-00-00 00:00:00',
+	user_academic_course_id	int default 0,
+	is_online	bool default '',
+	availability	datetime default '0000-00-00 00:00:00',
+	constraint user_academic_course_preference_pk
+		unique (id)
+);
+
+alter table user_academic_course_preference
+	add constraint user_academic_course_preference_user_academic_course_id_fk
+		foreign key (user_academic_course_id) references user_academic_course (id);
+
+create table user_authorization_link (
+	id int auto_increment primary key,
+	created_at	datetime default CURRENT_TIMESTAMP,
+	updated_at	datetime default CURRENT_TIMESTAMP,
+	deleted_at	datetime default '0000-00-00 00:00:00',
+	link_type	int default 0,
+	constraint user_authorization_link_pk
+		unique (id)
+);
+
+create table user_authorization_link_actor (
+	id int auto_increment primary key,
+	created_at	datetime default CURRENT_TIMESTAMP,
+	updated_at	datetime default CURRENT_TIMESTAMP,
+	deleted_at	datetime default '0000-00-00 00:00:00',
+	user_authorization_link_id	int default 0,
+	authorization_id	int default 0,
+	constraint user_authorization_link_actor_pk
+		unique (id)
+);
+
+alter table user_authorization_link_actor
+	add constraint user_authorization_link_actor_user_authorization_link_id_fk
+		foreign key (user_authorization_link_id) references user_authorization_link (id);
+
+alter table user_authorization_link_actor
+	add constraint user_authorization_link_actor_authorization_id_fk
+		foreign key (authorization_id) references authorization (id);
+
 create table user_media_detail (
 	id int auto_increment primary key,
 	created_at	datetime default CURRENT_TIMESTAMP,

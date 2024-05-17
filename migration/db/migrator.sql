@@ -64,14 +64,14 @@ create index password_user_id_index
 
 create table media
 (
-    id           int auto_increment
+    id         int auto_increment
         primary key,
-    created_at   datetime     default CURRENT_TIMESTAMP     not null,
-    updated_at   datetime     default CURRENT_TIMESTAMP     not null,
-    deleted_at   datetime     default '0000-00-00 00:00:00' null,
-    file_name    varchar(500) default ''                    null,
-    extension    varchar(10)  default ''                    null,
-    xid          varchar(100) default ''                    null
+    created_at datetime     default CURRENT_TIMESTAMP     not null,
+    updated_at datetime     default CURRENT_TIMESTAMP     not null,
+    deleted_at datetime     default '0000-00-00 00:00:00' null,
+    file_name  varchar(500) default ''                    null,
+    extension  varchar(10)  default ''                    null,
+    xid        varchar(100) default ''                    null
 );
 
 create table media_thumb
@@ -105,3 +105,33 @@ alter table user_media_detail
     add constraint user_media_detail_user_id_fk
         foreign key (owner_id) references user (id);
 
+
+create table user_authorization_link
+(
+    id         int auto_increment
+        primary key,
+    created_at datetime default CURRENT_TIMESTAMP,
+    updated_at datetime default CURRENT_TIMESTAMP,
+    deleted_at datetime default '0000-00-00 00:00:00',
+    link_type  int
+);
+
+create table user_authorization_link_actor
+(
+    id                         int auto_increment
+        primary key,
+    created_at                 datetime default CURRENT_TIMESTAMP,
+    updated_at                 datetime default CURRENT_TIMESTAMP,
+    deleted_at                 datetime default '0000-00-00 00:00:00',
+    user_authorization_link_id int      default 0,
+    authorization_id           int      default 0
+);
+
+alter table user_authorization_link_actor
+    add constraint user_authorization_link_actor_user_authorization_link_id_fk
+        foreign key (user_authorization_link_id) references user_authorization_link (id);
+
+
+alter table user_authorization_link_actor
+    add constraint user_authorization_link_actor_authorization_id_fk
+        foreign key (authorization_id) references authorization (id);

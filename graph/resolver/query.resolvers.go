@@ -7,6 +7,7 @@ package resolver
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
@@ -36,6 +37,67 @@ func (r *queryResolver) AcademicLevels(ctx context.Context) ([]model.AcademicLev
 // AcademicCourses is the resolver for the AcademicCourses field.
 func (r *queryResolver) AcademicCourses(ctx context.Context, academicLevelID int) ([]model.AcademicCourse, error) {
 	return academic.GetAcademicCourses(academicLevelID)
+}
+
+// SuggestTutor is the resolver for the SuggestTutor field.
+func (r *queryResolver) SuggestTutor(ctx context.Context, studentID int) (*model.User, error) {
+	var (
+		tok  *token.Token
+		err  error
+		user model.User
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	user, err = academic.GetTutorWithPreferredCourse(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+// CoverLetter is the resolver for the CoverLetter field.
+func (r *queryResolver) CoverLetter(ctx context.Context, userID int) (*string, error) {
+	panic(fmt.Errorf("not implemented: CoverLetter - CoverLetter"))
+}
+
+// Cv is the resolver for the Cv field.
+func (r *queryResolver) Cv(ctx context.Context, userID int) (*string, error) {
+	panic(fmt.Errorf("not implemented: Cv - Cv"))
+}
+
+// ProfileImage is the resolver for the ProfileImage field.
+func (r *queryResolver) ProfileImage(ctx context.Context, userID int) (*string, error) {
+	panic(fmt.Errorf("not implemented: ProfileImage - ProfileImage"))
+}
+
+// VideoPresentation is the resolver for the VideoPresentation field.
+func (r *queryResolver) VideoPresentation(ctx context.Context, userID int) (*string, error) {
+	panic(fmt.Errorf("not implemented: VideoPresentation - VideoPresentation"))
+}
+
+// UserCoverLetter is the resolver for the UserCoverLetter field.
+func (r *queryResolver) UserCoverLetter(ctx context.Context, userID int) (*string, error) {
+	panic(fmt.Errorf("not implemented: UserCoverLetter - UserCoverLetter"))
+}
+
+// UserCv is the resolver for the UserCv field.
+func (r *queryResolver) UserCv(ctx context.Context, userID int) (*string, error) {
+	panic(fmt.Errorf("not implemented: UserCv - UserCv"))
+}
+
+// UserProfileImage is the resolver for the UserProfileImage field.
+func (r *queryResolver) UserProfileImage(ctx context.Context, userID int) (*string, error) {
+	panic(fmt.Errorf("not implemented: UserProfileImage - UserProfileImage"))
+}
+
+// UserVideoPresentation is the resolver for the UserVideoPresentation field.
+func (r *queryResolver) UserVideoPresentation(ctx context.Context, userID int) (*string, error) {
+	panic(fmt.Errorf("not implemented: UserVideoPresentation - UserVideoPresentation"))
 }
 
 // Query returns generated.QueryResolver implementation.

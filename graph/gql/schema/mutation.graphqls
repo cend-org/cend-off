@@ -8,4 +8,27 @@ type Mutation {
     UpdateMyProfile(profile: UserInput!): User
     UpdateProfileAndPassword(profile: UserInput! , password: PasswordInput!): User
     NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean
+
+
+
+    #    Education
+    SetUserAcademicLevel(AcademicLevelId: Int!):AcademicLevel
+    NewAcademicCoursePreference(preferences: [UserAcademicCoursePreferenceInput!]): UserAcademicCoursePreference
+    NewUserAcademicLevel(levels: [Int]!): Boolean
+
+    #    User Media
+    Upload: String
+    RemoveCoverLetter: Boolean
+    RemoveCv: Boolean
+    RemoveProfileImage: Boolean
+    RemoveVideoPresentation: Boolean
+
+    #    Student - parent
+    NewStudentByParent(email: String!): Boolean
+    RemoveStudentByParent(studentId: Int!): Boolean
+    UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
+    SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
+    NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!) : Boolean
+    NewStudentAcademicCoursesPreferenceByParent(courses: [UserAcademicCourseInput]!) : Boolean
+
 }
