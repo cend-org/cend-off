@@ -3,6 +3,8 @@ package academic
 import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/utils/errx"
+	"github.com/cend-org/duval/pkg/user/authorization"
 	"github.com/xorcare/pointer"
 )
 
@@ -63,6 +65,32 @@ func GetTutorWithPreferredCourse(studentId int) (user model.User, err error) {
 	return user, nil
 }
 
+func SetUserAcademicLevel(parentId, studentId, academicLevelId int) (err error) {
+	var (
+		academicCourse model.UserAcademicCourse
+		courses        []model.AcademicCourse
+	)
+
+	if !authorization.IsUserParent(parentId) {
+		return errx.UnAuthorizedError
+	}
+
+	courses, err = GetAcademicCourses(academicLevelId)
+	if err != nil {
+		return errx.DbGetError
+	}
+
+	academicCourse.CourseId = courses[0].Id
+	academicCourse.UserId = studentId
+
+	_, err = database.InsertOne(academicCourse)
+	if err != nil {
+		return errx.DbInsertError
+	}
+
+	return nil
+}
+
 /*
 UTILS
 */
@@ -77,4 +105,17 @@ func GetUserPreferredCourse(userId int) (course model.AcademicCourse, err error)
 func GetTutorByCourseId(courseId int) (user model.User, err error) {
 	err = database.Get(&user, `SELECT u.* FROM user u JOIN user_academic_course uac ON u.id = uac.user_id WHERE uac.course_id = ? `, courseId)
 	return user, nil
+}
+
+func GetUserLevel(UserId int) (academicLevel model.AcademicLevel, err error) {
+	err = database.Get(&academicLevel,
+		`SELECT al.* FROM academic_level al
+    			JOIN academic_course ac ON al.id = ac.academic_level_id
+    			JOIN user_academic_course uac ON uac.course_id = ac.id
+			WHERE uac.user_id = ?`, UserId)
+	if err != nil {
+		return academicLevel, err
+	}
+
+	return academicLevel, err
 }

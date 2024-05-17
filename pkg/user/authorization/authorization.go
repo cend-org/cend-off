@@ -3,6 +3,7 @@ package authorization
 import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/utils/state"
 )
 
 const (
@@ -34,4 +35,34 @@ func GetUserAuthorization(userId, level int) (auth model.Authorization, err erro
 	}
 
 	return auth, err
+}
+
+func IsUserStudent(userId int) (ret bool) {
+	return isUserHasAuthorizationLevel(userId, STUDENT)
+}
+
+func IsUserParent(userId int) (ret bool) {
+	return isUserHasAuthorizationLevel(userId, PARENT)
+}
+
+func IsUserTutor(userId int) (ret bool) {
+	return isUserHasAuthorizationLevel(userId, TUTOR)
+}
+
+func IsUserProfessor(userId int) (ret bool) {
+	return isUserHasAuthorizationLevel(userId, PROF)
+}
+
+func isUserHasAuthorizationLevel(userId, authorizationLevel int) (ret bool) {
+	var (
+		err  error
+		auth model.Authorization
+	)
+
+	auth, err = GetUserAuthorization(userId, authorizationLevel)
+	if err != nil {
+		return false
+	}
+
+	return auth.Id > state.ZERO
 }

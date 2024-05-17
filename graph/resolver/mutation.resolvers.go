@@ -98,7 +98,7 @@ func (r *mutationResolver) NewUserAcademicCourses(ctx context.Context, courses [
 
 // SetUserAcademicLevel is the resolver for the SetUserAcademicLevel field.
 func (r *mutationResolver) SetUserAcademicLevel(ctx context.Context, academicLevelID int) (*model.AcademicLevel, error) {
-	panic(fmt.Errorf("not implemented: SetUserAcademicLevel - SetUserAcademicLevel"))
+	panic("not implemented")
 }
 
 // NewAcademicCoursePreference is the resolver for the NewAcademicCoursePreference field.
@@ -175,7 +175,22 @@ func (r *mutationResolver) UpdateStudentProfileByParent(ctx context.Context, pro
 
 // SetStudentAcademicLevelByParent is the resolver for the SetStudentAcademicLevelByParent field.
 func (r *mutationResolver) SetStudentAcademicLevelByParent(ctx context.Context, academicLevelID int, studentID int) (*bool, error) {
-	panic(fmt.Errorf("not implemented: SetStudentAcademicLevelByParent - SetStudentAcademicLevelByParent"))
+	var tok *token.Token
+	var err error
+	var status bool
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	err = academic.SetUserAcademicLevel(tok.UserId, studentID, academicLevelID)
+	if err != nil {
+		return nil, err
+	}
+
+	status = true
+	return &status, nil
 }
 
 // NewStudentAcademicCoursesByParent is the resolver for the NewStudentAcademicCoursesByParent field.

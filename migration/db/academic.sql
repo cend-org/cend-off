@@ -32,6 +32,15 @@ create table user_academic_course
     course_id  int      default 0                     null
 );
 
+alter table user_academic_course
+    add constraint user_academic_course_user_id_fk
+        foreign key (user_id) references user (id);
+
+alter table user_academic_course
+    add constraint user_academic_course_course_id_fk
+        foreign key (course_id) references academic_course (id);
+
+
 
 create table user_academic_course_preference
 (
