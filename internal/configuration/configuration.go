@@ -89,12 +89,12 @@ func verifyAppConfiguration() {
 		fmt.Println("✔️ DB PORT :", App.DatabasePort)
 	}
 
-	//if len(App.DatabaseUserPassword) == 0 {
-	//	fmt.Println("❌ DB USER PASSWORD must be provided !")
-	//	os.Exit(1)
-	//} else {
-	//	fmt.Println("✔️ DB PASSWORD :", App.DatabaseUserPassword)
-	//}
+	if len(App.DatabaseUserPassword) == 0 {
+		fmt.Println("❌ DB USER PASSWORD must be provided !")
+		os.Exit(1)
+	} else {
+		fmt.Println("✔️ DB PASSWORD :", App.DatabaseUserPassword)
+	}
 }
 
 func IsDev() bool {
