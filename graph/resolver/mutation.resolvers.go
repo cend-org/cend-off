@@ -189,11 +189,11 @@ func (r *mutationResolver) RemoveVideoPresentation(ctx context.Context) (*bool, 
 }
 
 // NewStudentByParent is the resolver for the NewStudentByParent field.
-func (r *mutationResolver) NewStudentByParent(ctx context.Context, email string) (*bool, error) {
+func (r *mutationResolver) NewStudentByParent(ctx context.Context, email string) (*int, error) {
 	var (
-		tok    *token.Token
-		err    error
-		status bool
+		tok       *token.Token
+		err       error
+		studentId int
 	)
 
 	tok, err = token.GetFromContext(ctx)
@@ -206,13 +206,12 @@ func (r *mutationResolver) NewStudentByParent(ctx context.Context, email string)
 		return nil, errx.SupportError
 	}
 
-	err = link.AddStudent(tok.UserId, email)
+	studentId, err = link.AddStudent(tok.UserId, email)
 	if err != nil {
 		return nil, err
 	}
 
-	status = true
-	return &status, nil
+	return &studentId, nil
 }
 
 // RemoveStudentByParent is the resolver for the RemoveStudentByParent field.
@@ -239,6 +238,8 @@ func (r *mutationResolver) UpdateStudentProfileByParent(ctx context.Context, pro
 	if err != nil {
 		return &status, err
 	}
+
+	status = true
 	return &status, nil
 }
 
@@ -268,7 +269,19 @@ func (r *mutationResolver) SetStudentAcademicLevelByParent(ctx context.Context, 
 
 // NewStudentAcademicCoursesByParent is the resolver for the NewStudentAcademicCoursesByParent field.
 func (r *mutationResolver) NewStudentAcademicCoursesByParent(ctx context.Context, courses []*model.UserAcademicCourseInput, studentID int) (*bool, error) {
-	panic(fmt.Errorf("not implemented: NewStudentAcademicCoursesByParent - NewStudentAcademicCoursesByParent"))
+	var tok *token.Token
+	var err error
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if !link.IsStudentParentLinked(tok.UserId, studentID) {
+		return nil, errx.ParentLinkUserError
+	}
+
+	return academic.NewUserAcademicCourses(studentID, courses)
 }
 
 // NewStudentAcademicCoursesPreferenceByParent is the resolver for the NewStudentAcademicCoursesPreferenceByParent field.

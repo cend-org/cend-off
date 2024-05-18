@@ -24,7 +24,7 @@ const (
 	StudentProfessor = 2
 )
 
-func AddStudent(parentId int, email string) (err error) {
+func AddStudent(parentId int, email string) (studentId int, err error) {
 	var (
 		userAuthorizationLinkId int
 		student                 model.User
@@ -32,24 +32,26 @@ func AddStudent(parentId int, email string) (err error) {
 
 	student, err = GetUserWithEmail(email)
 	if err != nil {
-		return errx.DbGetError
+		return studentId, errx.DbGetError
 	}
+
+	studentId = student.Id
 
 	auth, err := authorization.GetUserAuthorization(student.Id, StudentAuthorizationLevel)
 	if err != nil {
-		return errx.DbGetError
+		return studentId, errx.DbGetError
 	}
 
 	userAuthorizationLinkId, err = GetUserLink(StudentParent, auth.Id)
 	if userAuthorizationLinkId != state.ZERO {
 		currentParentAuth, err := authorization.GetUserAuthorization(parentId, ParentAuthorizationLevel)
 		if err != nil {
-			return errx.DbGetError
+			return studentId, errx.DbGetError
 		}
 
 		parents, err := GetLink(currentParentAuth.Id, ParentAuthorizationLevel, StudentParent)
 		if len(parents) > 0 {
-			return errx.DuplicateUserError
+			return studentId, errx.DuplicateUserError
 		}
 	}
 
@@ -57,16 +59,16 @@ func AddStudent(parentId int, email string) (err error) {
 
 		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentParent, student.Id, StudentAuthorizationLevel)
 		if err != nil {
-			return errx.DbInsertError
+			return studentId, errx.DbInsertError
 		}
 	}
 
 	err = SetUserAuthorizationLinkActor(userAuthorizationLinkId, parentId, ParentAuthorizationLevel)
 	if err != nil {
-		return errx.DbInsertError
+		return studentId, errx.DbInsertError
 	}
 
-	return nil
+	return studentId, nil
 }
 
 func UpdateStudent(studentId int, profile model.UserInput) (err error) {

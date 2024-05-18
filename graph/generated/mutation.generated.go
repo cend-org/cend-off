@@ -33,7 +33,7 @@ type MutationResolver interface {
 	RemoveCv(ctx context.Context) (*bool, error)
 	RemoveProfileImage(ctx context.Context) (*bool, error)
 	RemoveVideoPresentation(ctx context.Context) (*bool, error)
-	NewStudentByParent(ctx context.Context, email string) (*bool, error)
+	NewStudentByParent(ctx context.Context, email string) (*int, error)
 	RemoveStudentByParent(ctx context.Context, studentID int) (*bool, error)
 	UpdateStudentProfileByParent(ctx context.Context, profile model.UserInput, studentID int) (*bool, error)
 	SetStudentAcademicLevelByParent(ctx context.Context, academicLevelID int, studentID int) (*bool, error)
@@ -1324,9 +1324,9 @@ func (ec *executionContext) _Mutation_NewStudentByParent(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*bool)
+	res := resTmp.(*int)
 	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+	return ec.marshalOInt2ᚖint(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_NewStudentByParent(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1336,7 +1336,7 @@ func (ec *executionContext) fieldContext_Mutation_NewStudentByParent(ctx context
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	defer func() {

@@ -102,8 +102,15 @@ func GetUserPreferredCourse(userId int) (course []model.AcademicCourse, err erro
 	return course, nil
 }
 
-func GetTutorByCourse(courseId []model.AcademicCourse) (user model.User, err error) {
-	err = database.Get(&user, `SELECT u.* FROM user u JOIN user_academic_course uac ON u.id = uac.user_id WHERE uac.course_id = ? `, courseId)
+func GetTutorByCourse(courses []model.AcademicCourse) (user model.User, err error) {
+	var tutors []model.User
+	for _, course := range courses {
+		err = database.Select(&tutors, `SELECT u.*
+					FROM user u
+							 JOIN user_academic_course uac ON u.id = uac.user_id
+							 JOIN academic_course ac ON uac.course_id = ac.id
+					WHERE ac.name = ? `, course.Name)
+	}
 	return user, nil
 }
 
