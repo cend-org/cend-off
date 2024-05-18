@@ -6,7 +6,6 @@ import (
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/pkg/user/authorization"
 	"github.com/xorcare/pointer"
-	"time"
 )
 
 func GetAcademicLevels() (academics []model.AcademicLevel, err error) {
@@ -131,7 +130,6 @@ func GetUserAcademicLevels(userId int) (academicLevel []model.AcademicLevel, err
 }
 
 func UpdStudentAcademicCoursesPreferenceByParent(studentId int, new []*model.UserAcademicCoursePreferenceInput) (ret *bool, err error) {
-	time.Sleep(100)
 	for i := 0; i < len(new); i++ {
 		courseInput := new[i]
 		if courseInput != nil {
