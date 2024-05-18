@@ -6,6 +6,7 @@ import (
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/pkg/user/authorization"
 	"github.com/xorcare/pointer"
+	"time"
 )
 
 func GetAcademicLevels() (academics []model.AcademicLevel, err error) {
@@ -26,6 +27,8 @@ func GetAcademicCourses(academicId int) (courses []model.AcademicCourse, err err
 }
 
 func NewUserAcademicCourses(userId int, new []*model.UserAcademicCourseInput) (ret *bool, err error) {
+	var coursePreference model.UserAcademicCoursePreference
+
 	err = database.Exec(`DELETE FROM user_academic_course WHERE user_id = ?`, userId)
 	if err != nil {
 		return nil, err
@@ -37,10 +40,17 @@ func NewUserAcademicCourses(userId int, new []*model.UserAcademicCourseInput) (r
 			course := model.MapUserAcademicCourseInputToUserAcademicCourse(*courseInput, model.UserAcademicCourse{})
 			course.UserId = userId
 
-			_, err = database.Insert(course)
+			userAcademicCourseId, err := database.Insert(course)
 			if err != nil {
-				return nil, err
+				return nil, errx.DbInsertError
 			}
+			coursePreference.UserAcademicCourseId = int(userAcademicCourseId)
+
+			_, err = database.Insert(coursePreference)
+			if err != nil {
+				return nil, errx.DbInsertError
+			}
+
 		}
 	}
 
@@ -91,6 +101,56 @@ func SetUserAcademicLevel(parentId, studentId, academicLevelId int) (err error) 
 	return nil
 }
 
+func SetUserAcademicLevels(userId int, academicLevelIds []*int) (err error) {
+	var academicCourse model.UserAcademicCourse
+
+	for _, academicLevelId := range academicLevelIds {
+		courses, err := GetAcademicCourses(*academicLevelId)
+		if err != nil {
+			return errx.DbGetError
+		}
+		academicCourse = model.UserAcademicCourse{
+			CourseId: courses[0].Id,
+			UserId:   userId,
+		}
+		_, err = database.InsertOne(academicCourse)
+		if err != nil {
+			return errx.DbInsertError
+		}
+	}
+
+	return nil
+}
+
+func GetUserAcademicLevels(userId int) (academicLevel []model.AcademicLevel, err error) {
+	academicLevel, err = GetUserLevel(userId)
+	if err != nil {
+		return academicLevel, errx.DbGetError
+	}
+	return academicLevel, nil
+}
+
+func UpdStudentAcademicCoursesPreferenceByParent(studentId int, new []*model.UserAcademicCoursePreferenceInput) (ret *bool, err error) {
+	time.Sleep(100)
+	for i := 0; i < len(new); i++ {
+		courseInput := new[i]
+		if courseInput != nil {
+			preference, err := GetPreferencesById(*courseInput.UserAcademicCourseId)
+			if err != nil {
+				return nil, errx.DbGetError
+			}
+			course := model.MapUserAcademicCoursePreferenceInputToUserAcademicCoursePreference(*courseInput, preference)
+
+			err = database.Update(course)
+			if err != nil {
+				return nil, err
+			}
+		}
+	}
+
+	return pointer.Bool(true), err
+}
+
 /*
 UTILS
 */
@@ -114,8 +174,8 @@ func GetTutorByCourse(courses []model.AcademicCourse) (user model.User, err erro
 	return user, nil
 }
 
-func GetUserLevel(UserId int) (academicLevel model.AcademicLevel, err error) {
-	err = database.Get(&academicLevel,
+func GetUserLevel(UserId int) (academicLevel []model.AcademicLevel, err error) {
+	err = database.Select(&academicLevel,
 		`SELECT al.* FROM academic_level al
     			JOIN academic_course ac ON al.id = ac.academic_level_id
     			JOIN user_academic_course uac ON uac.course_id = ac.id
@@ -125,4 +185,24 @@ func GetUserLevel(UserId int) (academicLevel model.AcademicLevel, err error) {
 	}
 
 	return academicLevel, err
+}
+
+func GetPreferences(userId int) (userAcademicCoursePreferences []model.UserAcademicCoursePreference, err error) {
+	err = database.Select(&userAcademicCoursePreferences,
+		`SELECT uacp.*
+		FROM user_academic_course_preference uacp
+				 JOIN user_academic_course uac ON uacp.user_academic_course_id = uac.id
+		WHERE uac.user_id = ?`, userId)
+	if err != nil {
+		return userAcademicCoursePreferences, err
+	}
+	return userAcademicCoursePreferences, nil
+}
+
+func GetPreferencesById(coursePreferenceId int) (preference model.UserAcademicCoursePreference, err error) {
+	err = database.Get(&preference, `SELECT * FROM user_academic_course_preference WHERE user_academic_course_id = ? `, coursePreferenceId)
+	if err != nil {
+		return preference, err
+	}
+	return preference, nil
 }

@@ -9,12 +9,9 @@ type Mutation {
     UpdateProfileAndPassword(profile: UserInput! , password: PasswordInput!): User
     NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean
 
-
-
     #    Education
     SetUserAcademicLevel(AcademicLevelId: Int!):AcademicLevel
     NewAcademicCoursePreference(preferences: [UserAcademicCoursePreferenceInput!]): UserAcademicCoursePreference
-    NewUserAcademicLevel(levels: [Int]!): Boolean
 
     #    User Media
     RemoveCoverLetter: Boolean
@@ -28,6 +25,10 @@ type Mutation {
     UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
     SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
     NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean
-    NewStudentAcademicCoursesPreferenceByParent(coursesPreferences: [UserAcademicCoursePreferenceInput]! , studentId: Int!) : Boolean
+    UpdStudentAcademicCoursesPreferenceByParent(coursesPreferences: [UserAcademicCoursePreferenceInput]! , studentId: Int!) : Boolean
+
+    #   Tutor
+    NewUserAcademicLevels(academicLevelIds: [Int]!): Boolean
+
 
 }

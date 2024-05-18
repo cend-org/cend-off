@@ -8,7 +8,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
@@ -109,11 +108,6 @@ func (r *mutationResolver) SetUserAcademicLevel(ctx context.Context, academicLev
 // NewAcademicCoursePreference is the resolver for the NewAcademicCoursePreference field.
 func (r *mutationResolver) NewAcademicCoursePreference(ctx context.Context, preferences []model.UserAcademicCoursePreferenceInput) (*model.UserAcademicCoursePreference, error) {
 	panic(fmt.Errorf("not implemented: NewAcademicCoursePreference - NewAcademicCoursePreference"))
-}
-
-// NewUserAcademicLevel is the resolver for the NewUserAcademicLevel field.
-func (r *mutationResolver) NewUserAcademicLevel(ctx context.Context, levels []*int) (*bool, error) {
-	panic(fmt.Errorf("not implemented: NewUserAcademicLevel - NewUserAcademicLevel"))
 }
 
 // RemoveCoverLetter is the resolver for the RemoveCoverLetter field.
@@ -257,7 +251,6 @@ func (r *mutationResolver) SetStudentAcademicLevelByParent(ctx context.Context, 
 	if !link.IsStudentParentLinked(tok.UserId, studentID) {
 		return &status, errx.ParentLinkUserError
 	}
-
 	err = academic.SetUserAcademicLevel(tok.UserId, studentID, academicLevelID)
 	if err != nil {
 		return nil, err
@@ -284,8 +277,8 @@ func (r *mutationResolver) NewStudentAcademicCoursesByParent(ctx context.Context
 	return academic.NewUserAcademicCourses(studentID, courses)
 }
 
-// NewStudentAcademicCoursesPreferenceByParent is the resolver for the NewStudentAcademicCoursesPreferenceByParent field.
-func (r *mutationResolver) NewStudentAcademicCoursesPreferenceByParent(ctx context.Context, coursesPreferences []*model.UserAcademicCoursePreferenceInput, studentID int) (*bool, error) {
+// UpdStudentAcademicCoursesPreferenceByParent is the resolver for the UpdStudentAcademicCoursesPreferenceByParent field.
+func (r *mutationResolver) UpdStudentAcademicCoursesPreferenceByParent(ctx context.Context, coursesPreferences []*model.UserAcademicCoursePreferenceInput, studentID int) (*bool, error) {
 	var tok *token.Token
 	var err error
 	var status bool
@@ -298,12 +291,30 @@ func (r *mutationResolver) NewStudentAcademicCoursesPreferenceByParent(ctx conte
 	if !link.IsStudentParentLinked(tok.UserId, studentID) {
 		return nil, errx.ParentLinkUserError
 	}
-	_, err = link.NewStudentAcademicCoursesPreferenceByParent(studentID, coursesPreferences)
+	_, err = academic.UpdStudentAcademicCoursesPreferenceByParent(studentID, coursesPreferences)
 	if err != nil {
 		return nil, errx.Lambda(err)
 	}
 	status = true
 
+	return &status, nil
+}
+
+// NewUserAcademicLevels is the resolver for the NewUserAcademicLevels field.
+func (r *mutationResolver) NewUserAcademicLevels(ctx context.Context, academicLevelIds []*int) (*bool, error) {
+	var tok *token.Token
+	var err error
+	var status bool
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+	err = academic.SetUserAcademicLevels(tok.UserId, academicLevelIds)
+	if err != nil {
+		return nil, err
+	}
+	status = true
 	return &status, nil
 }
 

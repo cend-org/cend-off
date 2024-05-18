@@ -19,6 +19,7 @@ import (
 	"github.com/cend-org/duval/pkg/media/profile"
 	"github.com/cend-org/duval/pkg/media/video"
 	usr "github.com/cend-org/duval/pkg/user"
+	"github.com/cend-org/duval/pkg/user/link"
 )
 
 // MyProfile is the resolver for the MyProfile field.
@@ -350,6 +351,89 @@ func (r *queryResolver) UserProfileImageThumb(ctx context.Context, userID int) (
 		return nil, err
 	}
 	return &networkLink, nil
+}
+
+// UserAcademicLevels is the resolver for the UserAcademicLevels field.
+func (r *queryResolver) UserAcademicLevels(ctx context.Context) ([]model.AcademicLevel, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	academicLevel, err := academic.GetUserAcademicLevels(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return academicLevel, nil
+}
+
+// StudentAcademicLevel is the resolver for the StudentAcademicLevel field.
+func (r *queryResolver) StudentAcademicLevel(ctx context.Context, studentID int) ([]model.AcademicLevel, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if !link.IsStudentParentLinked(tok.UserId, studentID) {
+		return nil, errx.ParentLinkUserError
+	}
+
+	academicLevel, err := academic.GetUserAcademicLevels(studentID)
+	if err != nil {
+		return nil, err
+	}
+	return academicLevel, nil
+}
+
+// UserPreferences is the resolver for the UserPreferences field.
+func (r *queryResolver) UserPreferences(ctx context.Context, studentID int) ([]model.UserAcademicCoursePreference, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+	if !link.IsStudentParentLinked(tok.UserId, studentID) {
+		return nil, errx.ParentLinkUserError
+	}
+
+	courses, err := academic.GetPreferences(studentID)
+	if err != nil {
+		return nil, err
+	}
+	return courses, nil
+}
+
+// Preferences is the resolver for the Preferences field.
+func (r *queryResolver) Preferences(ctx context.Context) ([]model.UserAcademicCoursePreference, error) {
+	var (
+		tok *token.Token
+		err error
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	courses, err := academic.GetPreferences(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+	return courses, nil
 }
 
 // Query returns generated.QueryResolver implementation.

@@ -3,6 +3,7 @@ package user
 import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/utils/errx"
 )
 
 func UpdateProfileAndPassword(userId int, new model.UserInput, newPass model.PasswordInput) (usr *model.User, err error) {
@@ -10,7 +11,7 @@ func UpdateProfileAndPassword(userId int, new model.UserInput, newPass model.Pas
 
 	err = database.Get(&user, `SELECT * FROM user WHERE id = ?`, userId)
 	if err != nil {
-		return nil, err
+		return nil, errx.DbGetError
 	}
 
 	user = model.MapUserInputToUser(new, user)
@@ -22,7 +23,7 @@ func UpdateProfileAndPassword(userId int, new model.UserInput, newPass model.Pas
 
 	err = database.Update(user)
 	if err != nil {
-		return nil, err
+		return nil, errx.DbUpdateError
 	}
 
 	return &user, err

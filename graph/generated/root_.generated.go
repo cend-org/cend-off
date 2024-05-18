@@ -99,11 +99,10 @@ type ComplexityRoot struct {
 		NewProfessor                                func(childComplexity int, email string) int
 		NewStudent                                  func(childComplexity int, email string) int
 		NewStudentAcademicCoursesByParent           func(childComplexity int, courses []*model.UserAcademicCourseInput, studentID int) int
-		NewStudentAcademicCoursesPreferenceByParent func(childComplexity int, coursesPreferences []*model.UserAcademicCoursePreferenceInput, studentID int) int
 		NewStudentByParent                          func(childComplexity int, email string) int
 		NewTutor                                    func(childComplexity int, email string) int
 		NewUserAcademicCourses                      func(childComplexity int, courses []*model.UserAcademicCourseInput) int
-		NewUserAcademicLevel                        func(childComplexity int, levels []*int) int
+		NewUserAcademicLevels                       func(childComplexity int, academicLevelIds []*int) int
 		RemoveCoverLetter                           func(childComplexity int) int
 		RemoveCv                                    func(childComplexity int) int
 		RemoveProfileImage                          func(childComplexity int) int
@@ -111,6 +110,7 @@ type ComplexityRoot struct {
 		RemoveVideoPresentation                     func(childComplexity int) int
 		SetStudentAcademicLevelByParent             func(childComplexity int, academicLevelID int, studentID int) int
 		SetUserAcademicLevel                        func(childComplexity int, academicLevelID int) int
+		UpdStudentAcademicCoursesPreferenceByParent func(childComplexity int, coursesPreferences []*model.UserAcademicCoursePreferenceInput, studentID int) int
 		UpdateMyProfile                             func(childComplexity int, profile model.UserInput) int
 		UpdateProfileAndPassword                    func(childComplexity int, profile model.UserInput, password model.PasswordInput) int
 		UpdateStudentProfileByParent                func(childComplexity int, profile model.UserInput, studentID int) int
@@ -133,13 +133,17 @@ type ComplexityRoot struct {
 		Cv                    func(childComplexity int) int
 		CvThumb               func(childComplexity int) int
 		MyProfile             func(childComplexity int) int
+		Preferences           func(childComplexity int) int
 		ProfileImage          func(childComplexity int) int
 		ProfileImageThumb     func(childComplexity int) int
+		StudentAcademicLevel  func(childComplexity int, studentID int) int
 		SuggestTutor          func(childComplexity int, studentID int) int
+		UserAcademicLevels    func(childComplexity int) int
 		UserCoverLetter       func(childComplexity int, userID int) int
 		UserCoverLetterThumb  func(childComplexity int, userID int) int
 		UserCv                func(childComplexity int, userID int) int
 		UserCvThumb           func(childComplexity int, userID int) int
+		UserPreferences       func(childComplexity int, studentID int) int
 		UserProfileImage      func(childComplexity int, userID int) int
 		UserProfileImageThumb func(childComplexity int, userID int) int
 		UserVideoPresentation func(childComplexity int, userID int) int
@@ -544,18 +548,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.NewStudentAcademicCoursesByParent(childComplexity, args["courses"].([]*model.UserAcademicCourseInput), args["studentId"].(int)), true
 
-	case "Mutation.NewStudentAcademicCoursesPreferenceByParent":
-		if e.complexity.Mutation.NewStudentAcademicCoursesPreferenceByParent == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_NewStudentAcademicCoursesPreferenceByParent_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.NewStudentAcademicCoursesPreferenceByParent(childComplexity, args["coursesPreferences"].([]*model.UserAcademicCoursePreferenceInput), args["studentId"].(int)), true
-
 	case "Mutation.NewStudentByParent":
 		if e.complexity.Mutation.NewStudentByParent == nil {
 			break
@@ -592,17 +584,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.NewUserAcademicCourses(childComplexity, args["courses"].([]*model.UserAcademicCourseInput)), true
 
-	case "Mutation.NewUserAcademicLevel":
-		if e.complexity.Mutation.NewUserAcademicLevel == nil {
+	case "Mutation.NewUserAcademicLevels":
+		if e.complexity.Mutation.NewUserAcademicLevels == nil {
 			break
 		}
 
-		args, err := ec.field_Mutation_NewUserAcademicLevel_args(context.TODO(), rawArgs)
+		args, err := ec.field_Mutation_NewUserAcademicLevels_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Mutation.NewUserAcademicLevel(childComplexity, args["levels"].([]*int)), true
+		return e.complexity.Mutation.NewUserAcademicLevels(childComplexity, args["academicLevelIds"].([]*int)), true
 
 	case "Mutation.RemoveCoverLetter":
 		if e.complexity.Mutation.RemoveCoverLetter == nil {
@@ -667,6 +659,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.SetUserAcademicLevel(childComplexity, args["AcademicLevelId"].(int)), true
+
+	case "Mutation.UpdStudentAcademicCoursesPreferenceByParent":
+		if e.complexity.Mutation.UpdStudentAcademicCoursesPreferenceByParent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_UpdStudentAcademicCoursesPreferenceByParent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdStudentAcademicCoursesPreferenceByParent(childComplexity, args["coursesPreferences"].([]*model.UserAcademicCoursePreferenceInput), args["studentId"].(int)), true
 
 	case "Mutation.UpdateMyProfile":
 		if e.complexity.Mutation.UpdateMyProfile == nil {
@@ -800,6 +804,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.MyProfile(childComplexity), true
 
+	case "Query.Preferences":
+		if e.complexity.Query.Preferences == nil {
+			break
+		}
+
+		return e.complexity.Query.Preferences(childComplexity), true
+
 	case "Query.ProfileImage":
 		if e.complexity.Query.ProfileImage == nil {
 			break
@@ -814,6 +825,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.ProfileImageThumb(childComplexity), true
 
+	case "Query.StudentAcademicLevel":
+		if e.complexity.Query.StudentAcademicLevel == nil {
+			break
+		}
+
+		args, err := ec.field_Query_StudentAcademicLevel_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.StudentAcademicLevel(childComplexity, args["studentId"].(int)), true
+
 	case "Query.SuggestTutor":
 		if e.complexity.Query.SuggestTutor == nil {
 			break
@@ -825,6 +848,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.SuggestTutor(childComplexity, args["studentId"].(int)), true
+
+	case "Query.UserAcademicLevels":
+		if e.complexity.Query.UserAcademicLevels == nil {
+			break
+		}
+
+		return e.complexity.Query.UserAcademicLevels(childComplexity), true
 
 	case "Query.UserCoverLetter":
 		if e.complexity.Query.UserCoverLetter == nil {
@@ -873,6 +903,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.UserCvThumb(childComplexity, args["userId"].(int)), true
+
+	case "Query.UserPreferences":
+		if e.complexity.Query.UserPreferences == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserPreferences_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserPreferences(childComplexity, args["studentId"].(int)), true
 
 	case "Query.UserProfileImage":
 		if e.complexity.Query.UserProfileImage == nil {
@@ -1541,12 +1583,9 @@ scalar Upload
     UpdateProfileAndPassword(profile: UserInput! , password: PasswordInput!): User
     NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean
 
-
-
     #    Education
     SetUserAcademicLevel(AcademicLevelId: Int!):AcademicLevel
     NewAcademicCoursePreference(preferences: [UserAcademicCoursePreferenceInput!]): UserAcademicCoursePreference
-    NewUserAcademicLevel(levels: [Int]!): Boolean
 
     #    User Media
     RemoveCoverLetter: Boolean
@@ -1560,7 +1599,11 @@ scalar Upload
     UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
     SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
     NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean
-    NewStudentAcademicCoursesPreferenceByParent(coursesPreferences: [UserAcademicCoursePreferenceInput]! , studentId: Int!) : Boolean
+    UpdStudentAcademicCoursesPreferenceByParent(coursesPreferences: [UserAcademicCoursePreferenceInput]! , studentId: Int!) : Boolean
+
+    #   Tutor
+    NewUserAcademicLevels(academicLevelIds: [Int]!): Boolean
+
 
 }
 `, BuiltIn: false},
@@ -1591,6 +1634,13 @@ scalar Upload
     UserCoverLetterThumb(userId: Int!): String
     UserCvThumb(userId: Int!): String
     UserProfileImageThumb(userId: Int!): String
+
+    #    Education
+    UserAcademicLevels: [AcademicLevel!]
+    StudentAcademicLevel(studentId : Int!): [AcademicLevel!]
+    UserPreferences(studentId : Int!): [UserAcademicCoursePreference!]
+    Preferences: [UserAcademicCoursePreference!]
+
 }`, BuiltIn: false},
 	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {
     T: String!

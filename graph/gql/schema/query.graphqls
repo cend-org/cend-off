@@ -25,4 +25,11 @@ type Query {
     UserCoverLetterThumb(userId: Int!): String
     UserCvThumb(userId: Int!): String
     UserProfileImageThumb(userId: Int!): String
+
+    #    Education
+    UserAcademicLevels: [AcademicLevel!]
+    StudentAcademicLevel(studentId : Int!): [AcademicLevel!]
+    UserPreferences(studentId : Int!): [UserAcademicCoursePreference!]
+    Preferences: [UserAcademicCoursePreference!]
+
 }

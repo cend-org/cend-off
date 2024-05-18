@@ -6,7 +6,6 @@ import (
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
 	"github.com/cend-org/duval/pkg/user/authorization"
-	"github.com/xorcare/pointer"
 )
 
 const (
@@ -89,27 +88,6 @@ func UpdateStudent(studentId int, profile model.UserInput) (err error) {
 	}
 
 	return nil
-}
-
-func NewStudentAcademicCoursesPreferenceByParent(studentId int, new []*model.UserAcademicCoursePreferenceInput) (ret *bool, err error) {
-	err = database.Exec(`DELETE FROM user_academic_course WHERE user_id = ?`, studentId)
-	if err != nil {
-		return nil, err
-	}
-
-	for i := 0; i < len(new); i++ {
-		courseInput := new[i]
-		if courseInput != nil {
-			course := model.MapUserAcademicCoursePreferenceInputToUserAcademicCoursePreference(*courseInput, model.UserAcademicCoursePreference{})
-
-			_, err = database.Insert(course)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-
-	return pointer.Bool(true), err
 }
 
 /*

@@ -36,6 +36,10 @@ type QueryResolver interface {
 	UserCoverLetterThumb(ctx context.Context, userID int) (*string, error)
 	UserCvThumb(ctx context.Context, userID int) (*string, error)
 	UserProfileImageThumb(ctx context.Context, userID int) (*string, error)
+	UserAcademicLevels(ctx context.Context) ([]model.AcademicLevel, error)
+	StudentAcademicLevel(ctx context.Context, studentID int) ([]model.AcademicLevel, error)
+	UserPreferences(ctx context.Context, studentID int) ([]model.UserAcademicCoursePreference, error)
+	Preferences(ctx context.Context) ([]model.UserAcademicCoursePreference, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -54,6 +58,21 @@ func (ec *executionContext) field_Query_AcademicCourses_args(ctx context.Context
 		}
 	}
 	args["AcademicLevelId"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_StudentAcademicLevel_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["studentId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("studentId"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["studentId"] = arg0
 	return args, nil
 }
 
@@ -129,6 +148,21 @@ func (ec *executionContext) field_Query_UserCv_args(ctx context.Context, rawArgs
 		}
 	}
 	args["userId"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_UserPreferences_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["studentId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("studentId"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["studentId"] = arg0
 	return args, nil
 }
 
@@ -1154,6 +1188,248 @@ func (ec *executionContext) fieldContext_Query_UserProfileImageThumb(ctx context
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_UserAcademicLevels(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_UserAcademicLevels(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UserAcademicLevels(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]model.AcademicLevel)
+	fc.Result = res
+	return ec.marshalOAcademicLevel2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAcademicLevelᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_UserAcademicLevels(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "Id":
+				return ec.fieldContext_AcademicLevel_Id(ctx, field)
+			case "CreatedAt":
+				return ec.fieldContext_AcademicLevel_CreatedAt(ctx, field)
+			case "UpdatedAt":
+				return ec.fieldContext_AcademicLevel_UpdatedAt(ctx, field)
+			case "DeletedAt":
+				return ec.fieldContext_AcademicLevel_DeletedAt(ctx, field)
+			case "Name":
+				return ec.fieldContext_AcademicLevel_Name(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AcademicLevel", field.Name)
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_StudentAcademicLevel(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_StudentAcademicLevel(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().StudentAcademicLevel(rctx, fc.Args["studentId"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]model.AcademicLevel)
+	fc.Result = res
+	return ec.marshalOAcademicLevel2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAcademicLevelᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_StudentAcademicLevel(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "Id":
+				return ec.fieldContext_AcademicLevel_Id(ctx, field)
+			case "CreatedAt":
+				return ec.fieldContext_AcademicLevel_CreatedAt(ctx, field)
+			case "UpdatedAt":
+				return ec.fieldContext_AcademicLevel_UpdatedAt(ctx, field)
+			case "DeletedAt":
+				return ec.fieldContext_AcademicLevel_DeletedAt(ctx, field)
+			case "Name":
+				return ec.fieldContext_AcademicLevel_Name(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type AcademicLevel", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_StudentAcademicLevel_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_UserPreferences(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_UserPreferences(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().UserPreferences(rctx, fc.Args["studentId"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]model.UserAcademicCoursePreference)
+	fc.Result = res
+	return ec.marshalOUserAcademicCoursePreference2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_UserPreferences(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "Id":
+				return ec.fieldContext_UserAcademicCoursePreference_Id(ctx, field)
+			case "CreatedAt":
+				return ec.fieldContext_UserAcademicCoursePreference_CreatedAt(ctx, field)
+			case "UpdatedAt":
+				return ec.fieldContext_UserAcademicCoursePreference_UpdatedAt(ctx, field)
+			case "DeletedAt":
+				return ec.fieldContext_UserAcademicCoursePreference_DeletedAt(ctx, field)
+			case "UserAcademicCourseId":
+				return ec.fieldContext_UserAcademicCoursePreference_UserAcademicCourseId(ctx, field)
+			case "IsOnline":
+				return ec.fieldContext_UserAcademicCoursePreference_IsOnline(ctx, field)
+			case "Availability":
+				return ec.fieldContext_UserAcademicCoursePreference_Availability(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserAcademicCoursePreference", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_UserPreferences_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_Preferences(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_Preferences(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().Preferences(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]model.UserAcademicCoursePreference)
+	fc.Result = res
+	return ec.marshalOUserAcademicCoursePreference2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_Preferences(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "Id":
+				return ec.fieldContext_UserAcademicCoursePreference_Id(ctx, field)
+			case "CreatedAt":
+				return ec.fieldContext_UserAcademicCoursePreference_CreatedAt(ctx, field)
+			case "UpdatedAt":
+				return ec.fieldContext_UserAcademicCoursePreference_UpdatedAt(ctx, field)
+			case "DeletedAt":
+				return ec.fieldContext_UserAcademicCoursePreference_DeletedAt(ctx, field)
+			case "UserAcademicCourseId":
+				return ec.fieldContext_UserAcademicCoursePreference_UserAcademicCourseId(ctx, field)
+			case "IsOnline":
+				return ec.fieldContext_UserAcademicCoursePreference_IsOnline(ctx, field)
+			case "Availability":
+				return ec.fieldContext_UserAcademicCoursePreference_Availability(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type UserAcademicCoursePreference", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query___type(ctx, field)
 	if err != nil {
@@ -1650,6 +1926,82 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_UserProfileImageThumb(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "UserAcademicLevels":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_UserAcademicLevels(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "StudentAcademicLevel":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_StudentAcademicLevel(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "UserPreferences":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_UserPreferences(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "Preferences":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_Preferences(ctx, field)
 				return res
 			}
 
