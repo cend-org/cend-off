@@ -27,12 +27,24 @@ func GetAcademicCourses(academicId int) (courses []model.AcademicCourse, err err
 
 func NewUserAcademicCourses(userId int, new []*model.UserAcademicCourseInput) (ret *bool, err error) {
 	var coursePreference model.UserAcademicCoursePreference
+	var coursePreferences []model.UserAcademicCoursePreference
+
+	coursePreferences, err = GetPreferences(userId)
+	if err != nil {
+		return nil, errx.DbGetError
+	}
 
 	err = database.Exec(`DELETE FROM user_academic_course WHERE user_id = ?`, userId)
 	if err != nil {
-		return nil, err
+		return nil, errx.DbDeleteError
 	}
 
+	for _, preference := range coursePreferences {
+		err = database.Delete(preference)
+		if err != nil {
+			return nil, errx.DbDeleteError
+		}
+	}
 	for i := 0; i < len(new); i++ {
 		courseInput := new[i]
 		if courseInput != nil {
