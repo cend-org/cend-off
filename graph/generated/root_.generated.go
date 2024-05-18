@@ -93,7 +93,6 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		Login                                       func(childComplexity int, email string, password string) int
-		NewAcademicCoursePreference                 func(childComplexity int, preferences []model.UserAcademicCoursePreferenceInput) int
 		NewParent                                   func(childComplexity int, email string) int
 		NewPassword                                 func(childComplexity int, password model.PasswordInput) int
 		NewProfessor                                func(childComplexity int, email string) int
@@ -110,6 +109,7 @@ type ComplexityRoot struct {
 		RemoveVideoPresentation                     func(childComplexity int) int
 		SetStudentAcademicLevelByParent             func(childComplexity int, academicLevelID int, studentID int) int
 		SetUserAcademicLevel                        func(childComplexity int, academicLevelID int) int
+		UpdAcademicCoursePreference                 func(childComplexity int, coursesPreferences []*model.UserAcademicCoursePreferenceInput) int
 		UpdStudentAcademicCoursesPreferenceByParent func(childComplexity int, coursesPreferences []*model.UserAcademicCoursePreferenceInput, studentID int) int
 		UpdateMyProfile                             func(childComplexity int, profile model.UserInput) int
 		UpdateProfileAndPassword                    func(childComplexity int, profile model.UserInput, password model.PasswordInput) int
@@ -476,18 +476,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.Login(childComplexity, args["email"].(string), args["password"].(string)), true
 
-	case "Mutation.NewAcademicCoursePreference":
-		if e.complexity.Mutation.NewAcademicCoursePreference == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_NewAcademicCoursePreference_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.NewAcademicCoursePreference(childComplexity, args["preferences"].([]model.UserAcademicCoursePreferenceInput)), true
-
 	case "Mutation.NewParent":
 		if e.complexity.Mutation.NewParent == nil {
 			break
@@ -659,6 +647,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.SetUserAcademicLevel(childComplexity, args["AcademicLevelId"].(int)), true
+
+	case "Mutation.UpdAcademicCoursePreference":
+		if e.complexity.Mutation.UpdAcademicCoursePreference == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_UpdAcademicCoursePreference_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdAcademicCoursePreference(childComplexity, args["coursesPreferences"].([]*model.UserAcademicCoursePreferenceInput)), true
 
 	case "Mutation.UpdStudentAcademicCoursesPreferenceByParent":
 		if e.complexity.Mutation.UpdStudentAcademicCoursesPreferenceByParent == nil {
@@ -1585,7 +1585,7 @@ scalar Upload
 
     #    Education
     SetUserAcademicLevel(AcademicLevelId: Int!):AcademicLevel
-    NewAcademicCoursePreference(preferences: [UserAcademicCoursePreferenceInput!]): UserAcademicCoursePreference
+    UpdAcademicCoursePreference(coursesPreferences: [UserAcademicCoursePreferenceInput]!): [UserAcademicCoursePreference!]
 
     #    User Media
     RemoveCoverLetter: Boolean

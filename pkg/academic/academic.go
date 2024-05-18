@@ -129,7 +129,7 @@ func GetUserAcademicLevels(userId int) (academicLevel []model.AcademicLevel, err
 	return academicLevel, nil
 }
 
-func UpdStudentAcademicCoursesPreferenceByParent(studentId int, new []*model.UserAcademicCoursePreferenceInput) (ret *bool, err error) {
+func UpdStudentAcademicCoursesPreferenceByParent(studentId int, new []*model.UserAcademicCoursePreferenceInput) (preferences []model.UserAcademicCoursePreference, err error) {
 	for i := 0; i < len(new); i++ {
 		courseInput := new[i]
 		if courseInput != nil {
@@ -137,6 +137,7 @@ func UpdStudentAcademicCoursesPreferenceByParent(studentId int, new []*model.Use
 			if err != nil {
 				return nil, errx.DbGetError
 			}
+
 			course := model.MapUserAcademicCoursePreferenceInputToUserAcademicCoursePreference(*courseInput, preference)
 
 			err = database.Update(course)
@@ -146,7 +147,12 @@ func UpdStudentAcademicCoursesPreferenceByParent(studentId int, new []*model.Use
 		}
 	}
 
-	return pointer.Bool(true), err
+	preferences, err = GetPreferences(studentId)
+	if err != nil {
+		return nil, errx.DbGetError
+	}
+
+	return preferences, err
 }
 
 /*
