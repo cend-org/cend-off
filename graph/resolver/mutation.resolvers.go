@@ -8,6 +8,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
@@ -105,9 +106,22 @@ func (r *mutationResolver) SetUserAcademicLevel(ctx context.Context, academicLev
 	panic("not implemented")
 }
 
-// NewAcademicCoursePreference is the resolver for the NewAcademicCoursePreference field.
-func (r *mutationResolver) NewAcademicCoursePreference(ctx context.Context, preferences []model.UserAcademicCoursePreferenceInput) (*model.UserAcademicCoursePreference, error) {
-	panic(fmt.Errorf("not implemented: NewAcademicCoursePreference - NewAcademicCoursePreference"))
+// UpdAcademicCoursePreference is the resolver for the UpdAcademicCoursePreference field.
+func (r *mutationResolver) UpdAcademicCoursePreference(ctx context.Context, coursesPreferences []*model.UserAcademicCoursePreferenceInput) ([]model.UserAcademicCoursePreference, error) {
+	var tok *token.Token
+	var err error
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	preferences, err := academic.UpdStudentAcademicCoursesPreferenceByParent(tok.UserId, coursesPreferences)
+	if err != nil {
+		return nil, errx.Lambda(err)
+	}
+
+	return preferences, nil
 }
 
 // RemoveCoverLetter is the resolver for the RemoveCoverLetter field.

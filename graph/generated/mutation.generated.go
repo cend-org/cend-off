@@ -27,7 +27,7 @@ type MutationResolver interface {
 	UpdateProfileAndPassword(ctx context.Context, profile model.UserInput, password model.PasswordInput) (*model.User, error)
 	NewUserAcademicCourses(ctx context.Context, courses []*model.UserAcademicCourseInput) (*bool, error)
 	SetUserAcademicLevel(ctx context.Context, academicLevelID int) (*model.AcademicLevel, error)
-	NewAcademicCoursePreference(ctx context.Context, preferences []model.UserAcademicCoursePreferenceInput) (*model.UserAcademicCoursePreference, error)
+	UpdAcademicCoursePreference(ctx context.Context, coursesPreferences []*model.UserAcademicCoursePreferenceInput) ([]model.UserAcademicCoursePreference, error)
 	RemoveCoverLetter(ctx context.Context) (*bool, error)
 	RemoveCv(ctx context.Context) (*bool, error)
 	RemoveProfileImage(ctx context.Context) (*bool, error)
@@ -66,21 +66,6 @@ func (ec *executionContext) field_Mutation_Login_args(ctx context.Context, rawAr
 		}
 	}
 	args["password"] = arg1
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_NewAcademicCoursePreference_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 []model.UserAcademicCoursePreferenceInput
-	if tmp, ok := rawArgs["preferences"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("preferences"))
-		arg0, err = ec.unmarshalOUserAcademicCoursePreferenceInput2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInputᚄ(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["preferences"] = arg0
 	return args, nil
 }
 
@@ -279,6 +264,21 @@ func (ec *executionContext) field_Mutation_SetUserAcademicLevel_args(ctx context
 		}
 	}
 	args["AcademicLevelId"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_UpdAcademicCoursePreference_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 []*model.UserAcademicCoursePreferenceInput
+	if tmp, ok := rawArgs["coursesPreferences"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("coursesPreferences"))
+		arg0, err = ec.unmarshalNUserAcademicCoursePreferenceInput2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["coursesPreferences"] = arg0
 	return args, nil
 }
 
@@ -1017,8 +1017,8 @@ func (ec *executionContext) fieldContext_Mutation_SetUserAcademicLevel(ctx conte
 	return fc, nil
 }
 
-func (ec *executionContext) _Mutation_NewAcademicCoursePreference(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Mutation_NewAcademicCoursePreference(ctx, field)
+func (ec *executionContext) _Mutation_UpdAcademicCoursePreference(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_UpdAcademicCoursePreference(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -1031,7 +1031,7 @@ func (ec *executionContext) _Mutation_NewAcademicCoursePreference(ctx context.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().NewAcademicCoursePreference(rctx, fc.Args["preferences"].([]model.UserAcademicCoursePreferenceInput))
+		return ec.resolvers.Mutation().UpdAcademicCoursePreference(rctx, fc.Args["coursesPreferences"].([]*model.UserAcademicCoursePreferenceInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1040,12 +1040,12 @@ func (ec *executionContext) _Mutation_NewAcademicCoursePreference(ctx context.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.UserAcademicCoursePreference)
+	res := resTmp.([]model.UserAcademicCoursePreference)
 	fc.Result = res
-	return ec.marshalOUserAcademicCoursePreference2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreference(ctx, field.Selections, res)
+	return ec.marshalOUserAcademicCoursePreference2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceᚄ(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Mutation_NewAcademicCoursePreference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Mutation_UpdAcademicCoursePreference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Mutation",
 		Field:      field,
@@ -1078,7 +1078,7 @@ func (ec *executionContext) fieldContext_Mutation_NewAcademicCoursePreference(ct
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Mutation_NewAcademicCoursePreference_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Mutation_UpdAcademicCoursePreference_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -1684,9 +1684,9 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_SetUserAcademicLevel(ctx, field)
 			})
-		case "NewAcademicCoursePreference":
+		case "UpdAcademicCoursePreference":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
-				return ec._Mutation_NewAcademicCoursePreference(ctx, field)
+				return ec._Mutation_UpdAcademicCoursePreference(ctx, field)
 			})
 		case "RemoveCoverLetter":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {

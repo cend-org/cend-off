@@ -11,7 +11,7 @@ type Mutation {
 
     #    Education
     SetUserAcademicLevel(AcademicLevelId: Int!):AcademicLevel
-    NewAcademicCoursePreference(preferences: [UserAcademicCoursePreferenceInput!]): UserAcademicCoursePreference
+    UpdAcademicCoursePreference(coursesPreferences: [UserAcademicCoursePreferenceInput]!): [UserAcademicCoursePreference!]
 
     #    User Media
     RemoveCoverLetter: Boolean
