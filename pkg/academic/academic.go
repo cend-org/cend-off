@@ -1,6 +1,7 @@
 package academic
 
 import (
+	"fmt"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/utils/errx"
@@ -53,12 +54,13 @@ func NewUserAcademicCourses(userId int, new []*model.UserAcademicCourseInput) (r
 
 			userAcademicCourseId, err := database.Insert(course)
 			if err != nil {
+				fmt.Println(err)
 				return nil, errx.DbInsertError
 			}
 			coursePreference.UserAcademicCourseId = int(userAcademicCourseId)
-
 			_, err = database.Insert(coursePreference)
 			if err != nil {
+				fmt.Println(err)
 				return nil, errx.DbInsertError
 			}
 
