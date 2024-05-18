@@ -1555,7 +1555,7 @@ scalar Upload
     RemoveVideoPresentation: Boolean
 
     #    Student - parent
-    NewStudentByParent(email: String!): Boolean
+    NewStudentByParent(email: String!): Int
     RemoveStudentByParent(studentId: Int!): Boolean
     UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
     SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
