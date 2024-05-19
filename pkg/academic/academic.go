@@ -11,7 +11,7 @@ import (
 func GetAcademicLevels() (academics []model.AcademicLevel, err error) {
 	err = database.Select(&academics, `SELECT * FROM academic_level ORDER BY created_at`)
 	if err != nil {
-		return nil, err
+		return nil, errx.SupportError
 	}
 
 	return academics, err
@@ -20,7 +20,7 @@ func GetAcademicLevels() (academics []model.AcademicLevel, err error) {
 func GetAcademicCourses(academicId int) (courses []model.AcademicCourse, err error) {
 	err = database.Select(&courses, `SELECT * FROM academic_course WHERE academic_level_id = ?`, academicId)
 	if err != nil {
-		return nil, err
+		return nil, errx.SupportError
 	}
 	return courses, err
 }
@@ -31,18 +31,18 @@ func NewUserAcademicCourses(userId int, new []*model.UserAcademicCourseInput) (r
 
 	coursePreferences, err = GetPreferences(userId)
 	if err != nil {
-		return nil, errx.DbGetError
+		return nil, errx.CoursePreferenceError
 	}
 
 	err = database.Exec(`DELETE FROM user_academic_course WHERE user_id = ?`, userId)
 	if err != nil {
-		return nil, errx.DbDeleteError
+		return nil, errx.SupportError
 	}
 
 	for _, preference := range coursePreferences {
 		err = database.Delete(preference)
 		if err != nil {
-			return nil, errx.DbDeleteError
+			return nil, errx.SupportError
 		}
 	}
 	for i := 0; i < len(new); i++ {
@@ -53,12 +53,13 @@ func NewUserAcademicCourses(userId int, new []*model.UserAcademicCourseInput) (r
 
 			userAcademicCourseId, err := database.Insert(course)
 			if err != nil {
-				return nil, errx.DbInsertError
+				return nil, errx.SupportError
 			}
+
 			coursePreference.UserAcademicCourseId = int(userAcademicCourseId)
 			_, err = database.Insert(coursePreference)
 			if err != nil {
-				return nil, errx.DbInsertError
+				return nil, errx.SupportError
 			}
 
 		}
@@ -74,12 +75,12 @@ func GetTutorWithPreferredCourse(studentId int) (user model.User, err error) {
 
 	course, err = GetUserPreferredCourse(studentId)
 	if err != nil {
-		return user, err
+		return user, errx.CoursePreferenceError
 	}
 
 	user, err = GetTutorByCourse(course)
 	if err != nil {
-		return user, err
+		return user, errx.SupportError
 	}
 
 	return user, nil
@@ -97,7 +98,7 @@ func SetUserAcademicLevel(parentId, studentId, academicLevelId int) (err error) 
 
 	courses, err = GetAcademicCourses(academicLevelId)
 	if err != nil {
-		return errx.DbGetError
+		return errx.LevelError
 	}
 
 	academicCourse.CourseId = courses[0].Id
@@ -105,7 +106,7 @@ func SetUserAcademicLevel(parentId, studentId, academicLevelId int) (err error) 
 
 	_, err = database.InsertOne(academicCourse)
 	if err != nil {
-		return errx.DbInsertError
+		return errx.SupportError
 	}
 
 	return nil
@@ -117,15 +118,16 @@ func SetUserAcademicLevels(userId int, academicLevelIds []*int) (err error) {
 	for _, academicLevelId := range academicLevelIds {
 		courses, err := GetAcademicCourses(*academicLevelId)
 		if err != nil {
-			return errx.DbGetError
+			return errx.LevelError
 		}
+
 		academicCourse = model.UserAcademicCourse{
 			CourseId: courses[0].Id,
 			UserId:   userId,
 		}
 		_, err = database.InsertOne(academicCourse)
 		if err != nil {
-			return errx.DbInsertError
+			return errx.SupportError
 		}
 	}
 
@@ -135,7 +137,7 @@ func SetUserAcademicLevels(userId int, academicLevelIds []*int) (err error) {
 func GetUserAcademicLevels(userId int) (academicLevel []model.AcademicLevel, err error) {
 	academicLevel, err = GetUserLevel(userId)
 	if err != nil {
-		return academicLevel, errx.DbGetError
+		return academicLevel, errx.UnknownLevelError
 	}
 	return academicLevel, nil
 }
@@ -146,7 +148,7 @@ func UpdStudentAcademicCoursesPreferenceByParent(studentId int, new []*model.Use
 		if courseInput != nil {
 			preference, err := GetPreferencesById(*courseInput.UserAcademicCourseId)
 			if err != nil {
-				return nil, errx.DbGetError
+				return nil, errx.CoursePreferenceError
 			}
 
 			course := model.MapUserAcademicCoursePreferenceInputToUserAcademicCoursePreference(*courseInput, preference)
@@ -160,7 +162,7 @@ func UpdStudentAcademicCoursesPreferenceByParent(studentId int, new []*model.Use
 
 	preferences, err = GetPreferences(studentId)
 	if err != nil {
-		return nil, errx.DbGetError
+		return nil, errx.CoursePreferenceError
 	}
 
 	return preferences, err

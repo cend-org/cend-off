@@ -385,7 +385,7 @@ func (r *queryResolver) StudentAcademicLevel(ctx context.Context, studentID int)
 	}
 
 	if !link.IsStudentParentLinked(tok.UserId, studentID) {
-		return nil, errx.ParentLinkUserError
+		return nil, errx.UlError
 	}
 
 	academicLevel, err := academic.GetUserAcademicLevels(studentID)
@@ -407,7 +407,7 @@ func (r *queryResolver) UserPreferences(ctx context.Context, studentID int) ([]m
 		return nil, errx.UnAuthorizedError
 	}
 	if !link.IsStudentParentLinked(tok.UserId, studentID) {
-		return nil, errx.ParentLinkUserError
+		return nil, errx.UlError
 	}
 
 	courses, err := academic.GetPreferences(studentID)

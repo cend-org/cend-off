@@ -17,7 +17,6 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/joinverse/xid v0.0.0-20171120095953-afa60c3e0e47
 	github.com/nrfta/go-graphql-scalars v0.2.1
-	github.com/pkg/errors v0.9.1
 	github.com/satori/go.uuid v1.2.0
 	github.com/unidoc/unipdf/v3 v3.57.0
 	github.com/vektah/gqlparser/v2 v2.5.11
@@ -58,6 +57,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/neighborly/go-errors v0.3.2 // indirect
 	github.com/pelletier/go-toml/v2 v2.2.1 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/sosodev/duration v1.2.0 // indirect

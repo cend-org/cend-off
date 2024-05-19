@@ -98,14 +98,12 @@ type ComplexityRoot struct {
 		NewProfessor                                func(childComplexity int, email string) int
 		NewStudent                                  func(childComplexity int, email string) int
 		NewStudentAcademicCoursesByParent           func(childComplexity int, courses []*model.UserAcademicCourseInput, studentID int) int
-		NewStudentByParent                          func(childComplexity int, email string) int
 		NewTutor                                    func(childComplexity int, email string) int
 		NewUserAcademicCourses                      func(childComplexity int, courses []*model.UserAcademicCourseInput) int
 		NewUserAcademicLevels                       func(childComplexity int, academicLevelIds []*int) int
 		RemoveCoverLetter                           func(childComplexity int) int
 		RemoveCv                                    func(childComplexity int) int
 		RemoveProfileImage                          func(childComplexity int) int
-		RemoveStudentByParent                       func(childComplexity int, studentID int) int
 		RemoveVideoPresentation                     func(childComplexity int) int
 		SetStudentAcademicLevelByParent             func(childComplexity int, academicLevelID int, studentID int) int
 		SetUserAcademicLevel                        func(childComplexity int, academicLevelID int) int
@@ -114,6 +112,7 @@ type ComplexityRoot struct {
 		UpdateMyProfile                             func(childComplexity int, profile model.UserInput) int
 		UpdateProfileAndPassword                    func(childComplexity int, profile model.UserInput, password model.PasswordInput) int
 		UpdateStudentProfileByParent                func(childComplexity int, profile model.UserInput, studentID int) int
+		UserStudent                                 func(childComplexity int, name string, familyName string) int
 	}
 
 	Password struct {
@@ -536,18 +535,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.NewStudentAcademicCoursesByParent(childComplexity, args["courses"].([]*model.UserAcademicCourseInput), args["studentId"].(int)), true
 
-	case "Mutation.NewStudentByParent":
-		if e.complexity.Mutation.NewStudentByParent == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_NewStudentByParent_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.NewStudentByParent(childComplexity, args["email"].(string)), true
-
 	case "Mutation.NewTutor":
 		if e.complexity.Mutation.NewTutor == nil {
 			break
@@ -604,18 +591,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RemoveProfileImage(childComplexity), true
-
-	case "Mutation.RemoveStudentByParent":
-		if e.complexity.Mutation.RemoveStudentByParent == nil {
-			break
-		}
-
-		args, err := ec.field_Mutation_RemoveStudentByParent_args(context.TODO(), rawArgs)
-		if err != nil {
-			return 0, false
-		}
-
-		return e.complexity.Mutation.RemoveStudentByParent(childComplexity, args["studentId"].(int)), true
 
 	case "Mutation.RemoveVideoPresentation":
 		if e.complexity.Mutation.RemoveVideoPresentation == nil {
@@ -707,6 +682,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateStudentProfileByParent(childComplexity, args["profile"].(model.UserInput), args["studentId"].(int)), true
+
+	case "Mutation.UserStudent":
+		if e.complexity.Mutation.UserStudent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_UserStudent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UserStudent(childComplexity, args["name"].(string), args["familyName"].(string)), true
 
 	case "Password.CreatedAt":
 		if e.complexity.Password.CreatedAt == nil {
@@ -1594,8 +1581,7 @@ scalar Upload
     RemoveVideoPresentation: Boolean
 
     #    Student - parent
-    NewStudentByParent(email: String!): Int
-    RemoveStudentByParent(studentId: Int!): Boolean
+    UserStudent(name: String! , familyName: String!): User
     UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
     SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
     NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean

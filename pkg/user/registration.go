@@ -47,24 +47,24 @@ func register(email string, userType int) (bearer *model.BearerToken, err error)
 
 	user.Matricule, err = utils.GenerateMatricule()
 	if err != nil {
-		return nil, errx.GenerateMatriculeError
+		return nil, errx.SupportError
 	}
 
 	user.Email = email
 
 	user.Id, err = database.InsertOne(user)
 	if err != nil {
-		return nil, errx.DuplicateUserError
+		return nil, errx.SupportError
 	}
 
 	err = authorization.NewUserAuthorization(user.Id, userType)
 	if err != nil {
-		return nil, errx.AuthorizationError
+		return nil, errx.SupportError
 	}
 
 	T, err = authentication.NewAccessToken(user)
 	if err != nil {
-		return nil, err
+		return nil, errx.SupportError
 	}
 
 	bearer = &model.BearerToken{

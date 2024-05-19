@@ -1,53 +1,65 @@
 package errx
 
-import (
-	"errors"
-	"fmt"
-	"github.com/cend-org/duval/internal/utils/note"
-)
-
-func Lambda(err error) error {
-	err = errors.New(fmt.Sprintf("Something went wrong : %v", err))
-	return err
-}
-
-var UnAuthorizedError = note.UnAuthorizedError
-var ParamsError = note.ParamsError
+import "errors"
 
 var (
-	ParseError            = note.ParseError
-	TypeError             = note.TypeError
-	InvalidEmailError     = note.InvalidEmailError
-	DuplicateUserError    = note.DuplicateUserError
-	LinkUserError         = note.LinkUserError
-	DuplicateAddressError = note.DuplicateAddressError
-)
-var (
-	ParentLinkUserError = note.ParentUserLinkError
+	DummyError = "something went wrong please contact support."
 )
 
-var (
-	DbInsertError = note.DatabaseInsertOperationError
-	DbGetError    = note.DatabaseGetOperationError
-	DbDeleteError = note.DatabaseDeleteOperationError
-	DbUpdateError = note.DatabaseUpdateOperationError
-)
+// User
 
 var (
-	NeedPasswordError = note.StatusNeedPasswordError
-	SupportError      = note.SupportError
+	UnAuthorizedError = errors.New("unauthorized")
+	UnknownUserError  = errors.New("user unknown")
 )
 
+//PASSWORD
+
 var (
-	ThumbError             = note.ThumbError
-	SavingError            = note.SavingError
-	QrError                = note.QrError
-	ComputeError           = note.ComputeError
-	MessageError           = note.MessageError
-	MenuItemError          = note.MenuItemError
-	MenuError              = note.MenuError
-	VerificationError      = note.VerificationError
-	AuthorizationError     = note.AuthorizationError
-	GenerateMatriculeError = note.GenerateMatriculeError
-	AuthError              = note.AuthError
+	EmptyPasswordError  = errors.New("password cannot be empty")
+	PasswordLengthError = errors.New("password length is not valid")
+	PasswordHashError   = errors.New("cannot protect your password. Something went wrong")
+	PasswordInsertError = errors.New("cannot store your password")
+)
+
+//LOGIN
+
+var (
+	InvalidEmailError       = errors.New("the email you enter is invalid")
+	StatusNeedPasswordError = errors.New("need at least a password and an email for login")
+	IncorrectPasswordError  = errors.New("email or password doesn't match")
+)
+
+// REGISTRATION
+
+var (
+	DuplicateUserError = errors.New("user already exists")
+)
+
+// LINK
+
+var (
+	UnknownStudentError = errors.New("unknown student")
+	ParentError         = errors.New("unknown parent")
+	UlError             = errors.New("parent and student are not linked ")
+)
+
+// DATABASE
+var (
+	DbInsertError = errors.New("error while trying to insert data into database")
+	DbDeleteError = errors.New("error while trying to delete data from database")
+	DbGetError    = errors.New("error while trying to get data from databaseS please contact support")
+	DbUpdateError = errors.New("update data to database please contact support")
+)
+
+// GENERAL ERROR
+
+var SupportError = errors.New("something went wrong please contact support")
+
+// ACADEMIC
+
+var (
+	CoursePreferenceError = errors.New("no selected course(s)")
+	LevelError            = errors.New("academic level undefined")
+	UnknownLevelError     = errors.New("user academic level undefined")
 )
