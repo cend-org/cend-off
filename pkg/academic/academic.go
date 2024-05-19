@@ -5,6 +5,7 @@ import (
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/pkg/user/authorization"
+	"github.com/cend-org/duval/pkg/user/link"
 	"github.com/xorcare/pointer"
 )
 
@@ -179,16 +180,36 @@ func GetUserPreferredCourse(userId int) (course []model.AcademicCourse, err erro
 	return course, nil
 }
 
-func GetTutorByCourse(courses []model.AcademicCourse) (user model.User, err error) {
-	var tutors []model.User
+func GetTutorByCourse(courses []model.AcademicCourse) (topTutor model.User, err error) {
+	var courseTutors []model.User
+	tutorCounts := make(map[model.User]int)
+
 	for _, course := range courses {
-		err = database.Select(&tutors, `SELECT u.*
-					FROM user u
-							 JOIN user_academic_course uac ON u.id = uac.user_id
-							 JOIN academic_course ac ON uac.course_id = ac.id
-					WHERE ac.name = ? `, course.Name)
+
+		err = database.Select(&courseTutors, `
+            SELECT u.*
+            FROM user u
+            JOIN user_academic_course uac ON u.id = uac.user_id
+            JOIN academic_course ac ON uac.course_id = ac.id
+            JOIN authorization a ON u.id = a.user_id
+            WHERE ac.name = ? AND a.level = ?`, course.Name, link.TutorAuthorizationLevel)
+		if err != nil {
+			return model.User{}, err
+		}
+		for _, tutor := range courseTutors {
+			tutorCounts[tutor]++
+		}
 	}
-	return user, nil
+
+	maxCount := 0
+	for tutor, count := range tutorCounts {
+		if count > maxCount {
+			topTutor = tutor
+			maxCount = count
+		}
+	}
+
+	return topTutor, nil
 }
 
 func GetUserLevel(UserId int) (academicLevel []model.AcademicLevel, err error) {
