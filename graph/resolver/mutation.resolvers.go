@@ -7,8 +7,6 @@ package resolver
 import (
 	"context"
 	"errors"
-	"fmt"
-
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
@@ -118,7 +116,7 @@ func (r *mutationResolver) UpdAcademicCoursePreference(ctx context.Context, cour
 
 	preferences, err := academic.UpdStudentAcademicCoursesPreferenceByParent(tok.UserId, coursesPreferences)
 	if err != nil {
-		return nil, errx.Lambda(err)
+		return nil, errx.SupportError
 	}
 
 	return preferences, nil
@@ -196,12 +194,12 @@ func (r *mutationResolver) RemoveVideoPresentation(ctx context.Context) (*bool, 
 	return &status, nil
 }
 
-// NewStudentByParent is the resolver for the NewStudentByParent field.
-func (r *mutationResolver) NewStudentByParent(ctx context.Context, email string) (*int, error) {
+// UserStudent is the resolver for the UserStudent field.
+func (r *mutationResolver) UserStudent(ctx context.Context, name string, familyName string) (*model.User, error) {
 	var (
-		tok       *token.Token
-		err       error
-		studentId int
+		tok     *token.Token
+		err     error
+		student *model.User
 	)
 
 	tok, err = token.GetFromContext(ctx)
@@ -209,22 +207,12 @@ func (r *mutationResolver) NewStudentByParent(ctx context.Context, email string)
 		return nil, err
 	}
 
-	_, err = usr.NewStudent(email)
-	if err != nil {
-		return nil, errx.SupportError
-	}
-
-	studentId, err = link.AddStudent(tok.UserId, email)
+	student, err = link.AddStudentToLink(tok.UserId, name, familyName)
 	if err != nil {
 		return nil, err
 	}
 
-	return &studentId, nil
-}
-
-// RemoveStudentByParent is the resolver for the RemoveStudentByParent field.
-func (r *mutationResolver) RemoveStudentByParent(ctx context.Context, studentID int) (*bool, error) {
-	panic(fmt.Errorf("not implemented: RemoveStudentByParent - RemoveStudentByParent"))
+	return student, nil
 }
 
 // UpdateStudentProfileByParent is the resolver for the UpdateStudentProfileByParent field.
@@ -239,7 +227,7 @@ func (r *mutationResolver) UpdateStudentProfileByParent(ctx context.Context, pro
 	}
 
 	if !link.IsStudentParentLinked(tok.UserId, studentID) {
-		return &status, errx.ParentLinkUserError
+		return &status, errx.UlError
 	}
 
 	err = link.UpdateStudent(studentID, profile)
@@ -263,7 +251,7 @@ func (r *mutationResolver) SetStudentAcademicLevelByParent(ctx context.Context, 
 	}
 
 	if !link.IsStudentParentLinked(tok.UserId, studentID) {
-		return &status, errx.ParentLinkUserError
+		return &status, errx.UlError
 	}
 	err = academic.SetUserAcademicLevel(tok.UserId, studentID, academicLevelID)
 	if err != nil {
@@ -285,7 +273,7 @@ func (r *mutationResolver) NewStudentAcademicCoursesByParent(ctx context.Context
 	}
 
 	if !link.IsStudentParentLinked(tok.UserId, studentID) {
-		return nil, errx.ParentLinkUserError
+		return nil, errx.UlError
 	}
 
 	return academic.NewUserAcademicCourses(studentID, courses)
@@ -303,11 +291,11 @@ func (r *mutationResolver) UpdStudentAcademicCoursesPreferenceByParent(ctx conte
 	}
 
 	if !link.IsStudentParentLinked(tok.UserId, studentID) {
-		return nil, errx.ParentLinkUserError
+		return nil, errx.UlError
 	}
 	_, err = academic.UpdStudentAcademicCoursesPreferenceByParent(studentID, coursesPreferences)
 	if err != nil {
-		return nil, errx.Lambda(err)
+		return nil, errx.SupportError
 	}
 	status = true
 

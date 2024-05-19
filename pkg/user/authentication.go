@@ -4,7 +4,7 @@ import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/authentication"
 	"github.com/cend-org/duval/internal/utils"
-	"github.com/pkg/errors"
+	"github.com/cend-org/duval/internal/utils/errx"
 )
 
 func Login(email string, password string) (bearer *model.BearerToken, err error) {
@@ -14,21 +14,21 @@ func Login(email string, password string) (bearer *model.BearerToken, err error)
 
 	user, err = getUserByEmail(email)
 	if err != nil {
-		return nil, err
+		return nil, errx.InvalidEmailError
 	}
 
 	psw, err = getUserActivePassword(user.Id)
 	if err != nil {
-		return nil, err
+		return nil, errx.StatusNeedPasswordError
 	}
 
 	if !utils.CheckPasswordHash(password, psw.Hash) {
-		return nil, errors.New("email or password doesn't match")
+		return nil, errx.IncorrectPasswordError
 	}
 
 	T, err = authentication.NewAccessToken(user)
 	if err != nil {
-		return nil, err
+		return nil, errx.SupportError
 	}
 
 	bearer = &model.BearerToken{

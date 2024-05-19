@@ -20,8 +20,7 @@ type Mutation {
     RemoveVideoPresentation: Boolean
 
     #    Student - parent
-    NewStudentByParent(email: String!): Int
-    RemoveStudentByParent(studentId: Int!): Boolean
+    UserStudent(name: String! , familyName: String!): User
     UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
     SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
     NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean

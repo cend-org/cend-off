@@ -7,6 +7,7 @@ import (
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/token"
 	"github.com/cend-org/duval/internal/utils"
+	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
 	"github.com/gabriel-vasile/mimetype"
 	"github.com/gin-gonic/gin"
@@ -52,7 +53,7 @@ func Upload(ctx *gin.Context) {
 	documentType, err = strconv.Atoi(ctx.PostForm("documentType"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "failed to convert string to int",
+			Message: errx.DummyError,
 		})
 		return
 	}

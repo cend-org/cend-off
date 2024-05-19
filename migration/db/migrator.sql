@@ -194,8 +194,6 @@ alter table user_academic_course_preference
     add constraint user_course_preference_user_academic_course_id_fk
         foreign key (user_academic_course_id) references user_academic_course (id);
 
-
-
 insert into academic_level (name)
 values ('primaire 1'),
        ('primaire 2'),

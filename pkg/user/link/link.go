@@ -1,10 +1,14 @@
 package link
 
 import (
+	"database/sql"
+	"errors"
+	"fmt"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
+	usr "github.com/cend-org/duval/pkg/user"
 	"github.com/cend-org/duval/pkg/user/authorization"
 )
 
@@ -23,6 +27,53 @@ const (
 	StudentProfessor = 2
 )
 
+func UpdateStudent(studentId int, profile model.UserInput) (err error) {
+	var (
+		user model.User
+	)
+
+	user, err = GetUserWithId(studentId)
+	if err != nil {
+		return errx.UnknownStudentError
+	}
+
+	user = model.MapUserInputToUser(profile, user)
+
+	err = database.Update(user)
+	if err != nil {
+		return errx.SupportError
+	}
+
+	return nil
+}
+
+func AddStudentToLink(userId int, name, familyName string) (*model.User, error) {
+	var (
+		err            error
+		currentStudent model.User
+	)
+
+	currentStudent, err = GetUserByUserName(name, familyName)
+	if err != nil && errors.Is(err, sql.ErrNoRows) {
+		currentStudent, err = CreateStudent(name, familyName)
+		if err != nil {
+			return nil, errx.SupportError
+		}
+	}
+
+	_, err = AddStudent(userId, currentStudent.Email)
+	if err != nil {
+		return nil, errx.SupportError
+	}
+	return &currentStudent, nil
+}
+
+/*
+
+UTILS
+
+*/
+
 func AddStudent(parentId int, email string) (studentId int, err error) {
 	var (
 		userAuthorizationLinkId int
@@ -31,21 +82,21 @@ func AddStudent(parentId int, email string) (studentId int, err error) {
 
 	student, err = GetUserWithEmail(email)
 	if err != nil {
-		return studentId, errx.DbGetError
+		return studentId, errx.UnknownStudentError
 	}
 
 	studentId = student.Id
 
 	auth, err := authorization.GetUserAuthorization(student.Id, StudentAuthorizationLevel)
 	if err != nil {
-		return studentId, errx.DbGetError
+		return studentId, errx.UnknownStudentError
 	}
 
 	userAuthorizationLinkId, err = GetUserLink(StudentParent, auth.Id)
 	if userAuthorizationLinkId != state.ZERO {
 		currentParentAuth, err := authorization.GetUserAuthorization(parentId, ParentAuthorizationLevel)
 		if err != nil {
-			return studentId, errx.DbGetError
+			return studentId, errx.ParentError
 		}
 
 		parents, err := GetLink(currentParentAuth.Id, ParentAuthorizationLevel, StudentParent)
@@ -55,44 +106,19 @@ func AddStudent(parentId int, email string) (studentId int, err error) {
 	}
 
 	if userAuthorizationLinkId == state.ZERO {
-
 		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentParent, student.Id, StudentAuthorizationLevel)
 		if err != nil {
-			return studentId, errx.DbInsertError
+			return studentId, errx.SupportError
 		}
 	}
 
 	err = SetUserAuthorizationLinkActor(userAuthorizationLinkId, parentId, ParentAuthorizationLevel)
 	if err != nil {
-		return studentId, errx.DbInsertError
+		return studentId, errx.ParentError
 	}
 
 	return studentId, nil
 }
-
-func UpdateStudent(studentId int, profile model.UserInput) (err error) {
-	var (
-		user model.User
-	)
-
-	user, err = GetUserWithId(studentId)
-	if err != nil {
-		return errx.DbGetError
-	}
-
-	user = model.MapUserInputToUser(profile, user)
-
-	err = database.Update(user)
-	if err != nil {
-		return errx.DbUpdateError
-	}
-
-	return nil
-}
-
-/*
- UTILS
-*/
 
 func GetUserWithEmail(email string) (user model.User, err error) {
 	err = database.Get(&user, `SELECT * FROM user WHERE email = ?`, email)
@@ -183,5 +209,65 @@ func GetUserLink(linkType int, authorizationId int) (linkId int, err error) {
 }
 
 func IsStudentParentLinked(parentId, userId int) bool {
+	var userLink model.UserAuthorizationLink
+	var parentLink model.UserAuthorizationLink
+	var linkType = StudentParent
+
+	var err error
+
+	userLink, err = GetLinkById(parentId, linkType)
+	if err != nil {
+		return false
+	}
+
+	parentLink, err = GetLinkById(parentId, linkType)
+	if err != nil {
+		return false
+	}
+
+	if parentLink != userLink {
+		return false
+
+	}
+
 	return true
+}
+
+func GetUserByUserName(name, familyName string) (user model.User, err error) {
+	err = database.Get(&user, `SELECT * FROM user WHERE name = ? and family_name = ?`, name, familyName)
+	if err != nil {
+		return user, err
+	}
+
+	return user, nil
+}
+
+func GetLinkById(userId int, linkType int) (userLink model.UserAuthorizationLink, err error) {
+	err = database.Get(&userLink,
+		`SELECT ual.*
+FROM user_authorization_link ual
+         JOIN user_authorization_link_actor ua_la ON ual.Id = ua_la.user_authorization_link_id
+         JOIN authorization a ON ua_la.authorization_id = a.id
+WHERE ual.link_type = ?
+  AND a.user_id = ?`, linkType, userId)
+	if err != nil {
+		return userLink, err
+	}
+	return userLink, nil
+}
+
+func CreateStudent(name, familyName string) (student model.User, err error) {
+	var email = fmt.Sprintf("%s.%s@cend.intern", name, familyName)
+
+	_, err = usr.NewStudent(email)
+	if err != nil {
+		return student, err
+	}
+
+	student, err = GetUserWithEmail(email)
+	if err != nil {
+		return student, err
+	}
+
+	return student, nil
 }

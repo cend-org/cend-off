@@ -3,6 +3,7 @@ package authorization
 import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
 )
 
@@ -23,7 +24,7 @@ func NewUserAuthorization(userId, authorizationLevel int) (err error) {
 
 	_, err = database.InsertOne(auth)
 	if err != nil {
-		return err
+		return errx.DbInsertError
 	}
 	return err
 }
@@ -31,7 +32,7 @@ func NewUserAuthorization(userId, authorizationLevel int) (err error) {
 func GetUserAuthorization(userId, level int) (auth model.Authorization, err error) {
 	err = database.Get(&auth, `SELECT * FROM authorization WHERE user_id = ? AND level = ?`, userId, level)
 	if err != nil {
-		return auth, err
+		return auth, errx.DbGetError
 	}
 
 	return auth, err
