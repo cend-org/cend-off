@@ -12,6 +12,10 @@ func Login(email string, password string) (bearer *model.BearerToken, err error)
 	var psw model.Password
 	var T string
 
+	if !utils.IsValidEmail(email) {
+		return nil, errx.InvalidEmailError
+	}
+
 	user, err = getUserByEmail(email)
 	if err != nil {
 		return nil, errx.ToRegisterEmailError

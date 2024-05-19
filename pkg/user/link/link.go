@@ -31,7 +31,6 @@ func UpdateStudent(studentId int, profile model.UserInput) (err error) {
 	var (
 		user model.User
 	)
-
 	user, err = GetUserWithId(studentId)
 	if err != nil {
 		return errx.UnknownStudentError
@@ -210,24 +209,18 @@ func GetUserLink(linkType int, authorizationId int) (linkId int, err error) {
 
 func IsStudentParentLinked(parentId, userId int) bool {
 	var userLink model.UserAuthorizationLink
-	var parentLink model.UserAuthorizationLink
+	var actor model.UserAuthorizationLinkActor
 	var linkType = StudentParent
 
 	var err error
-
-	userLink, err = GetLinkById(parentId, linkType)
+	userLink, err = GetLinkById(userId, linkType)
 	if err != nil {
 		return false
 	}
 
-	parentLink, err = GetLinkById(parentId, linkType)
-	if err != nil {
+	err = database.Get(&actor, `SELECT ua_la.* FROM user_authorization_link_actor ua_la  JOIN  authorization a ON ua_la.authorization_id = a.id WHERE ua_la.user_authorization_link_id = ? AND a.user_id = ?`, userLink.Id, parentId)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
 		return false
-	}
-
-	if parentLink != userLink {
-		return false
-
 	}
 
 	return true

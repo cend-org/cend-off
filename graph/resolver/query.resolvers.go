@@ -55,10 +55,14 @@ func (r *queryResolver) SuggestTutor(ctx context.Context, studentID int) (*model
 
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
-		return nil, err
+		return nil, errx.UnAuthorizedError
 	}
 
-	user, err = academic.GetTutorWithPreferredCourse(tok.UserId)
+	if !link.IsStudentParentLinked(tok.UserId, studentID) {
+		return nil, errx.UlError
+	}
+
+	user, err = academic.GetTutorWithPreferredCourse(studentID)
 	if err != nil {
 		return nil, err
 	}
