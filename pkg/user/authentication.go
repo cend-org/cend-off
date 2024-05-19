@@ -14,7 +14,7 @@ func Login(email string, password string) (bearer *model.BearerToken, err error)
 
 	user, err = getUserByEmail(email)
 	if err != nil {
-		return nil, errx.InvalidEmailError
+		return nil, errx.ToRegisterEmailError
 	}
 
 	psw, err = getUserActivePassword(user.Id)
