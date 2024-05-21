@@ -16,6 +16,7 @@ func Hook(b *modelgen.ModelBuild) *modelgen.ModelBuild {
 			continue
 		}
 
+		createFieldValidation(model)
 		var raw string
 		raw += createObjectEntityCollector(model)
 		raw += createInputMap(model)
@@ -89,4 +90,23 @@ func createObjectEntityCollector(model *modelgen.Object) (raw string) {
 	raw += fmt.Sprintf("}\n\n")
 
 	return raw
+}
+
+func createFieldValidation(model *modelgen.Object) {
+	for _, field := range model.Fields {
+		switch strings.ToLower(field.Name) {
+		case "email":
+			field.Tag += ` validate:"email"`
+		case "password":
+			field.Tag += ` validate:"min=4"`
+		case "age":
+			field.Tag += ` validate:"gte=18,lte=130"`
+		default:
+			if strings.Contains(strings.ToLower(field.Name), "name") {
+				field.Tag += `validate:"alpha"`
+			} else {
+				field.Tag += ``
+			}
+		}
+	}
 }
