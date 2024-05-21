@@ -56,9 +56,9 @@ func MyProfile(userId int) (usr *model.User, err error) {
 	var user model.User
 	err = database.Get(&user, `SELECT * FROM user WHERE id = ?`, userId)
 	if err != nil {
-		return nil, err
+		return nil, errx.UnknownUserError
 	}
-	return &user, err
+	return &user, nil
 }
 
 func getUserByEmail(email string) (user model.User, err error) {

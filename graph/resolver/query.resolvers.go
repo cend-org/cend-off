@@ -440,6 +440,22 @@ func (r *queryResolver) Preferences(ctx context.Context) (*model.UserAcademicCou
 	return &course, nil
 }
 
+// UserProfile is the resolver for the UserProfile field.
+func (r *queryResolver) UserProfile(ctx context.Context, userID int) (*model.User, error) {
+	var tok *token.Token
+	var err error
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+	if tok.UserId == state.ZERO {
+		return nil, errx.UnknownUserError
+	}
+
+	return usr.MyProfile(userID)
+}
+
 // Query returns generated.QueryResolver implementation.
 func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
 

@@ -144,6 +144,7 @@ type ComplexityRoot struct {
 		UserCv                func(childComplexity int, userID int) int
 		UserCvThumb           func(childComplexity int, userID int) int
 		UserPreferences       func(childComplexity int, studentID int) int
+		UserProfile           func(childComplexity int, userID int) int
 		UserProfileImage      func(childComplexity int, userID int) int
 		UserProfileImageThumb func(childComplexity int, userID int) int
 		UserVideoPresentation func(childComplexity int, userID int) int
@@ -915,6 +916,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.UserPreferences(childComplexity, args["studentId"].(int)), true
 
+	case "Query.UserProfile":
+		if e.complexity.Query.UserProfile == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserProfile_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserProfile(childComplexity, args["userId"].(int)), true
+
 	case "Query.UserProfileImage":
 		if e.complexity.Query.UserProfileImage == nil {
 			break
@@ -1629,6 +1642,9 @@ scalar Upload
     StudentAcademicLevel(studentId : Int!): [AcademicLevel!]
     UserPreferences(studentId : Int!): UserAcademicCoursePreference
     Preferences: UserAcademicCoursePreference
+
+    #    User profile
+    UserProfile(userId : Int!) : User
 
 }`, BuiltIn: false},
 	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {

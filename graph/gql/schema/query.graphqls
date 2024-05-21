@@ -32,4 +32,7 @@ type Query {
     UserPreferences(studentId : Int!): UserAcademicCoursePreference
     Preferences: UserAcademicCoursePreference
 
+    #    User profile
+    UserProfile(userId : Int!) : User
+
 }
