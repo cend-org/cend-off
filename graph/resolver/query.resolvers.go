@@ -7,7 +7,6 @@ package resolver
 import (
 	"context"
 	"errors"
-
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
@@ -19,6 +18,7 @@ import (
 	"github.com/cend-org/duval/pkg/media/profile"
 	"github.com/cend-org/duval/pkg/media/video"
 	usr "github.com/cend-org/duval/pkg/user"
+	"github.com/cend-org/duval/pkg/user/authorization"
 	"github.com/cend-org/duval/pkg/user/link"
 )
 
@@ -475,6 +475,30 @@ func (r *queryResolver) SuggestTutorToUser(ctx context.Context) (*model.User, er
 	}
 
 	return &user, nil
+}
+
+// ProfessorStudent is the resolver for the ProfessorStudent field.
+func (r *queryResolver) ProfessorStudent(ctx context.Context, keyWord string) ([]model.User, error) {
+	var (
+		tok  *token.Token
+		err  error
+		user []model.User
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if !authorization.IsUserProfessor(tok.UserId) {
+		return nil, errx.UnAuthorizedError
+	}
+
+	user, err = link.GetProfessorStudent(keyWord)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
 
 // Query returns generated.QueryResolver implementation.

@@ -98,6 +98,9 @@ type ComplexityRoot struct {
 		NewProfessor                                func(childComplexity int, email string) int
 		NewStudent                                  func(childComplexity int, email string) int
 		NewStudentAcademicCoursesByParent           func(childComplexity int, courses []*model.UserAcademicCourseInput, studentID int) int
+		NewStudentProfessor                         func(childComplexity int, userID int) int
+		NewStudentTutor                             func(childComplexity int, userID int) int
+		NewStudentTutorByParent                     func(childComplexity int, tutorID int, studentID int) int
 		NewStudentsPassword                         func(childComplexity int, studentID int) int
 		NewTutor                                    func(childComplexity int, email string) int
 		NewUserAcademicCourses                      func(childComplexity int, courses []*model.UserAcademicCourseInput) int
@@ -134,6 +137,7 @@ type ComplexityRoot struct {
 		CvThumb               func(childComplexity int) int
 		MyProfile             func(childComplexity int) int
 		Preferences           func(childComplexity int) int
+		ProfessorStudent      func(childComplexity int, keyWord string) int
 		ProfileImage          func(childComplexity int) int
 		ProfileImageThumb     func(childComplexity int) int
 		StudentAcademicLevel  func(childComplexity int, studentID int) int
@@ -537,6 +541,42 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.NewStudentAcademicCoursesByParent(childComplexity, args["courses"].([]*model.UserAcademicCourseInput), args["studentId"].(int)), true
 
+	case "Mutation.NewStudentProfessor":
+		if e.complexity.Mutation.NewStudentProfessor == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewStudentProfessor_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewStudentProfessor(childComplexity, args["userId"].(int)), true
+
+	case "Mutation.NewStudentTutor":
+		if e.complexity.Mutation.NewStudentTutor == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewStudentTutor_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewStudentTutor(childComplexity, args["userId"].(int)), true
+
+	case "Mutation.NewStudentTutorByParent":
+		if e.complexity.Mutation.NewStudentTutorByParent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewStudentTutorByParent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewStudentTutorByParent(childComplexity, args["tutorId"].(int), args["studentId"].(int)), true
+
 	case "Mutation.NewStudentsPassword":
 		if e.complexity.Mutation.NewStudentsPassword == nil {
 			break
@@ -811,6 +851,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.Preferences(childComplexity), true
+
+	case "Query.ProfessorStudent":
+		if e.complexity.Query.ProfessorStudent == nil {
+			break
+		}
+
+		args, err := ec.field_Query_ProfessorStudent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.ProfessorStudent(childComplexity, args["keyWord"].(string)), true
 
 	case "Query.ProfileImage":
 		if e.complexity.Query.ProfileImage == nil {
@@ -1604,12 +1656,18 @@ scalar Upload
     RemoveVideoPresentation: Boolean
 
     #    Student - parent
-    UserStudent(name: String! , familyName: String!): User
     UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
     NewStudentsPassword(studentId: Int!): String
     SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
     NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean
     UpdStudentAcademicCoursesPreferenceByParent(coursesPreferences: UserAcademicCoursePreferenceInput! , studentId: Int!) : Boolean
+    NewStudentTutorByParent(tutorId: Int! , studentId: Int!): Boolean
+
+
+    #    Link
+    UserStudent(name: String! , familyName: String!): User
+    NewStudentTutor(userId: Int!): User
+    NewStudentProfessor(userId: Int!): User
 
     #   Tutor
     NewUserAcademicLevels(academicLevelIds: [Int]!): Boolean
@@ -1657,7 +1715,8 @@ scalar Upload
     SuggestTutor(studentId: Int! ): User!
     SuggestTutorToUser: User!
 
-
+    #    Link
+    ProfessorStudent(keyWord: String!) : [User!]
 }`, BuiltIn: false},
 	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {
     T: String!

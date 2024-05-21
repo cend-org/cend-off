@@ -7,6 +7,7 @@ package resolver
 import (
 	"context"
 	"errors"
+
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
@@ -17,6 +18,7 @@ import (
 	"github.com/cend-org/duval/pkg/media/profile"
 	"github.com/cend-org/duval/pkg/media/video"
 	usr "github.com/cend-org/duval/pkg/user"
+	"github.com/cend-org/duval/pkg/user/authorization"
 	"github.com/cend-org/duval/pkg/user/link"
 )
 
@@ -209,27 +211,6 @@ func (r *mutationResolver) RemoveVideoPresentation(ctx context.Context) (*bool, 
 	return &status, nil
 }
 
-// UserStudent is the resolver for the UserStudent field.
-func (r *mutationResolver) UserStudent(ctx context.Context, name string, familyName string) (*model.User, error) {
-	var (
-		tok     *token.Token
-		err     error
-		student *model.User
-	)
-
-	tok, err = token.GetFromContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	student, err = link.AddStudentToLink(tok.UserId, name, familyName)
-	if err != nil {
-		return nil, err
-	}
-
-	return student, nil
-}
-
 // UpdateStudentProfileByParent is the resolver for the UpdateStudentProfileByParent field.
 func (r *mutationResolver) UpdateStudentProfileByParent(ctx context.Context, profile model.UserInput, studentID int) (*bool, error) {
 	var tok *token.Token
@@ -339,6 +320,134 @@ func (r *mutationResolver) UpdStudentAcademicCoursesPreferenceByParent(ctx conte
 	status = true
 
 	return &status, nil
+}
+
+// NewStudentTutorByParent is the resolver for the NewStudentTutorByParent field.
+func (r *mutationResolver) NewStudentTutorByParent(ctx context.Context, tutorID int, studentID int) (*bool, error) {
+	var tok *token.Token
+	var err error
+	var status bool
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+	if !link.IsStudentParentLinked(tok.UserId, studentID) {
+		return nil, errx.UlError
+	}
+
+	_, err = link.AddStudentToTutor(tutorID, studentID)
+	if err != nil {
+		return nil, err
+	}
+
+	status = true
+	return &status, nil
+}
+
+// UserStudent is the resolver for the UserStudent field.
+func (r *mutationResolver) UserStudent(ctx context.Context, name string, familyName string) (*model.User, error) {
+	var (
+		tok     *token.Token
+		err     error
+		student *model.User
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	student, err = link.AddStudentToLink(tok.UserId, name, familyName)
+	if err != nil {
+		return nil, err
+	}
+
+	return student, nil
+}
+
+// NewStudentTutor is the resolver for the NewStudentTutor field.
+func (r *mutationResolver) NewStudentTutor(ctx context.Context, userID int) (*model.User, error) {
+	var (
+		tok     *token.Token
+		err     error
+		student *model.User
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if !authorization.IsUserStudent(tok.UserId) && !authorization.IsUserTutor(tok.UserId) {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if !authorization.IsUserStudent(userID) && !authorization.IsUserTutor(userID) {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if !authorization.IsUserStudent(tok.UserId) || !authorization.IsUserTutor(userID) {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if authorization.IsUserTutor(tok.UserId) && authorization.IsUserStudent(userID) {
+		student, err = link.AddStudentToTutor(tok.UserId, userID)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if authorization.IsUserTutor(userID) && authorization.IsUserStudent(tok.UserId) {
+		student, err = link.AddStudentToTutor(userID, tok.UserId)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return student, nil
+}
+
+// NewStudentProfessor is the resolver for the NewStudentProfessor field.
+func (r *mutationResolver) NewStudentProfessor(ctx context.Context, userID int) (*model.User, error) {
+	var (
+		tok     *token.Token
+		err     error
+		student *model.User
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if !authorization.IsUserStudent(tok.UserId) && !authorization.IsUserProfessor(tok.UserId) {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if !authorization.IsUserStudent(userID) && !authorization.IsUserProfessor(userID) {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if !authorization.IsUserStudent(tok.UserId) || !authorization.IsUserProfessor(userID) {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if authorization.IsUserTutor(tok.UserId) && authorization.IsUserProfessor(userID) {
+		student, err = link.AddStudentToProfessor(tok.UserId, userID)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	if authorization.IsUserProfessor(userID) && authorization.IsUserStudent(tok.UserId) {
+		student, err = link.AddStudentToProfessor(userID, tok.UserId)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return student, nil
 }
 
 // NewUserAcademicLevels is the resolver for the NewUserAcademicLevels field.

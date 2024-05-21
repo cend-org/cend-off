@@ -20,12 +20,18 @@ type Mutation {
     RemoveVideoPresentation: Boolean
 
     #    Student - parent
-    UserStudent(name: String! , familyName: String!): User
     UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
     NewStudentsPassword(studentId: Int!): String
     SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
     NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean
     UpdStudentAcademicCoursesPreferenceByParent(coursesPreferences: UserAcademicCoursePreferenceInput! , studentId: Int!) : Boolean
+    NewStudentTutorByParent(tutorId: Int! , studentId: Int!): Boolean
+
+
+    #    Link
+    UserStudent(name: String! , familyName: String!): User
+    NewStudentTutor(userId: Int!): User
+    NewStudentProfessor(userId: Int!): User
 
     #   Tutor
     NewUserAcademicLevels(academicLevelIds: [Int]!): Boolean

@@ -74,7 +74,7 @@ func UpdateStudent(studentId int, profile model.UserInput) (err error) {
 	return nil
 }
 
-func AddStudentToLink(userId int, name, familyName string) (*model.User, error) {
+func AddStudentToLink(userLinkId int, name, familyName string) (*model.User, error) {
 	var (
 		err            error
 		currentStudent model.User
@@ -88,11 +88,61 @@ func AddStudentToLink(userId int, name, familyName string) (*model.User, error) 
 		}
 	}
 
-	_, err = AddStudent(userId, currentStudent.Email)
+	_, err = AddStudent(StudentParent, userLinkId, ParentAuthorizationLevel, currentStudent.Email)
 	if err != nil {
 		return nil, errx.SupportError
 	}
 	return &currentStudent, nil
+}
+
+func AddStudentToTutor(tutorId int, studentId int) (*model.User, error) {
+	var (
+		err            error
+		currentStudent model.User
+	)
+
+	currentStudent, err = GetUserWithId(studentId)
+	if err != nil && errors.Is(err, sql.ErrNoRows) {
+		if err != nil {
+			return nil, errx.UnknownLevelError
+		}
+	}
+
+	_, err = AddStudent(StudentTutor, tutorId, TutorAuthorizationLevel, currentStudent.Email)
+	if err != nil {
+		return nil, errx.SupportError
+	}
+	return &currentStudent, nil
+}
+
+func AddStudentToProfessor(profId int, studentId int) (*model.User, error) {
+	var (
+		err            error
+		currentStudent model.User
+	)
+
+	currentStudent, err = GetUserWithId(studentId)
+	if err != nil && errors.Is(err, sql.ErrNoRows) {
+		if err != nil {
+			return nil, errx.UnknownLevelError
+		}
+	}
+
+	_, err = AddStudent(StudentProfessor, profId, ProfessorAuthorizationLevel, currentStudent.Email)
+	if err != nil {
+		return nil, errx.SupportError
+	}
+	return &currentStudent, nil
+}
+
+func GetProfessorStudent(name string) (users []model.User, err error) {
+	arg := "%" + name + "%"
+	query := fmt.Sprintf(`SELECT *  FROM user  WHERE name LIKE '%s' OR family_name LIKE '%s' `, arg, arg)
+	err = database.Select(&users, query)
+	if err != nil {
+		return users, errx.UnknownUserError
+	}
+	return users, nil
 }
 
 /*
@@ -101,7 +151,7 @@ UTILS
 
 */
 
-func AddStudent(parentId int, email string) (studentId int, err error) {
+func AddStudent(linkType, userLinkId, level int, email string) (studentId int, err error) {
 	var (
 		userAuthorizationLinkId int
 		student                 model.User
@@ -119,27 +169,27 @@ func AddStudent(parentId int, email string) (studentId int, err error) {
 		return studentId, errx.UnknownStudentError
 	}
 
-	userAuthorizationLinkId, err = GetUserLink(StudentParent, auth.Id)
+	userAuthorizationLinkId, err = GetUserLink(linkType, auth.Id)
 	if userAuthorizationLinkId != state.ZERO {
-		currentParentAuth, err := authorization.GetUserAuthorization(parentId, ParentAuthorizationLevel)
+		currentParentAuth, err := authorization.GetUserAuthorization(userLinkId, level)
 		if err != nil {
 			return studentId, errx.ParentError
 		}
 
-		parents, err := GetLink(currentParentAuth.Id, ParentAuthorizationLevel, StudentParent)
+		parents, err := GetLink(currentParentAuth.Id, level, linkType)
 		if len(parents) > 0 {
 			return studentId, errx.DuplicateUserError
 		}
 	}
 
 	if userAuthorizationLinkId == state.ZERO {
-		userAuthorizationLinkId, err = SetUserAuthorizationLink(StudentParent, student.Id, StudentAuthorizationLevel)
+		userAuthorizationLinkId, err = SetUserAuthorizationLink(linkType, student.Id, StudentAuthorizationLevel)
 		if err != nil {
 			return studentId, errx.SupportError
 		}
 	}
 
-	err = SetUserAuthorizationLinkActor(userAuthorizationLinkId, parentId, ParentAuthorizationLevel)
+	err = SetUserAuthorizationLinkActor(userAuthorizationLinkId, userLinkId, level)
 	if err != nil {
 		return studentId, errx.ParentError
 	}

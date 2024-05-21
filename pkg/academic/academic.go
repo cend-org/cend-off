@@ -1,6 +1,8 @@
 package academic
 
 import (
+	"database/sql"
+	"errors"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/utils/errx"
@@ -155,7 +157,6 @@ func GetTutorByCourse(courses []model.AcademicCourse) (topTutor model.User, err 
 	tutorCounts := make(map[model.User]int)
 
 	for _, course := range courses {
-
 		err = database.Select(&courseTutors, `
             SELECT u.*
             FROM user u
@@ -163,8 +164,8 @@ func GetTutorByCourse(courses []model.AcademicCourse) (topTutor model.User, err 
             JOIN academic_course ac ON uac.course_id = ac.id
             JOIN authorization a ON u.id = a.user_id
             WHERE ac.name = ? AND a.level = ?`, course.Name, link.TutorAuthorizationLevel)
-		if err != nil {
-			return model.User{}, err
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			return topTutor, err
 		}
 		for _, tutor := range courseTutors {
 			tutorCounts[tutor]++

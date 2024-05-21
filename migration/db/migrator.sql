@@ -188,7 +188,6 @@ alter table user_academic_course
 ;
 
 
-
 create table user_academic_course_preference
 (
     id         int auto_increment primary key,
