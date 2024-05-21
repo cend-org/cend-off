@@ -1,3 +1,4 @@
+set sql_mode = ``;
 drop database if exists cend;
 create database cend;
 use cend;
@@ -71,13 +72,10 @@ create table media
     deleted_at datetime     default '0000-00-00 00:00:00' null,
     file_name  varchar(500) default ''                    null,
     extension  varchar(10)  default ''                    null,
-    xid        varchar(100) default ''                    null
-
+    xid        varchar(100) default ''                    null,
+    constraint user_pk
+        unique (xid)
 );
-alter table media
-    add constraint media_pk
-        unique (xid);
-
 
 create table media_thumb
 (
@@ -88,12 +86,13 @@ create table media_thumb
     deleted_at datetime     default '0000-00-00 00:00:00',
     extension  varchar(10)  default '',
     media_xid  varchar(100) default '',
-    xid        varchar(100) default ''
+    xid        varchar(500) default ''
 );
 
 alter table media_thumb
-    add constraint media_thumb_xid_pk
-        unique (xid);
+    add constraint media_thumb_media_xid_fk
+        foreign key (media_xid) references media (xid)
+            on delete cascade on update cascade;
 
 create table user_media_detail
 (
@@ -109,7 +108,7 @@ create table user_media_detail
 alter table user_media_detail
     add constraint user_media_detail_user_id_fk
         foreign key (owner_id) references user (id)
-;
+            on delete cascade on update cascade;
 
 
 create table user_authorization_link
@@ -136,13 +135,13 @@ create table user_authorization_link_actor
 alter table user_authorization_link_actor
     add constraint user_authorization_link_actor_user_authorization_link_id_fk
         foreign key (user_authorization_link_id) references user_authorization_link (id)
-;
+            on delete cascade on update cascade;
 
 
 alter table user_authorization_link_actor
     add constraint user_authorization_link_actor_authorization_id_fk
         foreign key (authorization_id) references authorization (id)
-;
+            on delete cascade on update cascade;
 
 
 create table academic_level
@@ -180,12 +179,13 @@ create table user_academic_course
 alter table user_academic_course
     add constraint user_academic_course_user_id_fk
         foreign key (user_id) references user (id)
-;
+            on delete cascade on update cascade;
 
 alter table user_academic_course
     add constraint user_academic_course_course_id_fk
         foreign key (course_id) references academic_course (id)
-;
+            on delete cascade on update cascade;
+
 
 
 create table user_academic_course_preference
@@ -201,7 +201,7 @@ create table user_academic_course_preference
 alter table user_academic_course_preference
     add constraint user_academic_course_preference_user_id_fk
         foreign key (user_id) references user (id)
-;
+            on delete cascade on update cascade;
 
 
 insert into academic_level (name)

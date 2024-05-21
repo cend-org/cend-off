@@ -143,10 +143,10 @@ type UserAuthorizationLinkActor struct {
 }
 
 type UserInput struct {
-	Name                  *string    `json:"name"`
-	FamilyName            *string    `json:"familyName"`
-	NickName              *string    `json:"nickName"`
-	Email                 *string    `json:"email"`
+	Name                  *string    `json:"name"validate:"alpha"`
+	FamilyName            *string    `json:"familyName"validate:"alpha"`
+	NickName              *string    `json:"nickName"validate:"alpha"`
+	Email                 *string    `json:"email" validate:"email"`
 	BirthDate             *time.Time `json:"birthDate"`
 	Sex                   *int       `json:"sex"`
 	Lang                  *int       `json:"lang"`
