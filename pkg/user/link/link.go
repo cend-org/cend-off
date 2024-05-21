@@ -27,6 +27,34 @@ const (
 	StudentProfessor = 2
 )
 
+func CreateStudentPassword(studentId int) (string, error) {
+	var (
+		password string
+		student  model.User
+		err      error
+	)
+
+	student, err = GetUserWithId(studentId)
+	if err != nil {
+		return password, err
+	}
+
+	password = createPassword(student.Name, student.FamilyName)
+	if err != nil {
+		return password, errx.PasswordInsertError
+	}
+
+	passwordInput := model.PasswordInput{
+		Hash: &password,
+	}
+
+	_, err = usr.NewPassword(studentId, passwordInput)
+	if err != nil {
+		return password, errx.PasswordInsertError
+	}
+	return password, nil
+}
+
 func UpdateStudent(studentId int, profile model.UserInput) (err error) {
 	var (
 		user model.User
@@ -267,16 +295,7 @@ func CreateStudent(name, familyName string) (student model.User, err error) {
 		FamilyName: &familyName,
 	}
 
-	password := createPassword(name, familyName)
-	if err != nil {
-		return student, err
-	}
-
-	passwordInput := model.PasswordInput{
-		Hash: &password,
-	}
-
-	_, err = usr.UpdateProfileAndPassword(student.Id, studentInput, passwordInput)
+	err = UpdateStudent(student.Id, studentInput)
 	if err != nil {
 		return student, err
 	}

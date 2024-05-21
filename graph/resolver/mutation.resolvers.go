@@ -7,6 +7,7 @@ package resolver
 import (
 	"context"
 	"errors"
+
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
@@ -237,6 +238,29 @@ func (r *mutationResolver) UpdateStudentProfileByParent(ctx context.Context, pro
 
 	status = true
 	return &status, nil
+}
+
+// NewStudentsPassword is the resolver for the NewStudentsPassword field.
+func (r *mutationResolver) NewStudentsPassword(ctx context.Context, studentID int) (*string, error) {
+	var tok *token.Token
+	var err error
+	var password string
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return &password, errx.UnAuthorizedError
+	}
+
+	if !link.IsStudentParentLinked(tok.UserId, studentID) {
+		return &password, errx.UlError
+	}
+
+	password, err = link.CreateStudentPassword(studentID)
+	if err != nil {
+		return &password, err
+	}
+
+	return &password, nil
 }
 
 // SetStudentAcademicLevelByParent is the resolver for the SetStudentAcademicLevelByParent field.

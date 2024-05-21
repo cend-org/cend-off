@@ -98,6 +98,7 @@ type ComplexityRoot struct {
 		NewProfessor                                func(childComplexity int, email string) int
 		NewStudent                                  func(childComplexity int, email string) int
 		NewStudentAcademicCoursesByParent           func(childComplexity int, courses []*model.UserAcademicCourseInput, studentID int) int
+		NewStudentsPassword                         func(childComplexity int, studentID int) int
 		NewTutor                                    func(childComplexity int, email string) int
 		NewUserAcademicCourses                      func(childComplexity int, courses []*model.UserAcademicCourseInput) int
 		NewUserAcademicLevels                       func(childComplexity int, academicLevelIds []*int) int
@@ -533,6 +534,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.NewStudentAcademicCoursesByParent(childComplexity, args["courses"].([]*model.UserAcademicCourseInput), args["studentId"].(int)), true
+
+	case "Mutation.NewStudentsPassword":
+		if e.complexity.Mutation.NewStudentsPassword == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewStudentsPassword_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewStudentsPassword(childComplexity, args["studentId"].(int)), true
 
 	case "Mutation.NewTutor":
 		if e.complexity.Mutation.NewTutor == nil {
@@ -1572,6 +1585,7 @@ scalar Upload
     #    Student - parent
     UserStudent(name: String! , familyName: String!): User
     UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
+    NewStudentsPassword(studentId: Int!): String
     SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
     NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean
     UpdStudentAcademicCoursesPreferenceByParent(coursesPreferences: UserAcademicCoursePreferenceInput! , studentId: Int!) : Boolean
