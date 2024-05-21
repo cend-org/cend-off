@@ -38,8 +38,8 @@ type QueryResolver interface {
 	UserProfileImageThumb(ctx context.Context, userID int) (*string, error)
 	UserAcademicLevels(ctx context.Context) ([]model.AcademicLevel, error)
 	StudentAcademicLevel(ctx context.Context, studentID int) ([]model.AcademicLevel, error)
-	UserPreferences(ctx context.Context, studentID int) ([]model.UserAcademicCoursePreference, error)
-	Preferences(ctx context.Context) ([]model.UserAcademicCoursePreference, error)
+	UserPreferences(ctx context.Context, studentID int) (*model.UserAcademicCoursePreference, error)
+	Preferences(ctx context.Context) (*model.UserAcademicCoursePreference, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -1328,9 +1328,9 @@ func (ec *executionContext) _Query_UserPreferences(ctx context.Context, field gr
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]model.UserAcademicCoursePreference)
+	res := resTmp.(*model.UserAcademicCoursePreference)
 	fc.Result = res
-	return ec.marshalOUserAcademicCoursePreference2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceᚄ(ctx, field.Selections, res)
+	return ec.marshalOUserAcademicCoursePreference2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreference(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_UserPreferences(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1349,12 +1349,10 @@ func (ec *executionContext) fieldContext_Query_UserPreferences(ctx context.Conte
 				return ec.fieldContext_UserAcademicCoursePreference_UpdatedAt(ctx, field)
 			case "DeletedAt":
 				return ec.fieldContext_UserAcademicCoursePreference_DeletedAt(ctx, field)
-			case "UserAcademicCourseId":
-				return ec.fieldContext_UserAcademicCoursePreference_UserAcademicCourseId(ctx, field)
+			case "UserId":
+				return ec.fieldContext_UserAcademicCoursePreference_UserId(ctx, field)
 			case "IsOnline":
 				return ec.fieldContext_UserAcademicCoursePreference_IsOnline(ctx, field)
-			case "Availability":
-				return ec.fieldContext_UserAcademicCoursePreference_Availability(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type UserAcademicCoursePreference", field.Name)
 		},
@@ -1396,9 +1394,9 @@ func (ec *executionContext) _Query_Preferences(ctx context.Context, field graphq
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]model.UserAcademicCoursePreference)
+	res := resTmp.(*model.UserAcademicCoursePreference)
 	fc.Result = res
-	return ec.marshalOUserAcademicCoursePreference2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceᚄ(ctx, field.Selections, res)
+	return ec.marshalOUserAcademicCoursePreference2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreference(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Query_Preferences(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1417,12 +1415,10 @@ func (ec *executionContext) fieldContext_Query_Preferences(ctx context.Context, 
 				return ec.fieldContext_UserAcademicCoursePreference_UpdatedAt(ctx, field)
 			case "DeletedAt":
 				return ec.fieldContext_UserAcademicCoursePreference_DeletedAt(ctx, field)
-			case "UserAcademicCourseId":
-				return ec.fieldContext_UserAcademicCoursePreference_UserAcademicCourseId(ctx, field)
+			case "UserId":
+				return ec.fieldContext_UserAcademicCoursePreference_UserId(ctx, field)
 			case "IsOnline":
 				return ec.fieldContext_UserAcademicCoursePreference_IsOnline(ctx, field)
-			case "Availability":
-				return ec.fieldContext_UserAcademicCoursePreference_Availability(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type UserAcademicCoursePreference", field.Name)
 		},

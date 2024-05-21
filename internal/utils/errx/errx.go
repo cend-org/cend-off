@@ -60,7 +60,8 @@ var SupportError = errors.New("something went wrong please contact support")
 // ACADEMIC
 
 var (
-	CoursePreferenceError = errors.New("no selected course(s)")
-	LevelError            = errors.New("academic level undefined")
-	UnknownLevelError     = errors.New("user academic level undefined")
+	CoursePreferenceError  = errors.New("no selected course(s)")
+	MissingPreferenceError = errors.New("there is no preference in the database")
+	LevelError             = errors.New("academic level undefined")
+	UnknownLevelError      = errors.New("user academic level undefined")
 )

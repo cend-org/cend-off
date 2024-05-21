@@ -107,8 +107,8 @@ type ComplexityRoot struct {
 		RemoveVideoPresentation                     func(childComplexity int) int
 		SetStudentAcademicLevelByParent             func(childComplexity int, academicLevelID int, studentID int) int
 		SetUserAcademicLevel                        func(childComplexity int, academicLevelID int) int
-		UpdAcademicCoursePreference                 func(childComplexity int, coursesPreferences []*model.UserAcademicCoursePreferenceInput) int
-		UpdStudentAcademicCoursesPreferenceByParent func(childComplexity int, coursesPreferences []*model.UserAcademicCoursePreferenceInput, studentID int) int
+		UpdAcademicCoursePreference                 func(childComplexity int, coursesPreferences model.UserAcademicCoursePreferenceInput) int
+		UpdStudentAcademicCoursesPreferenceByParent func(childComplexity int, coursesPreferences model.UserAcademicCoursePreferenceInput, studentID int) int
 		UpdateMyProfile                             func(childComplexity int, profile model.UserInput) int
 		UpdateProfileAndPassword                    func(childComplexity int, profile model.UserInput, password model.PasswordInput) int
 		UpdateStudentProfileByParent                func(childComplexity int, profile model.UserInput, studentID int) int
@@ -183,13 +183,12 @@ type ComplexityRoot struct {
 	}
 
 	UserAcademicCoursePreference struct {
-		Availability         func(childComplexity int) int
-		CreatedAt            func(childComplexity int) int
-		DeletedAt            func(childComplexity int) int
-		Id                   func(childComplexity int) int
-		IsOnline             func(childComplexity int) int
-		UpdatedAt            func(childComplexity int) int
-		UserAcademicCourseId func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Id        func(childComplexity int) int
+		IsOnline  func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UserId    func(childComplexity int) int
 	}
 
 	UserAuthorizationLink struct {
@@ -633,7 +632,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdAcademicCoursePreference(childComplexity, args["coursesPreferences"].([]*model.UserAcademicCoursePreferenceInput)), true
+		return e.complexity.Mutation.UpdAcademicCoursePreference(childComplexity, args["coursesPreferences"].(model.UserAcademicCoursePreferenceInput)), true
 
 	case "Mutation.UpdStudentAcademicCoursesPreferenceByParent":
 		if e.complexity.Mutation.UpdStudentAcademicCoursesPreferenceByParent == nil {
@@ -645,7 +644,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdStudentAcademicCoursesPreferenceByParent(childComplexity, args["coursesPreferences"].([]*model.UserAcademicCoursePreferenceInput), args["studentId"].(int)), true
+		return e.complexity.Mutation.UpdStudentAcademicCoursesPreferenceByParent(childComplexity, args["coursesPreferences"].(model.UserAcademicCoursePreferenceInput), args["studentId"].(int)), true
 
 	case "Mutation.UpdateMyProfile":
 		if e.complexity.Mutation.UpdateMyProfile == nil {
@@ -1135,13 +1134,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserAcademicCourse.UserId(childComplexity), true
 
-	case "UserAcademicCoursePreference.Availability":
-		if e.complexity.UserAcademicCoursePreference.Availability == nil {
-			break
-		}
-
-		return e.complexity.UserAcademicCoursePreference.Availability(childComplexity), true
-
 	case "UserAcademicCoursePreference.CreatedAt":
 		if e.complexity.UserAcademicCoursePreference.CreatedAt == nil {
 			break
@@ -1177,12 +1169,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserAcademicCoursePreference.UpdatedAt(childComplexity), true
 
-	case "UserAcademicCoursePreference.UserAcademicCourseId":
-		if e.complexity.UserAcademicCoursePreference.UserAcademicCourseId == nil {
+	case "UserAcademicCoursePreference.UserId":
+		if e.complexity.UserAcademicCoursePreference.UserId == nil {
 			break
 		}
 
-		return e.complexity.UserAcademicCoursePreference.UserAcademicCourseId(childComplexity), true
+		return e.complexity.UserAcademicCoursePreference.UserId(childComplexity), true
 
 	case "UserAuthorizationLink.CreatedAt":
 		if e.complexity.UserAuthorizationLink.CreatedAt == nil {
@@ -1494,16 +1486,13 @@ type UserAcademicCoursePreference {
     Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
-    DeletedAt: DateTime
-    UserAcademicCourseId : Int!  @goField(name: "UserAcademicCourseId")
+    DeletedAt: DateTime,
+    UserId : Int! @goField(name: "UserId")
     IsOnline : Boolean!,
-    Availability: DateTime!
 }
 
 input UserAcademicCoursePreferenceInput {
-    UserAcademicCourseId : Int  @goField(name: "UserAcademicCourseId")
     IsOnline : Boolean,
-    Availability: DateTime
 }
 
 `, BuiltIn: false},
@@ -1572,7 +1561,7 @@ scalar Upload
 
     #    Education
     SetUserAcademicLevel(AcademicLevelId: Int!):AcademicLevel
-    UpdAcademicCoursePreference(coursesPreferences: [UserAcademicCoursePreferenceInput]!): [UserAcademicCoursePreference!]
+    UpdAcademicCoursePreference(coursesPreferences: UserAcademicCoursePreferenceInput!): UserAcademicCoursePreference
 
     #    User Media
     RemoveCoverLetter: Boolean
@@ -1585,7 +1574,7 @@ scalar Upload
     UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
     SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
     NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean
-    UpdStudentAcademicCoursesPreferenceByParent(coursesPreferences: [UserAcademicCoursePreferenceInput]! , studentId: Int!) : Boolean
+    UpdStudentAcademicCoursesPreferenceByParent(coursesPreferences: UserAcademicCoursePreferenceInput! , studentId: Int!) : Boolean
 
     #   Tutor
     NewUserAcademicLevels(academicLevelIds: [Int]!): Boolean
@@ -1624,8 +1613,8 @@ scalar Upload
     #    Education
     UserAcademicLevels: [AcademicLevel!]
     StudentAcademicLevel(studentId : Int!): [AcademicLevel!]
-    UserPreferences(studentId : Int!): [UserAcademicCoursePreference!]
-    Preferences: [UserAcademicCoursePreference!]
+    UserPreferences(studentId : Int!): UserAcademicCoursePreference
+    Preferences: UserAcademicCoursePreference
 
 }`, BuiltIn: false},
 	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {

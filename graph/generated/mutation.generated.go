@@ -27,7 +27,7 @@ type MutationResolver interface {
 	UpdateProfileAndPassword(ctx context.Context, profile model.UserInput, password model.PasswordInput) (*model.User, error)
 	NewUserAcademicCourses(ctx context.Context, courses []*model.UserAcademicCourseInput) (*bool, error)
 	SetUserAcademicLevel(ctx context.Context, academicLevelID int) (*model.AcademicLevel, error)
-	UpdAcademicCoursePreference(ctx context.Context, coursesPreferences []*model.UserAcademicCoursePreferenceInput) ([]model.UserAcademicCoursePreference, error)
+	UpdAcademicCoursePreference(ctx context.Context, coursesPreferences model.UserAcademicCoursePreferenceInput) (*model.UserAcademicCoursePreference, error)
 	RemoveCoverLetter(ctx context.Context) (*bool, error)
 	RemoveCv(ctx context.Context) (*bool, error)
 	RemoveProfileImage(ctx context.Context) (*bool, error)
@@ -36,7 +36,7 @@ type MutationResolver interface {
 	UpdateStudentProfileByParent(ctx context.Context, profile model.UserInput, studentID int) (*bool, error)
 	SetStudentAcademicLevelByParent(ctx context.Context, academicLevelID int, studentID int) (*bool, error)
 	NewStudentAcademicCoursesByParent(ctx context.Context, courses []*model.UserAcademicCourseInput, studentID int) (*bool, error)
-	UpdStudentAcademicCoursesPreferenceByParent(ctx context.Context, coursesPreferences []*model.UserAcademicCoursePreferenceInput, studentID int) (*bool, error)
+	UpdStudentAcademicCoursesPreferenceByParent(ctx context.Context, coursesPreferences model.UserAcademicCoursePreferenceInput, studentID int) (*bool, error)
 	NewUserAcademicLevels(ctx context.Context, academicLevelIds []*int) (*bool, error)
 }
 
@@ -239,10 +239,10 @@ func (ec *executionContext) field_Mutation_SetUserAcademicLevel_args(ctx context
 func (ec *executionContext) field_Mutation_UpdAcademicCoursePreference_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []*model.UserAcademicCoursePreferenceInput
+	var arg0 model.UserAcademicCoursePreferenceInput
 	if tmp, ok := rawArgs["coursesPreferences"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("coursesPreferences"))
-		arg0, err = ec.unmarshalNUserAcademicCoursePreferenceInput2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInput(ctx, tmp)
+		arg0, err = ec.unmarshalNUserAcademicCoursePreferenceInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -254,10 +254,10 @@ func (ec *executionContext) field_Mutation_UpdAcademicCoursePreference_args(ctx 
 func (ec *executionContext) field_Mutation_UpdStudentAcademicCoursesPreferenceByParent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
-	var arg0 []*model.UserAcademicCoursePreferenceInput
+	var arg0 model.UserAcademicCoursePreferenceInput
 	if tmp, ok := rawArgs["coursesPreferences"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("coursesPreferences"))
-		arg0, err = ec.unmarshalNUserAcademicCoursePreferenceInput2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInput(ctx, tmp)
+		arg0, err = ec.unmarshalNUserAcademicCoursePreferenceInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInput(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -1024,7 +1024,7 @@ func (ec *executionContext) _Mutation_UpdAcademicCoursePreference(ctx context.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdAcademicCoursePreference(rctx, fc.Args["coursesPreferences"].([]*model.UserAcademicCoursePreferenceInput))
+		return ec.resolvers.Mutation().UpdAcademicCoursePreference(rctx, fc.Args["coursesPreferences"].(model.UserAcademicCoursePreferenceInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1033,9 +1033,9 @@ func (ec *executionContext) _Mutation_UpdAcademicCoursePreference(ctx context.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.([]model.UserAcademicCoursePreference)
+	res := resTmp.(*model.UserAcademicCoursePreference)
 	fc.Result = res
-	return ec.marshalOUserAcademicCoursePreference2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceᚄ(ctx, field.Selections, res)
+	return ec.marshalOUserAcademicCoursePreference2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreference(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_UpdAcademicCoursePreference(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -1054,12 +1054,10 @@ func (ec *executionContext) fieldContext_Mutation_UpdAcademicCoursePreference(ct
 				return ec.fieldContext_UserAcademicCoursePreference_UpdatedAt(ctx, field)
 			case "DeletedAt":
 				return ec.fieldContext_UserAcademicCoursePreference_DeletedAt(ctx, field)
-			case "UserAcademicCourseId":
-				return ec.fieldContext_UserAcademicCoursePreference_UserAcademicCourseId(ctx, field)
+			case "UserId":
+				return ec.fieldContext_UserAcademicCoursePreference_UserId(ctx, field)
 			case "IsOnline":
 				return ec.fieldContext_UserAcademicCoursePreference_IsOnline(ctx, field)
-			case "Availability":
-				return ec.fieldContext_UserAcademicCoursePreference_Availability(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type UserAcademicCoursePreference", field.Name)
 		},
@@ -1508,7 +1506,7 @@ func (ec *executionContext) _Mutation_UpdStudentAcademicCoursesPreferenceByParen
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdStudentAcademicCoursesPreferenceByParent(rctx, fc.Args["coursesPreferences"].([]*model.UserAcademicCoursePreferenceInput), fc.Args["studentId"].(int))
+		return ec.resolvers.Mutation().UpdStudentAcademicCoursesPreferenceByParent(rctx, fc.Args["coursesPreferences"].(model.UserAcademicCoursePreferenceInput), fc.Args["studentId"].(int))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

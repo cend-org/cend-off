@@ -400,7 +400,7 @@ func (r *queryResolver) StudentAcademicLevel(ctx context.Context, studentID int)
 }
 
 // UserPreferences is the resolver for the UserPreferences field.
-func (r *queryResolver) UserPreferences(ctx context.Context, studentID int) ([]model.UserAcademicCoursePreference, error) {
+func (r *queryResolver) UserPreferences(ctx context.Context, studentID int) (*model.UserAcademicCoursePreference, error) {
 	var (
 		tok *token.Token
 		err error
@@ -414,15 +414,15 @@ func (r *queryResolver) UserPreferences(ctx context.Context, studentID int) ([]m
 		return nil, errx.UlError
 	}
 
-	courses, err := academic.GetPreferences(studentID)
+	course, err := academic.GetPreferences(studentID)
 	if err != nil {
-		return nil, err
+		return nil, errx.MissingPreferenceError
 	}
-	return courses, nil
+	return &course, nil
 }
 
 // Preferences is the resolver for the Preferences field.
-func (r *queryResolver) Preferences(ctx context.Context) ([]model.UserAcademicCoursePreference, error) {
+func (r *queryResolver) Preferences(ctx context.Context) (*model.UserAcademicCoursePreference, error) {
 	var (
 		tok *token.Token
 		err error
@@ -433,11 +433,11 @@ func (r *queryResolver) Preferences(ctx context.Context) ([]model.UserAcademicCo
 		return nil, errx.UnAuthorizedError
 	}
 
-	courses, err := academic.GetPreferences(tok.UserId)
+	course, err := academic.GetPreferences(tok.UserId)
 	if err != nil {
-		return nil, err
+		return nil, errx.MissingPreferenceError
 	}
-	return courses, nil
+	return &course, nil
 }
 
 // Query returns generated.QueryResolver implementation.

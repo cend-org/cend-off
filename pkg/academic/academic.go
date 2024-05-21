@@ -27,43 +27,29 @@ func GetAcademicCourses(academicId int) (courses []model.AcademicCourse, err err
 }
 
 func NewUserAcademicCourses(userId int, new []*model.UserAcademicCourseInput) (ret *bool, err error) {
-	var coursePreference model.UserAcademicCoursePreference
-	var coursePreferences []model.UserAcademicCoursePreference
-
-	coursePreferences, err = GetPreferences(userId)
-	if err != nil {
-		return nil, errx.CoursePreferenceError
-	}
+	var preference model.UserAcademicCoursePreference
 
 	err = database.Exec(`DELETE FROM user_academic_course WHERE user_id = ?`, userId)
 	if err != nil {
 		return nil, errx.SupportError
 	}
 
-	for _, preference := range coursePreferences {
-		err = database.Delete(preference)
-		if err != nil {
-			return nil, errx.SupportError
-		}
-	}
 	for i := 0; i < len(new); i++ {
 		courseInput := new[i]
 		if courseInput != nil {
 			course := model.MapUserAcademicCourseInputToUserAcademicCourse(*courseInput, model.UserAcademicCourse{})
 			course.UserId = userId
 
-			userAcademicCourseId, err := database.Insert(course)
+			_, err = database.Insert(course)
 			if err != nil {
 				return nil, errx.SupportError
 			}
-
-			coursePreference.UserAcademicCourseId = int(userAcademicCourseId)
-			_, err = database.Insert(coursePreference)
-			if err != nil {
-				return nil, errx.SupportError
-			}
-
 		}
+	}
+	preference.UserId = userId
+	_, err = database.Insert(preference)
+	if err != nil {
+		return nil, errx.SupportError
 	}
 
 	return pointer.Bool(true), err
@@ -143,30 +129,19 @@ func GetUserAcademicLevels(userId int) (academicLevel []model.AcademicLevel, err
 	return academicLevel, nil
 }
 
-func UpdStudentAcademicCoursesPreferenceByParent(studentId int, new []*model.UserAcademicCoursePreferenceInput) (preferences []model.UserAcademicCoursePreference, err error) {
-	for i := 0; i < len(new); i++ {
-		courseInput := new[i]
-		if courseInput != nil {
-			preference, err := GetPreferencesById(*courseInput.UserAcademicCourseId)
-			if err != nil {
-				return nil, errx.CoursePreferenceError
-			}
-
-			course := model.MapUserAcademicCoursePreferenceInputToUserAcademicCoursePreference(*courseInput, preference)
-
-			err = database.Update(course)
-			if err != nil {
-				return nil, err
-			}
-		}
-	}
-
-	preferences, err = GetPreferences(studentId)
+func UpdStudentAcademicCoursesPreferenceByParent(studentId int, new model.UserAcademicCoursePreferenceInput) (preference model.UserAcademicCoursePreference, err error) {
+	preference, err = GetPreferences(studentId)
 	if err != nil {
-		return nil, errx.CoursePreferenceError
+		return preference, errx.SupportError
 	}
 
-	return preferences, err
+	preference = model.MapUserAcademicCoursePreferenceInputToUserAcademicCoursePreference(new, preference)
+
+	err = database.Update(preference)
+	if err != nil {
+		return preference, errx.SupportError
+	}
+	return preference, nil
 }
 
 /*
@@ -225,22 +200,11 @@ func GetUserLevel(UserId int) (academicLevel []model.AcademicLevel, err error) {
 	return academicLevel, err
 }
 
-func GetPreferences(userId int) (userAcademicCoursePreferences []model.UserAcademicCoursePreference, err error) {
-	err = database.Select(&userAcademicCoursePreferences,
-		`SELECT uacp.*
-		FROM user_academic_course_preference uacp
-				 JOIN user_academic_course uac ON uacp.user_academic_course_id = uac.id
-		WHERE uac.user_id = ?`, userId)
+func GetPreferences(userId int) (userAcademicCoursePreferences model.UserAcademicCoursePreference, err error) {
+	err = database.Get(&userAcademicCoursePreferences,
+		`SELECT * FROM user_academic_course_preference WHERE user_id = ?`, userId)
 	if err != nil {
 		return userAcademicCoursePreferences, err
 	}
 	return userAcademicCoursePreferences, nil
-}
-
-func GetPreferencesById(coursePreferenceId int) (preference model.UserAcademicCoursePreference, err error) {
-	err = database.Get(&preference, `SELECT * FROM user_academic_course_preference WHERE user_academic_course_id = ? `, coursePreferenceId)
-	if err != nil {
-		return preference, err
-	}
-	return preference, nil
 }

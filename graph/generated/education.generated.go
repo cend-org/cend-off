@@ -941,8 +941,8 @@ func (ec *executionContext) fieldContext_UserAcademicCoursePreference_DeletedAt(
 	return fc, nil
 }
 
-func (ec *executionContext) _UserAcademicCoursePreference_UserAcademicCourseId(ctx context.Context, field graphql.CollectedField, obj *model.UserAcademicCoursePreference) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserAcademicCoursePreference_UserAcademicCourseId(ctx, field)
+func (ec *executionContext) _UserAcademicCoursePreference_UserId(ctx context.Context, field graphql.CollectedField, obj *model.UserAcademicCoursePreference) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserAcademicCoursePreference_UserId(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -955,7 +955,7 @@ func (ec *executionContext) _UserAcademicCoursePreference_UserAcademicCourseId(c
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.UserAcademicCourseId, nil
+		return obj.UserId, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -972,7 +972,7 @@ func (ec *executionContext) _UserAcademicCoursePreference_UserAcademicCourseId(c
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_UserAcademicCoursePreference_UserAcademicCourseId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_UserAcademicCoursePreference_UserId(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "UserAcademicCoursePreference",
 		Field:      field,
@@ -1029,50 +1029,6 @@ func (ec *executionContext) fieldContext_UserAcademicCoursePreference_IsOnline(c
 	return fc, nil
 }
 
-func (ec *executionContext) _UserAcademicCoursePreference_Availability(ctx context.Context, field graphql.CollectedField, obj *model.UserAcademicCoursePreference) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserAcademicCoursePreference_Availability(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Availability, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(time.Time)
-	fc.Result = res
-	return ec.marshalNDateTime2timeᚐTime(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_UserAcademicCoursePreference_Availability(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "UserAcademicCoursePreference",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type DateTime does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
@@ -1111,20 +1067,13 @@ func (ec *executionContext) unmarshalInputUserAcademicCoursePreferenceInput(ctx 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"UserAcademicCourseId", "IsOnline", "Availability"}
+	fieldsInOrder := [...]string{"IsOnline"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "UserAcademicCourseId":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("UserAcademicCourseId"))
-			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.UserAcademicCourseId = data
 		case "IsOnline":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("IsOnline"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -1132,13 +1081,6 @@ func (ec *executionContext) unmarshalInputUserAcademicCoursePreferenceInput(ctx 
 				return it, err
 			}
 			it.IsOnline = data
-		case "Availability":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Availability"))
-			data, err := ec.unmarshalODateTime2ᚖtimeᚐTime(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Availability = data
 		}
 	}
 
@@ -1359,18 +1301,13 @@ func (ec *executionContext) _UserAcademicCoursePreference(ctx context.Context, s
 			}
 		case "DeletedAt":
 			out.Values[i] = ec._UserAcademicCoursePreference_DeletedAt(ctx, field, obj)
-		case "UserAcademicCourseId":
-			out.Values[i] = ec._UserAcademicCoursePreference_UserAcademicCourseId(ctx, field, obj)
+		case "UserId":
+			out.Values[i] = ec._UserAcademicCoursePreference_UserId(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
 		case "IsOnline":
 			out.Values[i] = ec._UserAcademicCoursePreference_IsOnline(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "Availability":
-			out.Values[i] = ec._UserAcademicCoursePreference_Availability(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -1426,25 +1363,9 @@ func (ec *executionContext) unmarshalNUserAcademicCourseInput2ᚕᚖgithubᚗcom
 	return res, nil
 }
 
-func (ec *executionContext) marshalNUserAcademicCoursePreference2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreference(ctx context.Context, sel ast.SelectionSet, v model.UserAcademicCoursePreference) graphql.Marshaler {
-	return ec._UserAcademicCoursePreference(ctx, sel, &v)
-}
-
-func (ec *executionContext) unmarshalNUserAcademicCoursePreferenceInput2ᚕᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInput(ctx context.Context, v interface{}) ([]*model.UserAcademicCoursePreferenceInput, error) {
-	var vSlice []interface{}
-	if v != nil {
-		vSlice = graphql.CoerceList(v)
-	}
-	var err error
-	res := make([]*model.UserAcademicCoursePreferenceInput, len(vSlice))
-	for i := range vSlice {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithIndex(i))
-		res[i], err = ec.unmarshalOUserAcademicCoursePreferenceInput2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInput(ctx, vSlice[i])
-		if err != nil {
-			return nil, err
-		}
-	}
-	return res, nil
+func (ec *executionContext) unmarshalNUserAcademicCoursePreferenceInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInput(ctx context.Context, v interface{}) (model.UserAcademicCoursePreferenceInput, error) {
+	res, err := ec.unmarshalInputUserAcademicCoursePreferenceInput(ctx, v)
+	return res, graphql.ErrorOnPath(ctx, err)
 }
 
 func (ec *executionContext) marshalOAcademicCourse2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAcademicCourseᚄ(ctx context.Context, sel ast.SelectionSet, v []model.AcademicCourse) graphql.Marshaler {
@@ -1556,59 +1477,11 @@ func (ec *executionContext) unmarshalOUserAcademicCourseInput2ᚖgithubᚗcomᚋ
 	return &res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOUserAcademicCoursePreference2ᚕgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceᚄ(ctx context.Context, sel ast.SelectionSet, v []model.UserAcademicCoursePreference) graphql.Marshaler {
+func (ec *executionContext) marshalOUserAcademicCoursePreference2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreference(ctx context.Context, sel ast.SelectionSet, v *model.UserAcademicCoursePreference) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
-	ret := make(graphql.Array, len(v))
-	var wg sync.WaitGroup
-	isLen1 := len(v) == 1
-	if !isLen1 {
-		wg.Add(len(v))
-	}
-	for i := range v {
-		i := i
-		fc := &graphql.FieldContext{
-			Index:  &i,
-			Result: &v[i],
-		}
-		ctx := graphql.WithFieldContext(ctx, fc)
-		f := func(i int) {
-			defer func() {
-				if r := recover(); r != nil {
-					ec.Error(ctx, ec.Recover(ctx, r))
-					ret = nil
-				}
-			}()
-			if !isLen1 {
-				defer wg.Done()
-			}
-			ret[i] = ec.marshalNUserAcademicCoursePreference2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreference(ctx, sel, v[i])
-		}
-		if isLen1 {
-			f(i)
-		} else {
-			go f(i)
-		}
-
-	}
-	wg.Wait()
-
-	for _, e := range ret {
-		if e == graphql.Null {
-			return graphql.Null
-		}
-	}
-
-	return ret
-}
-
-func (ec *executionContext) unmarshalOUserAcademicCoursePreferenceInput2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCoursePreferenceInput(ctx context.Context, v interface{}) (*model.UserAcademicCoursePreferenceInput, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := ec.unmarshalInputUserAcademicCoursePreferenceInput(ctx, v)
-	return &res, graphql.ErrorOnPath(ctx, err)
+	return ec._UserAcademicCoursePreference(ctx, sel, v)
 }
 
 // endregion ***************************** type.gotpl *****************************

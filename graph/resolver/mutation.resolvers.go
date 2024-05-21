@@ -7,6 +7,7 @@ package resolver
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
@@ -106,7 +107,7 @@ func (r *mutationResolver) SetUserAcademicLevel(ctx context.Context, academicLev
 }
 
 // UpdAcademicCoursePreference is the resolver for the UpdAcademicCoursePreference field.
-func (r *mutationResolver) UpdAcademicCoursePreference(ctx context.Context, coursesPreferences []*model.UserAcademicCoursePreferenceInput) ([]model.UserAcademicCoursePreference, error) {
+func (r *mutationResolver) UpdAcademicCoursePreference(ctx context.Context, coursesPreferences model.UserAcademicCoursePreferenceInput) (*model.UserAcademicCoursePreference, error) {
 	var tok *token.Token
 	var err error
 
@@ -115,12 +116,12 @@ func (r *mutationResolver) UpdAcademicCoursePreference(ctx context.Context, cour
 		return nil, errx.UnAuthorizedError
 	}
 
-	preferences, err := academic.UpdStudentAcademicCoursesPreferenceByParent(tok.UserId, coursesPreferences)
+	preference, err := academic.UpdStudentAcademicCoursesPreferenceByParent(tok.UserId, coursesPreferences)
 	if err != nil {
 		return nil, errx.SupportError
 	}
 
-	return preferences, nil
+	return &preference, nil
 }
 
 // RemoveCoverLetter is the resolver for the RemoveCoverLetter field.
@@ -281,7 +282,7 @@ func (r *mutationResolver) NewStudentAcademicCoursesByParent(ctx context.Context
 }
 
 // UpdStudentAcademicCoursesPreferenceByParent is the resolver for the UpdStudentAcademicCoursesPreferenceByParent field.
-func (r *mutationResolver) UpdStudentAcademicCoursesPreferenceByParent(ctx context.Context, coursesPreferences []*model.UserAcademicCoursePreferenceInput, studentID int) (*bool, error) {
+func (r *mutationResolver) UpdStudentAcademicCoursesPreferenceByParent(ctx context.Context, coursesPreferences model.UserAcademicCoursePreferenceInput, studentID int) (*bool, error) {
 	var tok *token.Token
 	var err error
 	var status bool
@@ -294,6 +295,7 @@ func (r *mutationResolver) UpdStudentAcademicCoursesPreferenceByParent(ctx conte
 	if !link.IsStudentParentLinked(tok.UserId, studentID) {
 		return nil, errx.UlError
 	}
+	time.Sleep(100)
 	_, err = academic.UpdStudentAcademicCoursesPreferenceByParent(studentID, coursesPreferences)
 	if err != nil {
 		return nil, errx.SupportError

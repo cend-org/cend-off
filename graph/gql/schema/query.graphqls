@@ -29,7 +29,7 @@ type Query {
     #    Education
     UserAcademicLevels: [AcademicLevel!]
     StudentAcademicLevel(studentId : Int!): [AcademicLevel!]
-    UserPreferences(studentId : Int!): [UserAcademicCoursePreference!]
-    Preferences: [UserAcademicCoursePreference!]
+    UserPreferences(studentId : Int!): UserAcademicCoursePreference
+    Preferences: UserAcademicCoursePreference
 
 }

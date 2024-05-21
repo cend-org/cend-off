@@ -113,19 +113,16 @@ type UserAcademicCourseInput struct {
 }
 
 type UserAcademicCoursePreference struct {
-	Id                   int        `json:"id"`
-	CreatedAt            time.Time  `json:"createdAt"`
-	UpdatedAt            time.Time  `json:"updatedAt"`
-	DeletedAt            *time.Time `json:"deletedAt"`
-	UserAcademicCourseId int        `json:"userAcademicCourseId"`
-	IsOnline             bool       `json:"isOnline"`
-	Availability         time.Time  `json:"availability"`
+	Id        int        `json:"id"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	DeletedAt *time.Time `json:"deletedAt"`
+	UserId    int        `json:"userId"`
+	IsOnline  bool       `json:"isOnline"`
 }
 
 type UserAcademicCoursePreferenceInput struct {
-	UserAcademicCourseId *int       `json:"userAcademicCourseId"`
-	IsOnline             *bool      `json:"isOnline"`
-	Availability         *time.Time `json:"availability"`
+	IsOnline *bool `json:"isOnline"`
 }
 
 type UserAuthorizationLink struct {
