@@ -7,8 +7,6 @@ package resolver
 import (
 	"context"
 	"errors"
-	"time"
-
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
@@ -295,7 +293,7 @@ func (r *mutationResolver) UpdStudentAcademicCoursesPreferenceByParent(ctx conte
 	if !link.IsStudentParentLinked(tok.UserId, studentID) {
 		return nil, errx.UlError
 	}
-	time.Sleep(100)
+
 	_, err = academic.UpdStudentAcademicCoursesPreferenceByParent(studentID, coursesPreferences)
 	if err != nil {
 		return nil, errx.SupportError

@@ -262,5 +262,41 @@ func CreateStudent(name, familyName string) (student model.User, err error) {
 		return student, err
 	}
 
+	studentInput := model.UserInput{
+		Name:       &name,
+		FamilyName: &familyName,
+	}
+
+	password := createPassword(name, familyName)
+	if err != nil {
+		return student, err
+	}
+
+	passwordInput := model.PasswordInput{
+		Hash: &password,
+	}
+
+	_, err = usr.UpdateProfileAndPassword(student.Id, studentInput, passwordInput)
+	if err != nil {
+		return student, err
+	}
+
 	return student, nil
+}
+
+func createPassword(name, familyName string) string {
+	label := fmt.Sprintf("%s%s", familyName, name)
+
+	hashed := make([]byte, len(label))
+	for i, char := range label {
+		switch {
+		case 'a' <= char && char <= 'z':
+			hashed[i] = byte((char-'a'+13)%26 + 'a')
+		case 'A' <= char && char <= 'Z':
+			hashed[i] = byte((char-'A'+13)%26 + 'A')
+		default:
+			hashed[i] = byte(char)
+		}
+	}
+	return string(hashed)
 }

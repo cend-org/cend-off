@@ -1,16 +1,15 @@
 package utils
 
 import (
-	"image"
-	"image/color"
-	"mime/multipart"
-
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/disintegration/imaging"
 	"github.com/joinverse/xid"
 	mod "github.com/unidoc/unipdf/v3/model"
 	"github.com/unidoc/unipdf/v3/render"
+	"image"
+	"image/color"
+	"mime/multipart"
 )
 
 /*
