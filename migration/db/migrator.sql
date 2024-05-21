@@ -1,4 +1,3 @@
-set sql_mode = ``;
 drop database if exists cend;
 create database cend;
 use cend;
@@ -72,10 +71,13 @@ create table media
     deleted_at datetime     default '0000-00-00 00:00:00' null,
     file_name  varchar(500) default ''                    null,
     extension  varchar(10)  default ''                    null,
-    xid        varchar(100) default ''                    null,
-    constraint user_pk
-        unique (xid)
+    xid        varchar(100) default ''                    null
+
 );
+alter table media
+    add constraint media_pk
+        unique (xid);
+
 
 create table media_thumb
 (
@@ -86,8 +88,13 @@ create table media_thumb
     deleted_at datetime     default '0000-00-00 00:00:00',
     extension  varchar(10)  default '',
     media_xid  varchar(100) default '',
-    xid        varchar(500) default ''
+    xid        varchar(100) default ''
 );
+
+alter table media_thumb
+    add constraint media_thumb_xid_pk
+        unique (xid);
+
 
 create table user_media_detail
 (
