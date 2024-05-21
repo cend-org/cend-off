@@ -138,6 +138,7 @@ type ComplexityRoot struct {
 		ProfileImageThumb     func(childComplexity int) int
 		StudentAcademicLevel  func(childComplexity int, studentID int) int
 		SuggestTutor          func(childComplexity int, studentID int) int
+		SuggestTutorToUser    func(childComplexity int) int
 		UserAcademicLevels    func(childComplexity int) int
 		UserCoverLetter       func(childComplexity int, userID int) int
 		UserCoverLetterThumb  func(childComplexity int, userID int) int
@@ -848,6 +849,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.SuggestTutor(childComplexity, args["studentId"].(int)), true
+
+	case "Query.SuggestTutorToUser":
+		if e.complexity.Query.SuggestTutorToUser == nil {
+			break
+		}
+
+		return e.complexity.Query.SuggestTutorToUser(childComplexity), true
 
 	case "Query.UserAcademicLevels":
 		if e.complexity.Query.UserAcademicLevels == nil {
@@ -1586,7 +1594,7 @@ scalar Upload
     NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean
 
     #    Education
-    SetUserAcademicLevel(AcademicLevelId: Int!):AcademicLevel
+    SetUserAcademicLevel(AcademicLevelId: Int!): Boolean
     UpdAcademicCoursePreference(coursesPreferences: UserAcademicCoursePreferenceInput!): UserAcademicCoursePreference
 
     #    User Media
@@ -1613,7 +1621,6 @@ scalar Upload
     MyProfile : User
     AcademicLevels : [AcademicLevel!]
     AcademicCourses(AcademicLevelId: Int!) : [AcademicCourse!]
-    SuggestTutor(studentId: Int! ): User!
 
     #    Media
     CoverLetter : String
@@ -1645,6 +1652,11 @@ scalar Upload
 
     #    User profile
     UserProfile(userId : Int!) : User
+
+    #    Suggestion
+    SuggestTutor(studentId: Int! ): User!
+    SuggestTutorToUser: User!
+
 
 }`, BuiltIn: false},
 	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {

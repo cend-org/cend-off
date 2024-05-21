@@ -1462,13 +1462,6 @@ func (ec *executionContext) marshalOAcademicLevel2ᚕgithubᚗcomᚋcendᚑorg�
 	return ret
 }
 
-func (ec *executionContext) marshalOAcademicLevel2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAcademicLevel(ctx context.Context, sel ast.SelectionSet, v *model.AcademicLevel) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	return ec._AcademicLevel(ctx, sel, v)
-}
-
 func (ec *executionContext) unmarshalOUserAcademicCourseInput2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUserAcademicCourseInput(ctx context.Context, v interface{}) (*model.UserAcademicCourseInput, error) {
 	if v == nil {
 		return nil, nil

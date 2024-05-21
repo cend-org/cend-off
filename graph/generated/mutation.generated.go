@@ -26,7 +26,7 @@ type MutationResolver interface {
 	UpdateMyProfile(ctx context.Context, profile model.UserInput) (*model.User, error)
 	UpdateProfileAndPassword(ctx context.Context, profile model.UserInput, password model.PasswordInput) (*model.User, error)
 	NewUserAcademicCourses(ctx context.Context, courses []*model.UserAcademicCourseInput) (*bool, error)
-	SetUserAcademicLevel(ctx context.Context, academicLevelID int) (*model.AcademicLevel, error)
+	SetUserAcademicLevel(ctx context.Context, academicLevelID int) (*bool, error)
 	UpdAcademicCoursePreference(ctx context.Context, coursesPreferences model.UserAcademicCoursePreferenceInput) (*model.UserAcademicCoursePreference, error)
 	RemoveCoverLetter(ctx context.Context) (*bool, error)
 	RemoveCv(ctx context.Context) (*bool, error)
@@ -985,9 +985,9 @@ func (ec *executionContext) _Mutation_SetUserAcademicLevel(ctx context.Context, 
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.AcademicLevel)
+	res := resTmp.(*bool)
 	fc.Result = res
-	return ec.marshalOAcademicLevel2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAcademicLevel(ctx, field.Selections, res)
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_SetUserAcademicLevel(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -997,19 +997,7 @@ func (ec *executionContext) fieldContext_Mutation_SetUserAcademicLevel(ctx conte
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_AcademicLevel_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_AcademicLevel_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_AcademicLevel_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_AcademicLevel_DeletedAt(ctx, field)
-			case "Name":
-				return ec.fieldContext_AcademicLevel_Name(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type AcademicLevel", field.Name)
+			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	defer func() {

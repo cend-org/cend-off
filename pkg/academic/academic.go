@@ -4,7 +4,6 @@ import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/utils/errx"
-	"github.com/cend-org/duval/pkg/user/authorization"
 	"github.com/cend-org/duval/pkg/user/link"
 	"github.com/xorcare/pointer"
 )
@@ -73,15 +72,11 @@ func GetTutorWithPreferredCourse(studentId int) (user model.User, err error) {
 	return user, nil
 }
 
-func SetUserAcademicLevel(parentId, studentId, academicLevelId int) (err error) {
+func SetUserAcademicLevel(userId, academicLevelId int) (err error) {
 	var (
 		academicCourse model.UserAcademicCourse
 		courses        []model.AcademicCourse
 	)
-
-	if !authorization.IsUserParent(parentId) {
-		return errx.UnAuthorizedError
-	}
 
 	courses, err = GetAcademicCourses(academicLevelId)
 	if err != nil {
@@ -89,7 +84,7 @@ func SetUserAcademicLevel(parentId, studentId, academicLevelId int) (err error) 
 	}
 
 	academicCourse.CourseId = courses[0].Id
-	academicCourse.UserId = studentId
+	academicCourse.UserId = userId
 
 	_, err = database.InsertOne(academicCourse)
 	if err != nil {

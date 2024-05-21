@@ -21,7 +21,6 @@ type QueryResolver interface {
 	MyProfile(ctx context.Context) (*model.User, error)
 	AcademicLevels(ctx context.Context) ([]model.AcademicLevel, error)
 	AcademicCourses(ctx context.Context, academicLevelID int) ([]model.AcademicCourse, error)
-	SuggestTutor(ctx context.Context, studentID int) (*model.User, error)
 	CoverLetter(ctx context.Context) (*string, error)
 	Cv(ctx context.Context) (*string, error)
 	ProfileImage(ctx context.Context) (*string, error)
@@ -41,6 +40,8 @@ type QueryResolver interface {
 	UserPreferences(ctx context.Context, studentID int) (*model.UserAcademicCoursePreference, error)
 	Preferences(ctx context.Context) (*model.UserAcademicCoursePreference, error)
 	UserProfile(ctx context.Context, userID int) (*model.User, error)
+	SuggestTutor(ctx context.Context, studentID int) (*model.User, error)
+	SuggestTutorToUser(ctx context.Context) (*model.User, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -448,105 +449,6 @@ func (ec *executionContext) fieldContext_Query_AcademicCourses(ctx context.Conte
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
 	if fc.Args, err = ec.field_Query_AcademicCourses_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
-		ec.Error(ctx, err)
-		return fc, err
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _Query_SuggestTutor(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_SuggestTutor(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().SuggestTutor(rctx, fc.Args["studentId"].(int))
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(*model.User)
-	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_Query_SuggestTutor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "Query",
-		Field:      field,
-		IsMethod:   true,
-		IsResolver: true,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_User_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_User_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_User_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_User_DeletedAt(ctx, field)
-			case "Name":
-				return ec.fieldContext_User_Name(ctx, field)
-			case "FamilyName":
-				return ec.fieldContext_User_FamilyName(ctx, field)
-			case "NickName":
-				return ec.fieldContext_User_NickName(ctx, field)
-			case "Email":
-				return ec.fieldContext_User_Email(ctx, field)
-			case "Matricule":
-				return ec.fieldContext_User_Matricule(ctx, field)
-			case "Age":
-				return ec.fieldContext_User_Age(ctx, field)
-			case "BirthDate":
-				return ec.fieldContext_User_BirthDate(ctx, field)
-			case "Sex":
-				return ec.fieldContext_User_Sex(ctx, field)
-			case "Lang":
-				return ec.fieldContext_User_Lang(ctx, field)
-			case "Status":
-				return ec.fieldContext_User_Status(ctx, field)
-			case "ProfileImageXid":
-				return ec.fieldContext_User_ProfileImageXid(ctx, field)
-			case "Description":
-				return ec.fieldContext_User_Description(ctx, field)
-			case "CoverText":
-				return ec.fieldContext_User_CoverText(ctx, field)
-			case "Profile":
-				return ec.fieldContext_User_Profile(ctx, field)
-			case "ExperienceDetail":
-				return ec.fieldContext_User_ExperienceDetail(ctx, field)
-			case "AdditionalDescription":
-				return ec.fieldContext_User_AdditionalDescription(ctx, field)
-			case "AddOnTitle":
-				return ec.fieldContext_User_AddOnTitle(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
-		},
-	}
-	defer func() {
-		if r := recover(); r != nil {
-			err = ec.Recover(ctx, r)
-			ec.Error(ctx, err)
-		}
-	}()
-	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_SuggestTutor_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -1538,6 +1440,193 @@ func (ec *executionContext) fieldContext_Query_UserProfile(ctx context.Context, 
 	return fc, nil
 }
 
+func (ec *executionContext) _Query_SuggestTutor(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_SuggestTutor(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().SuggestTutor(rctx, fc.Args["studentId"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_SuggestTutor(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "Id":
+				return ec.fieldContext_User_Id(ctx, field)
+			case "CreatedAt":
+				return ec.fieldContext_User_CreatedAt(ctx, field)
+			case "UpdatedAt":
+				return ec.fieldContext_User_UpdatedAt(ctx, field)
+			case "DeletedAt":
+				return ec.fieldContext_User_DeletedAt(ctx, field)
+			case "Name":
+				return ec.fieldContext_User_Name(ctx, field)
+			case "FamilyName":
+				return ec.fieldContext_User_FamilyName(ctx, field)
+			case "NickName":
+				return ec.fieldContext_User_NickName(ctx, field)
+			case "Email":
+				return ec.fieldContext_User_Email(ctx, field)
+			case "Matricule":
+				return ec.fieldContext_User_Matricule(ctx, field)
+			case "Age":
+				return ec.fieldContext_User_Age(ctx, field)
+			case "BirthDate":
+				return ec.fieldContext_User_BirthDate(ctx, field)
+			case "Sex":
+				return ec.fieldContext_User_Sex(ctx, field)
+			case "Lang":
+				return ec.fieldContext_User_Lang(ctx, field)
+			case "Status":
+				return ec.fieldContext_User_Status(ctx, field)
+			case "ProfileImageXid":
+				return ec.fieldContext_User_ProfileImageXid(ctx, field)
+			case "Description":
+				return ec.fieldContext_User_Description(ctx, field)
+			case "CoverText":
+				return ec.fieldContext_User_CoverText(ctx, field)
+			case "Profile":
+				return ec.fieldContext_User_Profile(ctx, field)
+			case "ExperienceDetail":
+				return ec.fieldContext_User_ExperienceDetail(ctx, field)
+			case "AdditionalDescription":
+				return ec.fieldContext_User_AdditionalDescription(ctx, field)
+			case "AddOnTitle":
+				return ec.fieldContext_User_AddOnTitle(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_SuggestTutor_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_SuggestTutorToUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_SuggestTutorToUser(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().SuggestTutorToUser(rctx)
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_SuggestTutorToUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "Id":
+				return ec.fieldContext_User_Id(ctx, field)
+			case "CreatedAt":
+				return ec.fieldContext_User_CreatedAt(ctx, field)
+			case "UpdatedAt":
+				return ec.fieldContext_User_UpdatedAt(ctx, field)
+			case "DeletedAt":
+				return ec.fieldContext_User_DeletedAt(ctx, field)
+			case "Name":
+				return ec.fieldContext_User_Name(ctx, field)
+			case "FamilyName":
+				return ec.fieldContext_User_FamilyName(ctx, field)
+			case "NickName":
+				return ec.fieldContext_User_NickName(ctx, field)
+			case "Email":
+				return ec.fieldContext_User_Email(ctx, field)
+			case "Matricule":
+				return ec.fieldContext_User_Matricule(ctx, field)
+			case "Age":
+				return ec.fieldContext_User_Age(ctx, field)
+			case "BirthDate":
+				return ec.fieldContext_User_BirthDate(ctx, field)
+			case "Sex":
+				return ec.fieldContext_User_Sex(ctx, field)
+			case "Lang":
+				return ec.fieldContext_User_Lang(ctx, field)
+			case "Status":
+				return ec.fieldContext_User_Status(ctx, field)
+			case "ProfileImageXid":
+				return ec.fieldContext_User_ProfileImageXid(ctx, field)
+			case "Description":
+				return ec.fieldContext_User_Description(ctx, field)
+			case "CoverText":
+				return ec.fieldContext_User_CoverText(ctx, field)
+			case "Profile":
+				return ec.fieldContext_User_Profile(ctx, field)
+			case "ExperienceDetail":
+				return ec.fieldContext_User_ExperienceDetail(ctx, field)
+			case "AdditionalDescription":
+				return ec.fieldContext_User_AdditionalDescription(ctx, field)
+			case "AddOnTitle":
+				return ec.fieldContext_User_AddOnTitle(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Query___type(ctx, field)
 	if err != nil {
@@ -1746,28 +1835,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_AcademicCourses(ctx, field)
-				return res
-			}
-
-			rrm := func(ctx context.Context) graphql.Marshaler {
-				return ec.OperationContext.RootResolverMiddleware(ctx,
-					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
-			}
-
-			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "SuggestTutor":
-			field := field
-
-			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
-				defer func() {
-					if r := recover(); r != nil {
-						ec.Error(ctx, ec.Recover(ctx, r))
-					}
-				}()
-				res = ec._Query_SuggestTutor(ctx, field)
-				if res == graphql.Null {
-					atomic.AddUint32(&fs.Invalids, 1)
-				}
 				return res
 			}
 
@@ -2129,6 +2196,50 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 					}
 				}()
 				res = ec._Query_UserProfile(ctx, field)
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "SuggestTutor":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_SuggestTutor(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "SuggestTutorToUser":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_SuggestTutorToUser(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
 				return res
 			}
 

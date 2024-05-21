@@ -45,31 +45,6 @@ func (r *queryResolver) AcademicCourses(ctx context.Context, academicLevelID int
 	return academic.GetAcademicCourses(academicLevelID)
 }
 
-// SuggestTutor is the resolver for the SuggestTutor field.
-func (r *queryResolver) SuggestTutor(ctx context.Context, studentID int) (*model.User, error) {
-	var (
-		tok  *token.Token
-		err  error
-		user model.User
-	)
-
-	tok, err = token.GetFromContext(ctx)
-	if err != nil {
-		return nil, errx.UnAuthorizedError
-	}
-
-	if !link.IsStudentParentLinked(tok.UserId, studentID) {
-		return nil, errx.UlError
-	}
-
-	user, err = academic.GetTutorWithPreferredCourse(studentID)
-	if err != nil {
-		return nil, err
-	}
-
-	return &user, nil
-}
-
 // CoverLetter is the resolver for the CoverLetter field.
 func (r *queryResolver) CoverLetter(ctx context.Context) (*string, error) {
 	var (
@@ -454,6 +429,52 @@ func (r *queryResolver) UserProfile(ctx context.Context, userID int) (*model.Use
 	}
 
 	return usr.MyProfile(userID)
+}
+
+// SuggestTutor is the resolver for the SuggestTutor field.
+func (r *queryResolver) SuggestTutor(ctx context.Context, studentID int) (*model.User, error) {
+	var (
+		tok  *token.Token
+		err  error
+		user model.User
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if !link.IsStudentParentLinked(tok.UserId, studentID) {
+		return nil, errx.UlError
+	}
+
+	user, err = academic.GetTutorWithPreferredCourse(studentID)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
+// SuggestTutorToUser is the resolver for the SuggestTutorToUser field.
+func (r *queryResolver) SuggestTutorToUser(ctx context.Context) (*model.User, error) {
+	var (
+		tok  *token.Token
+		err  error
+		user model.User
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	user, err = academic.GetTutorWithPreferredCourse(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 // Query returns generated.QueryResolver implementation.

@@ -10,7 +10,7 @@ type Mutation {
     NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean
 
     #    Education
-    SetUserAcademicLevel(AcademicLevelId: Int!):AcademicLevel
+    SetUserAcademicLevel(AcademicLevelId: Int!): Boolean
     UpdAcademicCoursePreference(coursesPreferences: UserAcademicCoursePreferenceInput!): UserAcademicCoursePreference
 
     #    User Media

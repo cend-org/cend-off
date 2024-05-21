@@ -2,7 +2,6 @@ type Query {
     MyProfile : User
     AcademicLevels : [AcademicLevel!]
     AcademicCourses(AcademicLevelId: Int!) : [AcademicCourse!]
-    SuggestTutor(studentId: Int! ): User!
 
     #    Media
     CoverLetter : String
@@ -34,5 +33,10 @@ type Query {
 
     #    User profile
     UserProfile(userId : Int!) : User
+
+    #    Suggestion
+    SuggestTutor(studentId: Int! ): User!
+    SuggestTutorToUser: User!
+
 
 }

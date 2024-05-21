@@ -7,7 +7,6 @@ package resolver
 import (
 	"context"
 	"errors"
-
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
@@ -101,8 +100,23 @@ func (r *mutationResolver) NewUserAcademicCourses(ctx context.Context, courses [
 }
 
 // SetUserAcademicLevel is the resolver for the SetUserAcademicLevel field.
-func (r *mutationResolver) SetUserAcademicLevel(ctx context.Context, academicLevelID int) (*model.AcademicLevel, error) {
-	panic("not implemented")
+func (r *mutationResolver) SetUserAcademicLevel(ctx context.Context, academicLevelID int) (*bool, error) {
+	var tok *token.Token
+	var err error
+	var status bool
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	err = academic.SetUserAcademicLevel(tok.UserId, academicLevelID)
+	if err != nil {
+		return nil, err
+	}
+
+	status = true
+	return &status, nil
 }
 
 // UpdAcademicCoursePreference is the resolver for the UpdAcademicCoursePreference field.
@@ -277,7 +291,7 @@ func (r *mutationResolver) SetStudentAcademicLevelByParent(ctx context.Context, 
 	if !link.IsStudentParentLinked(tok.UserId, studentID) {
 		return &status, errx.UlError
 	}
-	err = academic.SetUserAcademicLevel(tok.UserId, studentID, academicLevelID)
+	err = academic.SetUserAcademicLevel(studentID, academicLevelID)
 	if err != nil {
 		return nil, err
 	}
