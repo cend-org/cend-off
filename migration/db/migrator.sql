@@ -89,10 +89,6 @@ create table media_thumb
     xid        varchar(500) default ''
 );
 
-alter table media_thumb
-    add constraint media_thumb_media_xid_fk
-        foreign key (media_xid) references media (xid)
-            on delete cascade on update cascade;
 
 create table user_media_detail
 (
