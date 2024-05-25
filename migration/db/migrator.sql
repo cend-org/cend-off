@@ -296,7 +296,7 @@ values ((select academic_level.id from academic_level where name = 'secondaire 1
        ((select academic_level.id from academic_level where name = 'secondaire 1'), 'Histoire / Géographie'),
        ((select academic_level.id from academic_level where name = 'secondaire 1'), 'Sciences et technologies'),
        ((select academic_level.id from academic_level where name = 'secondaire 1'), 'Monde contemporain'),
-       ((select academic_level.id from academic_level where name = 'secondaire 1'), 'academic_level financière'),
+       ((select academic_level.id from academic_level where name = 'secondaire 1'), 'Education financière'),
        ((select academic_level.id from academic_level where name = 'secondaire 1'), 'Éthique et culture religieuse'),
        ((select academic_level.id from academic_level where name = 'secondaire 1'), 'Mathématiques');
 
@@ -306,7 +306,7 @@ values ((select academic_level.id from academic_level where name = 'secondaire 2
        ((select academic_level.id from academic_level where name = 'secondaire 2'), 'Histoire / Géographie'),
        ((select academic_level.id from academic_level where name = 'secondaire 2'), 'Sciences et technologies'),
        ((select academic_level.id from academic_level where name = 'secondaire 2'), 'Monde contemporain'),
-       ((select academic_level.id from academic_level where name = 'secondaire 2'), 'academic_level financière'),
+       ((select academic_level.id from academic_level where name = 'secondaire 2'), 'Education financière'),
        ((select academic_level.id from academic_level where name = 'secondaire 2'), 'Éthique et culture religieuse'),
        ((select academic_level.id from academic_level where name = 'secondaire 2'), 'Mathématiques');
 
