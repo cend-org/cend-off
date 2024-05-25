@@ -7,7 +7,6 @@ package resolver
 import (
 	"context"
 	"errors"
-
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
@@ -429,11 +428,7 @@ func (r *mutationResolver) NewStudentProfessor(ctx context.Context, userID int) 
 		return nil, errx.UnAuthorizedError
 	}
 
-	if !authorization.IsUserStudent(tok.UserId) || !authorization.IsUserProfessor(userID) {
-		return nil, errx.UnAuthorizedError
-	}
-
-	if authorization.IsUserTutor(tok.UserId) && authorization.IsUserProfessor(userID) {
+	if authorization.IsUserProfessor(tok.UserId) && authorization.IsUserStudent(userID) {
 		student, err = link.AddStudentToProfessor(tok.UserId, userID)
 		if err != nil {
 			return nil, err
