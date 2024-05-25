@@ -26,7 +26,7 @@ var (
 
 var (
 	InvalidEmailError       = errors.New("the email you enter is invalid")
-	ToRegisterEmailError    = errors.New("user unknown , please sign up insteadS")
+	ToRegisterEmailError    = errors.New("user unknown , please sign up instead")
 	StatusNeedPasswordError = errors.New("need at least a password and an email for login")
 	IncorrectPasswordError  = errors.New("email or password doesn't match")
 )
