@@ -43,6 +43,7 @@ var (
 	UnknownStudentError = errors.New("unknown student")
 	ParentError         = errors.New("unknown parent")
 	UlError             = errors.New("parent and student are not linked ")
+	EmptyTutorError     = errors.New("Continue without tutor ")
 )
 
 // DATABASE

@@ -453,6 +453,10 @@ func (r *queryResolver) SuggestTutor(ctx context.Context, studentID int) (*model
 		return nil, err
 	}
 
+	if user.Id == state.ZERO {
+		return nil, errx.EmptyTutorError
+	}
+
 	return &user, nil
 }
 
@@ -472,6 +476,10 @@ func (r *queryResolver) SuggestTutorToUser(ctx context.Context) (*model.User, er
 	user, err = academic.GetTutorWithPreferredCourse(tok.UserId)
 	if err != nil {
 		return nil, err
+	}
+
+	if user.Id == state.ZERO {
+		return nil, errx.EmptyTutorError
 	}
 
 	return &user, nil
