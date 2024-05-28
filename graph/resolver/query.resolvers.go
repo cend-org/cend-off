@@ -460,6 +460,35 @@ func (r *queryResolver) SuggestTutor(ctx context.Context, studentID int) (*model
 	return &user, nil
 }
 
+// SuggestOtherTutor is the resolver for the SuggestOtherTutor field.
+func (r *queryResolver) SuggestOtherTutor(ctx context.Context, studentID int, lastTutorID int) (*model.User, error) {
+	var (
+		tok  *token.Token
+		err  error
+		user model.User
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if !link.IsStudentParentLinked(tok.UserId, studentID) {
+		return nil, errx.UlError
+	}
+
+	user, err = academic.GetOtherTutorWithPreferredCourse(studentID, lastTutorID)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.Id == state.ZERO {
+		return nil, errx.EmptyTutorError
+	}
+
+	return &user, nil
+}
+
 // SuggestTutorToUser is the resolver for the SuggestTutorToUser field.
 func (r *queryResolver) SuggestTutorToUser(ctx context.Context) (*model.User, error) {
 	var (
@@ -474,6 +503,31 @@ func (r *queryResolver) SuggestTutorToUser(ctx context.Context) (*model.User, er
 	}
 
 	user, err = academic.GetTutorWithPreferredCourse(tok.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	if user.Id == state.ZERO {
+		return nil, errx.EmptyTutorError
+	}
+
+	return &user, nil
+}
+
+// SuggestOtherTutorToUser is the resolver for the SuggestOtherTutorToUser field.
+func (r *queryResolver) SuggestOtherTutorToUser(ctx context.Context, lastTutorID int) (*model.User, error) {
+	var (
+		tok  *token.Token
+		err  error
+		user model.User
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	user, err = academic.GetOtherTutorWithPreferredCourse(tok.UserId, lastTutorID)
 	if err != nil {
 		return nil, err
 	}

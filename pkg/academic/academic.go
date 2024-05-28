@@ -74,6 +74,24 @@ func GetTutorWithPreferredCourse(studentId int) (user model.User, err error) {
 	return user, nil
 }
 
+func GetOtherTutorWithPreferredCourse(studentId int, tutorId int) (user model.User, err error) {
+	var (
+		course []model.AcademicCourse
+	)
+
+	course, err = GetUserPreferredCourse(studentId)
+	if err != nil {
+		return user, errx.CoursePreferenceError
+	}
+
+	user, err = GetOtherTutorByCourse(course, tutorId)
+	if err != nil {
+		return user, errx.SupportError
+	}
+
+	return user, nil
+}
+
 func SetUserAcademicLevel(userId, academicLevelId int) (err error) {
 	var (
 		academicCourse model.UserAcademicCourse
@@ -167,6 +185,7 @@ func GetTutorByCourse(courses []model.AcademicCourse) (topTutor model.User, err 
 		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			return topTutor, err
 		}
+
 		for _, tutor := range courseTutors {
 			tutorCounts[tutor]++
 		}
@@ -203,4 +222,36 @@ func GetPreferences(userId int) (userAcademicCoursePreferences model.UserAcademi
 		return userAcademicCoursePreferences, err
 	}
 	return userAcademicCoursePreferences, nil
+}
+
+func GetOtherTutorByCourse(courses []model.AcademicCourse, tutorId int) (topTutor model.User, err error) {
+	var courseTutors []model.User
+	tutorCounts := make(map[model.User]int)
+
+	for _, course := range courses {
+		err = database.Select(&courseTutors, `
+            SELECT u.*
+            FROM user u
+            JOIN user_academic_course uac ON u.id = uac.user_id
+            JOIN academic_course ac ON uac.course_id = ac.id
+            JOIN authorization a ON u.id = a.user_id
+            WHERE ac.name = ? AND a.level = ? AND u.id NOT IN (?)`, course.Name, link.TutorAuthorizationLevel, tutorId)
+		if err != nil && !errors.Is(err, sql.ErrNoRows) {
+			return topTutor, err
+		}
+
+		for _, tutor := range courseTutors {
+			tutorCounts[tutor]++
+		}
+	}
+
+	maxCount := 0
+	for tutor, count := range tutorCounts {
+		if count > maxCount {
+			topTutor = tutor
+			maxCount = count
+		}
+	}
+
+	return topTutor, nil
 }

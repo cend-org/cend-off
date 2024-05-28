@@ -36,7 +36,9 @@ type Query {
 
     #    Suggestion
     SuggestTutor(studentId: Int! ): User!
+    SuggestOtherTutor(studentId: Int! , lastTutorId: Int! ): User!
     SuggestTutorToUser: User!
+    SuggestOtherTutorToUser (lastTutorId: Int!): User!
 
     #    Link
     ProfessorStudent(keyWord: String!) : [User!]
