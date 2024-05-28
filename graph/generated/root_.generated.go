@@ -129,31 +129,33 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		AcademicCourses       func(childComplexity int, academicLevelID int) int
-		AcademicLevels        func(childComplexity int) int
-		CoverLetter           func(childComplexity int) int
-		CoverLetterThumb      func(childComplexity int) int
-		Cv                    func(childComplexity int) int
-		CvThumb               func(childComplexity int) int
-		MyProfile             func(childComplexity int) int
-		Preferences           func(childComplexity int) int
-		ProfessorStudent      func(childComplexity int, keyWord string) int
-		ProfileImage          func(childComplexity int) int
-		ProfileImageThumb     func(childComplexity int) int
-		StudentAcademicLevel  func(childComplexity int, studentID int) int
-		SuggestTutor          func(childComplexity int, studentID int) int
-		SuggestTutorToUser    func(childComplexity int) int
-		UserAcademicLevels    func(childComplexity int) int
-		UserCoverLetter       func(childComplexity int, userID int) int
-		UserCoverLetterThumb  func(childComplexity int, userID int) int
-		UserCv                func(childComplexity int, userID int) int
-		UserCvThumb           func(childComplexity int, userID int) int
-		UserPreferences       func(childComplexity int, studentID int) int
-		UserProfile           func(childComplexity int, userID int) int
-		UserProfileImage      func(childComplexity int, userID int) int
-		UserProfileImageThumb func(childComplexity int, userID int) int
-		UserVideoPresentation func(childComplexity int, userID int) int
-		VideoPresentation     func(childComplexity int) int
+		AcademicCourses         func(childComplexity int, academicLevelID int) int
+		AcademicLevels          func(childComplexity int) int
+		CoverLetter             func(childComplexity int) int
+		CoverLetterThumb        func(childComplexity int) int
+		Cv                      func(childComplexity int) int
+		CvThumb                 func(childComplexity int) int
+		MyProfile               func(childComplexity int) int
+		Preferences             func(childComplexity int) int
+		ProfessorStudent        func(childComplexity int, keyWord string) int
+		ProfileImage            func(childComplexity int) int
+		ProfileImageThumb       func(childComplexity int) int
+		StudentAcademicLevel    func(childComplexity int, studentID int) int
+		SuggestOtherTutor       func(childComplexity int, studentID int, lastTutorID int) int
+		SuggestOtherTutorToUser func(childComplexity int, lastTutorID int) int
+		SuggestTutor            func(childComplexity int, studentID int) int
+		SuggestTutorToUser      func(childComplexity int) int
+		UserAcademicLevels      func(childComplexity int) int
+		UserCoverLetter         func(childComplexity int, userID int) int
+		UserCoverLetterThumb    func(childComplexity int, userID int) int
+		UserCv                  func(childComplexity int, userID int) int
+		UserCvThumb             func(childComplexity int, userID int) int
+		UserPreferences         func(childComplexity int, studentID int) int
+		UserProfile             func(childComplexity int, userID int) int
+		UserProfileImage        func(childComplexity int, userID int) int
+		UserProfileImageThumb   func(childComplexity int, userID int) int
+		UserVideoPresentation   func(childComplexity int, userID int) int
+		VideoPresentation       func(childComplexity int) int
 	}
 
 	User struct {
@@ -889,6 +891,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.StudentAcademicLevel(childComplexity, args["studentId"].(int)), true
+
+	case "Query.SuggestOtherTutor":
+		if e.complexity.Query.SuggestOtherTutor == nil {
+			break
+		}
+
+		args, err := ec.field_Query_SuggestOtherTutor_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.SuggestOtherTutor(childComplexity, args["studentId"].(int), args["lastTutorId"].(int)), true
+
+	case "Query.SuggestOtherTutorToUser":
+		if e.complexity.Query.SuggestOtherTutorToUser == nil {
+			break
+		}
+
+		args, err := ec.field_Query_SuggestOtherTutorToUser_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.SuggestOtherTutorToUser(childComplexity, args["lastTutorId"].(int)), true
 
 	case "Query.SuggestTutor":
 		if e.complexity.Query.SuggestTutor == nil {
@@ -1713,7 +1739,9 @@ scalar Upload
 
     #    Suggestion
     SuggestTutor(studentId: Int! ): User!
+    SuggestOtherTutor(studentId: Int! , lastTutorId: Int! ): User!
     SuggestTutorToUser: User!
+    SuggestOtherTutorToUser (lastTutorId: Int!): User!
 
     #    Link
     ProfessorStudent(keyWord: String!) : [User!]
