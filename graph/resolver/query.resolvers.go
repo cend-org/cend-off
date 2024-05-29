@@ -7,6 +7,7 @@ package resolver
 import (
 	"context"
 	"errors"
+
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
@@ -385,7 +386,8 @@ func (r *queryResolver) UserPreferences(ctx context.Context, studentID int) (*mo
 	if err != nil {
 		return nil, errx.UnAuthorizedError
 	}
-	if !link.IsStudentParentLinked(tok.UserId, studentID) {
+
+	if authorization.IsUserStudent(studentID) && !link.IsStudentParentLinked(tok.UserId, studentID) {
 		return nil, errx.UlError
 	}
 
@@ -413,6 +415,52 @@ func (r *queryResolver) Preferences(ctx context.Context) (*model.UserAcademicCou
 		return nil, errx.MissingPreferenceError
 	}
 	return &course, nil
+}
+
+// UserCoursePreferences is the resolver for the UserCoursePreferences field.
+func (r *queryResolver) UserCoursePreferences(ctx context.Context, userID int) ([]model.AcademicCourse, error) {
+	var (
+		tok     *token.Token
+		err     error
+		courses []model.AcademicCourse
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	if tok.UserId == state.ZERO {
+		return nil, errx.UnknownLevelError
+	}
+
+	courses, err = academic.GetUserPreferredCourse(userID)
+	if err != nil {
+		return nil, errx.SupportError
+	}
+
+	return courses, nil
+}
+
+// CourserPreferences is the resolver for the CourserPreferences field.
+func (r *queryResolver) CourserPreferences(ctx context.Context) ([]model.AcademicCourse, error) {
+	var (
+		tok     *token.Token
+		err     error
+		courses []model.AcademicCourse
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, errx.UnAuthorizedError
+	}
+
+	courses, err = academic.GetUserPreferredCourse(tok.UserId)
+	if err != nil {
+		return nil, errx.SupportError
+	}
+
+	return courses, nil
 }
 
 // UserProfile is the resolver for the UserProfile field.
