@@ -131,6 +131,7 @@ type ComplexityRoot struct {
 	Query struct {
 		AcademicCourses         func(childComplexity int, academicLevelID int) int
 		AcademicLevels          func(childComplexity int) int
+		CourserPreferences      func(childComplexity int) int
 		CoverLetter             func(childComplexity int) int
 		CoverLetterThumb        func(childComplexity int) int
 		Cv                      func(childComplexity int) int
@@ -146,6 +147,7 @@ type ComplexityRoot struct {
 		SuggestTutor            func(childComplexity int, studentID int) int
 		SuggestTutorToUser      func(childComplexity int) int
 		UserAcademicLevels      func(childComplexity int) int
+		UserCoursePreferences   func(childComplexity int, userID int) int
 		UserCoverLetter         func(childComplexity int, userID int) int
 		UserCoverLetterThumb    func(childComplexity int, userID int) int
 		UserCv                  func(childComplexity int, userID int) int
@@ -812,6 +814,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AcademicLevels(childComplexity), true
 
+	case "Query.CourserPreferences":
+		if e.complexity.Query.CourserPreferences == nil {
+			break
+		}
+
+		return e.complexity.Query.CourserPreferences(childComplexity), true
+
 	case "Query.CoverLetter":
 		if e.complexity.Query.CoverLetter == nil {
 			break
@@ -941,6 +950,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.UserAcademicLevels(childComplexity), true
+
+	case "Query.UserCoursePreferences":
+		if e.complexity.Query.UserCoursePreferences == nil {
+			break
+		}
+
+		args, err := ec.field_Query_UserCoursePreferences_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.UserCoursePreferences(childComplexity, args["userId"].(int)), true
 
 	case "Query.UserCoverLetter":
 		if e.complexity.Query.UserCoverLetter == nil {
@@ -1733,6 +1754,8 @@ scalar Upload
     StudentAcademicLevel(studentId : Int!): [AcademicLevel!]
     UserPreferences(studentId : Int!): UserAcademicCoursePreference
     Preferences: UserAcademicCoursePreference
+    UserCoursePreferences(userId: Int!) : [AcademicCourse!]
+    CourserPreferences : [AcademicCourse!]
 
     #    User profile
     UserProfile(userId : Int!) : User

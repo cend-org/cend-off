@@ -30,6 +30,8 @@ type Query {
     StudentAcademicLevel(studentId : Int!): [AcademicLevel!]
     UserPreferences(studentId : Int!): UserAcademicCoursePreference
     Preferences: UserAcademicCoursePreference
+    UserCoursePreferences(userId: Int!) : [AcademicCourse!]
+    CourserPreferences : [AcademicCourse!]
 
     #    User profile
     UserProfile(userId : Int!) : User
