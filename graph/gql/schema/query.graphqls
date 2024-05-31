@@ -1,50 +1,52 @@
 type Query {
-    MyProfile : User
-    AcademicLevels : [AcademicLevel!]
-    AcademicCourses(AcademicLevelId: Int!) : [AcademicCourse!]
+    #User
+    MyProfile : User #Get current profile from database
+    UserProfile(userId : Int!) : User  #Get other's profile from database
 
-    #    Media
+    AcademicLevels : [AcademicLevel!]  #Get list of available level from database
+    AcademicCourses(AcademicLevelId: Int!) : [AcademicCourse!]  #Get list of available course based on level from database
+    MultipleLevelAcademicCourses(AcademicLevelId: [Int!]) : [AcademicCourse!] #Get list of available course based on set of level from database
+
+
+    #  Get link of media from server
     CoverLetter : String
     Cv : String
     ProfileImage: String
     VideoPresentation: String
 
-    #    Media Thumb
+    #  Get link of media thumb from server
     CoverLetterThumb : String
     CvThumb : String
     ProfileImageThumb: String
 
-    #  Current User  Media
+    #  Get link of other's media from server based on the user's id
     UserCoverLetter(userId: Int!): String
     UserCv(userId: Int!): String
     UserProfileImage(userId: Int!): String
     UserVideoPresentation(userId: Int!): String
 
-    #  User  Media Thumb
+    #  Get link of other's media from server based on the user's id
     UserCoverLetterThumb(userId: Int!): String
     UserCvThumb(userId: Int!): String
     UserProfileImageThumb(userId: Int!): String
 
     #    Education
-    UserAcademicLevels: [AcademicLevel!]
-    StudentAcademicLevel(studentId : Int!): [AcademicLevel!]
-    UserPreferences(studentId : Int!): UserAcademicCoursePreference
-    Preferences: UserAcademicCoursePreference
-    UserCoursePreferences(userId: Int!) : [AcademicCourse!]
-    CourserPreferences : [AcademicCourse!]
+    UserAcademicLevels: [AcademicLevel!] #Select set of current user levels
+    StudentAcademicLevel(studentId : Int!): [AcademicLevel!]  #Select set of student levels
+    UserPreferences(studentId : Int!): UserAcademicCoursePreference  #Get student course preference from database isOnline false by default
+    Preferences: UserAcademicCoursePreference #Get course preference from database isOnline false by default
+    UserCoursePreferences(userId: Int!) : [AcademicCourse!] #Select set of other user course  from database
+    CoursePreferences : [AcademicCourse!] #Select set of current user course  from database
 
-    #    User profile
-    UserProfile(userId : Int!) : User
 
     #    Suggestion
-    SuggestTutor(studentId: Int! ): User!
-    SuggestOtherTutor(studentId: Int! , lastTutorId: Int! ): User!
+    SuggestTutor(studentId: Int! ): User! #suggest tutor to student based on difficulties
+    SuggestOtherTutor(studentId: Int! , lastTutorId: Int! ): User! #suggest other tutor to student based on difficulties and previous tutor
     SuggestTutorToUser: User!
     SuggestOtherTutorToUser (lastTutorId: Int!): User!
 
     #    Link
-    ProfessorStudent(keyWord: String!) : [User!]
+    ProfessorStudent(keyWord: String!) : [User!] #Search for student by name or familyName
 
-    MultipleLevelAcademicCourses(AcademicLevelId: [Int!]) : [AcademicCourse!]
 
 }

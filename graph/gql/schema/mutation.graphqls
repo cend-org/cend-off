@@ -1,40 +1,40 @@
 type Mutation {
-    NewStudent(email: String!): BearerToken
-    NewParent(email: String!): BearerToken
-    NewTutor(email: String!): BearerToken
-    NewProfessor(email: String!): BearerToken
-    NewPassword(password: PasswordInput!): Boolean
-    Login(email: String!, password: String!): BearerToken
-    UpdateMyProfile(profile: UserInput!): User
-    UpdateProfileAndPassword(profile: UserInput! , password: PasswordInput!): User
-    NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean
+    NewStudent(email: String!): BearerToken #Create new Student
+    NewParent(email: String!): BearerToken   #Create new Parent
+    NewTutor(email: String!): BearerToken  #Create new Tutor
+    NewProfessor(email: String!): BearerToken #Create new Professor
+    NewPassword(password: PasswordInput!): Boolean #Create new Password
+    Login(email: String!, password: String!): BearerToken #Sign in using email and password
+    UpdateMyProfile(profile: UserInput!): User #Update information for current user
+    UpdateProfileAndPassword(profile: UserInput! , password: PasswordInput!): User  #Update both information and password for current user
+    NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean #Select set of preferred course
 
     #    Education
-    SetUserAcademicLevel(AcademicLevelId: Int!): Boolean
-    UpdAcademicCoursePreference(coursesPreferences: UserAcademicCoursePreferenceInput!): UserAcademicCoursePreference
+    SetUserAcademicLevel(AcademicLevelId: Int!): Boolean #Select academic level for the current user based on id of the level
+    UpdAcademicCoursePreference(coursesPreferences: UserAcademicCoursePreferenceInput!): UserAcademicCoursePreference #Update information for current user's academic level
 
     #    User Media
-    RemoveCoverLetter: Boolean
-    RemoveCv: Boolean
-    RemoveProfileImage: Boolean
-    RemoveVideoPresentation: Boolean
+    RemoveCoverLetter: Boolean #Remove both cover letter and cover letter thumb from database
+    RemoveCv: Boolean #Remove both cv and cv thumb from database
+    RemoveProfileImage: Boolean #Remove both profile image and profile image  thumb from database
+    RemoveVideoPresentation: Boolean #Remove current user video presentation
 
     #    Student - parent
-    UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
-    NewStudentsPassword(studentId: Int!): String
-    SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
-    NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean
-    UpdStudentAcademicCoursesPreferenceByParent(coursesPreferences: UserAcademicCoursePreferenceInput! , studentId: Int!) : Boolean
-    NewStudentTutorByParent(tutorId: Int! , studentId: Int!): Boolean
+    UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean #Set Information of the student from parent (current user)
+    NewStudentsPassword(studentId: Int!): String #Set password of the student from parent (current user)
+    SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean #Set academic level of the student from parent (current user)
+    NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean #select set of course which student have difficulties from parent (current user)
+    UpdStudentAcademicCoursesPreferenceByParent(coursesPreferences: UserAcademicCoursePreferenceInput! , studentId: Int!) : Boolean  #reset  set of course which student have difficulties from parent (current user)
+    NewStudentTutorByParent(tutorId: Int! , studentId: Int!): Boolean #Link student with a selected tutor from parent (current user)
 
 
     #    Link
-    UserStudent(name: String! , familyName: String!): User
-    NewStudentTutor(userId: Int!): User
-    NewStudentProfessor(userId: Int!): User
+    UserStudent(name: String! , familyName: String!): User #Add student from other type of users
+    NewStudentTutor(userId: Int!): User  #Link current student with selected tutor
+    NewStudentProfessor(userId: Int!): User #Link current student with selected professor OR link current professor with selected student
 
-    #   Tutor
-    NewUserAcademicLevels(academicLevelIds: [Int]!): Boolean
+    #   Tutor - Professor
+    NewUserAcademicLevels(academicLevelIds: [Int]!): Boolean #Select set of level for tutor and professor
 
 
 }

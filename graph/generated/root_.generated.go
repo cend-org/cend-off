@@ -131,7 +131,7 @@ type ComplexityRoot struct {
 	Query struct {
 		AcademicCourses              func(childComplexity int, academicLevelID int) int
 		AcademicLevels               func(childComplexity int) int
-		CourserPreferences           func(childComplexity int) int
+		CoursePreferences            func(childComplexity int) int
 		CoverLetter                  func(childComplexity int) int
 		CoverLetterThumb             func(childComplexity int) int
 		Cv                           func(childComplexity int) int
@@ -815,12 +815,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AcademicLevels(childComplexity), true
 
-	case "Query.CourserPreferences":
-		if e.complexity.Query.CourserPreferences == nil {
+	case "Query.CoursePreferences":
+		if e.complexity.Query.CoursePreferences == nil {
 			break
 		}
 
-		return e.complexity.Query.CourserPreferences(childComplexity), true
+		return e.complexity.Query.CoursePreferences(childComplexity), true
 
 	case "Query.CoverLetter":
 		if e.complexity.Query.CoverLetter == nil {
@@ -1695,94 +1695,96 @@ scalar DateTime
 scalar Upload
 `, BuiltIn: false},
 	{Name: "../gql/schema/mutation.graphqls", Input: `type Mutation {
-    NewStudent(email: String!): BearerToken
-    NewParent(email: String!): BearerToken
-    NewTutor(email: String!): BearerToken
-    NewProfessor(email: String!): BearerToken
-    NewPassword(password: PasswordInput!): Boolean
-    Login(email: String!, password: String!): BearerToken
-    UpdateMyProfile(profile: UserInput!): User
-    UpdateProfileAndPassword(profile: UserInput! , password: PasswordInput!): User
-    NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean
+    NewStudent(email: String!): BearerToken #Create new Student
+    NewParent(email: String!): BearerToken   #Create new Parent
+    NewTutor(email: String!): BearerToken  #Create new Tutor
+    NewProfessor(email: String!): BearerToken #Create new Professor
+    NewPassword(password: PasswordInput!): Boolean #Create new Password
+    Login(email: String!, password: String!): BearerToken #Sign in using email and password
+    UpdateMyProfile(profile: UserInput!): User #Update information for current user
+    UpdateProfileAndPassword(profile: UserInput! , password: PasswordInput!): User  #Update both information and password for current user
+    NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean #Select set of preferred course
 
     #    Education
-    SetUserAcademicLevel(AcademicLevelId: Int!): Boolean
-    UpdAcademicCoursePreference(coursesPreferences: UserAcademicCoursePreferenceInput!): UserAcademicCoursePreference
+    SetUserAcademicLevel(AcademicLevelId: Int!): Boolean #Select academic level for the current user based on id of the level
+    UpdAcademicCoursePreference(coursesPreferences: UserAcademicCoursePreferenceInput!): UserAcademicCoursePreference #Update information for current user's academic level
 
     #    User Media
-    RemoveCoverLetter: Boolean
-    RemoveCv: Boolean
-    RemoveProfileImage: Boolean
-    RemoveVideoPresentation: Boolean
+    RemoveCoverLetter: Boolean #Remove both cover letter and cover letter thumb from database
+    RemoveCv: Boolean #Remove both cv and cv thumb from database
+    RemoveProfileImage: Boolean #Remove both profile image and profile image  thumb from database
+    RemoveVideoPresentation: Boolean #Remove current user video presentation
 
     #    Student - parent
-    UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean
-    NewStudentsPassword(studentId: Int!): String
-    SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean
-    NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean
-    UpdStudentAcademicCoursesPreferenceByParent(coursesPreferences: UserAcademicCoursePreferenceInput! , studentId: Int!) : Boolean
-    NewStudentTutorByParent(tutorId: Int! , studentId: Int!): Boolean
+    UpdateStudentProfileByParent(profile: UserInput! , studentId: Int!): Boolean #Set Information of the student from parent (current user)
+    NewStudentsPassword(studentId: Int!): String #Set password of the student from parent (current user)
+    SetStudentAcademicLevelByParent(AcademicLevelId: Int!, studentId: Int!): Boolean #Set academic level of the student from parent (current user)
+    NewStudentAcademicCoursesByParent(courses: [UserAcademicCourseInput]!, studentId: Int!) : Boolean #select set of course which student have difficulties from parent (current user)
+    UpdStudentAcademicCoursesPreferenceByParent(coursesPreferences: UserAcademicCoursePreferenceInput! , studentId: Int!) : Boolean  #reset  set of course which student have difficulties from parent (current user)
+    NewStudentTutorByParent(tutorId: Int! , studentId: Int!): Boolean #Link student with a selected tutor from parent (current user)
 
 
     #    Link
-    UserStudent(name: String! , familyName: String!): User
-    NewStudentTutor(userId: Int!): User
-    NewStudentProfessor(userId: Int!): User
+    UserStudent(name: String! , familyName: String!): User #Add student from other type of users
+    NewStudentTutor(userId: Int!): User  #Link current student with selected tutor
+    NewStudentProfessor(userId: Int!): User #Link current student with selected professor OR link current professor with selected student
 
-    #   Tutor
-    NewUserAcademicLevels(academicLevelIds: [Int]!): Boolean
+    #   Tutor - Professor
+    NewUserAcademicLevels(academicLevelIds: [Int]!): Boolean #Select set of level for tutor and professor
 
 
 }
 `, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {
-    MyProfile : User
-    AcademicLevels : [AcademicLevel!]
-    AcademicCourses(AcademicLevelId: Int!) : [AcademicCourse!]
+    #User
+    MyProfile : User #Get current profile from database
+    UserProfile(userId : Int!) : User  #Get other's profile from database
 
-    #    Media
+    AcademicLevels : [AcademicLevel!]  #Get list of available level from database
+    AcademicCourses(AcademicLevelId: Int!) : [AcademicCourse!]  #Get list of available course based on level from database
+    MultipleLevelAcademicCourses(AcademicLevelId: [Int!]) : [AcademicCourse!] #Get list of available course based on set of level from database
+
+
+    #  Get link of media from server
     CoverLetter : String
     Cv : String
     ProfileImage: String
     VideoPresentation: String
 
-    #    Media Thumb
+    #  Get link of media thumb from server
     CoverLetterThumb : String
     CvThumb : String
     ProfileImageThumb: String
 
-    #  Current User  Media
+    #  Get link of other's media from server based on the user's id
     UserCoverLetter(userId: Int!): String
     UserCv(userId: Int!): String
     UserProfileImage(userId: Int!): String
     UserVideoPresentation(userId: Int!): String
 
-    #  User  Media Thumb
+    #  Get link of other's media from server based on the user's id
     UserCoverLetterThumb(userId: Int!): String
     UserCvThumb(userId: Int!): String
     UserProfileImageThumb(userId: Int!): String
 
     #    Education
-    UserAcademicLevels: [AcademicLevel!]
-    StudentAcademicLevel(studentId : Int!): [AcademicLevel!]
-    UserPreferences(studentId : Int!): UserAcademicCoursePreference
-    Preferences: UserAcademicCoursePreference
-    UserCoursePreferences(userId: Int!) : [AcademicCourse!]
-    CourserPreferences : [AcademicCourse!]
+    UserAcademicLevels: [AcademicLevel!] #Select set of current user levels
+    StudentAcademicLevel(studentId : Int!): [AcademicLevel!]  #Select set of student levels
+    UserPreferences(studentId : Int!): UserAcademicCoursePreference  #Get student course preference from database isOnline false by default
+    Preferences: UserAcademicCoursePreference #Get course preference from database isOnline false by default
+    UserCoursePreferences(userId: Int!) : [AcademicCourse!] #Select set of other user course  from database
+    CoursePreferences : [AcademicCourse!] #Select set of current user course  from database
 
-    #    User profile
-    UserProfile(userId : Int!) : User
 
     #    Suggestion
-    SuggestTutor(studentId: Int! ): User!
-    SuggestOtherTutor(studentId: Int! , lastTutorId: Int! ): User!
+    SuggestTutor(studentId: Int! ): User! #suggest tutor to student based on difficulties
+    SuggestOtherTutor(studentId: Int! , lastTutorId: Int! ): User! #suggest other tutor to student based on difficulties and previous tutor
     SuggestTutorToUser: User!
     SuggestOtherTutorToUser (lastTutorId: Int!): User!
 
     #    Link
-    ProfessorStudent(keyWord: String!) : [User!]
+    ProfessorStudent(keyWord: String!) : [User!] #Search for student by name or familyName
 
-    MultipleLevelAcademicCourses(AcademicLevelId: [Int!]) : [AcademicCourse!]
 
 }`, BuiltIn: false},
 	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {
