@@ -129,35 +129,36 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		AcademicCourses         func(childComplexity int, academicLevelID int) int
-		AcademicLevels          func(childComplexity int) int
-		CourserPreferences      func(childComplexity int) int
-		CoverLetter             func(childComplexity int) int
-		CoverLetterThumb        func(childComplexity int) int
-		Cv                      func(childComplexity int) int
-		CvThumb                 func(childComplexity int) int
-		MyProfile               func(childComplexity int) int
-		Preferences             func(childComplexity int) int
-		ProfessorStudent        func(childComplexity int, keyWord string) int
-		ProfileImage            func(childComplexity int) int
-		ProfileImageThumb       func(childComplexity int) int
-		StudentAcademicLevel    func(childComplexity int, studentID int) int
-		SuggestOtherTutor       func(childComplexity int, studentID int, lastTutorID int) int
-		SuggestOtherTutorToUser func(childComplexity int, lastTutorID int) int
-		SuggestTutor            func(childComplexity int, studentID int) int
-		SuggestTutorToUser      func(childComplexity int) int
-		UserAcademicLevels      func(childComplexity int) int
-		UserCoursePreferences   func(childComplexity int, userID int) int
-		UserCoverLetter         func(childComplexity int, userID int) int
-		UserCoverLetterThumb    func(childComplexity int, userID int) int
-		UserCv                  func(childComplexity int, userID int) int
-		UserCvThumb             func(childComplexity int, userID int) int
-		UserPreferences         func(childComplexity int, studentID int) int
-		UserProfile             func(childComplexity int, userID int) int
-		UserProfileImage        func(childComplexity int, userID int) int
-		UserProfileImageThumb   func(childComplexity int, userID int) int
-		UserVideoPresentation   func(childComplexity int, userID int) int
-		VideoPresentation       func(childComplexity int) int
+		AcademicCourses              func(childComplexity int, academicLevelID int) int
+		AcademicLevels               func(childComplexity int) int
+		CourserPreferences           func(childComplexity int) int
+		CoverLetter                  func(childComplexity int) int
+		CoverLetterThumb             func(childComplexity int) int
+		Cv                           func(childComplexity int) int
+		CvThumb                      func(childComplexity int) int
+		MultipleLevelAcademicCourses func(childComplexity int, academicLevelID []int) int
+		MyProfile                    func(childComplexity int) int
+		Preferences                  func(childComplexity int) int
+		ProfessorStudent             func(childComplexity int, keyWord string) int
+		ProfileImage                 func(childComplexity int) int
+		ProfileImageThumb            func(childComplexity int) int
+		StudentAcademicLevel         func(childComplexity int, studentID int) int
+		SuggestOtherTutor            func(childComplexity int, studentID int, lastTutorID int) int
+		SuggestOtherTutorToUser      func(childComplexity int, lastTutorID int) int
+		SuggestTutor                 func(childComplexity int, studentID int) int
+		SuggestTutorToUser           func(childComplexity int) int
+		UserAcademicLevels           func(childComplexity int) int
+		UserCoursePreferences        func(childComplexity int, userID int) int
+		UserCoverLetter              func(childComplexity int, userID int) int
+		UserCoverLetterThumb         func(childComplexity int, userID int) int
+		UserCv                       func(childComplexity int, userID int) int
+		UserCvThumb                  func(childComplexity int, userID int) int
+		UserPreferences              func(childComplexity int, studentID int) int
+		UserProfile                  func(childComplexity int, userID int) int
+		UserProfileImage             func(childComplexity int, userID int) int
+		UserProfileImageThumb        func(childComplexity int, userID int) int
+		UserVideoPresentation        func(childComplexity int, userID int) int
+		VideoPresentation            func(childComplexity int) int
 	}
 
 	User struct {
@@ -848,6 +849,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.CvThumb(childComplexity), true
+
+	case "Query.MultipleLevelAcademicCourses":
+		if e.complexity.Query.MultipleLevelAcademicCourses == nil {
+			break
+		}
+
+		args, err := ec.field_Query_MultipleLevelAcademicCourses_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.MultipleLevelAcademicCourses(childComplexity, args["AcademicLevelId"].([]int)), true
 
 	case "Query.MyProfile":
 		if e.complexity.Query.MyProfile == nil {
@@ -1768,6 +1781,9 @@ scalar Upload
 
     #    Link
     ProfessorStudent(keyWord: String!) : [User!]
+
+    MultipleLevelAcademicCourses(AcademicLevelId: [Int!]) : [AcademicCourse!]
+
 }`, BuiltIn: false},
 	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {
     T: String!

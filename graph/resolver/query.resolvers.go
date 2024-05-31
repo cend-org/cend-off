@@ -599,3 +599,21 @@ func (r *queryResolver) ProfessorStudent(ctx context.Context, keyWord string) ([
 	}
 	return user, nil
 }
+
+// MultipleLevelAcademicCourses is the resolver for the MultipleLevelAcademicCourses field.
+func (r *queryResolver) MultipleLevelAcademicCourses(ctx context.Context, academicLevelID []int) ([]model.AcademicCourse, error) {
+	var courses []model.AcademicCourse
+
+	for _, academicId := range academicLevelID {
+		academicCourse, err := academic.GetAcademicCourses(academicId)
+		if err != nil {
+			return nil, errx.SupportError
+		}
+
+		for _, course := range academicCourse {
+			courses = append(courses, course)
+		}
+	}
+
+	return courses, nil
+}

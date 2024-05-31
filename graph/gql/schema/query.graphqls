@@ -44,4 +44,7 @@ type Query {
 
     #    Link
     ProfessorStudent(keyWord: String!) : [User!]
+
+    MultipleLevelAcademicCourses(AcademicLevelId: [Int!]) : [AcademicCourse!]
+
 }
