@@ -28,6 +28,8 @@ public/*.jpg
 public/*.png
 public/*.pdf
 public/*.word
+public/*.mp4
+public/*.avi
 
 public/thumb/*.jpg
 public/thumb/*.png
