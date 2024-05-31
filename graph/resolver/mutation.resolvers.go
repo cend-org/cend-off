@@ -8,7 +8,6 @@ import (
 	"context"
 	"errors"
 
-	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
 	"github.com/cend-org/duval/internal/utils/errx"
@@ -21,6 +20,11 @@ import (
 	"github.com/cend-org/duval/pkg/user/authorization"
 	"github.com/cend-org/duval/pkg/user/link"
 )
+
+type mutationResolver struct {
+	*usr.UserMutation
+	*academic.AcademicMutation
+}
 
 // NewStudent is the resolver for the NewStudent field.
 func (r *mutationResolver) NewStudent(ctx context.Context, email string) (*model.BearerToken, error) {
@@ -463,8 +467,3 @@ func (r *mutationResolver) NewUserAcademicLevels(ctx context.Context, academicLe
 	status = true
 	return &status, nil
 }
-
-// Mutation returns generated.MutationResolver implementation.
-func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{r} }
-
-type mutationResolver struct{ *Resolver }

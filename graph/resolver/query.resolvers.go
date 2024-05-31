@@ -6,9 +6,6 @@ package resolver
 
 import (
 	"context"
-	"errors"
-
-	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/token"
 	"github.com/cend-org/duval/internal/utils/errx"
@@ -23,17 +20,9 @@ import (
 	"github.com/cend-org/duval/pkg/user/link"
 )
 
-// MyProfile is the resolver for the MyProfile field.
-func (r *queryResolver) MyProfile(ctx context.Context) (*model.User, error) {
-	var tok *token.Token
-	var err error
-
-	tok, err = token.GetFromContext(ctx)
-	if err != nil {
-		return nil, errors.New("unAuthorized")
-	}
-
-	return usr.MyProfile(tok.UserId)
+type queryResolver struct {
+	*usr.UserQuery          `json:"*Usr.Query,omitempty"`
+	*academic.AcademicQuery `json:"*Academic.Query,omitempty"`
 }
 
 // AcademicLevels is the resolver for the AcademicLevels field.
@@ -610,8 +599,3 @@ func (r *queryResolver) ProfessorStudent(ctx context.Context, keyWord string) ([
 	}
 	return user, nil
 }
-
-// Query returns generated.QueryResolver implementation.
-func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{r} }
-
-type queryResolver struct{ *Resolver }
