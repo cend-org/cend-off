@@ -1,3 +1,4 @@
+set sql_mode = ``;
 drop database if exists cend;
 create database cend;
 use cend;
@@ -87,6 +88,11 @@ create table media_thumb
     media_xid  varchar(100) default '',
     xid        varchar(500) default ''
 );
+
+alter table media_thumb
+    add constraint media_thumb_media_xid_fk
+        foreign key (media_xid) references media (xid)
+            on delete cascade on update cascade;
 
 create table user_media_detail
 (
@@ -290,7 +296,7 @@ values ((select academic_level.id from academic_level where name = 'secondaire 1
        ((select academic_level.id from academic_level where name = 'secondaire 1'), 'Histoire / Géographie'),
        ((select academic_level.id from academic_level where name = 'secondaire 1'), 'Sciences et technologies'),
        ((select academic_level.id from academic_level where name = 'secondaire 1'), 'Monde contemporain'),
-       ((select academic_level.id from academic_level where name = 'secondaire 1'), 'Education financière'),
+       ((select academic_level.id from academic_level where name = 'secondaire 1'), 'academic_level financière'),
        ((select academic_level.id from academic_level where name = 'secondaire 1'), 'Éthique et culture religieuse'),
        ((select academic_level.id from academic_level where name = 'secondaire 1'), 'Mathématiques');
 
@@ -300,7 +306,7 @@ values ((select academic_level.id from academic_level where name = 'secondaire 2
        ((select academic_level.id from academic_level where name = 'secondaire 2'), 'Histoire / Géographie'),
        ((select academic_level.id from academic_level where name = 'secondaire 2'), 'Sciences et technologies'),
        ((select academic_level.id from academic_level where name = 'secondaire 2'), 'Monde contemporain'),
-       ((select academic_level.id from academic_level where name = 'secondaire 2'), 'Education financière'),
+       ((select academic_level.id from academic_level where name = 'secondaire 2'), 'academic_level financière'),
        ((select academic_level.id from academic_level where name = 'secondaire 2'), 'Éthique et culture religieuse'),
        ((select academic_level.id from academic_level where name = 'secondaire 2'), 'Mathématiques');
 
