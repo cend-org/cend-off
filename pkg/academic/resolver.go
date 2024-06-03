@@ -337,7 +337,7 @@ func (r *AcademicQuery) SuggestTutor(ctx context.Context, studentID int) (*model
 	}
 
 	if user.Id == state.ZERO {
-		return nil, errx.EmptyTutorError
+		return nil, err
 	}
 
 	return &user, nil
