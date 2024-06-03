@@ -343,3 +343,45 @@ insert into academic_course(academic_level_id, name)
 values ((select academic_level.id from academic_level where name = 'Universités'), 'Chimie'),
        ((select academic_level.id from academic_level where name = 'Universités'), 'Biologie'),
        ((select academic_level.id from academic_level where name = 'Universités'), 'Physique');
+
+
+--
+--
+--  appointment
+--
+-- *
+create table appointment
+(
+    id           int auto_increment primary key,
+    created_at   timestamp default CURRENT_TIMESTAMP,
+    updated_at   timestamp default CURRENT_TIMESTAMP,
+    deleted_at   timestamp default '0000-00-00 00:00:00',
+    availability datetime  default '0000-00-00 00:00:00'
+);
+
+create table user_appointment
+(
+    id             int auto_increment primary key,
+    created_at     timestamp default CURRENT_TIMESTAMP,
+    updated_at     timestamp default CURRENT_TIMESTAMP,
+    deleted_at     timestamp default '0000-00-00 00:00:00',
+    appointment_id int       default 0,
+    user_id        int       default 0,
+    tutor_id       int       default 0
+);
+
+
+alter table user_appointment
+    add constraint user_appointment_appointment_id_fk
+        foreign key (appointment_id) references appointment (id);
+
+
+alter table user_appointment
+    add constraint user_appointment_user_id_fk
+        foreign key (user_id) references user (id);
+
+alter table user_appointment
+    add constraint user_appointment_tutor_id_fk
+        foreign key (tutor_id) references user (id);
+
+

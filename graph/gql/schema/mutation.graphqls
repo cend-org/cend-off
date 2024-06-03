@@ -36,5 +36,7 @@ type Mutation {
     #   Tutor - Professor
     NewUserAcademicLevels(academicLevelIds: [Int]!): Boolean #Select set of level for tutor and professor
 
-
+    # Appointment
+    NewUserAppointment( tutorId : Int!, availability: AppointmentInput!):  Boolean
+    NewUserAppointmentByParent( studentId: Int!, tutorId : Int!, availability: AppointmentInput!):  Boolean
 }

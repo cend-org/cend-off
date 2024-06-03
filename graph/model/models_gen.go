@@ -23,6 +23,18 @@ type AcademicLevel struct {
 	Name      string     `json:"name"`
 }
 
+type Appointment struct {
+	Id           int        `json:"id"`
+	CreatedAt    time.Time  `json:"createdAt"`
+	UpdatedAt    time.Time  `json:"updatedAt"`
+	DeletedAt    *time.Time `json:"deletedAt"`
+	Availability time.Time  `json:"availability"`
+}
+
+type AppointmentInput struct {
+	Availability *time.Time `json:"availability"`
+}
+
 type Authorization struct {
 	Id        int        `json:"id"`
 	CreatedAt time.Time  `json:"createdAt"`
@@ -123,6 +135,16 @@ type UserAcademicCoursePreference struct {
 
 type UserAcademicCoursePreferenceInput struct {
 	IsOnline *bool `json:"isOnline"`
+}
+
+type UserAppointment struct {
+	Id            int        `json:"id"`
+	CreatedAt     time.Time  `json:"createdAt"`
+	UpdatedAt     time.Time  `json:"updatedAt"`
+	DeletedAt     *time.Time `json:"deletedAt"`
+	AppointmentId int        `json:"appointmentId"`
+	UserId        int        `json:"userId"`
+	TutorId       int        `json:"tutorId"`
 }
 
 type UserAuthorizationLink struct {

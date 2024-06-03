@@ -58,6 +58,14 @@ type ComplexityRoot struct {
 		UpdatedAt func(childComplexity int) int
 	}
 
+	Appointment struct {
+		Availability func(childComplexity int) int
+		CreatedAt    func(childComplexity int) int
+		DeletedAt    func(childComplexity int) int
+		Id           func(childComplexity int) int
+		UpdatedAt    func(childComplexity int) int
+	}
+
 	Authorization struct {
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
@@ -105,6 +113,8 @@ type ComplexityRoot struct {
 		NewTutor                                    func(childComplexity int, email string) int
 		NewUserAcademicCourses                      func(childComplexity int, courses []*model.UserAcademicCourseInput) int
 		NewUserAcademicLevels                       func(childComplexity int, academicLevelIds []*int) int
+		NewUserAppointment                          func(childComplexity int, tutorID int, availability model.AppointmentInput) int
+		NewUserAppointmentByParent                  func(childComplexity int, studentID int, tutorID int, availability model.AppointmentInput) int
 		RemoveCoverLetter                           func(childComplexity int) int
 		RemoveCv                                    func(childComplexity int) int
 		RemoveProfileImage                          func(childComplexity int) int
@@ -201,6 +211,16 @@ type ComplexityRoot struct {
 		IsOnline  func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 		UserId    func(childComplexity int) int
+	}
+
+	UserAppointment struct {
+		AppointmentId func(childComplexity int) int
+		CreatedAt     func(childComplexity int) int
+		DeletedAt     func(childComplexity int) int
+		Id            func(childComplexity int) int
+		TutorId       func(childComplexity int) int
+		UpdatedAt     func(childComplexity int) int
+		UserId        func(childComplexity int) int
 	}
 
 	UserAuthorizationLink struct {
@@ -326,6 +346,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.AcademicLevel.UpdatedAt(childComplexity), true
+
+	case "Appointment.Availability":
+		if e.complexity.Appointment.Availability == nil {
+			break
+		}
+
+		return e.complexity.Appointment.Availability(childComplexity), true
+
+	case "Appointment.CreatedAt":
+		if e.complexity.Appointment.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Appointment.CreatedAt(childComplexity), true
+
+	case "Appointment.DeletedAt":
+		if e.complexity.Appointment.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Appointment.DeletedAt(childComplexity), true
+
+	case "Appointment.Id":
+		if e.complexity.Appointment.Id == nil {
+			break
+		}
+
+		return e.complexity.Appointment.Id(childComplexity), true
+
+	case "Appointment.UpdatedAt":
+		if e.complexity.Appointment.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Appointment.UpdatedAt(childComplexity), true
 
 	case "Authorization.CreatedAt":
 		if e.complexity.Authorization.CreatedAt == nil {
@@ -629,6 +684,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.NewUserAcademicLevels(childComplexity, args["academicLevelIds"].([]*int)), true
+
+	case "Mutation.NewUserAppointment":
+		if e.complexity.Mutation.NewUserAppointment == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewUserAppointment_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewUserAppointment(childComplexity, args["tutorId"].(int), args["availability"].(model.AppointmentInput)), true
+
+	case "Mutation.NewUserAppointmentByParent":
+		if e.complexity.Mutation.NewUserAppointmentByParent == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewUserAppointmentByParent_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewUserAppointmentByParent(childComplexity, args["studentId"].(int), args["tutorId"].(int), args["availability"].(model.AppointmentInput)), true
 
 	case "Mutation.RemoveCoverLetter":
 		if e.complexity.Mutation.RemoveCoverLetter == nil {
@@ -1322,6 +1401,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserAcademicCoursePreference.UserId(childComplexity), true
 
+	case "UserAppointment.AppointmentId":
+		if e.complexity.UserAppointment.AppointmentId == nil {
+			break
+		}
+
+		return e.complexity.UserAppointment.AppointmentId(childComplexity), true
+
+	case "UserAppointment.CreatedAt":
+		if e.complexity.UserAppointment.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAppointment.CreatedAt(childComplexity), true
+
+	case "UserAppointment.DeletedAt":
+		if e.complexity.UserAppointment.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAppointment.DeletedAt(childComplexity), true
+
+	case "UserAppointment.Id":
+		if e.complexity.UserAppointment.Id == nil {
+			break
+		}
+
+		return e.complexity.UserAppointment.Id(childComplexity), true
+
+	case "UserAppointment.TutorId":
+		if e.complexity.UserAppointment.TutorId == nil {
+			break
+		}
+
+		return e.complexity.UserAppointment.TutorId(childComplexity), true
+
+	case "UserAppointment.UpdatedAt":
+		if e.complexity.UserAppointment.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserAppointment.UpdatedAt(childComplexity), true
+
+	case "UserAppointment.UserId":
+		if e.complexity.UserAppointment.UserId == nil {
+			break
+		}
+
+		return e.complexity.UserAppointment.UserId(childComplexity), true
+
 	case "UserAuthorizationLink.CreatedAt":
 		if e.complexity.UserAuthorizationLink.CreatedAt == nil {
 			break
@@ -1456,6 +1584,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	rc := graphql.GetOperationContext(ctx)
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
+		ec.unmarshalInputAppointmentInput,
 		ec.unmarshalInputPasswordInput,
 		ec.unmarshalInputUserAcademicCourseInput,
 		ec.unmarshalInputUserAcademicCoursePreferenceInput,
@@ -1557,6 +1686,29 @@ func (ec *executionContext) introspectType(name string) (*introspection.Type, er
 }
 
 var sources = []*ast.Source{
+	{Name: "../gql/appointment/appointment.graphqls", Input: `type Appointment {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    Availability: DateTime!
+}
+
+
+type UserAppointment {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    AppointmentId : Int!  @goField(name: "AppointmentId")
+    UserId: Int! @goField(name: "UserId")
+    TutorId: Int! @goField(name: "TutorId")
+}
+
+
+input AppointmentInput{
+    Availability: DateTime
+}`, BuiltIn: false},
 	{Name: "../gql/authorization/authorization.graphqls", Input: `type Authorization {
     Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
@@ -1732,7 +1884,9 @@ scalar Upload
     #   Tutor - Professor
     NewUserAcademicLevels(academicLevelIds: [Int]!): Boolean #Select set of level for tutor and professor
 
-
+    # Appointment
+    NewUserAppointment( tutorId : Int!, availability: AppointmentInput!):  Boolean
+    NewUserAppointmentByParent( studentId: Int!, tutorId : Int!, availability: AppointmentInput!):  Boolean
 }
 `, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {
@@ -1777,10 +1931,10 @@ scalar Upload
 
 
     #    Suggestion
-    SuggestTutor(studentId: Int! ): User! #suggest tutor to student based on difficulties
-    SuggestOtherTutor(studentId: Int! , lastTutorId: Int! ): User! #suggest other tutor to student based on difficulties and previous tutor
-    SuggestTutorToUser: User!
-    SuggestOtherTutorToUser (lastTutorId: Int!): User!
+    SuggestTutor(studentId: Int! ): User #suggest tutor to student based on difficulties
+    SuggestOtherTutor(studentId: Int! , lastTutorId: Int! ): User #suggest other tutor to student based on difficulties and previous tutor
+    SuggestTutorToUser: User
+    SuggestOtherTutorToUser (lastTutorId: Int!): User
 
     #    Link
     ProfessorStudent(keyWord: String!) : [User!] #Search for student by name or familyName

@@ -333,11 +333,11 @@ func (r *AcademicQuery) SuggestTutor(ctx context.Context, studentID int) (*model
 
 	user, err = GetTutorWithPreferredCourse(studentID)
 	if err != nil {
-		return nil, err
+		return nil, nil
 	}
 
 	if user.Id == state.ZERO {
-		return nil, err
+		return nil, nil
 	}
 
 	return &user, nil
@@ -365,7 +365,7 @@ func (r *AcademicQuery) SuggestOtherTutor(ctx context.Context, studentID int, la
 	}
 
 	if user.Id == state.ZERO {
-		return nil, errx.EmptyTutorError
+		return nil, nil
 	}
 
 	return &user, nil
@@ -389,7 +389,7 @@ func (r *AcademicQuery) SuggestTutorToUser(ctx context.Context) (*model.User, er
 	}
 
 	if user.Id == state.ZERO {
-		return nil, errx.EmptyTutorError
+		return nil, nil
 	}
 
 	return &user, nil
@@ -413,7 +413,7 @@ func (r *AcademicQuery) SuggestOtherTutorToUser(ctx context.Context, lastTutorID
 	}
 
 	if user.Id == state.ZERO {
-		return nil, errx.EmptyTutorError
+		return nil, nil
 	}
 
 	return &user, nil
@@ -560,4 +560,48 @@ func (r *AcademicMutation) UserStudent(ctx context.Context, name string, familyN
 	}
 
 	return student, nil
+}
+
+/*
+
+	APPOINTMENT
+
+*/
+
+func (r *AcademicMutation) NewUserAppointment(ctx context.Context, tutorID int, availability model.AppointmentInput) (*bool, error) {
+	var (
+		tok    *token.Token
+		err    error
+		status bool
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	_, err = SetAppointment(tok.UserId, tutorID, availability)
+	status = true
+	return &status, nil
+}
+
+func (r *AcademicMutation) NewUserAppointmentByParent(ctx context.Context, studentID int, tutorID int, availability model.AppointmentInput) (*bool, error) {
+	var (
+		tok    *token.Token
+		err    error
+		status bool
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	if !IsStudentParentLinked(tok.UserId, studentID) {
+		return nil, errx.UlError
+	}
+
+	_, err = SetAppointment(studentID, tutorID, availability)
+	status = true
+	return &status, nil
 }
