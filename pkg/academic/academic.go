@@ -400,6 +400,37 @@ func GetUserPreferredCourse(userId int) (course []model.AcademicCourse, err erro
 
 /*
 
+	Appointment
+
+*/
+
+func SetAppointment(userId, tutorId int, new model.AppointmentInput) (model.Appointment, error) {
+	var (
+		appointment     model.Appointment
+		userAppointment model.UserAppointment
+		err             error
+	)
+	appointment = model.MapAppointmentInputToAppointment(new, appointment)
+
+	appointmentId, err := database.InsertOne(appointment)
+	if err != nil {
+		return appointment, errx.SupportError
+	}
+
+	userAppointment.UserId = userId
+	userAppointment.AppointmentId = appointmentId
+	userAppointment.TutorId = tutorId
+
+	_, err = database.InsertOne(userAppointment)
+	if err != nil {
+		return appointment, errx.SupportError
+	}
+
+	return appointment, nil
+}
+
+/*
+
 	UTILS
 
 */

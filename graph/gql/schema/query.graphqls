@@ -40,10 +40,10 @@ type Query {
 
 
     #    Suggestion
-    SuggestTutor(studentId: Int! ): User! #suggest tutor to student based on difficulties
-    SuggestOtherTutor(studentId: Int! , lastTutorId: Int! ): User! #suggest other tutor to student based on difficulties and previous tutor
-    SuggestTutorToUser: User!
-    SuggestOtherTutorToUser (lastTutorId: Int!): User!
+    SuggestTutor(studentId: Int! ): User #suggest tutor to student based on difficulties
+    SuggestOtherTutor(studentId: Int! , lastTutorId: Int! ): User #suggest other tutor to student based on difficulties and previous tutor
+    SuggestTutorToUser: User
+    SuggestOtherTutorToUser (lastTutorId: Int!): User
 
     #    Link
     ProfessorStudent(keyWord: String!) : [User!] #Search for student by name or familyName

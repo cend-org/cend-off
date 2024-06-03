@@ -1,0 +1,23 @@
+type Appointment {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    Availability: DateTime!
+}
+
+
+type UserAppointment {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    AppointmentId : Int!  @goField(name: "AppointmentId")
+    UserId: Int! @goField(name: "UserId")
+    TutorId: Int! @goField(name: "TutorId")
+}
+
+
+input AppointmentInput{
+    Availability: DateTime
+}

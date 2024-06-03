@@ -42,6 +42,8 @@ type MutationResolver interface {
 	NewStudentTutor(ctx context.Context, userID int) (*model.User, error)
 	NewStudentProfessor(ctx context.Context, userID int) (*model.User, error)
 	NewUserAcademicLevels(ctx context.Context, academicLevelIds []*int) (*bool, error)
+	NewUserAppointment(ctx context.Context, tutorID int, availability model.AppointmentInput) (*bool, error)
+	NewUserAppointmentByParent(ctx context.Context, studentID int, tutorID int, availability model.AppointmentInput) (*bool, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -267,6 +269,63 @@ func (ec *executionContext) field_Mutation_NewUserAcademicLevels_args(ctx contex
 		}
 	}
 	args["academicLevelIds"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_NewUserAppointmentByParent_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["studentId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("studentId"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["studentId"] = arg0
+	var arg1 int
+	if tmp, ok := rawArgs["tutorId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tutorId"))
+		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["tutorId"] = arg1
+	var arg2 model.AppointmentInput
+	if tmp, ok := rawArgs["availability"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("availability"))
+		arg2, err = ec.unmarshalNAppointmentInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAppointmentInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["availability"] = arg2
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_NewUserAppointment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["tutorId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tutorId"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["tutorId"] = arg0
+	var arg1 model.AppointmentInput
+	if tmp, ok := rawArgs["availability"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("availability"))
+		arg1, err = ec.unmarshalNAppointmentInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAppointmentInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["availability"] = arg1
 	return args, nil
 }
 
@@ -1953,6 +2012,110 @@ func (ec *executionContext) fieldContext_Mutation_NewUserAcademicLevels(ctx cont
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_NewUserAppointment(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_NewUserAppointment(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().NewUserAppointment(rctx, fc.Args["tutorId"].(int), fc.Args["availability"].(model.AppointmentInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_NewUserAppointment(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_NewUserAppointment_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_NewUserAppointmentByParent(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_NewUserAppointmentByParent(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().NewUserAppointmentByParent(rctx, fc.Args["studentId"].(int), fc.Args["tutorId"].(int), fc.Args["availability"].(model.AppointmentInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_NewUserAppointmentByParent(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_NewUserAppointmentByParent_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
@@ -2083,6 +2246,14 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "NewUserAcademicLevels":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_NewUserAcademicLevels(ctx, field)
+			})
+		case "NewUserAppointment":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_NewUserAppointment(ctx, field)
+			})
+		case "NewUserAppointmentByParent":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_NewUserAppointmentByParent(ctx, field)
 			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
