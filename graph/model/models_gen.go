@@ -144,7 +144,6 @@ type UserAppointment struct {
 	DeletedAt     *time.Time `json:"deletedAt"`
 	AppointmentId int        `json:"appointmentId"`
 	UserId        int        `json:"userId"`
-	TutorId       int        `json:"tutorId"`
 }
 
 type UserAuthorizationLink struct {

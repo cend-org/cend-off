@@ -14,7 +14,6 @@ type UserAppointment {
     DeletedAt: DateTime
     AppointmentId : Int!  @goField(name: "AppointmentId")
     UserId: Int! @goField(name: "UserId")
-    TutorId: Int! @goField(name: "TutorId")
 }
 
 
