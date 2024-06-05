@@ -404,7 +404,7 @@ func GetUserPreferredCourse(userId int) (course []model.AcademicCourse, err erro
 
 */
 
-func SetAppointment(userId, tutorId int, new model.AppointmentInput) (model.Appointment, error) {
+func SetAppointment(userId int, new model.AppointmentInput) (model.Appointment, error) {
 	var (
 		appointment     model.Appointment
 		userAppointment model.UserAppointment
@@ -419,7 +419,6 @@ func SetAppointment(userId, tutorId int, new model.AppointmentInput) (model.Appo
 
 	userAppointment.UserId = userId
 	userAppointment.AppointmentId = appointmentId
-	userAppointment.TutorId = tutorId
 
 	_, err = database.InsertOne(userAppointment)
 	if err != nil {

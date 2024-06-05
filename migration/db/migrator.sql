@@ -366,8 +366,7 @@ create table user_appointment
     updated_at     timestamp default CURRENT_TIMESTAMP,
     deleted_at     timestamp default '0000-00-00 00:00:00',
     appointment_id int       default 0,
-    user_id        int       default 0,
-    tutor_id       int       default 0
+    user_id        int       default 0
 );
 
 
@@ -379,9 +378,4 @@ alter table user_appointment
 alter table user_appointment
     add constraint user_appointment_user_id_fk
         foreign key (user_id) references user (id);
-
-alter table user_appointment
-    add constraint user_appointment_tutor_id_fk
-        foreign key (tutor_id) references user (id);
-
 

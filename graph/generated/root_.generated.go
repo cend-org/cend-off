@@ -113,8 +113,8 @@ type ComplexityRoot struct {
 		NewTutor                                    func(childComplexity int, email string) int
 		NewUserAcademicCourses                      func(childComplexity int, courses []*model.UserAcademicCourseInput) int
 		NewUserAcademicLevels                       func(childComplexity int, academicLevelIds []*int) int
-		NewUserAppointment                          func(childComplexity int, tutorID int, availability model.AppointmentInput) int
-		NewUserAppointmentByParent                  func(childComplexity int, studentID int, tutorID int, availability model.AppointmentInput) int
+		NewUserAppointment                          func(childComplexity int, availability model.AppointmentInput) int
+		NewUserAppointmentByParent                  func(childComplexity int, studentID int, availability model.AppointmentInput) int
 		RemoveCoverLetter                           func(childComplexity int) int
 		RemoveCv                                    func(childComplexity int) int
 		RemoveProfileImage                          func(childComplexity int) int
@@ -218,7 +218,6 @@ type ComplexityRoot struct {
 		CreatedAt     func(childComplexity int) int
 		DeletedAt     func(childComplexity int) int
 		Id            func(childComplexity int) int
-		TutorId       func(childComplexity int) int
 		UpdatedAt     func(childComplexity int) int
 		UserId        func(childComplexity int) int
 	}
@@ -695,7 +694,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.NewUserAppointment(childComplexity, args["tutorId"].(int), args["availability"].(model.AppointmentInput)), true
+		return e.complexity.Mutation.NewUserAppointment(childComplexity, args["availability"].(model.AppointmentInput)), true
 
 	case "Mutation.NewUserAppointmentByParent":
 		if e.complexity.Mutation.NewUserAppointmentByParent == nil {
@@ -707,7 +706,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.NewUserAppointmentByParent(childComplexity, args["studentId"].(int), args["tutorId"].(int), args["availability"].(model.AppointmentInput)), true
+		return e.complexity.Mutation.NewUserAppointmentByParent(childComplexity, args["studentId"].(int), args["availability"].(model.AppointmentInput)), true
 
 	case "Mutation.RemoveCoverLetter":
 		if e.complexity.Mutation.RemoveCoverLetter == nil {
@@ -1429,13 +1428,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserAppointment.Id(childComplexity), true
 
-	case "UserAppointment.TutorId":
-		if e.complexity.UserAppointment.TutorId == nil {
-			break
-		}
-
-		return e.complexity.UserAppointment.TutorId(childComplexity), true
-
 	case "UserAppointment.UpdatedAt":
 		if e.complexity.UserAppointment.UpdatedAt == nil {
 			break
@@ -1702,7 +1694,6 @@ type UserAppointment {
     DeletedAt: DateTime
     AppointmentId : Int!  @goField(name: "AppointmentId")
     UserId: Int! @goField(name: "UserId")
-    TutorId: Int! @goField(name: "TutorId")
 }
 
 
@@ -1885,8 +1876,8 @@ scalar Upload
     NewUserAcademicLevels(academicLevelIds: [Int]!): Boolean #Select set of level for tutor and professor
 
     # Appointment
-    NewUserAppointment( tutorId : Int!, availability: AppointmentInput!):  Boolean
-    NewUserAppointmentByParent( studentId: Int!, tutorId : Int!, availability: AppointmentInput!):  Boolean
+    NewUserAppointment(availability: AppointmentInput!):  Boolean
+    NewUserAppointmentByParent(studentId: Int!, availability: AppointmentInput!):  Boolean
 }
 `, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {

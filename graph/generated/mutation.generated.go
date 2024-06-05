@@ -42,8 +42,8 @@ type MutationResolver interface {
 	NewStudentTutor(ctx context.Context, userID int) (*model.User, error)
 	NewStudentProfessor(ctx context.Context, userID int) (*model.User, error)
 	NewUserAcademicLevels(ctx context.Context, academicLevelIds []*int) (*bool, error)
-	NewUserAppointment(ctx context.Context, tutorID int, availability model.AppointmentInput) (*bool, error)
-	NewUserAppointmentByParent(ctx context.Context, studentID int, tutorID int, availability model.AppointmentInput) (*bool, error)
+	NewUserAppointment(ctx context.Context, availability model.AppointmentInput) (*bool, error)
+	NewUserAppointmentByParent(ctx context.Context, studentID int, availability model.AppointmentInput) (*bool, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -284,39 +284,6 @@ func (ec *executionContext) field_Mutation_NewUserAppointmentByParent_args(ctx c
 		}
 	}
 	args["studentId"] = arg0
-	var arg1 int
-	if tmp, ok := rawArgs["tutorId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tutorId"))
-		arg1, err = ec.unmarshalNInt2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["tutorId"] = arg1
-	var arg2 model.AppointmentInput
-	if tmp, ok := rawArgs["availability"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("availability"))
-		arg2, err = ec.unmarshalNAppointmentInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAppointmentInput(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["availability"] = arg2
-	return args, nil
-}
-
-func (ec *executionContext) field_Mutation_NewUserAppointment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 int
-	if tmp, ok := rawArgs["tutorId"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tutorId"))
-		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["tutorId"] = arg0
 	var arg1 model.AppointmentInput
 	if tmp, ok := rawArgs["availability"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("availability"))
@@ -326,6 +293,21 @@ func (ec *executionContext) field_Mutation_NewUserAppointment_args(ctx context.C
 		}
 	}
 	args["availability"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_NewUserAppointment_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.AppointmentInput
+	if tmp, ok := rawArgs["availability"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("availability"))
+		arg0, err = ec.unmarshalNAppointmentInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐAppointmentInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["availability"] = arg0
 	return args, nil
 }
 
@@ -2026,7 +2008,7 @@ func (ec *executionContext) _Mutation_NewUserAppointment(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().NewUserAppointment(rctx, fc.Args["tutorId"].(int), fc.Args["availability"].(model.AppointmentInput))
+		return ec.resolvers.Mutation().NewUserAppointment(rctx, fc.Args["availability"].(model.AppointmentInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2078,7 +2060,7 @@ func (ec *executionContext) _Mutation_NewUserAppointmentByParent(ctx context.Con
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().NewUserAppointmentByParent(rctx, fc.Args["studentId"].(int), fc.Args["tutorId"].(int), fc.Args["availability"].(model.AppointmentInput))
+		return ec.resolvers.Mutation().NewUserAppointmentByParent(rctx, fc.Args["studentId"].(int), fc.Args["availability"].(model.AppointmentInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

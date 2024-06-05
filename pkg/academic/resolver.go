@@ -568,7 +568,7 @@ func (r *AcademicMutation) UserStudent(ctx context.Context, name string, familyN
 
 */
 
-func (r *AcademicMutation) NewUserAppointment(ctx context.Context, tutorID int, availability model.AppointmentInput) (*bool, error) {
+func (r *AcademicMutation) NewUserAppointment(ctx context.Context, availability model.AppointmentInput) (*bool, error) {
 	var (
 		tok    *token.Token
 		err    error
@@ -580,12 +580,12 @@ func (r *AcademicMutation) NewUserAppointment(ctx context.Context, tutorID int, 
 		return nil, err
 	}
 
-	_, err = SetAppointment(tok.UserId, tutorID, availability)
+	_, err = SetAppointment(tok.UserId, availability)
 	status = true
 	return &status, nil
 }
 
-func (r *AcademicMutation) NewUserAppointmentByParent(ctx context.Context, studentID int, tutorID int, availability model.AppointmentInput) (*bool, error) {
+func (r *AcademicMutation) NewUserAppointmentByParent(ctx context.Context, studentID int, availability model.AppointmentInput) (*bool, error) {
 	var (
 		tok    *token.Token
 		err    error
@@ -601,7 +601,7 @@ func (r *AcademicMutation) NewUserAppointmentByParent(ctx context.Context, stude
 		return nil, errx.UlError
 	}
 
-	_, err = SetAppointment(studentID, tutorID, availability)
+	_, err = SetAppointment(studentID, availability)
 	status = true
 	return &status, nil
 }
