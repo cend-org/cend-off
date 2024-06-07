@@ -44,11 +44,11 @@ public/*.pdf
 #Video
 public/*.mpeg
 public/*.mp4
-public/*.x-msvideo
-public/*.x-matroska
-public/*.quicktime
-public/*.x-ms-wmv
-public/*.x-flv
+public/*.avi
+public/*.mkv
+public/*.mov
+public/*.wmv
+public/*.flv
 public/*.webm
 
 
