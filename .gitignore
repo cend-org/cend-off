@@ -24,12 +24,33 @@ go.work
 
 
 #public file
-public/*.jpg
+#image
 public/*.png
-public/*.pdf
+public/*.jpeg
+public/*.jpg
+public/*.gif
+public/*.bmp
+public/*.tiff
+public/*.webp
+public/*.svg
+public/*.ico
+public/*.heic
+
+#document
+text/plain
 public/*.word
+public/*.pdf
+
+#Video
+public/*.mpeg
 public/*.mp4
 public/*.avi
+public/*.mkv
+public/*.mov
+public/*.wmv
+public/*.flv
+public/*.webm
+
 
 public/thumb/*.jpg
 public/thumb/*.png
