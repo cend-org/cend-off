@@ -33,7 +33,7 @@ public/*.bmp
 public/*.tiff
 public/*.webp
 public/*.svg
-public/*.x-ico
+public/*.ico
 public/*.heic
 
 #document
