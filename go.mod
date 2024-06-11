@@ -18,6 +18,7 @@ require (
 	github.com/joinverse/xid v0.0.0-20171120095953-afa60c3e0e47
 	github.com/nrfta/go-graphql-scalars v0.2.1
 	github.com/satori/go.uuid v1.2.0
+	github.com/tanimutomo/sqlfile v1.0.0
 	github.com/unidoc/unipdf/v3 v3.57.0
 	github.com/vektah/gqlparser/v2 v2.5.11
 	github.com/xorcare/pointer v1.2.2
