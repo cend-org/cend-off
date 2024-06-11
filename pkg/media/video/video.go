@@ -5,6 +5,7 @@ import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/configuration"
 	"github.com/cend-org/duval/internal/token"
+	"github.com/cend-org/duval/internal/utils"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
 	"github.com/cend-org/duval/pkg/media"
@@ -61,6 +62,7 @@ func RemoveProfileVideo(userId int) (bool, error) {
 		err             error
 		status          bool
 		userMediaDetail model.UserMediaDetail
+		filePath        string
 	)
 
 	if userId == state.ZERO {
@@ -79,6 +81,13 @@ func RemoveProfileVideo(userId int) (bool, error) {
 	userMediaDetail, err = mediafile.GetUserMediaDetail(userId, UserProfileVideo)
 	if err != nil {
 		return status, errx.DbGetError
+	}
+
+	filePath = utils.FILE_UPLOAD_DIR + media.Xid + media.Extension
+
+	err = mediafile.ClearMediaFile(filePath)
+	if err != nil {
+		return status, errx.SupportError
 	}
 
 	err = mediafile.RemoveMedia(media)
