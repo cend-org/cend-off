@@ -141,6 +141,7 @@ type ComplexityRoot struct {
 	Query struct {
 		AcademicCourses              func(childComplexity int, academicLevelID int) int
 		AcademicLevels               func(childComplexity int) int
+		ClearAllMedia                func(childComplexity int) int
 		CoursePreferences            func(childComplexity int) int
 		CoverLetter                  func(childComplexity int) int
 		CoverLetterThumb             func(childComplexity int) int
@@ -892,6 +893,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.AcademicLevels(childComplexity), true
+
+	case "Query.ClearAllMedia":
+		if e.complexity.Query.ClearAllMedia == nil {
+			break
+		}
+
+		return e.complexity.Query.ClearAllMedia(childComplexity), true
 
 	case "Query.CoursePreferences":
 		if e.complexity.Query.CoursePreferences == nil {
@@ -1929,6 +1937,9 @@ scalar Upload
 
     #    Link
     ProfessorStudent(keyWord: String!) : [User!] #Search for student by name or familyName
+
+    #    Media
+    ClearAllMedia: Boolean
 
 
 }`, BuiltIn: false},

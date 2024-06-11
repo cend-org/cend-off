@@ -3,6 +3,7 @@ package resolver
 import (
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/pkg/academic"
+	mediafile "github.com/cend-org/duval/pkg/media"
 	usr "github.com/cend-org/duval/pkg/user"
 )
 
@@ -20,6 +21,7 @@ type mutationResolver struct {
 type queryResolver struct {
 	*usr.UserQuery          `json:"*Usr.Query,omitempty"`
 	*academic.AcademicQuery `json:"*Academic.Query,omitempty"`
+	*mediafile.MediaQuery   `json:"*Media.Query,omitempty"`
 }
 
 // Query returns generated.QueryResolver implementation.

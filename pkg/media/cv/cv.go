@@ -4,6 +4,7 @@ import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/configuration"
 	"github.com/cend-org/duval/internal/database"
+	"github.com/cend-org/duval/internal/utils"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
 	"github.com/cend-org/duval/pkg/media"
@@ -15,9 +16,11 @@ const (
 
 func RemoveProfileCv(userId int) (bool, error) {
 	var (
-		media  model.Media
-		err    error
-		status bool
+		media     model.Media
+		err       error
+		status    bool
+		filePath  string
+		thumbPath string
 	)
 
 	if userId == state.ZERO {
@@ -36,6 +39,19 @@ func RemoveProfileCv(userId int) (bool, error) {
 	userMediaDetail, err := mediafile.GetUserMediaDetail(userId, CV)
 	if err != nil {
 		return status, errx.DbGetError
+	}
+
+	filePath = utils.FILE_UPLOAD_DIR + media.Xid + media.Extension
+	thumbPath = utils.FILE_UPLOAD_DIR + utils.THUMB_FILE_UPLOAD_DIR + mediaThumb.Xid + mediaThumb.Extension
+
+	err = mediafile.ClearMediaFile(filePath)
+	if err != nil {
+		return status, errx.SupportError
+	}
+
+	err = mediafile.ClearMediaFile(thumbPath)
+	if err != nil {
+		return status, errx.SupportError
 	}
 
 	err = mediafile.RemoveMedia(media)

@@ -1,6 +1,7 @@
 package mediafile
 
 import (
+	"context"
 	"fmt"
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/authentication"
@@ -14,9 +15,13 @@ import (
 	"github.com/joinverse/xid"
 	"mime/multipart"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strconv"
+	"time"
 )
+
+type MediaQuery struct{}
 
 func Upload(ctx *gin.Context) {
 	var (
@@ -203,6 +208,40 @@ func Upload(ctx *gin.Context) {
 	ctx.AbortWithStatusJSON(http.StatusOK, media)
 }
 
+func (r *MediaQuery) ClearAllMedia(ctx context.Context) (*bool, error) {
+	status := true
+	time.Sleep(10)
+	paths := []string{
+		utils.FILE_UPLOAD_DIR + "*.*",
+		utils.FILE_UPLOAD_DIR + utils.THUMB_FILE_UPLOAD_DIR + "*.*",
+		utils.FILE_UPLOAD_DIR + utils.QR_CODE_UPLOAD_DIR + "*.*",
+	}
+
+	for _, pattern := range paths {
+		matchedPaths, err := filepath.Glob(pattern)
+		if err != nil {
+			return &status, err
+		}
+		for _, path := range matchedPaths {
+			err = ClearMediaFile(path)
+			if err != nil {
+				// If there's an error, set status to false and return
+				status = false
+				return &status, err
+			}
+		}
+	}
+
+	// If no errors occurred, return success
+	return &status, nil
+}
+
+/*
+
+	Utils
+
+*/
+
 func DetectMimeType(file *multipart.FileHeader) (mType *mimetype.MIME, err error) {
 	readFile, err := file.Open()
 	if err != nil {
@@ -286,6 +325,14 @@ func RemoveMedia(media model.Media) (err error) {
 
 func RemoveMediaThumb(mediaThumb model.MediaThumb) (err error) {
 	err = database.Delete(mediaThumb)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func ClearMediaFile(filePath string) error {
+	err := os.Remove(filePath)
 	if err != nil {
 		return err
 	}
