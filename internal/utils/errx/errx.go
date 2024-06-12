@@ -1,6 +1,9 @@
 package errx
 
-import "errors"
+import (
+	"errors"
+	"github.com/go-sql-driver/mysql"
+)
 
 var (
 	DummyError = "something went wrong please contact support."
@@ -48,10 +51,11 @@ var (
 
 // DATABASE
 var (
-	DbInsertError = errors.New("error while trying to insert data into database")
-	DbDeleteError = errors.New("error while trying to delete data from database")
-	DbGetError    = errors.New("error while trying to get data from databaseS please contact support")
-	DbUpdateError = errors.New("update data to database please contact support")
+	DbInsertError  = errors.New("error while trying to insert data into database")
+	DbDeleteError  = errors.New("error while trying to delete data from database")
+	DbGetError     = errors.New("error while trying to get data from databaseS please contact support")
+	DbUpdateError  = errors.New("update data to database please contact support")
+	DuplicateError = errors.New("data already exist in the database")
 )
 
 // GENERAL ERROR
@@ -66,3 +70,23 @@ var (
 	LevelError             = errors.New("academic level undefined")
 	UnknownLevelError      = errors.New("user academic level undefined")
 )
+
+// Language Resource
+
+var (
+	LangError  = errors.New("cannot add language resource , resource_ref is missing")
+	MLangError = errors.New("resource language is missing")
+)
+
+/*
+
+	Function
+
+*/
+
+func IsDuplicate(err error) bool {
+	if mysqlErr, ok := err.(*mysql.MySQLError); ok && mysqlErr.Number == 1062 {
+		return true
+	}
+	return false
+}

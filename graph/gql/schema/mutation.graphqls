@@ -39,4 +39,8 @@ type Mutation {
     # Appointment
     NewUserAppointment(availability: AppointmentInput!):  Boolean
     NewUserAppointmentByParent(studentId: Int!, availability: AppointmentInput!):  Boolean
+
+    #    Translation
+    NewLanguageResource(languageResource: LanguageResourceInput!): LanguageResource
+    RemoveLanguageResource(resourceId: Int!): Boolean
 }

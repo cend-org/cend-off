@@ -79,6 +79,16 @@ type ComplexityRoot struct {
 		T func(childComplexity int) int
 	}
 
+	LanguageResource struct {
+		CreatedAt        func(childComplexity int) int
+		DeletedAt        func(childComplexity int) int
+		Id               func(childComplexity int) int
+		ResourceLanguage func(childComplexity int) int
+		ResourceMessage  func(childComplexity int) int
+		ResourceRef      func(childComplexity int) int
+		UpdatedAt        func(childComplexity int) int
+	}
+
 	Media struct {
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
@@ -101,6 +111,7 @@ type ComplexityRoot struct {
 
 	Mutation struct {
 		Login                                       func(childComplexity int, email string, password string) int
+		NewLanguageResource                         func(childComplexity int, languageResource model.LanguageResourceInput) int
 		NewParent                                   func(childComplexity int, email string) int
 		NewPassword                                 func(childComplexity int, password model.PasswordInput) int
 		NewProfessor                                func(childComplexity int, email string) int
@@ -117,6 +128,7 @@ type ComplexityRoot struct {
 		NewUserAppointmentByParent                  func(childComplexity int, studentID int, availability model.AppointmentInput) int
 		RemoveCoverLetter                           func(childComplexity int) int
 		RemoveCv                                    func(childComplexity int) int
+		RemoveLanguageResource                      func(childComplexity int, resourceID int) int
 		RemoveProfileImage                          func(childComplexity int) int
 		RemoveVideoPresentation                     func(childComplexity int) int
 		SetStudentAcademicLevelByParent             func(childComplexity int, academicLevelID int, studentID int) int
@@ -147,6 +159,8 @@ type ComplexityRoot struct {
 		CoverLetterThumb             func(childComplexity int) int
 		Cv                           func(childComplexity int) int
 		CvThumb                      func(childComplexity int) int
+		LanguageResource             func(childComplexity int, resourceRef string, resourceID int) int
+		LanguageResources            func(childComplexity int) int
 		MultipleLevelAcademicCourses func(childComplexity int, academicLevelID []int) int
 		MyProfile                    func(childComplexity int) int
 		Preferences                  func(childComplexity int) int
@@ -431,6 +445,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.BearerToken.T(childComplexity), true
 
+	case "LanguageResource.CreatedAt":
+		if e.complexity.LanguageResource.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.LanguageResource.CreatedAt(childComplexity), true
+
+	case "LanguageResource.DeletedAt":
+		if e.complexity.LanguageResource.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.LanguageResource.DeletedAt(childComplexity), true
+
+	case "LanguageResource.Id":
+		if e.complexity.LanguageResource.Id == nil {
+			break
+		}
+
+		return e.complexity.LanguageResource.Id(childComplexity), true
+
+	case "LanguageResource.ResourceLanguage":
+		if e.complexity.LanguageResource.ResourceLanguage == nil {
+			break
+		}
+
+		return e.complexity.LanguageResource.ResourceLanguage(childComplexity), true
+
+	case "LanguageResource.ResourceMessage":
+		if e.complexity.LanguageResource.ResourceMessage == nil {
+			break
+		}
+
+		return e.complexity.LanguageResource.ResourceMessage(childComplexity), true
+
+	case "LanguageResource.ResourceRef":
+		if e.complexity.LanguageResource.ResourceRef == nil {
+			break
+		}
+
+		return e.complexity.LanguageResource.ResourceRef(childComplexity), true
+
+	case "LanguageResource.UpdatedAt":
+		if e.complexity.LanguageResource.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.LanguageResource.UpdatedAt(childComplexity), true
+
 	case "Media.CreatedAt":
 		if e.complexity.Media.CreatedAt == nil {
 			break
@@ -540,6 +603,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.Login(childComplexity, args["email"].(string), args["password"].(string)), true
+
+	case "Mutation.NewLanguageResource":
+		if e.complexity.Mutation.NewLanguageResource == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewLanguageResource_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewLanguageResource(childComplexity, args["languageResource"].(model.LanguageResourceInput)), true
 
 	case "Mutation.NewParent":
 		if e.complexity.Mutation.NewParent == nil {
@@ -722,6 +797,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RemoveCv(childComplexity), true
+
+	case "Mutation.RemoveLanguageResource":
+		if e.complexity.Mutation.RemoveLanguageResource == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_RemoveLanguageResource_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveLanguageResource(childComplexity, args["resourceId"].(int)), true
 
 	case "Mutation.RemoveProfileImage":
 		if e.complexity.Mutation.RemoveProfileImage == nil {
@@ -935,6 +1022,25 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.CvThumb(childComplexity), true
+
+	case "Query.LanguageResource":
+		if e.complexity.Query.LanguageResource == nil {
+			break
+		}
+
+		args, err := ec.field_Query_LanguageResource_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.LanguageResource(childComplexity, args["resourceRef"].(string), args["resourceId"].(int)), true
+
+	case "Query.LanguageResources":
+		if e.complexity.Query.LanguageResources == nil {
+			break
+		}
+
+		return e.complexity.Query.LanguageResources(childComplexity), true
 
 	case "Query.MultipleLevelAcademicCourses":
 		if e.complexity.Query.MultipleLevelAcademicCourses == nil {
@@ -1585,6 +1691,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	ec := executionContext{rc, e, 0, 0, make(chan graphql.DeferredResult)}
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputAppointmentInput,
+		ec.unmarshalInputLanguageResourceInput,
 		ec.unmarshalInputPasswordInput,
 		ec.unmarshalInputUserAcademicCourseInput,
 		ec.unmarshalInputUserAcademicCoursePreferenceInput,
@@ -1793,6 +1900,22 @@ input UserAcademicCoursePreferenceInput {
 }
 
 `, BuiltIn: false},
+	{Name: "../gql/language/language.graphqls", Input: `type LanguageResource {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    ResourceRef: String!
+    ResourceLanguage: String!
+    ResourceMessage: String!
+}
+
+input LanguageResourceInput {
+    ResourceRef: String
+    ResourceLanguage: String
+    ResourceMessage: String
+}
+`, BuiltIn: false},
 	{Name: "../gql/media/media.graphqls", Input: `type Media {
     Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
@@ -1886,6 +2009,10 @@ scalar Upload
     # Appointment
     NewUserAppointment(availability: AppointmentInput!):  Boolean
     NewUserAppointmentByParent(studentId: Int!, availability: AppointmentInput!):  Boolean
+
+    #    Translation
+    NewLanguageResource(languageResource: LanguageResourceInput!): LanguageResource
+    RemoveLanguageResource(resourceId: Int!): Boolean
 }
 `, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {
@@ -1941,6 +2068,9 @@ scalar Upload
     #    Media
     ClearAllMedia: Boolean
 
+    #    Translation
+    LanguageResources: [LanguageResource!]
+    LanguageResource(resourceRef: String! , resourceId : Int!): LanguageResource
 
 }`, BuiltIn: false},
 	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {

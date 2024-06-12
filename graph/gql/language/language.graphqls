@@ -1,0 +1,15 @@
+type LanguageResource {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    ResourceRef: String!
+    ResourceLanguage: String!
+    ResourceMessage: String!
+}
+
+input LanguageResourceInput {
+    ResourceRef: String
+    ResourceLanguage: String
+    ResourceMessage: String
+}

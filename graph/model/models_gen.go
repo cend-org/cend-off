@@ -48,6 +48,22 @@ type BearerToken struct {
 	T string `json:"t"`
 }
 
+type LanguageResource struct {
+	Id               int        `json:"id"`
+	CreatedAt        time.Time  `json:"createdAt"`
+	UpdatedAt        time.Time  `json:"updatedAt"`
+	DeletedAt        *time.Time `json:"deletedAt"`
+	ResourceRef      string     `json:"resourceRef"`
+	ResourceLanguage string     `json:"resourceLanguage"`
+	ResourceMessage  string     `json:"resourceMessage"`
+}
+
+type LanguageResourceInput struct {
+	ResourceRef      *string `json:"resourceRef"`
+	ResourceLanguage *string `json:"resourceLanguage"`
+	ResourceMessage  *string `json:"resourceMessage"`
+}
+
 type Media struct {
 	Id        int        `json:"id"`
 	CreatedAt time.Time  `json:"createdAt"`
