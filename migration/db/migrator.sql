@@ -1,3 +1,4 @@
+set sql_mode = '';
 drop database if exists cend;
 create database cend;
 use cend;
@@ -379,3 +380,28 @@ alter table user_appointment
     add constraint user_appointment_user_id_fk
         foreign key (user_id) references user (id);
 
+--
+--
+--  language_resource
+--
+-- *
+create table language_resource
+(
+    id                int auto_increment primary key,
+    created_at        timestamp    default CURRENT_TIMESTAMP,
+    updated_at        timestamp    default CURRENT_TIMESTAMP,
+    deleted_at        timestamp    default '0000-00-00 00:00:00',
+    resource_ref      varchar(500) default '',
+    resource_language int          default 0,
+    resource_message  varchar(500) default ''
+);
+
+
+alter table language_resource
+    add constraint language_resource_resource_ref_pk
+        unique (resource_ref);
+
+
+alter table language_resource
+    add constraint language_resource_resource_language_pk
+        unique (resource_language);

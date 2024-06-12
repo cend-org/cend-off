@@ -44,6 +44,8 @@ type MutationResolver interface {
 	NewUserAcademicLevels(ctx context.Context, academicLevelIds []*int) (*bool, error)
 	NewUserAppointment(ctx context.Context, availability model.AppointmentInput) (*bool, error)
 	NewUserAppointmentByParent(ctx context.Context, studentID int, availability model.AppointmentInput) (*bool, error)
+	NewLanguageResource(ctx context.Context, languageResource model.LanguageResourceInput) (*model.LanguageResource, error)
+	RemoveLanguageResource(ctx context.Context, resourceID int) (*bool, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -71,6 +73,21 @@ func (ec *executionContext) field_Mutation_Login_args(ctx context.Context, rawAr
 		}
 	}
 	args["password"] = arg1
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_NewLanguageResource_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 model.LanguageResourceInput
+	if tmp, ok := rawArgs["languageResource"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("languageResource"))
+		arg0, err = ec.unmarshalNLanguageResourceInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐLanguageResourceInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["languageResource"] = arg0
 	return args, nil
 }
 
@@ -308,6 +325,21 @@ func (ec *executionContext) field_Mutation_NewUserAppointment_args(ctx context.C
 		}
 	}
 	args["availability"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Mutation_RemoveLanguageResource_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 int
+	if tmp, ok := rawArgs["resourceId"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resourceId"))
+		arg0, err = ec.unmarshalNInt2int(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["resourceId"] = arg0
 	return args, nil
 }
 
@@ -2098,6 +2130,126 @@ func (ec *executionContext) fieldContext_Mutation_NewUserAppointmentByParent(ctx
 	return fc, nil
 }
 
+func (ec *executionContext) _Mutation_NewLanguageResource(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_NewLanguageResource(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().NewLanguageResource(rctx, fc.Args["languageResource"].(model.LanguageResourceInput))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*model.LanguageResource)
+	fc.Result = res
+	return ec.marshalOLanguageResource2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐLanguageResource(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_NewLanguageResource(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "Id":
+				return ec.fieldContext_LanguageResource_Id(ctx, field)
+			case "CreatedAt":
+				return ec.fieldContext_LanguageResource_CreatedAt(ctx, field)
+			case "UpdatedAt":
+				return ec.fieldContext_LanguageResource_UpdatedAt(ctx, field)
+			case "DeletedAt":
+				return ec.fieldContext_LanguageResource_DeletedAt(ctx, field)
+			case "ResourceRef":
+				return ec.fieldContext_LanguageResource_ResourceRef(ctx, field)
+			case "ResourceLanguage":
+				return ec.fieldContext_LanguageResource_ResourceLanguage(ctx, field)
+			case "ResourceMessage":
+				return ec.fieldContext_LanguageResource_ResourceMessage(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type LanguageResource", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_NewLanguageResource_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Mutation_RemoveLanguageResource(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Mutation_RemoveLanguageResource(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Mutation().RemoveLanguageResource(rctx, fc.Args["resourceId"].(int))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*bool)
+	fc.Result = res
+	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Mutation_RemoveLanguageResource(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Mutation",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type Boolean does not have child fields")
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Mutation_RemoveLanguageResource_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
 // endregion **************************** field.gotpl *****************************
 
 // region    **************************** input.gotpl *****************************
@@ -2236,6 +2388,14 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet)
 		case "NewUserAppointmentByParent":
 			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
 				return ec._Mutation_NewUserAppointmentByParent(ctx, field)
+			})
+		case "NewLanguageResource":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_NewLanguageResource(ctx, field)
+			})
+		case "RemoveLanguageResource":
+			out.Values[i] = ec.OperationContext.RootResolverMiddleware(innerCtx, func(ctx context.Context) (res graphql.Marshaler) {
+				return ec._Mutation_RemoveLanguageResource(ctx, field)
 			})
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))

@@ -4,6 +4,7 @@ import (
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/pkg/academic"
 	mediafile "github.com/cend-org/duval/pkg/media"
+	"github.com/cend-org/duval/pkg/translator"
 	usr "github.com/cend-org/duval/pkg/user"
 )
 
@@ -16,12 +17,14 @@ type Resolver struct{}
 type mutationResolver struct {
 	*usr.UserMutation
 	*academic.AcademicMutation
+	*translator.TranslationMutation
 }
 
 type queryResolver struct {
-	*usr.UserQuery          `json:"*Usr.Query,omitempty"`
-	*academic.AcademicQuery `json:"*Academic.Query,omitempty"`
-	*mediafile.MediaQuery   `json:"*Media.Query,omitempty"`
+	*usr.UserQuery               `json:"*Usr.Query,omitempty"`
+	*academic.AcademicQuery      `json:"*Academic.Query,omitempty"`
+	*mediafile.MediaQuery        `json:"*Media.Query,omitempty"`
+	*translator.TranslationQuery `json:"*Translation.Query,omitempty"`
 }
 
 // Query returns generated.QueryResolver implementation.

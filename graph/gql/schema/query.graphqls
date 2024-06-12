@@ -51,5 +51,8 @@ type Query {
     #    Media
     ClearAllMedia: Boolean
 
+    #    Translation
+    LanguageResources: [LanguageResource!]
+    LanguageResource(resourceRef: String! , resourceId : Int!): LanguageResource
 
 }
