@@ -46,7 +46,7 @@ type MutationResolver interface {
 	NewUserAppointmentByParent(ctx context.Context, studentID int, availability model.AppointmentInput) (*bool, error)
 	NewLanguageResource(ctx context.Context, languageResource model.LanguageResourceInput) (*model.LanguageResource, error)
 	RemoveLanguageResource(ctx context.Context, language int, resourceRef string) (*bool, error)
-	RemoveLanguageResources(ctx context.Context, resourceRefs string) (*bool, error)
+	RemoveLanguageResources(ctx context.Context, resourceRef string) (*bool, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -357,14 +357,14 @@ func (ec *executionContext) field_Mutation_RemoveLanguageResources_args(ctx cont
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["resourceRefs"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resourceRefs"))
+	if tmp, ok := rawArgs["resourceRef"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("resourceRef"))
 		arg0, err = ec.unmarshalNString2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["resourceRefs"] = arg0
+	args["resourceRef"] = arg0
 	return args, nil
 }
 
@@ -2289,7 +2289,7 @@ func (ec *executionContext) _Mutation_RemoveLanguageResources(ctx context.Contex
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().RemoveLanguageResources(rctx, fc.Args["resourceRefs"].(string))
+		return ec.resolvers.Mutation().RemoveLanguageResources(rctx, fc.Args["resourceRef"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)

@@ -129,7 +129,7 @@ type ComplexityRoot struct {
 		RemoveCoverLetter                           func(childComplexity int) int
 		RemoveCv                                    func(childComplexity int) int
 		RemoveLanguageResource                      func(childComplexity int, language int, resourceRef string) int
-		RemoveLanguageResources                     func(childComplexity int, resourceRefs string) int
+		RemoveLanguageResources                     func(childComplexity int, resourceRef string) int
 		RemoveProfileImage                          func(childComplexity int) int
 		RemoveVideoPresentation                     func(childComplexity int) int
 		SetStudentAcademicLevelByParent             func(childComplexity int, academicLevelID int, studentID int) int
@@ -822,7 +822,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.RemoveLanguageResources(childComplexity, args["resourceRefs"].(string)), true
+		return e.complexity.Mutation.RemoveLanguageResources(childComplexity, args["resourceRef"].(string)), true
 
 	case "Mutation.RemoveProfileImage":
 		if e.complexity.Mutation.RemoveProfileImage == nil {
@@ -2044,7 +2044,7 @@ scalar Upload
     #    Translation
     NewLanguageResource(languageResource: LanguageResourceInput!): LanguageResource
     RemoveLanguageResource(language: Int! , resourceRef : String!): Boolean
-    RemoveLanguageResources(resourceRefs: String!): Boolean
+    RemoveLanguageResources(resourceRef: String!): Boolean
 
 }
 `, BuiltIn: false},
