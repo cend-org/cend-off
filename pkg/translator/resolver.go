@@ -12,14 +12,22 @@ func (m *TranslationMutation) NewLanguageResource(ctx context.Context, languageR
 	return AddLanguageResource(languageResource)
 }
 
-func (m *TranslationMutation) RemoveLanguageResource(ctx context.Context, resourceId int) (*bool, error) {
-	return DeleteLanguageResource(resourceId)
+func (m *TranslationMutation) RemoveLanguageResource(ctx context.Context, language int, resourceRef string) (*bool, error) {
+	return DeleteLanguageResource(language, resourceRef)
 }
 
-func (q *TranslationQuery) LanguageResources(ctx context.Context) ([]model.LanguageResource, error) {
-	return GetAllLanguageResources()
+func (q *TranslationQuery) LanguageResources(ctx context.Context, language int) ([]model.LanguageResource, error) {
+	return GetAllLanguageResources(language)
 }
 
-func (q *TranslationQuery) LanguageResource(ctx context.Context, resourceRef string, resourceId int) (*model.LanguageResource, error) {
-	return GetLanguageResourceByIdAndRef(resourceRef, resourceId)
+func (q *TranslationQuery) LanguageResource(ctx context.Context, language int, resourceRef string) (*model.LanguageResource, error) {
+	return GetLanguageResourceByLangAndRef(language, resourceRef)
+}
+
+func (m *TranslationMutation) RemoveLanguageResources(ctx context.Context, resourceRef string) (*bool, error) {
+	return RemoveLanguageResourcesByRef(resourceRef)
+}
+
+func (q *TranslationQuery) AllReferencedLanguageResources(ctx context.Context, resourceRef string) ([]model.LanguageResource, error) {
+	return GetLanguagesByRef(resourceRef)
 }

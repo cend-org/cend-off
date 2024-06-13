@@ -22,6 +22,11 @@ func AddLanguageResource(new model.LanguageResourceInput) (*model.LanguageResour
 		return &lang, errx.LangError
 	}
 
+	oldLanguage, err := GetLanguageInfo(*new.ResourceLanguage, *new.ResourceRef)
+	if err == nil && oldLanguage.Id > 0 {
+		return &lang, errx.DuplicateError
+	}
+
 	lang = model.MapLanguageResourceInputToLanguageResource(new, lang)
 
 	lang.Id, err = SetLang(lang)
@@ -34,14 +39,15 @@ func AddLanguageResource(new model.LanguageResourceInput) (*model.LanguageResour
 	return &lang, nil
 }
 
-func DeleteLanguageResource(id int) (*bool, error) {
+func DeleteLanguageResource(language int, resourceRef string) (*bool, error) {
 	var (
 		lang   model.LanguageResource
 		err    error
 		status bool
 	)
 
-	lang, err = GetLang(id)
+	lang, err = GetLanguageInfo(language, resourceRef)
+
 	if err != nil {
 		return &status, err
 	}
@@ -54,13 +60,13 @@ func DeleteLanguageResource(id int) (*bool, error) {
 	return &status, nil
 }
 
-func GetLanguageResourceByIdAndRef(ref string, id int) (*model.LanguageResource, error) {
+func GetLanguageResourceByLangAndRef(language int, ref string) (*model.LanguageResource, error) {
 	var (
 		lang model.LanguageResource
 		err  error
 	)
 
-	err = database.Get(&lang, `SELECT * FROM language_resource WHERE resource_ref = ? AND id = ?`, ref, id)
+	lang, err = GetLanguageInfo(language, ref)
 	if err != nil && errors.Is(err, sql.ErrNoRows) {
 		return &lang, errx.MLangError
 	} else if err != nil && !errors.Is(err, sql.ErrNoRows) {
@@ -70,18 +76,40 @@ func GetLanguageResourceByIdAndRef(ref string, id int) (*model.LanguageResource,
 	return &lang, nil
 }
 
-func GetAllLanguageResources() ([]model.LanguageResource, error) {
+func GetAllLanguageResources(language int) ([]model.LanguageResource, error) {
 	var (
 		lang []model.LanguageResource
 		err  error
 	)
-
-	err = database.Select(&lang, `SELECT * FROM language_resource`)
+	err = database.Select(&lang, `SELECT * FROM language_resource WHERE resource_language = ?`, language)
 	if err != nil {
 		return lang, errx.SupportError
 	}
 
 	return lang, nil
+}
+
+func RemoveLanguageResourcesByRef(ref string) (*bool, error) {
+	var (
+		languages []model.LanguageResource
+		err       error
+		status    bool
+	)
+	languages, err = GetLanguagesByRef(ref)
+	if err != nil {
+		return &status, errx.SupportError
+	}
+
+	for _, language := range languages {
+		err = RemLang(language)
+		if err != nil {
+			return &status, errx.SupportError
+		}
+	}
+
+	status = true
+	return &status, nil
+
 }
 
 /*
@@ -99,13 +127,21 @@ func SetLang(lang model.LanguageResource) (id int, err error) {
 	return id, nil
 }
 
-func GetLang(id int) (lang model.LanguageResource, err error) {
-	err = database.Get(&lang, `SELECT * FROM language_resource WHERE id = ?`, id)
+func GetLanguagesByRef(ref string) (lang []model.LanguageResource, err error) {
+	err = database.Select(&lang, `SELECT * FROM language_resource WHERE resource_ref = ?`, ref)
 	if err != nil {
 		return lang, err
 	}
 
 	return lang, nil
+}
+
+func GetLanguageInfo(language int, ref string) (languageResource model.LanguageResource, err error) {
+	err = database.Get(&languageResource, `SELECT *  FROM language_resource WHERE resource_ref = ? AND resource_language = ? `, ref, language)
+	if err != nil {
+		return languageResource, err
+	}
+	return languageResource, nil
 }
 
 func RemLang(lang model.LanguageResource) (err error) {

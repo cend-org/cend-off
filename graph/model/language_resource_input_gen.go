@@ -12,7 +12,7 @@ func (c *LanguageResourceCollector) ResourceRef(a *string) (r LanguageResource, 
 	return r, err
 }
 
-func (c *LanguageResourceCollector) ResourceLanguage(a *string) (r LanguageResource, err error) {
+func (c *LanguageResourceCollector) ResourceLanguage(a *int) (r LanguageResource, err error) {
 	err = database.Get(&r, `SELECT * FROM language_resource WHERE resource_language = ? ORDER BY created_at DESC LIMIT 1`, a)
 	return r, err
 }

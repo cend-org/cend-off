@@ -393,15 +393,5 @@ create table language_resource
     deleted_at        timestamp    default '0000-00-00 00:00:00',
     resource_ref      varchar(500) default '',
     resource_language int          default 0,
-    resource_message  varchar(500) default ''
+    resource_message  varchar(5000) default ''
 );
-
-
-alter table language_resource
-    add constraint language_resource_resource_ref_pk
-        unique (resource_ref);
-
-
-alter table language_resource
-    add constraint language_resource_resource_language_pk
-        unique (resource_language);

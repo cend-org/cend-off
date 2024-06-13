@@ -54,13 +54,13 @@ type LanguageResource struct {
 	UpdatedAt        time.Time  `json:"updatedAt"`
 	DeletedAt        *time.Time `json:"deletedAt"`
 	ResourceRef      string     `json:"resourceRef"`
-	ResourceLanguage string     `json:"resourceLanguage"`
+	ResourceLanguage int        `json:"resourceLanguage"`
 	ResourceMessage  string     `json:"resourceMessage"`
 }
 
 type LanguageResourceInput struct {
 	ResourceRef      *string `json:"resourceRef"`
-	ResourceLanguage *string `json:"resourceLanguage"`
+	ResourceLanguage *int    `json:"resourceLanguage"`
 	ResourceMessage  *string `json:"resourceMessage"`
 }
 

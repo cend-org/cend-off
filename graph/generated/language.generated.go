@@ -272,9 +272,9 @@ func (ec *executionContext) _LanguageResource_ResourceLanguage(ctx context.Conte
 		}
 		return graphql.Null
 	}
-	res := resTmp.(string)
+	res := resTmp.(int)
 	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
+	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_LanguageResource_ResourceLanguage(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -284,7 +284,7 @@ func (ec *executionContext) fieldContext_LanguageResource_ResourceLanguage(ctx c
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
+			return nil, errors.New("field of type Int does not have child fields")
 		},
 	}
 	return fc, nil
@@ -361,7 +361,7 @@ func (ec *executionContext) unmarshalInputLanguageResourceInput(ctx context.Cont
 			it.ResourceRef = data
 		case "ResourceLanguage":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("ResourceLanguage"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			data, err := ec.unmarshalOInt2ᚖint(ctx, v)
 			if err != nil {
 				return it, err
 			}

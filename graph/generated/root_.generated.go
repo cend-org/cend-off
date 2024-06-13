@@ -128,7 +128,8 @@ type ComplexityRoot struct {
 		NewUserAppointmentByParent                  func(childComplexity int, studentID int, availability model.AppointmentInput) int
 		RemoveCoverLetter                           func(childComplexity int) int
 		RemoveCv                                    func(childComplexity int) int
-		RemoveLanguageResource                      func(childComplexity int, resourceID int) int
+		RemoveLanguageResource                      func(childComplexity int, language int, resourceRef string) int
+		RemoveLanguageResources                     func(childComplexity int, resourceRef string) int
 		RemoveProfileImage                          func(childComplexity int) int
 		RemoveVideoPresentation                     func(childComplexity int) int
 		SetStudentAcademicLevelByParent             func(childComplexity int, academicLevelID int, studentID int) int
@@ -151,39 +152,40 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		AcademicCourses              func(childComplexity int, academicLevelID int) int
-		AcademicLevels               func(childComplexity int) int
-		ClearAllMedia                func(childComplexity int) int
-		CoursePreferences            func(childComplexity int) int
-		CoverLetter                  func(childComplexity int) int
-		CoverLetterThumb             func(childComplexity int) int
-		Cv                           func(childComplexity int) int
-		CvThumb                      func(childComplexity int) int
-		LanguageResource             func(childComplexity int, resourceRef string, resourceID int) int
-		LanguageResources            func(childComplexity int) int
-		MultipleLevelAcademicCourses func(childComplexity int, academicLevelID []int) int
-		MyProfile                    func(childComplexity int) int
-		Preferences                  func(childComplexity int) int
-		ProfessorStudent             func(childComplexity int, keyWord string) int
-		ProfileImage                 func(childComplexity int) int
-		ProfileImageThumb            func(childComplexity int) int
-		StudentAcademicLevel         func(childComplexity int, studentID int) int
-		SuggestOtherTutor            func(childComplexity int, studentID int, lastTutorID int) int
-		SuggestOtherTutorToUser      func(childComplexity int, lastTutorID int) int
-		SuggestTutor                 func(childComplexity int, studentID int) int
-		SuggestTutorToUser           func(childComplexity int) int
-		UserAcademicLevels           func(childComplexity int) int
-		UserCoursePreferences        func(childComplexity int, userID int) int
-		UserCoverLetter              func(childComplexity int, userID int) int
-		UserCoverLetterThumb         func(childComplexity int, userID int) int
-		UserCv                       func(childComplexity int, userID int) int
-		UserCvThumb                  func(childComplexity int, userID int) int
-		UserPreferences              func(childComplexity int, studentID int) int
-		UserProfile                  func(childComplexity int, userID int) int
-		UserProfileImage             func(childComplexity int, userID int) int
-		UserProfileImageThumb        func(childComplexity int, userID int) int
-		UserVideoPresentation        func(childComplexity int, userID int) int
-		VideoPresentation            func(childComplexity int) int
+		AcademicCourses                func(childComplexity int, academicLevelID int) int
+		AcademicLevels                 func(childComplexity int) int
+		AllReferencedLanguageResources func(childComplexity int, resourceRef string) int
+		ClearAllMedia                  func(childComplexity int) int
+		CoursePreferences              func(childComplexity int) int
+		CoverLetter                    func(childComplexity int) int
+		CoverLetterThumb               func(childComplexity int) int
+		Cv                             func(childComplexity int) int
+		CvThumb                        func(childComplexity int) int
+		LanguageResource               func(childComplexity int, language int, resourceRef string) int
+		LanguageResources              func(childComplexity int, language int) int
+		MultipleLevelAcademicCourses   func(childComplexity int, academicLevelID []int) int
+		MyProfile                      func(childComplexity int) int
+		Preferences                    func(childComplexity int) int
+		ProfessorStudent               func(childComplexity int, keyWord string) int
+		ProfileImage                   func(childComplexity int) int
+		ProfileImageThumb              func(childComplexity int) int
+		StudentAcademicLevel           func(childComplexity int, studentID int) int
+		SuggestOtherTutor              func(childComplexity int, studentID int, lastTutorID int) int
+		SuggestOtherTutorToUser        func(childComplexity int, lastTutorID int) int
+		SuggestTutor                   func(childComplexity int, studentID int) int
+		SuggestTutorToUser             func(childComplexity int) int
+		UserAcademicLevels             func(childComplexity int) int
+		UserCoursePreferences          func(childComplexity int, userID int) int
+		UserCoverLetter                func(childComplexity int, userID int) int
+		UserCoverLetterThumb           func(childComplexity int, userID int) int
+		UserCv                         func(childComplexity int, userID int) int
+		UserCvThumb                    func(childComplexity int, userID int) int
+		UserPreferences                func(childComplexity int, studentID int) int
+		UserProfile                    func(childComplexity int, userID int) int
+		UserProfileImage               func(childComplexity int, userID int) int
+		UserProfileImageThumb          func(childComplexity int, userID int) int
+		UserVideoPresentation          func(childComplexity int, userID int) int
+		VideoPresentation              func(childComplexity int) int
 	}
 
 	User struct {
@@ -808,7 +810,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.RemoveLanguageResource(childComplexity, args["resourceId"].(int)), true
+		return e.complexity.Mutation.RemoveLanguageResource(childComplexity, args["language"].(int), args["resourceRef"].(string)), true
+
+	case "Mutation.RemoveLanguageResources":
+		if e.complexity.Mutation.RemoveLanguageResources == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_RemoveLanguageResources_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveLanguageResources(childComplexity, args["resourceRef"].(string)), true
 
 	case "Mutation.RemoveProfileImage":
 		if e.complexity.Mutation.RemoveProfileImage == nil {
@@ -981,6 +995,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.AcademicLevels(childComplexity), true
 
+	case "Query.AllReferencedLanguageResources":
+		if e.complexity.Query.AllReferencedLanguageResources == nil {
+			break
+		}
+
+		args, err := ec.field_Query_AllReferencedLanguageResources_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.AllReferencedLanguageResources(childComplexity, args["resourceRef"].(string)), true
+
 	case "Query.ClearAllMedia":
 		if e.complexity.Query.ClearAllMedia == nil {
 			break
@@ -1033,14 +1059,19 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.LanguageResource(childComplexity, args["resourceRef"].(string), args["resourceId"].(int)), true
+		return e.complexity.Query.LanguageResource(childComplexity, args["language"].(int), args["resourceRef"].(string)), true
 
 	case "Query.LanguageResources":
 		if e.complexity.Query.LanguageResources == nil {
 			break
 		}
 
-		return e.complexity.Query.LanguageResources(childComplexity), true
+		args, err := ec.field_Query_LanguageResources_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.LanguageResources(childComplexity, args["language"].(int)), true
 
 	case "Query.MultipleLevelAcademicCourses":
 		if e.complexity.Query.MultipleLevelAcademicCourses == nil {
@@ -1906,13 +1937,13 @@ input UserAcademicCoursePreferenceInput {
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     ResourceRef: String!
-    ResourceLanguage: String!
+    ResourceLanguage: Int!
     ResourceMessage: String!
 }
 
 input LanguageResourceInput {
     ResourceRef: String
-    ResourceLanguage: String
+    ResourceLanguage: Int
     ResourceMessage: String
 }
 `, BuiltIn: false},
@@ -2012,7 +2043,9 @@ scalar Upload
 
     #    Translation
     NewLanguageResource(languageResource: LanguageResourceInput!): LanguageResource
-    RemoveLanguageResource(resourceId: Int!): Boolean
+    RemoveLanguageResource(language: Int! , resourceRef : String!): Boolean
+    RemoveLanguageResources(resourceRef: String!): Boolean
+
 }
 `, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {
@@ -2069,8 +2102,9 @@ scalar Upload
     ClearAllMedia: Boolean
 
     #    Translation
-    LanguageResources: [LanguageResource!]
-    LanguageResource(resourceRef: String! , resourceId : Int!): LanguageResource
+    LanguageResources(language: Int!): [LanguageResource!]
+    AllReferencedLanguageResources(resourceRef: String!): [LanguageResource!]
+    LanguageResource(language: Int! , resourceRef: String!): LanguageResource
 
 }`, BuiltIn: false},
 	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {
