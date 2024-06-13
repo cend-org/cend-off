@@ -49,10 +49,11 @@ type Query {
     ProfessorStudent(keyWord: String!) : [User!] #Search for student by name or familyName
 
     #    Media
-    ClearAllMedia: Boolean     #    Remove all media at public/**
+    ClearAllMedia: Boolean
 
     #    Translation
-    LanguageResources: [LanguageResource!]     #   Get list available Language resource in the database
-    LanguageResource(resourceRef: String! , resourceId : Int!): LanguageResource     #  Get a specific language resource by resource_ref and resource_id
+    LanguageResources(language: Int!): [LanguageResource!]
+    AllReferencedLanguageResources(resourceRef: String!): [LanguageResource!]
+    LanguageResource(language: Int! , resourceRef: String!): LanguageResource
 
 }
