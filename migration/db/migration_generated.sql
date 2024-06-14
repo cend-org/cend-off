@@ -27,6 +27,16 @@ create table academic_level (
 		unique (id)
 );
 
+create table appointment (
+	id int auto_increment primary key,
+	created_at	datetime default CURRENT_TIMESTAMP,
+	updated_at	datetime default CURRENT_TIMESTAMP,
+	deleted_at	datetime default '0000-00-00 00:00:00',
+	availability	datetime default '0000-00-00 00:00:00',
+	constraint appointment_pk
+		unique (id)
+);
+
 create table authorization (
 	id int auto_increment primary key,
 	created_at	datetime default CURRENT_TIMESTAMP,
@@ -47,6 +57,18 @@ create table bearer_token (
 	t	varchar(255) default '',
 	constraint bearer_token_pk
 		unique (t)
+);
+
+create table language_resource (
+	id int auto_increment primary key,
+	created_at	datetime default CURRENT_TIMESTAMP,
+	updated_at	datetime default CURRENT_TIMESTAMP,
+	deleted_at	datetime default '0000-00-00 00:00:00',
+	resource_ref	varchar(255) default '',
+	resource_language	int default 0,
+	resource_message	varchar(255) default '',
+	constraint language_resource_pk
+		unique (id)
 );
 
 create table media (
@@ -139,7 +161,7 @@ alter table user_academic_course
 
 alter table user_academic_course
 	add constraint user_academic_course_course_id_fk
-		foreign key (course_id) references course (id);
+		foreign key (course_id) references academic_course (id);
 
 create table user_academic_course_preference (
 	id int auto_increment primary key,
@@ -154,6 +176,25 @@ create table user_academic_course_preference (
 
 alter table user_academic_course_preference
 	add constraint user_academic_course_preference_user_id_fk
+		foreign key (user_id) references user (id);
+
+create table user_appointment (
+	id int auto_increment primary key,
+	created_at	datetime default CURRENT_TIMESTAMP,
+	updated_at	datetime default CURRENT_TIMESTAMP,
+	deleted_at	datetime default '0000-00-00 00:00:00',
+	appointment_id	int default 0,
+	user_id	int default 0,
+	constraint user_appointment_pk
+		unique (id)
+);
+
+alter table user_appointment
+	add constraint user_appointment_appointment_id_fk
+		foreign key (appointment_id) references appointment (id);
+
+alter table user_appointment
+	add constraint user_appointment_user_id_fk
 		foreign key (user_id) references user (id);
 
 create table user_authorization_link (

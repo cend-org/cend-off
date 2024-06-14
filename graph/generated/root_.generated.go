@@ -110,6 +110,7 @@ type ComplexityRoot struct {
 	}
 
 	Mutation struct {
+		AddOrGetLanguageResource                    func(childComplexity int, language int, resourceRef string) int
 		Login                                       func(childComplexity int, email string, password string) int
 		NewLanguageResource                         func(childComplexity int, languageResource model.LanguageResourceInput) int
 		NewParent                                   func(childComplexity int, email string) int
@@ -135,6 +136,7 @@ type ComplexityRoot struct {
 		SetStudentAcademicLevelByParent             func(childComplexity int, academicLevelID int, studentID int) int
 		SetUserAcademicLevel                        func(childComplexity int, academicLevelID int) int
 		UpdAcademicCoursePreference                 func(childComplexity int, coursesPreferences model.UserAcademicCoursePreferenceInput) int
+		UpdLanguageResource                         func(childComplexity int, languageResource model.LanguageResourceInput) int
 		UpdStudentAcademicCoursesPreferenceByParent func(childComplexity int, coursesPreferences model.UserAcademicCoursePreferenceInput, studentID int) int
 		UpdateMyProfile                             func(childComplexity int, profile model.UserInput) int
 		UpdateProfileAndPassword                    func(childComplexity int, profile model.UserInput, password model.PasswordInput) int
@@ -594,6 +596,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.MediaThumb.Xid(childComplexity), true
 
+	case "Mutation.AddOrGetLanguageResource":
+		if e.complexity.Mutation.AddOrGetLanguageResource == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_AddOrGetLanguageResource_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.AddOrGetLanguageResource(childComplexity, args["language"].(int), args["resourceRef"].(string)), true
+
 	case "Mutation.Login":
 		if e.complexity.Mutation.Login == nil {
 			break
@@ -873,6 +887,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdAcademicCoursePreference(childComplexity, args["coursesPreferences"].(model.UserAcademicCoursePreferenceInput)), true
+
+	case "Mutation.UpdLanguageResource":
+		if e.complexity.Mutation.UpdLanguageResource == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_UpdLanguageResource_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdLanguageResource(childComplexity, args["languageResource"].(model.LanguageResourceInput)), true
 
 	case "Mutation.UpdStudentAcademicCoursesPreferenceByParent":
 		if e.complexity.Mutation.UpdStudentAcademicCoursesPreferenceByParent == nil {
@@ -2043,6 +2069,8 @@ scalar Upload
 
     #    Translation
     NewLanguageResource(languageResource: LanguageResourceInput!): LanguageResource
+    UpdLanguageResource(languageResource: LanguageResourceInput!): LanguageResource
+    AddOrGetLanguageResource(language: Int! , resourceRef : String!): LanguageResource
     RemoveLanguageResource(language: Int! , resourceRef : String!): Boolean
     RemoveLanguageResources(resourceRef: String!): Boolean
 
