@@ -8,7 +8,7 @@ import (
 	"github.com/cend-org/duval/internal/utils/errx"
 )
 
-func AddLanguageResource(new model.LanguageResourceInput) (*model.LanguageResource, error) {
+func AddLanguageResource(new model.LanguageResourceInput) (*string, error) {
 	var (
 		lang model.LanguageResource
 		err  error
@@ -19,27 +19,27 @@ func AddLanguageResource(new model.LanguageResourceInput) (*model.LanguageResour
 	}
 
 	if new.ResourceMessage == nil && new.ResourceRef == nil {
-		return &lang, errx.LangError
+		return &lang.ResourceMessage, errx.LangError
 	}
 
 	oldLanguage, err := GetLanguageInfo(*new.ResourceLanguage, *new.ResourceRef)
 	if err == nil && oldLanguage.Id > 0 {
-		return &lang, errx.DuplicateError
+		return &lang.ResourceMessage, errx.DuplicateError
 	}
 
 	lang = model.MapLanguageResourceInputToLanguageResource(new, lang)
 
 	lang.Id, err = SetLang(lang)
 	if err != nil && errx.IsDuplicate(err) {
-		return &lang, errx.DuplicateError
+		return &lang.ResourceMessage, errx.DuplicateError
 	} else if err != nil && !errx.IsDuplicate(err) {
-		return &lang, errx.SupportError
+		return &lang.ResourceMessage, errx.SupportError
 	}
 
-	return &lang, nil
+	return &lang.ResourceMessage, nil
 }
 
-func AddOrGetResource(new model.LanguageResourceInput) (*model.LanguageResource, error) {
+func AddOrGetResource(new model.LanguageResourceInput) (*string, error) {
 	var (
 		lang model.LanguageResource
 		err  error
@@ -47,26 +47,26 @@ func AddOrGetResource(new model.LanguageResourceInput) (*model.LanguageResource,
 
 	oldLanguage, err := GetLanguageInfo(*new.ResourceLanguage, *new.ResourceRef)
 	if err == nil && oldLanguage.Id > 0 {
-		return &oldLanguage, nil
+		return &oldLanguage.ResourceMessage, nil
 	}
 
 	if new.ResourceMessage == nil && new.ResourceRef == nil {
-		return &lang, errx.LangError
+		return &lang.ResourceMessage, errx.LangError
 	}
 	new.ResourceMessage = new.ResourceRef
 	lang = model.MapLanguageResourceInputToLanguageResource(new, lang)
 
 	lang.Id, err = SetLang(lang)
 	if err != nil && errx.IsDuplicate(err) {
-		return &lang, errx.DuplicateError
+		return &lang.ResourceMessage, errx.DuplicateError
 	} else if err != nil && !errx.IsDuplicate(err) {
-		return &lang, errx.SupportError
+		return &lang.ResourceMessage, errx.SupportError
 	}
 
-	return &lang, nil
+	return &lang.ResourceMessage, nil
 }
 
-func UpdateLanguageResource(new model.LanguageResourceInput) (*model.LanguageResource, error) {
+func UpdateLanguageResource(new model.LanguageResourceInput) (*string, error) {
 	var (
 		lang model.LanguageResource
 		err  error
@@ -74,7 +74,7 @@ func UpdateLanguageResource(new model.LanguageResourceInput) (*model.LanguageRes
 
 	lang, err = GetLanguageInfo(*new.ResourceLanguage, *new.ResourceRef)
 	if err != nil {
-		return &lang, errx.SupportError
+		return &lang.ResourceMessage, errx.SupportError
 	}
 
 	if new.ResourceMessage == nil {
@@ -87,7 +87,7 @@ func UpdateLanguageResource(new model.LanguageResourceInput) (*model.LanguageRes
 	if err != nil {
 		return nil, errx.SupportError
 	}
-	return &lang, nil
+	return &lang.ResourceMessage, nil
 }
 
 func DeleteLanguageResource(language int, resourceRef string) (*bool, error) {
@@ -111,7 +111,7 @@ func DeleteLanguageResource(language int, resourceRef string) (*bool, error) {
 	return &status, nil
 }
 
-func GetLanguageResourceByLangAndRef(language int, ref string) (*model.LanguageResource, error) {
+func GetLanguageResourceByLangAndRef(language int, ref string) (*string, error) {
 	var (
 		lang model.LanguageResource
 		err  error
@@ -119,20 +119,20 @@ func GetLanguageResourceByLangAndRef(language int, ref string) (*model.LanguageR
 
 	lang, err = GetLanguageInfo(language, ref)
 	if err != nil && errors.Is(err, sql.ErrNoRows) {
-		return &lang, errx.MLangError
+		return &lang.ResourceMessage, errx.MLangError
 	} else if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		return &lang, errx.SupportError
+		return &lang.ResourceMessage, errx.SupportError
 	}
 
-	return &lang, nil
+	return &lang.ResourceMessage, nil
 }
 
-func GetAllLanguageResources(language int) ([]model.LanguageResource, error) {
+func GetAllLanguageResources(language int) ([]string, error) {
 	var (
-		lang []model.LanguageResource
+		lang []string
 		err  error
 	)
-	err = database.Select(&lang, `SELECT * FROM language_resource WHERE resource_language = ?`, language)
+	err = database.Select(&lang, `SELECT language_resource.resource_message FROM language_resource WHERE resource_language = ?`, language)
 	if err != nil {
 		return lang, errx.SupportError
 	}
@@ -176,6 +176,15 @@ func SetLang(lang model.LanguageResource) (id int, err error) {
 	}
 
 	return id, nil
+}
+
+func GetMessageByRef(ref string) (lang []string, err error) {
+	err = database.Select(&lang, `SELECT language_resource.resource_message FROM language_resource WHERE resource_ref = ?`, ref)
+	if err != nil {
+		return lang, err
+	}
+
+	return lang, nil
 }
 
 func GetLanguagesByRef(ref string) (lang []model.LanguageResource, err error) {

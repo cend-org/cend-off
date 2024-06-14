@@ -52,8 +52,8 @@ type Query {
     ClearAllMedia: Boolean
 
     #    Translation
-    LanguageResources(language: Int!): [LanguageResource!]
-    AllReferencedLanguageResources(resourceRef: String!): [LanguageResource!]
-    LanguageResource(language: Int! , resourceRef: String!): LanguageResource
+    LanguageResources(language: Int!): [String!]
+    AllReferencedLanguageResources(resourceRef: String!): [String!]
+    LanguageResource(language: Int! , resourceRef: String!): String
 
 }

@@ -2068,9 +2068,9 @@ scalar Upload
     NewUserAppointmentByParent(studentId: Int!, availability: AppointmentInput!):  Boolean
 
     #    Translation
-    NewLanguageResource(languageResource: LanguageResourceInput!): LanguageResource
-    UpdLanguageResource(languageResource: LanguageResourceInput!): LanguageResource
-    AddOrGetLanguageResource(language: Int! , resourceRef : String!): LanguageResource
+    NewLanguageResource(languageResource: LanguageResourceInput!): String
+    UpdLanguageResource(languageResource: LanguageResourceInput!): String
+    AddOrGetLanguageResource(language: Int! , resourceRef : String!): String
     RemoveLanguageResource(language: Int! , resourceRef : String!): Boolean
     RemoveLanguageResources(resourceRef: String!): Boolean
 
@@ -2130,9 +2130,9 @@ scalar Upload
     ClearAllMedia: Boolean
 
     #    Translation
-    LanguageResources(language: Int!): [LanguageResource!]
-    AllReferencedLanguageResources(resourceRef: String!): [LanguageResource!]
-    LanguageResource(language: Int! , resourceRef: String!): LanguageResource
+    LanguageResources(language: Int!): [String!]
+    AllReferencedLanguageResources(resourceRef: String!): [String!]
+    LanguageResource(language: Int! , resourceRef: String!): String
 
 }`, BuiltIn: false},
 	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {

@@ -44,9 +44,9 @@ type MutationResolver interface {
 	NewUserAcademicLevels(ctx context.Context, academicLevelIds []*int) (*bool, error)
 	NewUserAppointment(ctx context.Context, availability model.AppointmentInput) (*bool, error)
 	NewUserAppointmentByParent(ctx context.Context, studentID int, availability model.AppointmentInput) (*bool, error)
-	NewLanguageResource(ctx context.Context, languageResource model.LanguageResourceInput) (*model.LanguageResource, error)
-	UpdLanguageResource(ctx context.Context, languageResource model.LanguageResourceInput) (*model.LanguageResource, error)
-	AddOrGetLanguageResource(ctx context.Context, language int, resourceRef string) (*model.LanguageResource, error)
+	NewLanguageResource(ctx context.Context, languageResource model.LanguageResourceInput) (*string, error)
+	UpdLanguageResource(ctx context.Context, languageResource model.LanguageResourceInput) (*string, error)
+	AddOrGetLanguageResource(ctx context.Context, language int, resourceRef string) (*string, error)
 	RemoveLanguageResource(ctx context.Context, language int, resourceRef string) (*bool, error)
 	RemoveLanguageResources(ctx context.Context, resourceRef string) (*bool, error)
 }
@@ -2219,9 +2219,9 @@ func (ec *executionContext) _Mutation_NewLanguageResource(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.LanguageResource)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOLanguageResource2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐLanguageResource(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_NewLanguageResource(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2231,23 +2231,7 @@ func (ec *executionContext) fieldContext_Mutation_NewLanguageResource(ctx contex
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_LanguageResource_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_LanguageResource_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_LanguageResource_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_LanguageResource_DeletedAt(ctx, field)
-			case "ResourceRef":
-				return ec.fieldContext_LanguageResource_ResourceRef(ctx, field)
-			case "ResourceLanguage":
-				return ec.fieldContext_LanguageResource_ResourceLanguage(ctx, field)
-			case "ResourceMessage":
-				return ec.fieldContext_LanguageResource_ResourceMessage(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type LanguageResource", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	defer func() {
@@ -2287,9 +2271,9 @@ func (ec *executionContext) _Mutation_UpdLanguageResource(ctx context.Context, f
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.LanguageResource)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOLanguageResource2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐLanguageResource(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_UpdLanguageResource(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2299,23 +2283,7 @@ func (ec *executionContext) fieldContext_Mutation_UpdLanguageResource(ctx contex
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_LanguageResource_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_LanguageResource_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_LanguageResource_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_LanguageResource_DeletedAt(ctx, field)
-			case "ResourceRef":
-				return ec.fieldContext_LanguageResource_ResourceRef(ctx, field)
-			case "ResourceLanguage":
-				return ec.fieldContext_LanguageResource_ResourceLanguage(ctx, field)
-			case "ResourceMessage":
-				return ec.fieldContext_LanguageResource_ResourceMessage(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type LanguageResource", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	defer func() {
@@ -2355,9 +2323,9 @@ func (ec *executionContext) _Mutation_AddOrGetLanguageResource(ctx context.Conte
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*model.LanguageResource)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOLanguageResource2ᚖgithubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐLanguageResource(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) fieldContext_Mutation_AddOrGetLanguageResource(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
@@ -2367,23 +2335,7 @@ func (ec *executionContext) fieldContext_Mutation_AddOrGetLanguageResource(ctx c
 		IsMethod:   true,
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			switch field.Name {
-			case "Id":
-				return ec.fieldContext_LanguageResource_Id(ctx, field)
-			case "CreatedAt":
-				return ec.fieldContext_LanguageResource_CreatedAt(ctx, field)
-			case "UpdatedAt":
-				return ec.fieldContext_LanguageResource_UpdatedAt(ctx, field)
-			case "DeletedAt":
-				return ec.fieldContext_LanguageResource_DeletedAt(ctx, field)
-			case "ResourceRef":
-				return ec.fieldContext_LanguageResource_ResourceRef(ctx, field)
-			case "ResourceLanguage":
-				return ec.fieldContext_LanguageResource_ResourceLanguage(ctx, field)
-			case "ResourceMessage":
-				return ec.fieldContext_LanguageResource_ResourceMessage(ctx, field)
-			}
-			return nil, fmt.Errorf("no field named %q was found under type LanguageResource", field.Name)
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	defer func() {
