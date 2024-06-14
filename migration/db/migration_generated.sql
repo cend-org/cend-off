@@ -161,7 +161,7 @@ alter table user_academic_course
 
 alter table user_academic_course
 	add constraint user_academic_course_course_id_fk
-		foreign key (course_id) references course (id);
+		foreign key (course_id) references academic_course (id);
 
 create table user_academic_course_preference (
 	id int auto_increment primary key,
