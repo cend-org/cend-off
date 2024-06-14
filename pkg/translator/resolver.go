@@ -31,3 +31,20 @@ func (m *TranslationMutation) RemoveLanguageResources(ctx context.Context, resou
 func (q *TranslationQuery) AllReferencedLanguageResources(ctx context.Context, resourceRef string) ([]model.LanguageResource, error) {
 	return GetLanguagesByRef(resourceRef)
 }
+
+func (m *TranslationMutation) AddOrGetLanguageResource(ctx context.Context, language int, resourceRef string) (*model.LanguageResource, error) {
+	var (
+		languageResource model.LanguageResourceInput
+	)
+
+	languageResource = model.LanguageResourceInput{
+		ResourceLanguage: &language,
+		ResourceRef:      &resourceRef,
+	}
+
+	return AddOrGetResource(languageResource)
+}
+
+func (m *TranslationMutation) UpdLanguageResource(ctx context.Context, languageResource model.LanguageResourceInput) (*model.LanguageResource, error) {
+	return UpdateLanguageResource(languageResource)
+}

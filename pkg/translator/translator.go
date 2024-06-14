@@ -39,6 +39,57 @@ func AddLanguageResource(new model.LanguageResourceInput) (*model.LanguageResour
 	return &lang, nil
 }
 
+func AddOrGetResource(new model.LanguageResourceInput) (*model.LanguageResource, error) {
+	var (
+		lang model.LanguageResource
+		err  error
+	)
+
+	oldLanguage, err := GetLanguageInfo(*new.ResourceLanguage, *new.ResourceRef)
+	if err == nil && oldLanguage.Id > 0 {
+		return &oldLanguage, nil
+	}
+
+	if new.ResourceMessage == nil && new.ResourceRef == nil {
+		return &lang, errx.LangError
+	}
+	new.ResourceMessage = new.ResourceRef
+	lang = model.MapLanguageResourceInputToLanguageResource(new, lang)
+
+	lang.Id, err = SetLang(lang)
+	if err != nil && errx.IsDuplicate(err) {
+		return &lang, errx.DuplicateError
+	} else if err != nil && !errx.IsDuplicate(err) {
+		return &lang, errx.SupportError
+	}
+
+	return &lang, nil
+}
+
+func UpdateLanguageResource(new model.LanguageResourceInput) (*model.LanguageResource, error) {
+	var (
+		lang model.LanguageResource
+		err  error
+	)
+
+	lang, err = GetLanguageInfo(*new.ResourceLanguage, *new.ResourceRef)
+	if err != nil {
+		return &lang, errx.SupportError
+	}
+
+	if new.ResourceMessage == nil {
+		new.ResourceMessage = new.ResourceRef
+	}
+
+	lang.ResourceMessage = *new.ResourceMessage
+
+	err = database.Update(lang)
+	if err != nil {
+		return nil, errx.SupportError
+	}
+	return &lang, nil
+}
+
 func DeleteLanguageResource(language int, resourceRef string) (*bool, error) {
 	var (
 		lang   model.LanguageResource

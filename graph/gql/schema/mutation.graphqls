@@ -42,6 +42,8 @@ type Mutation {
 
     #    Translation
     NewLanguageResource(languageResource: LanguageResourceInput!): LanguageResource
+    UpdLanguageResource(languageResource: LanguageResourceInput!): LanguageResource
+    AddOrGetLanguageResource(language: Int! , resourceRef : String!): LanguageResource
     RemoveLanguageResource(language: Int! , resourceRef : String!): Boolean
     RemoveLanguageResources(resourceRef: String!): Boolean
 
