@@ -21,8 +21,8 @@ func GetProfileLetter(userId int) (string, error) {
 	)
 
 	media, err = mediafile.GetMedia(userId, Letter)
-	if err != nil {
-		return networkLink, errx.DbGetError
+	if err != nil && errx.IsEmpty(err) {
+		return networkLink, err
 	}
 
 	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/public/" + media.Xid + media.Extension
@@ -40,7 +40,7 @@ func GetProfileLetterThumb(userId int) (string, error) {
 
 	media, err = mediafile.GetMediaThumb(userId, Letter)
 	if err != nil {
-		return networkLink, errx.DbGetError
+		return networkLink, err
 
 	}
 

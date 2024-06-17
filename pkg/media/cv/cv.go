@@ -89,7 +89,7 @@ func GetProfileCv(userId int) (string, error) {
 					 JOIN user ON user.id = user_media_detail.owner_id
 			WHERE user_media_detail.owner_id = ? AND user_media_detail.document_type = ?`, userId, CV)
 	if err != nil {
-		return networkLink, errx.DbGetError
+		return networkLink, err
 	}
 
 	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/public/" + media.Xid + media.Extension
@@ -106,7 +106,7 @@ func GetProfileCvThumb(userId int) (string, error) {
 
 	media, err = mediafile.GetMediaThumb(userId, CV)
 	if err != nil {
-		return networkLink, errx.DbGetError
+		return networkLink, err
 
 	}
 

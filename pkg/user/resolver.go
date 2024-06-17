@@ -177,8 +177,10 @@ func (r *UserQuery) CoverLetter(ctx context.Context) (*string, error) {
 	}
 
 	networkLink, err := cover.GetProfileLetter(tok.UserId)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
 	return &networkLink, nil
 }
@@ -195,8 +197,10 @@ func (r *UserQuery) Cv(ctx context.Context) (*string, error) {
 	}
 
 	networkLink, err := cv.GetProfileCv(tok.UserId)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
 	return &networkLink, nil
 }
@@ -213,8 +217,10 @@ func (r *UserQuery) ProfileImage(ctx context.Context) (*string, error) {
 	}
 
 	networkLink, err := profile.GetProfileImage(tok.UserId)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
 	return &networkLink, nil
 }
@@ -231,8 +237,10 @@ func (r *UserQuery) VideoPresentation(ctx context.Context) (*string, error) {
 	}
 
 	networkLink, err := video.GetProfileVideo(tok.UserId)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
 	return &networkLink, nil
 }
@@ -251,8 +259,10 @@ func (r *UserQuery) CoverLetterThumb(ctx context.Context) (*string, error) {
 	}
 
 	networkLink, err := cover.GetProfileLetterThumb(tok.UserId)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
 	return &networkLink, nil
 }
@@ -269,8 +279,10 @@ func (r *UserQuery) CvThumb(ctx context.Context) (*string, error) {
 	}
 
 	networkLink, err := cv.GetProfileCvThumb(tok.UserId)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
 	return &networkLink, nil
 }
@@ -287,8 +299,10 @@ func (r *UserQuery) ProfileImageThumb(ctx context.Context) (*string, error) {
 	}
 
 	networkLink, err := profile.GetProfileImageThumb(tok.UserId)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
 	return &networkLink, nil
 }
@@ -310,9 +324,12 @@ func (r *UserQuery) UserCoverLetter(ctx context.Context, userID int) (*string, e
 		return nil, errx.UnAuthorizedError
 	}
 	networkLink, err := cover.GetProfileLetter(userID)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
+
 	return &networkLink, nil
 }
 
@@ -331,9 +348,12 @@ func (r *UserQuery) UserCv(ctx context.Context, userID int) (*string, error) {
 		return nil, errx.UnAuthorizedError
 	}
 	networkLink, err := cv.GetProfileCv(userID)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
+
 	return &networkLink, nil
 }
 
@@ -352,9 +372,12 @@ func (r *UserQuery) UserProfileImage(ctx context.Context, userID int) (*string, 
 		return nil, errx.UnAuthorizedError
 	}
 	networkLink, err := profile.GetProfileImage(userID)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
+
 	return &networkLink, nil
 }
 
@@ -372,10 +395,14 @@ func (r *UserQuery) UserVideoPresentation(ctx context.Context, userID int) (*str
 	if tok.UserId == state.ZERO {
 		return nil, errx.UnAuthorizedError
 	}
+
 	networkLink, err := video.GetProfileVideo(userID)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
+
 	return &networkLink, nil
 }
 
@@ -396,9 +423,12 @@ func (r *UserQuery) UserCoverLetterThumb(ctx context.Context, userID int) (*stri
 		return nil, errx.UnAuthorizedError
 	}
 	networkLink, err := cover.GetProfileLetterThumb(userID)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
+
 	return &networkLink, nil
 }
 
@@ -417,9 +447,12 @@ func (r *UserQuery) UserCvThumb(ctx context.Context, userID int) (*string, error
 		return nil, errx.UnAuthorizedError
 	}
 	networkLink, err := cv.GetProfileCvThumb(userID)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
+
 	return &networkLink, nil
 }
 
@@ -438,9 +471,12 @@ func (r *UserQuery) UserProfileImageThumb(ctx context.Context, userID int) (*str
 		return nil, errx.UnAuthorizedError
 	}
 	networkLink, err := profile.GetProfileImageThumb(userID)
-	if err != nil {
-		return nil, err
+	if err != nil && errx.IsEmpty(err) {
+		return nil, nil
+	} else if err != nil && !errx.IsEmpty(err) {
+		return &networkLink, errx.SupportError
 	}
+
 	return &networkLink, nil
 }
 

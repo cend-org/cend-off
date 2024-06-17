@@ -24,7 +24,7 @@ func GetProfileVideo(userId int) (string, error) {
 
 	media, err = mediafile.GetMedia(userId, UserProfileVideo)
 	if err != nil {
-		return networkLink, errx.DbGetError
+		return networkLink, err
 	}
 
 	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/public/" + media.Xid + media.Extension
@@ -47,7 +47,7 @@ func GetProfileVideoThumb(ctx context.Context) (*string, error) {
 
 	media, err = mediafile.GetMediaThumb(tok.UserId, UserProfileVideo)
 	if err != nil {
-		return &networkLink, errx.DbGetError
+		return &networkLink, err
 
 	}
 

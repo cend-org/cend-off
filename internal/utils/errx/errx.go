@@ -1,6 +1,7 @@
 package errx
 
 import (
+	"database/sql"
 	"errors"
 	"github.com/go-sql-driver/mysql"
 )
@@ -53,7 +54,7 @@ var (
 var (
 	DbInsertError  = errors.New("error while trying to insert data into database")
 	DbDeleteError  = errors.New("error while trying to delete data from database")
-	DbGetError     = errors.New("error while trying to get data from databaseS please contact support")
+	DbGetError     = errors.New("error while trying to get data from database please contact support")
 	DbUpdateError  = errors.New("update data to database please contact support")
 	DuplicateError = errors.New("data already exist in the database")
 )
@@ -89,4 +90,8 @@ func IsDuplicate(err error) bool {
 		return true
 	}
 	return false
+}
+
+func IsEmpty(err error) bool {
+	return errors.Is(err, sql.ErrNoRows)
 }

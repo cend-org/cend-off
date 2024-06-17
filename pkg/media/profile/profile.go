@@ -22,7 +22,7 @@ func GetProfileImage(userId int) (string, error) {
 
 	media, err = mediafile.GetMedia(userId, UserProfileImage)
 	if err != nil {
-		return networkLink, errx.DbGetError
+		return networkLink, err
 	}
 
 	networkLink = "http://" + configuration.App.Host + ":" + configuration.App.Port + "/public/" + media.Xid + media.Extension
@@ -39,7 +39,7 @@ func GetProfileImageThumb(userId int) (string, error) {
 
 	media, err = mediafile.GetMediaThumb(userId, UserProfileImage)
 	if err != nil {
-		return networkLink, errx.DbGetError
+		return networkLink, err
 
 	}
 
