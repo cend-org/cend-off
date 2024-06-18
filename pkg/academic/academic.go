@@ -11,6 +11,7 @@ import (
 	"github.com/cend-org/duval/pkg/user"
 	"github.com/cend-org/duval/pkg/user/authorization"
 	"github.com/xorcare/pointer"
+	"strings"
 )
 
 const (
@@ -207,8 +208,8 @@ func AddStudent(linkType, userLinkId, level int, email string) (studentId int, e
 	return studentId, nil
 }
 
-func CreateStudent(name, familyName string) (student model.User, err error) {
-	var email = fmt.Sprintf("%s.%s@cend.intern", name, familyName)
+func CreateStudent(name string, familyName string) (student model.User, err error) {
+	var email = fmt.Sprintf("%s.%s@cend.intern", strings.ReplaceAll(name, " ", ""), strings.ReplaceAll(familyName, " ", ""))
 
 	_, err = user.NewStudent(email)
 	if err != nil {
