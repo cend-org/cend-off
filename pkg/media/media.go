@@ -91,6 +91,7 @@ func Upload(ctx *gin.Context) {
 			})
 			return
 		}
+
 		err = RemoveMediaThumb(mediaThumb)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -171,7 +172,7 @@ func Upload(ctx *gin.Context) {
 			return
 		}
 
-		err = utils.CreateThumb(media.Xid, media.Extension, file)
+		err = utils.CreateThumb(media.Xid, mType.String(), file)
 		if err != nil {
 			fmt.Println("error here: ", err)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -320,11 +321,26 @@ func RemoveMedia(media model.Media) (err error) {
 	if err != nil {
 		return err
 	}
+
+	filePath := utils.FILE_UPLOAD_DIR + media.Xid + media.Extension
+
+	err = ClearMediaFile(filePath)
+	if err != nil {
+		return err
+	}
+
 	return
 }
 
 func RemoveMediaThumb(mediaThumb model.MediaThumb) (err error) {
 	err = database.Delete(mediaThumb)
+	if err != nil {
+		return err
+	}
+
+	filePath := utils.FILE_UPLOAD_DIR + utils.THUMB_FILE_UPLOAD_DIR + mediaThumb.Xid + mediaThumb.Extension
+
+	err = ClearMediaFile(filePath)
 	if err != nil {
 		return err
 	}

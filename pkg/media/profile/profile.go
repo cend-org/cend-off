@@ -3,7 +3,6 @@ package profile
 import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/configuration"
-	"github.com/cend-org/duval/internal/utils"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
 	"github.com/cend-org/duval/pkg/media"
@@ -54,8 +53,6 @@ func RemoveProfileImage(userId int) (bool, error) {
 		err             error
 		status          bool
 		userMediaDetail model.UserMediaDetail
-		filePath        string
-		thumbPath       string
 	)
 
 	if userId == state.ZERO {
@@ -75,19 +72,6 @@ func RemoveProfileImage(userId int) (bool, error) {
 	userMediaDetail, err = mediafile.GetUserMediaDetail(userId, UserProfileImage)
 	if err != nil {
 		return status, errx.DbGetError
-	}
-
-	filePath = utils.FILE_UPLOAD_DIR + media.Xid + media.Extension
-	thumbPath = utils.FILE_UPLOAD_DIR + utils.THUMB_FILE_UPLOAD_DIR + mediaThumb.Xid + mediaThumb.Extension
-
-	err = mediafile.ClearMediaFile(filePath)
-	if err != nil {
-		return status, errx.SupportError
-	}
-
-	err = mediafile.ClearMediaFile(thumbPath)
-	if err != nil {
-		return status, errx.SupportError
 	}
 
 	err = mediafile.RemoveMedia(media)

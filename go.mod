@@ -18,11 +18,14 @@ require (
 	github.com/joinverse/xid v0.0.0-20171120095953-afa60c3e0e47
 	github.com/nrfta/go-graphql-scalars v0.2.1
 	github.com/satori/go.uuid v1.2.0
+	github.com/srwiley/oksvg v0.0.0-20221011165216-be6e8873101c
+	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef
 	github.com/tanimutomo/sqlfile v1.0.0
 	github.com/unidoc/unipdf/v3 v3.57.0
 	github.com/vektah/gqlparser/v2 v2.5.11
 	github.com/xorcare/pointer v1.2.2
 	golang.org/x/crypto v0.22.0
+	golang.org/x/image v0.15.0
 )
 
 require (
@@ -37,6 +40,7 @@ require (
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/friendsofgo/errors v0.9.2 // indirect
+	github.com/gen2brain/svg v0.1.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-crypt/x v0.2.14 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
@@ -74,7 +78,6 @@ require (
 	github.com/volatiletech/randomize v0.0.1 // indirect
 	github.com/volatiletech/strmangle v0.0.6 // indirect
 	golang.org/x/arch v0.7.0 // indirect
-	golang.org/x/image v0.15.0 // indirect
 	golang.org/x/mod v0.17.0 // indirect
 	golang.org/x/net v0.24.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect

@@ -4,9 +4,11 @@ import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/disintegration/imaging"
+	"github.com/gen2brain/svg"
 	"github.com/joinverse/xid"
 	mod "github.com/unidoc/unipdf/v3/model"
 	"github.com/unidoc/unipdf/v3/render"
+	"golang.org/x/image/webp"
 	"image"
 	"image/color"
 	"mime/multipart"
@@ -15,10 +17,11 @@ import (
 /*
 CREATE THUMBNAIL FOR UPLOADED IMAGE
 */
-func CreateThumb(mediaXid string, extension string, file *multipart.FileHeader) (err error) {
+func CreateThumb(mediaXid string, mType string, file *multipart.FileHeader) (err error) {
 	var (
 		mediaThumb model.MediaThumb
 		thumbnail  image.Image
+		img        image.Image
 	)
 
 	openedFile, err := file.Open()
@@ -27,12 +30,19 @@ func CreateThumb(mediaXid string, extension string, file *multipart.FileHeader) 
 	}
 	defer openedFile.Close()
 
-	img, err := imaging.Decode(openedFile)
+	if IsValidWebp(mType) {
+		img, err = webp.Decode(openedFile)
+
+	} else if IsValidSvg(mType) {
+		img, err = svg.Decode(openedFile)
+	} else {
+		img, err = imaging.Decode(openedFile)
+	}
 	if err != nil {
 		return err
 	}
 
-	mediaThumb.Extension = extension
+	mediaThumb.Extension = ".jpg"
 	mediaThumb.MediaXid = mediaXid
 	mediaThumb.Xid = "T_" + xid.New().String()
 
