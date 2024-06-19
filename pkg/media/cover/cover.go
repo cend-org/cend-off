@@ -3,7 +3,6 @@ package cover
 import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/configuration"
-	"github.com/cend-org/duval/internal/utils"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
 	"github.com/cend-org/duval/pkg/media"
@@ -51,11 +50,9 @@ func GetProfileLetterThumb(userId int) (string, error) {
 
 func RemoveProfileLetter(userId int) (bool, error) {
 	var (
-		media     model.Media
-		err       error
-		status    bool
-		filePath  string
-		thumbPath string
+		media  model.Media
+		err    error
+		status bool
 	)
 
 	if userId == state.ZERO {
@@ -74,19 +71,6 @@ func RemoveProfileLetter(userId int) (bool, error) {
 	userMediaDetail, err := mediafile.GetUserMediaDetail(userId, Letter)
 	if err != nil {
 		return status, errx.DbGetError
-	}
-
-	filePath = utils.FILE_UPLOAD_DIR + media.Xid + media.Extension
-	thumbPath = utils.FILE_UPLOAD_DIR + utils.THUMB_FILE_UPLOAD_DIR + mediaThumb.Xid + mediaThumb.Extension
-
-	err = mediafile.ClearMediaFile(filePath)
-	if err != nil {
-		return status, errx.SupportError
-	}
-
-	err = mediafile.ClearMediaFile(thumbPath)
-	if err != nil {
-		return status, errx.SupportError
 	}
 
 	err = mediafile.RemoveMedia(media)

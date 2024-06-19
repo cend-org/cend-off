@@ -25,11 +25,27 @@ func IsValidImage(mType string) bool {
 		"image/bmp",
 		"image/tiff",
 		"image/webp",
-		"image/svg",
-		"image/x-ico",
-		"image/heic",
+		"image/svg+xml",
+		"image/x-icon",
+		"image/heif",
 	}
 	return mimetype.EqualsAny(mType, allowed...)
+}
+
+func IsValidHeic(mType string) bool {
+	return mimetype.EqualsAny(mType, "image/heif")
+}
+
+func IsValidSvg(mType string) bool {
+	return mimetype.EqualsAny(mType, "image/svg+xml")
+}
+
+func IsValidIco(mType string) bool {
+	return mimetype.EqualsAny(mType, "image/x-ico")
+}
+
+func IsValidWebp(mType string) bool {
+	return mimetype.EqualsAny(mType, "image/webp")
 }
 
 func IsValidVideo(mType string) bool {
@@ -57,9 +73,9 @@ func IsValidFile(mType string) bool {
 		"image/bmp",
 		"image/tiff",
 		"image/webp",
-		"image/svg",
-		"image/x-ico",
-		"image/heic",
+		"image/svg+xml",
+		"image/x-icon",
+		"image/heif",
 		//document
 		"text/plain",
 		"application/word",
