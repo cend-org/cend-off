@@ -154,7 +154,7 @@ func Upload(ctx *gin.Context) {
 			return
 		}
 
-		err = utils.CreateVideoThumb(media.Xid, media.Extension, file)
+		err = utils.CreateVideoThumb(media.Xid, file)
 		if err != nil {
 			fmt.Println("error here: ", err)
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
