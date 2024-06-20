@@ -123,6 +123,18 @@ func CreateDocumentThumb(mediaXid string, extension string, file *multipart.File
 CREATE THUMBNAIL FOR UPLOADED Video
 */
 
-func CreateVideoThumb(mediaXid string, extension string, file *multipart.FileHeader) (err error) {
+func CreateVideoThumb(mediaXid string, file *multipart.FileHeader) (err error) {
+	var (
+		mediaThumb model.MediaThumb
+	)
+
+	mediaThumb.Extension = ".jpg"
+	mediaThumb.MediaXid = mediaXid
+	mediaThumb.Xid = "T_" + xid.New().String()
+
+	_, err = database.InsertOne(mediaThumb)
+	if err != nil {
+		return err
+	}
 	return
 }
