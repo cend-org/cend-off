@@ -38,7 +38,7 @@ func Serve() {
 
 	r.POST("/query", graphqlHandler())
 	r.GET("/playground", playgroundHandler())
-	socketio.SetupSocketIOServer()
+	go socketio.SetupSocketIOServer()
 
 	err = r.Run(":8087")
 	if err != nil {
