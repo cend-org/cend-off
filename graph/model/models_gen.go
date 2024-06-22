@@ -84,6 +84,19 @@ type MediaThumb struct {
 	Xid       string     `json:"xid"`
 }
 
+type Message struct {
+	Id        int        `json:"id"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	DeletedAt *time.Time `json:"deletedAt"`
+	Channel   string     `json:"channel"`
+	Message   string     `json:"message"`
+}
+
+type MessageInput struct {
+	Message *string `json:"message"`
+}
+
 type Mutation struct {
 }
 
@@ -101,6 +114,9 @@ type PasswordInput struct {
 }
 
 type Query struct {
+}
+
+type Subscription struct {
 }
 
 type User struct {
@@ -203,4 +219,13 @@ type UserMediaDetail struct {
 	OwnerId      int        `json:"ownerId"`
 	DocumentType int        `json:"documentType"`
 	DocumentXid  string     `json:"documentXid"`
+}
+
+type UserMessage struct {
+	Id        int        `json:"id"`
+	CreatedAt time.Time  `json:"createdAt"`
+	UpdatedAt time.Time  `json:"updatedAt"`
+	DeletedAt *time.Time `json:"deletedAt"`
+	UserId    int        `json:"userId"`
+	MessageId int        `json:"messageId"`
 }

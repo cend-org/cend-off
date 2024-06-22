@@ -5,9 +5,11 @@ go 1.22
 require (
 	github.com/99designs/gqlgen v0.17.45
 	github.com/BurntSushi/toml v1.3.2
+	github.com/ambelovsky/gosf-socketio v0.0.0-20220810204405-0f97832ec7af
 	github.com/disintegration/imaging v1.6.2
 	github.com/fatih/structs v1.1.0
 	github.com/gabriel-vasile/mimetype v1.4.3
+	github.com/gen2brain/svg v0.1.0
 	github.com/gin-contrib/cors v1.7.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/go-crypt/crypt v0.2.21
@@ -18,8 +20,6 @@ require (
 	github.com/joinverse/xid v0.0.0-20171120095953-afa60c3e0e47
 	github.com/nrfta/go-graphql-scalars v0.2.1
 	github.com/satori/go.uuid v1.2.0
-	github.com/srwiley/oksvg v0.0.0-20221011165216-be6e8873101c
-	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef
 	github.com/tanimutomo/sqlfile v1.0.0
 	github.com/unidoc/unipdf/v3 v3.57.0
 	github.com/vektah/gqlparser/v2 v2.5.11
@@ -40,7 +40,6 @@ require (
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/friendsofgo/errors v0.9.2 // indirect
-	github.com/gen2brain/svg v0.1.0 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/go-crypt/x v0.2.14 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
@@ -66,6 +65,8 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/sosodev/duration v1.2.0 // indirect
+	github.com/srwiley/oksvg v0.0.0-20221011165216-be6e8873101c // indirect
+	github.com/srwiley/rasterx v0.0.0-20220730225603-2ab79fcdd4ef // indirect
 	github.com/stretchr/testify v1.9.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
 	github.com/ugorji/go/codec v1.2.12 // indirect

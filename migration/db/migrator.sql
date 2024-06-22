@@ -388,10 +388,39 @@ alter table user_appointment
 create table language_resource
 (
     id                int auto_increment primary key,
-    created_at        timestamp    default CURRENT_TIMESTAMP,
-    updated_at        timestamp    default CURRENT_TIMESTAMP,
-    deleted_at        timestamp    default '0000-00-00 00:00:00',
-    resource_ref      varchar(500) default '',
-    resource_language int          default 0,
+    created_at        timestamp     default CURRENT_TIMESTAMP,
+    updated_at        timestamp     default CURRENT_TIMESTAMP,
+    deleted_at        timestamp     default '0000-00-00 00:00:00',
+    resource_ref      varchar(500)  default '',
+    resource_language int           default 0,
     resource_message  varchar(5000) default ''
 );
+
+create table message
+(
+    id         int auto_increment primary key,
+    created_at datetime      default CURRENT_TIMESTAMP,
+    updated_at datetime      default CURRENT_TIMESTAMP,
+    deleted_at datetime      default '0000-00-00 00:00:00',
+    channel    varchar(500)  default '',
+    message    varchar(5000) default ''
+);
+
+create table user_message
+(
+    id         int auto_increment primary key,
+    created_at datetime default CURRENT_TIMESTAMP,
+    updated_at datetime default CURRENT_TIMESTAMP,
+    deleted_at datetime default '0000-00-00 00:00:00',
+    user_id    int      default 0,
+    message_id int      default 0
+);
+
+alter table user_message
+    add constraint user_message_user_id_fk
+        foreign key (user_id) references user (id);
+
+alter table user_message
+    add constraint user_message_message_id_fk
+        foreign key (message_id) references message (id);
+

@@ -11,6 +11,7 @@ import (
 	"github.com/cend-org/duval/internal/configuration"
 	"github.com/cend-org/duval/internal/router/cors"
 	"github.com/cend-org/duval/internal/router/middleware"
+	"github.com/cend-org/duval/internal/socketio"
 	"github.com/gin-gonic/gin"
 	"github.com/vektah/gqlparser/v2/gqlerror"
 	"net/http"
@@ -37,6 +38,7 @@ func Serve() {
 
 	r.POST("/query", graphqlHandler())
 	r.GET("/playground", playgroundHandler())
+	socketio.SetupSocketIOServer()
 
 	err = r.Run(":8087")
 	if err != nil {
