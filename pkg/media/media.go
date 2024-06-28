@@ -55,6 +55,14 @@ func Upload(ctx *gin.Context) {
 		return
 	}
 
+	mType, err := DetectMimeType(file)
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+			Message: "invalid type of file",
+		})
+		return
+	}
+
 	documentType, err = strconv.Atoi(ctx.PostForm("documentType"))
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -92,13 +100,24 @@ func Upload(ctx *gin.Context) {
 			return
 		}
 
-		err = RemoveMediaThumb(mediaThumb)
-		if err != nil {
-			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-				Message: "error while trying to delete data from database",
-			})
-			return
+		if !utils.IsValidVideo(mType.String()) {
+			err = RemoveMediaThumb(mediaThumb)
+			if err != nil {
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+					Message: "error while trying to delete data from database",
+				})
+				return
+			}
+		} else {
+			err = RemoveVideoThumb(mediaThumb)
+			if err != nil {
+				ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
+					Message: "error while trying to delete data from database",
+				})
+				return
+			}
 		}
+
 		err = RemoveUserMediaDetail(userMediaDetail)
 		if err != nil {
 			ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -112,14 +131,6 @@ func Upload(ctx *gin.Context) {
 	media.Extension = filepath.Ext(file.Filename)
 	media.Xid = xid.New().String()
 	media.FileName = media.Xid + media.Extension
-
-	mType, err := DetectMimeType(file)
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
-			Message: "invalid type of file",
-		})
-		return
-	}
 
 	if !utils.IsValidFile(mType.String()) {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, utils.ErrorResponse{
@@ -226,14 +237,12 @@ func (r *MediaQuery) ClearAllMedia(ctx context.Context) (*bool, error) {
 		for _, path := range matchedPaths {
 			err = ClearMediaFile(path)
 			if err != nil {
-				// If there's an error, set status to false and return
 				status = false
 				return &status, err
 			}
 		}
 	}
 
-	// If no errors occurred, return success
 	return &status, nil
 }
 
@@ -345,6 +354,14 @@ func RemoveMediaThumb(mediaThumb model.MediaThumb) (err error) {
 		return err
 	}
 	return nil
+}
+
+func RemoveVideoThumb(mediaThumb model.MediaThumb) (err error) {
+	err = database.Delete(mediaThumb)
+	if err != nil {
+		return err
+	}
+	return
 }
 
 func ClearMediaFile(filePath string) error {
