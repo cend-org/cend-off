@@ -18,7 +18,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"time"
 )
 
 type MediaQuery struct{}
@@ -222,7 +221,6 @@ func Upload(ctx *gin.Context) {
 
 func (r *MediaQuery) ClearAllMedia(ctx context.Context) (*bool, error) {
 	status := true
-	time.Sleep(10)
 	paths := []string{
 		utils.FILE_UPLOAD_DIR + "*.*",
 		utils.FILE_UPLOAD_DIR + utils.THUMB_FILE_UPLOAD_DIR + "*.*",
