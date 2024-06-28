@@ -403,7 +403,7 @@ create table message
     updated_at datetime      default CURRENT_TIMESTAMP,
     deleted_at datetime      default '0000-00-00 00:00:00',
     channel    varchar(500)  default '',
-    message    varchar(5000) default ''
+    text    varchar(5000) default ''
 );
 
 create table user_message

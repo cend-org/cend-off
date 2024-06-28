@@ -49,5 +49,7 @@ type Mutation {
 
     #    Message
     NewMessage(message: MessageInput!): Message
+    NewDefaultGroup :Boolean
+    NewGroup :Boolean
     RemoveMessage(messageId: Int!): Boolean
 }

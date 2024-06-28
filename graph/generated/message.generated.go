@@ -246,8 +246,8 @@ func (ec *executionContext) fieldContext_Message_Channel(ctx context.Context, fi
 	return fc, nil
 }
 
-func (ec *executionContext) _Message_Message(ctx context.Context, field graphql.CollectedField, obj *model.Message) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Message_Message(ctx, field)
+func (ec *executionContext) _Message_Text(ctx context.Context, field graphql.CollectedField, obj *model.Message) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Message_Text(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -260,7 +260,7 @@ func (ec *executionContext) _Message_Message(ctx context.Context, field graphql.
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Message, nil
+		return obj.Text, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -277,7 +277,7 @@ func (ec *executionContext) _Message_Message(ctx context.Context, field graphql.
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Message_Message(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Message_Text(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Message",
 		Field:      field,
@@ -562,20 +562,20 @@ func (ec *executionContext) unmarshalInputMessageInput(ctx context.Context, obj 
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"Message"}
+	fieldsInOrder := [...]string{"Text"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
 			continue
 		}
 		switch k {
-		case "Message":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Message"))
+		case "Text":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("Text"))
 			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Message = data
+			it.Text = data
 		}
 	}
 
@@ -623,8 +623,8 @@ func (ec *executionContext) _Message(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "Message":
-			out.Values[i] = ec._Message_Message(ctx, field, obj)
+		case "Text":
+			out.Values[i] = ec._Message_Text(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}

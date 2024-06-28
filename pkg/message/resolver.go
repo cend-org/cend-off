@@ -33,6 +33,7 @@ func (m *MessageMutation) NewMessage(ctx context.Context, new model.MessageInput
 
 	message = model.MapMessageInputToMessage(new, message)
 
+	time.Sleep(100)
 	err = socketio.SendMessage("chat", message)
 	if err != nil {
 		return &message, errx.SupportError
@@ -76,7 +77,7 @@ func (s *MessageSubscription) MessageReceived(ctx context.Context) (<-chan *mode
 				UpdatedAt: now,
 				DeletedAt: nil,
 				Channel:   args.Channel,
-				Message:   args.Message,
+				Text:      args.Text,
 			}
 		})
 	}()
@@ -122,4 +123,14 @@ func (m *MessageMutation) RemoveMessage(ctx context.Context, messageID int) (*bo
 		return nil, errx.UnAuthorizedError
 	}
 	return DeleteMessage(messageID)
+}
+
+func (m *MessageMutation) NewDefaultGroup(ctx context.Context) (*bool, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (m *MessageMutation) NewGroup(ctx context.Context) (*bool, error) {
+	//TODO implement me
+	panic("implement me")
 }

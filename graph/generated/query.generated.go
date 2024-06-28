@@ -2488,8 +2488,8 @@ func (ec *executionContext) fieldContext_Query_Messages(ctx context.Context, fie
 				return ec.fieldContext_Message_DeletedAt(ctx, field)
 			case "Channel":
 				return ec.fieldContext_Message_Channel(ctx, field)
-			case "Message":
-				return ec.fieldContext_Message_Message(ctx, field)
+			case "Text":
+				return ec.fieldContext_Message_Text(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type Message", field.Name)
 		},

@@ -90,11 +90,11 @@ type Message struct {
 	UpdatedAt time.Time  `json:"updatedAt"`
 	DeletedAt *time.Time `json:"deletedAt"`
 	Channel   string     `json:"channel"`
-	Message   string     `json:"message"`
+	Text      string     `json:"text"`
 }
 
 type MessageInput struct {
-	Message *string `json:"message"`
+	Text *string `json:"text"`
 }
 
 type Mutation struct {

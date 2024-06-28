@@ -4,7 +4,7 @@ type Message {
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     Channel: String!
-    Message: String!
+    Text: String!
 }
 
 type UserMessage {
@@ -17,5 +17,5 @@ type UserMessage {
 }
 
 input MessageInput {
-    Message: String
+    Text: String
 }

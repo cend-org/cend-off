@@ -115,13 +115,15 @@ type ComplexityRoot struct {
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
 		Id        func(childComplexity int) int
-		Message   func(childComplexity int) int
+		Text      func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 	}
 
 	Mutation struct {
 		AddOrGetLanguageResource                    func(childComplexity int, language int, resourceRef string) int
 		Login                                       func(childComplexity int, email string, password string) int
+		NewDefaultGroup                             func(childComplexity int) int
+		NewGroup                                    func(childComplexity int) int
 		NewLanguageResource                         func(childComplexity int, languageResource model.LanguageResourceInput) int
 		NewMessage                                  func(childComplexity int, message model.MessageInput) int
 		NewParent                                   func(childComplexity int, email string) int
@@ -650,12 +652,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Message.Id(childComplexity), true
 
-	case "Message.Message":
-		if e.complexity.Message.Message == nil {
+	case "Message.Text":
+		if e.complexity.Message.Text == nil {
 			break
 		}
 
-		return e.complexity.Message.Message(childComplexity), true
+		return e.complexity.Message.Text(childComplexity), true
 
 	case "Message.UpdatedAt":
 		if e.complexity.Message.UpdatedAt == nil {
@@ -687,6 +689,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.Login(childComplexity, args["email"].(string), args["password"].(string)), true
+
+	case "Mutation.NewDefaultGroup":
+		if e.complexity.Mutation.NewDefaultGroup == nil {
+			break
+		}
+
+		return e.complexity.Mutation.NewDefaultGroup(childComplexity), true
+
+	case "Mutation.NewGroup":
+		if e.complexity.Mutation.NewGroup == nil {
+			break
+		}
+
+		return e.complexity.Mutation.NewGroup(childComplexity), true
 
 	case "Mutation.NewLanguageResource":
 		if e.complexity.Mutation.NewLanguageResource == nil {
@@ -2175,7 +2191,7 @@ type UserMediaDetail {
     UpdatedAt: DateTime!
     DeletedAt: DateTime
     Channel: String!
-    Message: String!
+    Text: String!
 }
 
 type UserMessage {
@@ -2188,7 +2204,7 @@ type UserMessage {
 }
 
 input MessageInput {
-    Message: String
+    Text: String
 }`, BuiltIn: false},
 	{Name: "../gql/password/password.graphqls", Input: `type Password {
     Id: ID! @goField(name: "Id")
@@ -2263,6 +2279,8 @@ scalar Upload
 
     #    Message
     NewMessage(message: MessageInput!): Message
+    NewDefaultGroup :Boolean
+    NewGroup :Boolean
     RemoveMessage(messageId: Int!): Boolean
 }
 `, BuiltIn: false},
