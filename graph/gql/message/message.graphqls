@@ -3,6 +3,7 @@ type Message {
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
+    SenderId : Int! @goField(name: "SenderId")
     Channel: String!
     Text: String!
 }

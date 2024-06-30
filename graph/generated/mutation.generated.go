@@ -2534,6 +2534,8 @@ func (ec *executionContext) fieldContext_Mutation_NewMessage(ctx context.Context
 				return ec.fieldContext_Message_UpdatedAt(ctx, field)
 			case "DeletedAt":
 				return ec.fieldContext_Message_DeletedAt(ctx, field)
+			case "SenderId":
+				return ec.fieldContext_Message_SenderId(ctx, field)
 			case "Channel":
 				return ec.fieldContext_Message_Channel(ctx, field)
 			case "Text":

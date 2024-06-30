@@ -1,71 +1,70 @@
 package socketio
 
 import (
-	"errors"
-	"github.com/ambelovsky/gosf-socketio"
-	"github.com/ambelovsky/gosf-socketio/transport"
+	"github.com/rs/cors"
+	"github.com/zishang520/socket.io/v2/socket"
 	"log"
 	"net/http"
 )
 
-var server *gosocketio.Server
+var (
+	server *socket.Server
+	client *socket.Socket
+)
 
 func SetupSocketIOServer() {
-	server = gosocketio.NewServer(transport.GetDefaultWebsocketTransport())
 
-	server.On(gosocketio.OnConnection, func(c *gosocketio.Channel) {
-		log.Println("New client connected")
+	server = socket.NewServer(nil, nil)
+
+	server.On("connection", func(clients ...any) {
+		client = clients[0].(*socket.Socket)
+
+		client.On("newMessage", func(datas ...any) {
+			if len(datas) > 0 {
+				client.Emit("newMessage", datas)
+			}
+		})
+
+		client.On("joinRoom", func(datas ...any) {
+			if len(datas) > 0 {
+				if room, ok := datas[0].(string); ok {
+					clientRoom := socket.Room(room)
+					client.Join(clientRoom)
+				}
+			}
+		})
+
+		client.On("leaveRoom", func(datas ...any) {
+			if len(datas) > 0 {
+				if room, ok := datas[0].(string); ok {
+					client.Leave(socket.Room(room))
+				}
+			}
+		})
 	})
 
-	server.On(gosocketio.OnDisconnection, func(c *gosocketio.Channel) {
-		log.Println("New client connected")
+	server.On("disconnect", func(clients ...any) {
+		log.Println("Client disconnected")
 	})
 
-	serveMux := http.NewServeMux()
-	serveMux.Handle("/socket.io/", server)
+	corsHandler := cors.Default().Handler(server.ServeHandler(nil))
+
+	http.Handle("/socket.io/", corsHandler)
 
 	log.Println("SocketIO server starting...")
 	go func() {
-		log.Panic(http.ListenAndServe(":3811", serveMux))
+		log.Panic(http.ListenAndServe(":8086", nil))
 	}()
 }
 
-func SendMessage(room string, msg any) (err error) {
-	// Broadcast the message to all clients in the room
-	server.BroadcastTo(room, "newMessage", msg)
-	return nil
-}
-
-func JoinRoom(userId, room string) error {
-	channel, err := server.GetChannel(userId)
+func SendMessage(message any) (err error) {
+	//err = client.To(socket.Room(receiverId)).To(socket.Room(userId)).Emit("private message", message)
+	err = client.Emit("newMessage", message)
 	if err != nil {
-		log.Printf("Error getting channel for client %s: %v", userId, err)
+		log.Println(err)
+	}
+	if err != nil {
 		return err
 	}
-
-	if channel == nil {
-		log.Printf("Channel not found for client %s", userId)
-		return errors.New("channel not found")
-	}
-
-	channel.Join(room)
-	log.Printf("Client %s joined room: %s\n", userId, room)
-	return nil
-}
-
-func LeaveRoom(userId, room string) error {
-	channel, err := server.GetChannel(userId)
-	if err != nil {
-		log.Printf("Error getting channel for client %s: %v", userId, err)
-		return err
-	}
-
-	if channel == nil {
-		log.Printf("Channel not found for client %s", userId)
-		return errors.New("channel not found")
-	}
-
-	channel.Leave(room)
-	log.Printf("Client %s left room: %s\n", userId, room)
 	return nil
 }

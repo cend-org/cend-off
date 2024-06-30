@@ -32,9 +32,10 @@ func (m *MessageMutation) NewMessage(ctx context.Context, new model.MessageInput
 	}
 
 	message = model.MapMessageInputToMessage(new, message)
+	message.SenderId = tok.UserId
 
 	time.Sleep(100)
-	err = socketio.SendMessage("chat", message)
+	err = socketio.SendMessage(message)
 	if err != nil {
 		return &message, errx.SupportError
 	}

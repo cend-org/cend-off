@@ -402,9 +402,15 @@ create table message
     created_at datetime      default CURRENT_TIMESTAMP,
     updated_at datetime      default CURRENT_TIMESTAMP,
     deleted_at datetime      default '0000-00-00 00:00:00',
+    sender_id int default 0,
     channel    varchar(500)  default '',
     text    varchar(5000) default ''
 );
+
+alter table message
+    add constraint message_sender_id_fk
+        foreign key (sender_id) references user (id);
+
 
 create table user_message
 (

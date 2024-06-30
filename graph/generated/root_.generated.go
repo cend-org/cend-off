@@ -115,6 +115,7 @@ type ComplexityRoot struct {
 		CreatedAt func(childComplexity int) int
 		DeletedAt func(childComplexity int) int
 		Id        func(childComplexity int) int
+		SenderId  func(childComplexity int) int
 		Text      func(childComplexity int) int
 		UpdatedAt func(childComplexity int) int
 	}
@@ -651,6 +652,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Message.Id(childComplexity), true
+
+	case "Message.SenderId":
+		if e.complexity.Message.SenderId == nil {
+			break
+		}
+
+		return e.complexity.Message.SenderId(childComplexity), true
 
 	case "Message.Text":
 		if e.complexity.Message.Text == nil {
@@ -2190,6 +2198,7 @@ type UserMediaDetail {
     CreatedAt: DateTime!
     UpdatedAt: DateTime!
     DeletedAt: DateTime
+    SenderId : Int! @goField(name: "SenderId")
     Channel: String!
     Text: String!
 }

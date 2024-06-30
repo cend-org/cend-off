@@ -89,6 +89,7 @@ type Message struct {
 	CreatedAt time.Time  `json:"createdAt"`
 	UpdatedAt time.Time  `json:"updatedAt"`
 	DeletedAt *time.Time `json:"deletedAt"`
+	SenderId  int        `json:"senderId"`
 	Channel   string     `json:"channel"`
 	Text      string     `json:"text"`
 }
