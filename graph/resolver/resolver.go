@@ -4,6 +4,7 @@ import (
 	"github.com/cend-org/duval/graph/generated"
 	"github.com/cend-org/duval/pkg/academic"
 	mediafile "github.com/cend-org/duval/pkg/media"
+	"github.com/cend-org/duval/pkg/message"
 	"github.com/cend-org/duval/pkg/translator"
 	usr "github.com/cend-org/duval/pkg/user"
 )
@@ -12,12 +13,18 @@ import (
 //
 // It serves as dependency injection for your app, add any dependencies you require here.
 
-type Resolver struct{}
+type Resolver struct {
+}
+
+type subscriptionResolver struct {
+	*message.MessageSubscription
+}
 
 type mutationResolver struct {
 	*usr.UserMutation
 	*academic.AcademicMutation
 	*translator.TranslationMutation
+	*message.MessageMutation
 }
 
 type queryResolver struct {
@@ -25,6 +32,7 @@ type queryResolver struct {
 	*academic.AcademicQuery      `json:"*Academic.Query,omitempty"`
 	*mediafile.MediaQuery        `json:"*Media.Query,omitempty"`
 	*translator.TranslationQuery `json:"*Translation.Query,omitempty"`
+	*message.MessageQuery
 }
 
 // Query returns generated.QueryResolver implementation.
@@ -32,3 +40,7 @@ func (r *Resolver) Query() generated.QueryResolver { return &queryResolver{} }
 
 // Mutation returns generated.MutationResolver implementation.
 func (r *Resolver) Mutation() generated.MutationResolver { return &mutationResolver{} }
+
+func (r *Resolver) Subscription() generated.SubscriptionResolver {
+	return &subscriptionResolver{}
+}

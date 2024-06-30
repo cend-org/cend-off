@@ -15,8 +15,11 @@ import (
 )
 
 /*
+
 CREATE THUMBNAIL FOR UPLOADED IMAGE
+
 */
+
 func CreateThumb(mediaXid string, mType string, file *multipart.FileHeader) (err error) {
 	var (
 		mediaThumb model.MediaThumb

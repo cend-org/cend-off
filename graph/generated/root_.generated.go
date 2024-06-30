@@ -35,6 +35,7 @@ type Config struct {
 type ResolverRoot interface {
 	Mutation() MutationResolver
 	Query() QueryResolver
+	Subscription() SubscriptionResolver
 }
 
 type DirectiveRoot struct {
@@ -109,10 +110,23 @@ type ComplexityRoot struct {
 		Xid       func(childComplexity int) int
 	}
 
+	Message struct {
+		Channel   func(childComplexity int) int
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Id        func(childComplexity int) int
+		SenderId  func(childComplexity int) int
+		Text      func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+	}
+
 	Mutation struct {
 		AddOrGetLanguageResource                    func(childComplexity int, language int, resourceRef string) int
 		Login                                       func(childComplexity int, email string, password string) int
+		NewDefaultGroup                             func(childComplexity int) int
+		NewGroup                                    func(childComplexity int) int
 		NewLanguageResource                         func(childComplexity int, languageResource model.LanguageResourceInput) int
+		NewMessage                                  func(childComplexity int, message model.MessageInput) int
 		NewParent                                   func(childComplexity int, email string) int
 		NewPassword                                 func(childComplexity int, password model.PasswordInput) int
 		NewProfessor                                func(childComplexity int, email string) int
@@ -131,6 +145,7 @@ type ComplexityRoot struct {
 		RemoveCv                                    func(childComplexity int) int
 		RemoveLanguageResource                      func(childComplexity int, language int, resourceRef string) int
 		RemoveLanguageResources                     func(childComplexity int, resourceRef string) int
+		RemoveMessage                               func(childComplexity int, messageID int) int
 		RemoveProfileImage                          func(childComplexity int) int
 		RemoveVideoPresentation                     func(childComplexity int) int
 		SetStudentAcademicLevelByParent             func(childComplexity int, academicLevelID int, studentID int) int
@@ -165,6 +180,7 @@ type ComplexityRoot struct {
 		CvThumb                        func(childComplexity int) int
 		LanguageResource               func(childComplexity int, language int, resourceRef string) int
 		LanguageResources              func(childComplexity int, language int) int
+		Messages                       func(childComplexity int) int
 		MultipleLevelAcademicCourses   func(childComplexity int, academicLevelID []int) int
 		MyProfile                      func(childComplexity int) int
 		Preferences                    func(childComplexity int) int
@@ -188,6 +204,10 @@ type ComplexityRoot struct {
 		UserProfileImageThumb          func(childComplexity int, userID int) int
 		UserVideoPresentation          func(childComplexity int, userID int) int
 		VideoPresentation              func(childComplexity int) int
+	}
+
+	Subscription struct {
+		MessageReceived func(childComplexity int) int
 	}
 
 	User struct {
@@ -266,6 +286,15 @@ type ComplexityRoot struct {
 		Id           func(childComplexity int) int
 		OwnerId      func(childComplexity int) int
 		UpdatedAt    func(childComplexity int) int
+	}
+
+	UserMessage struct {
+		CreatedAt func(childComplexity int) int
+		DeletedAt func(childComplexity int) int
+		Id        func(childComplexity int) int
+		MessageId func(childComplexity int) int
+		UpdatedAt func(childComplexity int) int
+		UserId    func(childComplexity int) int
 	}
 }
 
@@ -596,6 +625,55 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.MediaThumb.Xid(childComplexity), true
 
+	case "Message.Channel":
+		if e.complexity.Message.Channel == nil {
+			break
+		}
+
+		return e.complexity.Message.Channel(childComplexity), true
+
+	case "Message.CreatedAt":
+		if e.complexity.Message.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.Message.CreatedAt(childComplexity), true
+
+	case "Message.DeletedAt":
+		if e.complexity.Message.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.Message.DeletedAt(childComplexity), true
+
+	case "Message.Id":
+		if e.complexity.Message.Id == nil {
+			break
+		}
+
+		return e.complexity.Message.Id(childComplexity), true
+
+	case "Message.SenderId":
+		if e.complexity.Message.SenderId == nil {
+			break
+		}
+
+		return e.complexity.Message.SenderId(childComplexity), true
+
+	case "Message.Text":
+		if e.complexity.Message.Text == nil {
+			break
+		}
+
+		return e.complexity.Message.Text(childComplexity), true
+
+	case "Message.UpdatedAt":
+		if e.complexity.Message.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.Message.UpdatedAt(childComplexity), true
+
 	case "Mutation.AddOrGetLanguageResource":
 		if e.complexity.Mutation.AddOrGetLanguageResource == nil {
 			break
@@ -620,6 +698,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Mutation.Login(childComplexity, args["email"].(string), args["password"].(string)), true
 
+	case "Mutation.NewDefaultGroup":
+		if e.complexity.Mutation.NewDefaultGroup == nil {
+			break
+		}
+
+		return e.complexity.Mutation.NewDefaultGroup(childComplexity), true
+
+	case "Mutation.NewGroup":
+		if e.complexity.Mutation.NewGroup == nil {
+			break
+		}
+
+		return e.complexity.Mutation.NewGroup(childComplexity), true
+
 	case "Mutation.NewLanguageResource":
 		if e.complexity.Mutation.NewLanguageResource == nil {
 			break
@@ -631,6 +723,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.NewLanguageResource(childComplexity, args["languageResource"].(model.LanguageResourceInput)), true
+
+	case "Mutation.NewMessage":
+		if e.complexity.Mutation.NewMessage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_NewMessage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.NewMessage(childComplexity, args["message"].(model.MessageInput)), true
 
 	case "Mutation.NewParent":
 		if e.complexity.Mutation.NewParent == nil {
@@ -837,6 +941,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.RemoveLanguageResources(childComplexity, args["resourceRef"].(string)), true
+
+	case "Mutation.RemoveMessage":
+		if e.complexity.Mutation.RemoveMessage == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_RemoveMessage_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.RemoveMessage(childComplexity, args["messageId"].(int)), true
 
 	case "Mutation.RemoveProfileImage":
 		if e.complexity.Mutation.RemoveProfileImage == nil {
@@ -1099,6 +1215,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.LanguageResources(childComplexity, args["language"].(int)), true
 
+	case "Query.Messages":
+		if e.complexity.Query.Messages == nil {
+			break
+		}
+
+		return e.complexity.Query.Messages(childComplexity), true
+
 	case "Query.MultipleLevelAcademicCourses":
 		if e.complexity.Query.MultipleLevelAcademicCourses == nil {
 			break
@@ -1339,6 +1462,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.VideoPresentation(childComplexity), true
+
+	case "Subscription.MessageReceived":
+		if e.complexity.Subscription.MessageReceived == nil {
+			break
+		}
+
+		return e.complexity.Subscription.MessageReceived(childComplexity), true
 
 	case "User.AddOnTitle":
 		if e.complexity.User.AddOnTitle == nil {
@@ -1739,6 +1869,48 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserMediaDetail.UpdatedAt(childComplexity), true
 
+	case "UserMessage.CreatedAt":
+		if e.complexity.UserMessage.CreatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserMessage.CreatedAt(childComplexity), true
+
+	case "UserMessage.DeletedAt":
+		if e.complexity.UserMessage.DeletedAt == nil {
+			break
+		}
+
+		return e.complexity.UserMessage.DeletedAt(childComplexity), true
+
+	case "UserMessage.Id":
+		if e.complexity.UserMessage.Id == nil {
+			break
+		}
+
+		return e.complexity.UserMessage.Id(childComplexity), true
+
+	case "UserMessage.MessageId":
+		if e.complexity.UserMessage.MessageId == nil {
+			break
+		}
+
+		return e.complexity.UserMessage.MessageId(childComplexity), true
+
+	case "UserMessage.UpdatedAt":
+		if e.complexity.UserMessage.UpdatedAt == nil {
+			break
+		}
+
+		return e.complexity.UserMessage.UpdatedAt(childComplexity), true
+
+	case "UserMessage.UserId":
+		if e.complexity.UserMessage.UserId == nil {
+			break
+		}
+
+		return e.complexity.UserMessage.UserId(childComplexity), true
+
 	}
 	return 0, false
 }
@@ -1749,6 +1921,7 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 	inputUnmarshalMap := graphql.BuildUnmarshalerMap(
 		ec.unmarshalInputAppointmentInput,
 		ec.unmarshalInputLanguageResourceInput,
+		ec.unmarshalInputMessageInput,
 		ec.unmarshalInputPasswordInput,
 		ec.unmarshalInputUserAcademicCourseInput,
 		ec.unmarshalInputUserAcademicCoursePreferenceInput,
@@ -1796,6 +1969,23 @@ func (e *executableSchema) Exec(ctx context.Context) graphql.ResponseHandler {
 			ctx = graphql.WithUnmarshalerMap(ctx, inputUnmarshalMap)
 			data := ec._Mutation(ctx, rc.Operation.SelectionSet)
 			var buf bytes.Buffer
+			data.MarshalGQL(&buf)
+
+			return &graphql.Response{
+				Data: buf.Bytes(),
+			}
+		}
+	case ast.Subscription:
+		next := ec._Subscription(ctx, rc.Operation.SelectionSet)
+
+		var buf bytes.Buffer
+		return func(ctx context.Context) *graphql.Response {
+			buf.Reset()
+			data := next(ctx)
+
+			if data == nil {
+				return nil
+			}
 			data.MarshalGQL(&buf)
 
 			return &graphql.Response{
@@ -2003,6 +2193,28 @@ type UserMediaDetail {
     DocumentXid : String! @goField(name: "DocumentXid")
 }
 `, BuiltIn: false},
+	{Name: "../gql/message/message.graphqls", Input: `type Message {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    SenderId : Int! @goField(name: "SenderId")
+    Channel: String!
+    Text: String!
+}
+
+type UserMessage {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId : Int! @goField(name: "UserId")
+    MessageId : Int! @goField(name: "MessageId")
+}
+
+input MessageInput {
+    Text: String
+}`, BuiltIn: false},
 	{Name: "../gql/password/password.graphqls", Input: `type Password {
     Id: ID! @goField(name: "Id")
     CreatedAt: DateTime!
@@ -2074,6 +2286,11 @@ scalar Upload
     RemoveLanguageResource(language: Int! , resourceRef : String!): Boolean
     RemoveLanguageResources(resourceRef: String!): Boolean
 
+    #    Message
+    NewMessage(message: MessageInput!): Message
+    NewDefaultGroup :Boolean
+    NewGroup :Boolean
+    RemoveMessage(messageId: Int!): Boolean
 }
 `, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {
@@ -2134,6 +2351,12 @@ scalar Upload
     AllReferencedLanguageResources(resourceRef: String!): [String!]
     LanguageResource(language: Int! , resourceRef: String!): String
 
+    #    Message
+    Messages: [Message!]
+
+}`, BuiltIn: false},
+	{Name: "../gql/schema/subcription.graphqls", Input: `type Subscription {
+    MessageReceived: Message!
 }`, BuiltIn: false},
 	{Name: "../gql/token/token.graphqls", Input: `type BearerToken {
     T: String!

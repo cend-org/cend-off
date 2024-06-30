@@ -56,4 +56,7 @@ type Query {
     AllReferencedLanguageResources(resourceRef: String!): [String!]
     LanguageResource(language: Int! , resourceRef: String!): String
 
+    #    Message
+    Messages: [Message!]
+
 }

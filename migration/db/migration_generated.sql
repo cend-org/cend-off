@@ -99,6 +99,17 @@ alter table media_thumb
 	add constraint media_thumb_media_xid_fk
 		foreign key (media_xid) references media (xid);
 
+create table message (
+	id int auto_increment primary key,
+	created_at	datetime default CURRENT_TIMESTAMP,
+	updated_at	datetime default CURRENT_TIMESTAMP,
+	deleted_at	datetime default '0000-00-00 00:00:00',
+	channel	varchar(255) default '',
+	message	varchar(255) default '',
+	constraint message_pk
+		unique (id)
+);
+
 create table password (
 	id int auto_increment primary key,
 	created_at	datetime default CURRENT_TIMESTAMP,
@@ -113,6 +124,10 @@ create table password (
 alter table password
 	add constraint password_user_id_fk
 		foreign key (user_id) references user (id);
+
+create table subscription (
+	id int auto_increment primary key,
+);
 
 create table user (
 	id int auto_increment primary key,
@@ -245,4 +260,23 @@ alter table user_media_detail
 alter table user_media_detail
 	add constraint user_media_detail_document_xid_fk
 		foreign key (document_xid) references media (xid);
+
+create table user_message (
+	id int auto_increment primary key,
+	created_at	datetime default CURRENT_TIMESTAMP,
+	updated_at	datetime default CURRENT_TIMESTAMP,
+	deleted_at	datetime default '0000-00-00 00:00:00',
+	user_id	int default 0,
+	message_id	int default 0,
+	constraint user_message_pk
+		unique (id)
+);
+
+alter table user_message
+	add constraint user_message_user_id_fk
+		foreign key (user_id) references user (id);
+
+alter table user_message
+	add constraint user_message_message_id_fk
+		foreign key (message_id) references message (id);
 

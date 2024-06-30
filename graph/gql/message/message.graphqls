@@ -1,0 +1,22 @@
+type Message {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    SenderId : Int! @goField(name: "SenderId")
+    Channel: String!
+    Text: String!
+}
+
+type UserMessage {
+    Id: ID! @goField(name: "Id")
+    CreatedAt: DateTime!
+    UpdatedAt: DateTime!
+    DeletedAt: DateTime
+    UserId : Int! @goField(name: "UserId")
+    MessageId : Int! @goField(name: "MessageId")
+}
+
+input MessageInput {
+    Text: String
+}

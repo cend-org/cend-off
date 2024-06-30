@@ -47,4 +47,9 @@ type Mutation {
     RemoveLanguageResource(language: Int! , resourceRef : String!): Boolean
     RemoveLanguageResources(resourceRef: String!): Boolean
 
+    #    Message
+    NewMessage(message: MessageInput!): Message
+    NewDefaultGroup :Boolean
+    NewGroup :Boolean
+    RemoveMessage(messageId: Int!): Boolean
 }
