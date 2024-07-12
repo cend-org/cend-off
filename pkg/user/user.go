@@ -11,6 +11,12 @@ import (
 )
 
 const (
+	StatusNeedPassword = 0
+	StatusNeedProfile  = 1
+	StatusActive       = 2
+)
+
+const (
 	// AuthorizationLevel
 
 	StudentAuthorizationLevel   = 0
