@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/cend-org/duval/graph/model"
+	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/token"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
@@ -78,7 +79,17 @@ func (r *UserMutation) UpdateMyProfile(ctx context.Context, profile model.UserIn
 		return nil, errors.New("unAuthorized")
 	}
 
-	return UpdMyProfile(tok.UserId, profile)
+	user, err := UpdMyProfile(tok.UserId, profile)
+
+	if user.Status == StatusNeedProfile {
+		user.Status = StatusActive
+		err = database.Update(user)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return user, nil
 }
 
 func (r *UserMutation) UpdateProfileAndPassword(ctx context.Context, profile model.UserInput, password model.PasswordInput) (*model.User, error) {
@@ -123,13 +134,32 @@ func (r *UserMutation) UpdateStudentProfileByParent(ctx context.Context, profile
 func (r *UserMutation) NewPassword(ctx context.Context, password model.PasswordInput) (*bool, error) {
 	var tok *token.Token
 	var err error
+	var status *bool
 
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
-		return nil, errors.New("unAuthorized")
+		return status, errors.New("unAuthorized")
 	}
 
-	return NewPassword(tok.UserId, password)
+	user, err := GetUserWithId(tok.UserId)
+	if err != nil {
+		return status, err
+	}
+
+	status, err = NewPassword(tok.UserId, password)
+	if err != nil {
+		return status, err
+	}
+
+	if user.Status == StatusNeedPassword {
+		user.Status = StatusNeedProfile
+		err = database.Update(user)
+		if err != nil {
+			return status, err
+		}
+	}
+
+	return status, err
 }
 
 func (r *UserMutation) NewStudentsPassword(ctx context.Context, studentID int) (*string, error) {
