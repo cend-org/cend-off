@@ -23,6 +23,34 @@ type UserMutation struct{}
 
 */
 
+func (r *UserMutation) UpdateUserStatus(ctx context.Context, rt int) (*bool, error) {
+	var (
+		tok    *token.Token
+		user   model.User
+		err    error
+		status bool
+	)
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return &status, errx.UnAuthorizedError
+	}
+
+	user, err = GetUserWithId(tok.UserId)
+	if err != nil {
+		return &status, errx.SupportError
+	}
+
+	user.Status = rt
+
+	err = database.Update(user)
+	if err != nil {
+		return &status, errx.SupportError
+	}
+	status = true
+	return &status, nil
+}
+
 func (r *UserQuery) MyProfile(ctx context.Context) (*model.User, error) {
 	var tok *token.Token
 	var err error
@@ -81,14 +109,6 @@ func (r *UserMutation) UpdateMyProfile(ctx context.Context, profile model.UserIn
 
 	user, err := UpdMyProfile(tok.UserId, profile)
 
-	if user.Status == StatusNeedProfile {
-		user.Status = StatusActive
-		err = database.Update(user)
-		if err != nil {
-			return nil, err
-		}
-	}
-
 	return user, nil
 }
 
@@ -141,22 +161,9 @@ func (r *UserMutation) NewPassword(ctx context.Context, password model.PasswordI
 		return status, errors.New("unAuthorized")
 	}
 
-	user, err := GetUserWithId(tok.UserId)
-	if err != nil {
-		return status, err
-	}
-
 	status, err = NewPassword(tok.UserId, password)
 	if err != nil {
 		return status, err
-	}
-
-	if user.Status == StatusNeedPassword {
-		user.Status = StatusNeedProfile
-		err = database.Update(user)
-		if err != nil {
-			return status, err
-		}
 	}
 
 	return status, err

@@ -8,6 +8,8 @@ type Mutation {
     UpdateMyProfile(profile: UserInput!): User #Update information for current user
     UpdateProfileAndPassword(profile: UserInput! , password: PasswordInput!): User  #Update both information and password for current user
     NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean #Select set of preferred course
+    #Select set of preferred course
+    UpdateUserStatus(status: Int!): Boolean
 
     #    Education
     SetUserAcademicLevel(AcademicLevelId: Int!): Boolean #Select academic level for the current user based on id of the level

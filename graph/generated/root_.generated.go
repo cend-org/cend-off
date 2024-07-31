@@ -141,6 +141,7 @@ type ComplexityRoot struct {
 		UpdateMyProfile                             func(childComplexity int, profile model.UserInput) int
 		UpdateProfileAndPassword                    func(childComplexity int, profile model.UserInput, password model.PasswordInput) int
 		UpdateStudentProfileByParent                func(childComplexity int, profile model.UserInput, studentID int) int
+		UpdateUserStatus                            func(childComplexity int, status int) int
 		UserStudent                                 func(childComplexity int, name string, familyName string) int
 	}
 
@@ -947,6 +948,18 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdateStudentProfileByParent(childComplexity, args["profile"].(model.UserInput), args["studentId"].(int)), true
+
+	case "Mutation.UpdateUserStatus":
+		if e.complexity.Mutation.UpdateUserStatus == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_UpdateUserStatus_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateUserStatus(childComplexity, args["status"].(int)), true
 
 	case "Mutation.UserStudent":
 		if e.complexity.Mutation.UserStudent == nil {
@@ -2035,6 +2048,8 @@ scalar Upload
     UpdateMyProfile(profile: UserInput!): User #Update information for current user
     UpdateProfileAndPassword(profile: UserInput! , password: PasswordInput!): User  #Update both information and password for current user
     NewUserAcademicCourses(courses: [UserAcademicCourseInput]!) : Boolean #Select set of preferred course
+    #Select set of preferred course
+    UpdateUserStatus(status: Int!): Boolean
 
     #    Education
     SetUserAcademicLevel(AcademicLevelId: Int!): Boolean #Select academic level for the current user based on id of the level
