@@ -51,7 +51,6 @@ func register(email string, userType int) (bearer *model.BearerToken, err error)
 	}
 
 	user.Email = email
-	user.Status = StatusNeedPassword
 
 	user.Id, err = database.InsertOne(user)
 	if err != nil {
