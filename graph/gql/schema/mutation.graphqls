@@ -49,4 +49,9 @@ type Mutation {
     RemoveLanguageResource(language: Int! , resourceRef : String!): Boolean
     RemoveLanguageResources(resourceRef: String!): Boolean
 
+    #    Profile screen
+    UpdateMyPassword(hash : PasswordInput!) : Boolean  #Update user password in the profile screen
+    UpdateMyEmail(email : String!) : User! #Update current user's mail
+
+
 }
