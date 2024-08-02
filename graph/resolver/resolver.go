@@ -19,7 +19,6 @@ type mutationResolver struct {
 	*academic.AcademicMutation
 	*translator.TranslationMutation
 }
-
 type queryResolver struct {
 	*usr.UserQuery               `json:"*Usr.Query,omitempty"`
 	*academic.AcademicQuery      `json:"*Academic.Query,omitempty"`

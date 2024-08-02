@@ -138,8 +138,8 @@ type ComplexityRoot struct {
 		UpdAcademicCoursePreference                 func(childComplexity int, coursesPreferences model.UserAcademicCoursePreferenceInput) int
 		UpdLanguageResource                         func(childComplexity int, languageResource model.LanguageResourceInput) int
 		UpdStudentAcademicCoursesPreferenceByParent func(childComplexity int, coursesPreferences model.UserAcademicCoursePreferenceInput, studentID int) int
-		UpdateMyEmail                               func(childComplexity int, email string) int
-		UpdateMyPassword                            func(childComplexity int, hash model.PasswordInput) int
+		UpdateMyEmail                               func(childComplexity int, email string, password model.PasswordInput) int
+		UpdateMyPassword                            func(childComplexity int, hash model.PasswordInput, oldPassword model.PasswordInput) int
 		UpdateMyProfile                             func(childComplexity int, profile model.UserInput) int
 		UpdateProfileAndPassword                    func(childComplexity int, profile model.UserInput, password model.PasswordInput) int
 		UpdateStudentProfileByParent                func(childComplexity int, profile model.UserInput, studentID int) int
@@ -925,7 +925,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateMyEmail(childComplexity, args["email"].(string)), true
+		return e.complexity.Mutation.UpdateMyEmail(childComplexity, args["email"].(string), args["password"].(model.PasswordInput)), true
 
 	case "Mutation.UpdateMyPassword":
 		if e.complexity.Mutation.UpdateMyPassword == nil {
@@ -937,7 +937,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateMyPassword(childComplexity, args["hash"].(model.PasswordInput)), true
+		return e.complexity.Mutation.UpdateMyPassword(childComplexity, args["hash"].(model.PasswordInput), args["oldPassword"].(model.PasswordInput)), true
 
 	case "Mutation.UpdateMyProfile":
 		if e.complexity.Mutation.UpdateMyProfile == nil {
@@ -2116,10 +2116,8 @@ scalar Upload
     RemoveLanguageResources(resourceRef: String!): Boolean
 
     #    Profile screen
-    UpdateMyPassword(hash : PasswordInput!) : Boolean  #Update user password in the profile screen
-    UpdateMyEmail(email : String!) : User! #Update current user's mail
-
-
+    UpdateMyPassword(hash : PasswordInput! , oldPassword: PasswordInput!) : Boolean  #Update user password in the profile screen
+    UpdateMyEmail(email : String! , password: PasswordInput!) : User! #Update current user's mail
 }
 `, BuiltIn: false},
 	{Name: "../gql/schema/query.graphqls", Input: `type Query {

@@ -589,13 +589,15 @@ func (r *UserMutation) RemoveVideoPresentation(ctx context.Context) (*bool, erro
 	return &status, nil
 }
 
-func (r *UserMutation) UpdateMyPassword(ctx context.Context, hash model.PasswordInput) (*bool, error) {
+func (r *UserMutation) UpdateMyPassword(ctx context.Context, hash model.PasswordInput, oldPassword model.PasswordInput) (*bool, error) {
 	var (
 		tok    *token.Token
 		err    error
 		status bool
+		psw    model.Password
 	)
-	if hash.Hash == nil || !utils.PasswordHasValidLength(*hash.Hash) {
+
+	if hash.Hash == nil || !utils.PasswordHasValidLength(*hash.Hash) || oldPassword.Hash == nil {
 		return pointer.Bool(false), errx.PasswordLengthError
 	}
 
@@ -604,20 +606,29 @@ func (r *UserMutation) UpdateMyPassword(ctx context.Context, hash model.Password
 		return &status, errx.UnAuthorizedError
 	}
 
-	status, err = UpdatePassword(tok.UserId, hash)
+	psw, err = getUserActivePassword(tok.UserId)
 	if err != nil {
-		return &status, err
+		return nil, errx.StatusNeedPasswordError
 	}
 
-	return &status, nil
+	if !utils.CheckPasswordHash(*oldPassword.Hash, psw.Hash) {
+		return nil, errx.PasswdError
+	}
+
+	return NewPassword(tok.UserId, hash)
 }
 
-func (r *UserMutation) UpdateMyEmail(ctx context.Context, email string) (*model.User, error) {
+func (r *UserMutation) UpdateMyEmail(ctx context.Context, email string, password model.PasswordInput) (*model.User, error) {
 	var (
 		tok  *token.Token
 		user model.User
 		err  error
+		psw  model.Password
 	)
+
+	if !utils.PasswordHasValidLength(*password.Hash) || password.Hash == nil {
+		return &user, errx.PasswordLengthError
+	}
 
 	if email == state.EMPTY || !utils.IsValidEmail(email) {
 		return &user, errx.InvalidEmailError
@@ -626,6 +637,15 @@ func (r *UserMutation) UpdateMyEmail(ctx context.Context, email string) (*model.
 	tok, err = token.GetFromContext(ctx)
 	if err != nil {
 		return &user, errx.UnAuthorizedError
+	}
+
+	psw, err = getUserActivePassword(tok.UserId)
+	if err != nil {
+		return nil, errx.StatusNeedPasswordError
+	}
+
+	if !utils.CheckPasswordHash(*password.Hash, psw.Hash) {
+		return nil, errx.PasswdError
 	}
 
 	user, err = GetUserWithId(tok.UserId)
