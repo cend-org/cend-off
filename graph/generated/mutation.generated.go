@@ -50,8 +50,8 @@ type MutationResolver interface {
 	AddOrGetLanguageResource(ctx context.Context, language int, resourceRef string) (*string, error)
 	RemoveLanguageResource(ctx context.Context, language int, resourceRef string) (*bool, error)
 	RemoveLanguageResources(ctx context.Context, resourceRef string) (*bool, error)
-	UpdateMyPassword(ctx context.Context, hash model.PasswordInput) (*bool, error)
-	UpdateMyEmail(ctx context.Context, email string) (*model.User, error)
+	UpdateMyPassword(ctx context.Context, hash model.PasswordInput, oldPassword model.PasswordInput) (*bool, error)
+	UpdateMyEmail(ctx context.Context, email string, password model.PasswordInput) (*model.User, error)
 }
 
 // endregion ************************** generated!.gotpl **************************
@@ -502,6 +502,15 @@ func (ec *executionContext) field_Mutation_UpdateMyEmail_args(ctx context.Contex
 		}
 	}
 	args["email"] = arg0
+	var arg1 model.PasswordInput
+	if tmp, ok := rawArgs["password"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
+		arg1, err = ec.unmarshalNPasswordInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPasswordInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["password"] = arg1
 	return args, nil
 }
 
@@ -517,6 +526,15 @@ func (ec *executionContext) field_Mutation_UpdateMyPassword_args(ctx context.Con
 		}
 	}
 	args["hash"] = arg0
+	var arg1 model.PasswordInput
+	if tmp, ok := rawArgs["oldPassword"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("oldPassword"))
+		arg1, err = ec.unmarshalNPasswordInput2githubᚗcomᚋcendᚑorgᚋduvalᚋgraphᚋmodelᚐPasswordInput(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["oldPassword"] = arg1
 	return args, nil
 }
 
@@ -2570,7 +2588,7 @@ func (ec *executionContext) _Mutation_UpdateMyPassword(ctx context.Context, fiel
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateMyPassword(rctx, fc.Args["hash"].(model.PasswordInput))
+		return ec.resolvers.Mutation().UpdateMyPassword(rctx, fc.Args["hash"].(model.PasswordInput), fc.Args["oldPassword"].(model.PasswordInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2622,7 +2640,7 @@ func (ec *executionContext) _Mutation_UpdateMyEmail(ctx context.Context, field g
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateMyEmail(rctx, fc.Args["email"].(string))
+		return ec.resolvers.Mutation().UpdateMyEmail(rctx, fc.Args["email"].(string), fc.Args["password"].(model.PasswordInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
