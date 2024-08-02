@@ -40,6 +40,31 @@ func NewPassword(userId int, new model.PasswordInput) (ret *bool, err error) {
 	return pointer.Bool(true), err
 }
 
+/*
+
+	Update password
+
+*/
+
+func UpdatePassword(userId int, hash model.PasswordInput) (status bool, err error) {
+	var passwd model.Password
+
+	passwd, err = getUserActivePassword(userId)
+	if err != nil {
+		return status, errx.SupportError
+	}
+
+	passwd = model.MapPasswordInputToPassword(hash, passwd)
+
+	err = database.Update(passwd)
+	if err != nil {
+		return status, errx.SupportError
+	}
+	status = true
+
+	return status, nil
+}
+
 func getUserActivePassword(userId int) (password model.Password, err error) {
 	err = database.Get(&password, `SELECT * FROM password WHERE user_id = ? ORDER BY created_at DESC LIMIT 1`, userId)
 	if err != nil {

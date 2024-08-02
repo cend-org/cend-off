@@ -138,6 +138,8 @@ type ComplexityRoot struct {
 		UpdAcademicCoursePreference                 func(childComplexity int, coursesPreferences model.UserAcademicCoursePreferenceInput) int
 		UpdLanguageResource                         func(childComplexity int, languageResource model.LanguageResourceInput) int
 		UpdStudentAcademicCoursesPreferenceByParent func(childComplexity int, coursesPreferences model.UserAcademicCoursePreferenceInput, studentID int) int
+		UpdateMyEmail                               func(childComplexity int, email string) int
+		UpdateMyPassword                            func(childComplexity int, hash model.PasswordInput) int
 		UpdateMyProfile                             func(childComplexity int, profile model.UserInput) int
 		UpdateProfileAndPassword                    func(childComplexity int, profile model.UserInput, password model.PasswordInput) int
 		UpdateStudentProfileByParent                func(childComplexity int, profile model.UserInput, studentID int) int
@@ -912,6 +914,30 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Mutation.UpdStudentAcademicCoursesPreferenceByParent(childComplexity, args["coursesPreferences"].(model.UserAcademicCoursePreferenceInput), args["studentId"].(int)), true
+
+	case "Mutation.UpdateMyEmail":
+		if e.complexity.Mutation.UpdateMyEmail == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_UpdateMyEmail_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateMyEmail(childComplexity, args["email"].(string)), true
+
+	case "Mutation.UpdateMyPassword":
+		if e.complexity.Mutation.UpdateMyPassword == nil {
+			break
+		}
+
+		args, err := ec.field_Mutation_UpdateMyPassword_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Mutation.UpdateMyPassword(childComplexity, args["hash"].(model.PasswordInput)), true
 
 	case "Mutation.UpdateMyProfile":
 		if e.complexity.Mutation.UpdateMyProfile == nil {
@@ -2088,6 +2114,11 @@ scalar Upload
     AddOrGetLanguageResource(language: Int! , resourceRef : String!): String
     RemoveLanguageResource(language: Int! , resourceRef : String!): Boolean
     RemoveLanguageResources(resourceRef: String!): Boolean
+
+    #    Profile screen
+    UpdateMyPassword(hash : PasswordInput!) : Boolean  #Update user password in the profile screen
+    UpdateMyEmail(email : String!) : User! #Update current user's mail
+
 
 }
 `, BuiltIn: false},

@@ -6,12 +6,14 @@ import (
 	"github.com/cend-org/duval/graph/model"
 	"github.com/cend-org/duval/internal/database"
 	"github.com/cend-org/duval/internal/token"
+	"github.com/cend-org/duval/internal/utils"
 	"github.com/cend-org/duval/internal/utils/errx"
 	"github.com/cend-org/duval/internal/utils/state"
 	"github.com/cend-org/duval/pkg/media/cover"
 	"github.com/cend-org/duval/pkg/media/cv"
 	"github.com/cend-org/duval/pkg/media/profile"
 	"github.com/cend-org/duval/pkg/media/video"
+	"github.com/xorcare/pointer"
 )
 
 type UserQuery struct{}
@@ -585,4 +587,53 @@ func (r *UserMutation) RemoveVideoPresentation(ctx context.Context) (*bool, erro
 	}
 
 	return &status, nil
+}
+
+func (r *UserMutation) UpdateMyPassword(ctx context.Context, hash model.PasswordInput) (*bool, error) {
+	var (
+		tok    *token.Token
+		err    error
+		status bool
+	)
+	if hash.Hash == nil || !utils.PasswordHasValidLength(*hash.Hash) {
+		return pointer.Bool(false), errx.PasswordLengthError
+	}
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return &status, errx.UnAuthorizedError
+	}
+
+	status, err = UpdatePassword(tok.UserId, hash)
+	if err != nil {
+		return &status, err
+	}
+
+	return &status, nil
+}
+
+func (r *UserMutation) UpdateMyEmail(ctx context.Context, email string) (*model.User, error) {
+	var (
+		tok  *token.Token
+		user model.User
+		err  error
+	)
+
+	if email == state.EMPTY || !utils.IsValidEmail(email) {
+		return &user, errx.InvalidEmailError
+	}
+
+	tok, err = token.GetFromContext(ctx)
+	if err != nil {
+		return &user, errx.UnAuthorizedError
+	}
+
+	user, err = GetUserWithId(tok.UserId)
+	if err != nil {
+		return &user, errx.SupportError
+	}
+
+	user.Email = email
+
+	return &user, nil
 }
